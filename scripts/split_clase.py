@@ -1,17 +1,30 @@
 #!/usr/bin/env python3
-"""Parte un apunte de clase monolítico en una página por sección.
+"""Parte un borrador de clase monolítico en una página por sección.
 
 Uso:
-    scripts/split_clase.py _source/clase-01.md
-    scripts/split_clase.py _source/clase-01.md --force
-    scripts/split_clase.py _source/clase-01.md --dry-run
+    scripts/split_clase.py ~/borradores/clase-02.md
+    scripts/split_clase.py ~/borradores/clase-02.md --force
+    scripts/split_clase.py ~/borradores/clase-02.md --dry-run
 
-El fuente se corta en cada heading `## N. Título`. Cada sección resultante se
-escribe en `_clases/clase-NN/NN-slug.md` con el front matter que Just the Docs
-necesita para armar el sidebar en dos niveles (clase -> sección).
+Andamio de arranque, no parte del sitio: sirve para convertir un apunte escrito
+de corrido en la estructura de páginas de `_clases/`. El borrador vive fuera del
+repo y no se versiona; una vez partida la clase, las páginas generadas son la
+única fuente y se editan a mano. Por eso `--force` es peligroso sobre una clase
+ya existente: pisa esas ediciones. `--dry-run` muestra qué haría.
 
-El número de clase sale del nombre del archivo (`clase-01.md` -> 1). El título
-sale del front matter del fuente (`titulo:`) o de --titulo.
+El borrador se corta en cada heading `## N. Título`; los `###` de adentro son
+las subsecciones. Cada sección resultante se escribe en
+`_clases/clase-NN/NN-slug.md` con el front matter que Just the Docs necesita
+para armar el sidebar en dos niveles (clase -> sección).
+
+Además traduce tres marcadores de taquigrafía, cómodos al transcribir:
+
+    [FIGURA: descripción — notas pág. N]   -> recuadro punteado con la descripción
+    [CÓDIGO PENDIENTE: descripción]        -> recuadro punteado, etiquetado como código
+    *[Nota: texto]*                        -> callout azul "Nota"
+
+El número de clase sale del nombre del archivo (`clase-02.md` -> 2). El título
+sale del front matter del borrador (`titulo:`) o de --titulo.
 """
 
 from __future__ import annotations
