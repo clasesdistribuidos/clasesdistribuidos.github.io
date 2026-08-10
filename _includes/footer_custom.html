@@ -1,0 +1,51 @@
+{%- comment -%}
+  Navegación secuencial anterior/siguiente.
+
+  Just the Docs no trae paginación entre páginas, y acá el alumno lee sección
+  por sección, así que la agregamos nosotros.
+
+  El orden de lectura es el orden alfabético de las URLs, que funciona porque
+  clases y secciones están numeradas con cero a la izquierda:
+
+    /clase-01/  <  /clase-01/01-...  <  /clase-01/05-...  <  /clase-02/
+
+  Las páginas índice de cada clase entran en la secuencia, así que al terminar
+  la última sección de una clase se cae naturalmente en la portada de la
+  siguiente.
+{%- endcomment -%}
+
+{%- if page.collection == "clases" -%}
+  {%- assign secuencia = site.clases | sort: "url" -%}
+  {%- assign pos = nil -%}
+  {%- for p in secuencia -%}
+    {%- if p.url == page.url -%}{%- assign pos = forloop.index0 -%}{%- endif -%}
+  {%- endfor -%}
+
+  {%- if pos -%}
+    {%- assign idx_anterior = pos | minus: 1 -%}
+    {%- assign idx_siguiente = pos | plus: 1 -%}
+    {%- assign total = secuencia | size -%}
+
+    <nav class="nav-secuencial" aria-label="Navegación entre secciones">
+      {%- if pos > 0 -%}
+        {%- assign anterior = secuencia[idx_anterior] -%}
+        <a class="nav-secuencial-link nav-secuencial-prev" href="{{ anterior.url | relative_url }}">
+          <span class="nav-secuencial-dir">&larr; Anterior</span>
+          <span class="nav-secuencial-titulo">{{ anterior.title }}</span>
+        </a>
+      {%- else -%}
+        <span class="nav-secuencial-hueco"></span>
+      {%- endif -%}
+
+      {%- if idx_siguiente < total -%}
+        {%- assign siguiente = secuencia[idx_siguiente] -%}
+        <a class="nav-secuencial-link nav-secuencial-next" href="{{ siguiente.url | relative_url }}">
+          <span class="nav-secuencial-dir">Siguiente &rarr;</span>
+          <span class="nav-secuencial-titulo">{{ siguiente.title }}</span>
+        </a>
+      {%- else -%}
+        <span class="nav-secuencial-hueco"></span>
+      {%- endif -%}
+    </nav>
+  {%- endif -%}
+{%- endif -%}

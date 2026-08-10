@@ -1,0 +1,121 @@
+# Bibliografía de la materia. Alimenta papers.md.
+#
+# `clase` es el número de clase del cronograma en que se discute; se usa sólo
+# para mostrar el contexto, no para armar links.
+
+- eje: Fundamentos y método
+  items:
+    - titulo: "How to Read a Paper"
+      autor: "S. Keshav"
+      url: "https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf"
+      clase: 1
+      nota: "El método de las tres pasadas. Conviene leerlo antes que cualquier otro."
+    - titulo: "Principles of Computer System Design: An Introduction"
+      autor: "Jerome H. Saltzer y M. Frans Kaashoek"
+      url: "https://ocw.mit.edu/courses/res-6-004-principles-of-computer-system-design-an-introduction-spring-2009/"
+      clase: 1
+      tipo: libro
+      nota: "De acá sale el marco de las tres abstracciones —memoria, intérpretes, enlaces— y la organización cliente-servicio."
+
+- eje: Compute
+  items:
+    - titulo: "MapReduce: Simplified Data Processing on Large Clusters"
+      autor: "Jeffrey Dean y Sanjay Ghemawat"
+      url: "https://static.googleusercontent.com/media/research.google.com/es//archive/mapreduce-osdi04.pdf"
+      clase: 1
+    - titulo: "Resilient Distributed Datasets (Spark)"
+      autor: "Matei Zaharia et al."
+      url: "http://nil.csail.mit.edu/6.5840/2023/papers/zaharia-spark.pdf"
+      clase: 11
+
+- eje: Storage, replicación y consenso
+  items:
+    - titulo: "The Log: What every software engineer should know about real-time data's unifying abstraction"
+      autor: "Jay Kreps"
+      url: "https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying"
+      clase: 2
+    - titulo: "The Google File System"
+      autor: "Sanjay Ghemawat, Howard Gobioff y Shun-Tak Leung"
+      url: "https://static.googleusercontent.com/media/research.google.com/es//archive/gfs-sosp2003.pdf"
+      clase: 3
+    - titulo: "In Search of an Understandable Consensus Algorithm (Raft)"
+      autor: "Diego Ongaro y John Ousterhout"
+      url: "https://pdos.csail.mit.edu/6.824/papers/raft-extended.pdf"
+      clase: 5
+      nota: "Se ve en dos clases: elección de líder primero, log y snapshots después."
+    - titulo: "ZooKeeper: Wait-free coordination for Internet-scale systems"
+      autor: "Patrick Hunt et al."
+      url: "https://www.usenix.org/legacy/event/atc10/tech/full_papers/Hunt.pdf"
+      clase: 6
+    - titulo: "DynamoDB: Scaling a Managed Database Service"
+      autor: "Joseph Idziorek et al."
+      url: "https://www.usenix.org/system/files/atc23-idziorek.pdf"
+      clase: 7
+    - titulo: "Scaling Memcache at Facebook"
+      autor: "Rajesh Nishtala et al."
+      url: "https://pdos.csail.mit.edu/6.824/papers/memcache-fb.pdf"
+      clase: 8
+    - titulo: "Dynamo: Amazon's Highly Available Key-value Store"
+      autor: "Giuseppe DeCandia et al."
+      url: "https://www.amazon.science/publications/dynamo-amazons-highly-available-key-value-store"
+      clase: 9
+      nota: "SOSP 2007. Recibió el ACM SIGOPS Hall of Fame Award en 2017."
+    - titulo: "Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases"
+      autor: "Alexandre Verbitski et al."
+      url: "http://nil.csail.mit.edu/6.824/2020/papers/aurora.pdf"
+      clase: 10
+    - titulo: "Spanner: Google's Globally-Distributed Database"
+      autor: "James C. Corbett et al."
+      url: "http://nil.csail.mit.edu/6.5840/2025/papers/spanner.pdf"
+      clase: 10
+
+- eje: Stream processing y mensajería
+  items:
+    - titulo: "Kafka: a Distributed Messaging System for Log Processing"
+      autor: "Jay Kreps, Neha Narkhede y Jun Rao"
+      url: "https://www.microsoft.com/en-us/research/wp-content/uploads/2017/09/Kafka.pdf"
+      clase: 12
+    - titulo: "MillWheel: Fault-Tolerant Stream Processing at Internet Scale"
+      autor: "Tyler Akidau et al."
+      url: "https://research.google/pubs/millwheel-fault-tolerant-stream-processing-at-internet-scale/"
+      clase: 12
+    - titulo: "The Dataflow Model"
+      autor: "Tyler Akidau et al."
+      url: "https://static.googleusercontent.com/media/research.google.com/es//pubs/archive/43864.pdf"
+      clase: 12
+    - titulo: "Streaming Systems"
+      autor: "Tyler Akidau, Slava Chernyak y Reuven Lax"
+      url: "https://www.oreilly.com/library/view/streaming-systems/9781491983867/"
+      clase: 12
+      tipo: libro
+
+- eje: Cloud computing e infraestructura
+  items:
+    - titulo: "Large-scale cluster management at Google with Borg"
+      autor: "Abhishek Verma et al."
+      url: "http://nil.csail.mit.edu/6.824/2016/papers/borg.pdf"
+      clase: 15
+    - titulo: "On-demand Container Loading in AWS Lambda"
+      autor: "Marc Brooker et al."
+      url: "https://pdos.csail.mit.edu/6.824/papers/atc23-brooker.pdf"
+      clase: 15
+    - titulo: "Firecracker: Lightweight Virtualization for Serverless Applications"
+      autor: "Alexandru Agache et al."
+      url: "https://www.usenix.org/system/files/nsdi20-paper-agache.pdf"
+      clase: 15
+    - titulo: "On Designing and Deploying Internet-Scale Services"
+      autor: "James Hamilton"
+      url: "https://s3.amazonaws.com/systemsandpapers/papers/hamilton.pdf"
+      clase: 16
+    - titulo: "The Datacenter as a Computer"
+      autor: "Luiz André Barroso, Urs Hölzle y Parthasarathy Ranganathan"
+      url: "https://www.morganclaypool.com/doi/10.2200/S00874ED3V01Y201809CAC046"
+      clase: 15
+      tipo: libro
+
+- eje: Otros
+  items:
+    - titulo: "Bitcoin: A Peer-to-Peer Electronic Cash System"
+      autor: "Satoshi Nakamoto"
+      url: "https://pdos.csail.mit.edu/6.824/papers/bitcoin.pdf"
+      clase: 14
