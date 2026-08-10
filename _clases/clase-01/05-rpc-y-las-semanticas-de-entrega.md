@@ -29,7 +29,8 @@ El origen de RPC está en los años ochenta, y responde otra vez a la ambición 
 
 ¿Qué cambia respecto de lo que teníamos hasta ahora? Seguimos en la capa end to end, pero dentro de ella podemos imaginar a su vez dos capas. Arriba está la aplicación que uno escribe. Abajo está la capa de RPC, que le esconde a uno toda la interacción con los sockets. Más abajo todavía están los sockets, donde queda metida también la capa de transporte, y por debajo la red. Introducimos entonces una capa intermedia, y esa capa resuelve el problema de las comunicaciones.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/rpc-middleware-capas.png' | relative_url }}" alt="La aplicación y la capa de RPC dentro de end to end, sobre los sockets y la red">
   <figcaption>
     <span class="figura-label">Figura</span>
     la aplicación arriba y la capa de RPC abajo, las dos dentro de la capa end to end, con la llave del middleware sobre la de RPC; más abajo los sockets y la red
@@ -43,7 +44,8 @@ El truco de RPC fue poder generar esa parte de manera reutilizable, de modo de n
 
 La forma en que típicamente se hace esto, desde los ochenta hasta la actualidad, es mediante generación automatica de código, en lo que se ha en llamar un **stub**. Un stub es una pieza que representa a la función, pero donde la función en realidad no está. Desde nuestro código de aplicación vamos a ver una función común, con todo el aspecto de una función común: en el ejemplo se llama `GET_TIME`. Pero cuando la llamemos, y siendo que la implementación real vive en el servidor remoto, no vamos a estar llamando a esa implementación sino al stub: una especie de proxy, un sustituto que está ahí en el medio. Lo que ese stub hace es el marshalling de los parámetros: toma los parámetros y el nombre de la función, y se los manda por el socket a otro stub que está del otro lado. Ese segundo stub los desarma, los extrae, y es él quien termina llamando a la implementación real. La función hace lo que tiene que hacer y devuelve algo; el stub del servidor captura ese resultado y se lo devuelve al que había llamado. Es, en definitiva, un truco: pareciera que la función está implementada de este lado, y en realidad está del otro.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/rpc-stubs.png' | relative_url }}" alt="Cliente y servicio, cada uno con su aplicación y su stub">
   <figcaption>
     <span class="figura-label">Figura</span>
     cliente y servicio, cada uno con su aplicación arriba y su stub abajo, y el request y el response cruzando de un stub al otro
@@ -137,7 +139,8 @@ La segunda es la importante. Aparecen nuevas formas de falla: las cosas pueden f
 
 Normalmente uno hace el request y el otro le responde. Pero pueden pasar varias cosas. Una es que el request no llegue al servidor de destino. La otra es que llegue, pero que no llegue la respuesta de vuelta. Una se rompe cuando estamos mandando; la otra se rompe cuando el otro está respondiendo.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/fallas-rpc-no-response.png' | relative_url }}" alt="Cliente y servidor con las dos flechas tachadas">
   <figcaption>
     <span class="figura-label">Figura</span>
     cliente y servidor con las dos flechas tachadas — la de ida, el request que no llega al servidor, y la de vuelta, la respuesta que no vuelve
@@ -160,7 +163,8 @@ Esa imposibilidad de distinguir un request que se perdió de una respuesta que s
 
 La primera se llama **at-least-once**, al menos una vez. El escenario es el mismo diagrama anterior: del lado del cliente, la aplicación arriba y el stub abajo; del lado del servidor, el stub abajo y la aplicación arriba. Una forma de recuperarse ante ese tipo de problemas —siempre desde la perspectiva del cliente, que mandó algo y no está obteniendo respuesta— es hacer **retry**. Y lo hace el stub automáticamente: la capa de gRPC manda un request, no recibe respuesta, lo vuelve a mandar, y así insiste hasta que el otro responde.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/at-least-once.png' | relative_url }}" alt="El cliente mandando varias veces el mismo pedido">
   <figcaption>
     <span class="figura-label">Figura</span>
     cliente y servidor, cada uno con su aplicación y su stub, unidos por varias flechas paralelas que representan los reintentos, con el timer del lado del cliente
@@ -182,7 +186,8 @@ El anti-ejemplo es una transacción bancaria. Supongamos que alguien nos transfi
 
 La segunda forma de resolver el problema se llama **at-most-once**, a lo sumo una vez, y es mucho más simple que su nombre. El esquema es el mismo: se manda el pedido, falla por lo que sea, no se obtiene respuesta, y no se reintenta. Es, simplemente, decir "no retry".
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/at-most-once.png' | relative_url }}" alt="Cliente y servidor unidos por una sola flecha, sin reintento">
   <figcaption>
     <span class="figura-label">Figura</span>
     los mismos dos nodos unidos por una sola flecha, sin reintento
@@ -212,7 +217,8 @@ Ahora bien, esos casos son poco frecuentes, así que en general se puede lograr 
 
 El ejemplo concreto de cómo se hace eso (que es una de las tantas formas que hay) es el siguiente. A nivel de la aplicación, y sobre una capa de abajo que es at-least-once, mandamos el request con la operación (digamos, agregar dinero) y con la suma, y le agregamos un tercer campo: un número generado que se llama **idempotency id**.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/idempotencia.png' | relative_url }}" alt="El cliente repitiendo el pedido y el servidor con su storage de identificadores">
   <figcaption>
     <span class="figura-label">Figura</span>
     el cliente con su capa at-least-once mandando tres veces el mismo pedido, y el servidor con su aplicación y un storage persistente al costado donde registra los identificadores ya procesados

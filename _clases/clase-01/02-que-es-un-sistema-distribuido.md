@@ -23,7 +23,8 @@ No es un sistema donde hay una memoria —memoria propiamente dicha, memoria RAM
 
 Un sistema distribuido va a ser otra cosa: una memoria y otra memoria, un CPU y otro CPU, cada CPU con la suya. Lo que cambia es la conexión entre los dos, que ahora pasa a ser un enlace, una red. El dibujo es esquemático y a alguien de organización de computadoras podría no gustarle, porque los CPUs no se conectan literalmente de esa manera; pero ese enlace está ahí para enfatizar una sola cosa, la importante: este CPU no puede acceder directamente a aquella memoria.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/multiprocesador-vs-distribuido.png' | relative_url }}" alt="Un multiprocesador y un sistema distribuido dibujados lado a lado">
   <figcaption>
     <span class="figura-label">Figura</span>
     a la izquierda, una memoria con dos CPUs colgando de ella, rotulado multiprocesador; a la derecha, dos pares de memoria y CPU donde lo único que une a los dos CPUs es un enlace de red, rotulado sistema distribuido
@@ -73,7 +74,8 @@ Hay un caso célebre de esa misma idea. En 2010, la Fuerza Aérea de los Estados
 
 Algo parecido ocurre hoy con las GPUs. Todos los entrenamientos de redes neuronales se están haciendo con clústeres de máquinas que tienen muchísimas GPUs. Y ahí aparece una sutileza que conecta con la distinción del principio: las GPUs que entrenan redes neuronales se parecen más al modelo de memoria compartida, porque hay distintas clases de memoria pero es una máquina donde la GPU tiene acceso directo a la memoria. Lo que hacen las empresas es combinar esas máquinas entre sí para poder entrenar entre muchas y escalar el entrenamiento. Y ahí terminan combinándose las dos cosas a la vez: la multiprogramación con el sistema distribuido.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/clusters.jpg' | relative_url }}" alt="Un rack temprano de Google y el pasillo de un data center moderno">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos fotos de clústeres — arriba, un rack temprano de Google con las placas al aire y los cables desordenados; abajo, el pasillo de un data center moderno con racks a ambos lados
@@ -102,7 +104,8 @@ Ilustrémoslo con un ejemplo. En ingeniería naval se utiliza una tecnica para e
 {: .nota }
 > El Titanic tenía quince mamparos estancos y podía mantenerse a flote con cualquiera de sus dos primeros compartimentos inundados, o con los primeros cuatro; la colisión abrió costuras y planchas a lo largo de unos noventa metros y dejó abiertos al mar los primeros cinco.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/titanic-inundacion.jpg' | relative_url }}" alt="Las condiciones de inundación admisibles del Titanic">
   <figcaption>
     <span class="figura-label">Figura</span>
     las condiciones de inundación admisibles del Titanic — el casco intacto y las distintas combinaciones de dos, tres y cuatro compartimentos inundados
@@ -112,7 +115,8 @@ Ilustrémoslo con un ejemplo. En ingeniería naval se utiliza una tecnica para e
 
 Una versión más cercana de este tipo de fallas ocurrió el 28 de febrero de 2017. S3 es un sistema que se puede pensar como un file system distribuido, pero gigantesco: prácticamente todos los demás sistemas de Amazon dependen de él, y muchísimas otras aplicaciones de internet también. Probablemente sea el storage de archivos más grande que hay en el mundo; se los llama objetos, pero terminan siendo archivos. Naturalmente estaba diseñado con mucha redundancia, con nodos distribuidos por todos lados, de manera que si se rompía uno se restauraba automáticamente. Lo que pasó fue que alguien ejecutó un comando pensado para remover una pequeña cantidad de servidores que querían reemplazar; un error humano condujo a poner mal el número, y ese comando terminó sacando una gran cantidad de servidores del clúster. Y aquí está el parecido con el Titanic: los que quedaban se saturaron y dejaron de responder pedidos, porque no soportaban el resto del tráfico. S3 tenía muchos sistemas que dependían de ese subsistema y que estaban tratando de responder; entonces esos otros sistemas empezaron a fallar, y como no podían responder, la gente les seguía pidiendo cosas y se siguieron saturando cada vez peor. Lo que tuvieron que hacer fue reiniciar todo el sistema, literalmente miles de nodos. Y tuvieron un problema adicional: nunca habían reiniciado S3, así que no estaban muy seguros de cómo levantarlo desde cero. El problema fue tan grande que llegó a los diarios: es el día en que se rompió internet. Quien busque esa fecha va a ver que se cayó cerca de la mitad de internet, una proporción enorme. Se originó por un problema humano, y porque se cayeron muchos más de esos compartimentos de los que se suponía que podían caerse. Lo interesante es que Amazon, cuando comete un error de esta magnitud, publica una explicación para los clientes contando qué fue lo que hicieron, y qué iban a hacer para evitar que el problema se repitiera.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/aws-s3-comunicado.jpg' | relative_url }}" alt="El comunicado de AWS sobre la interrupción de S3 en US-EAST-1">
   <figcaption>
     <span class="figura-label">Figura</span>
     el comunicado de AWS sobre la interrupción del servicio de S3 en la región de Virginia del Norte, con el párrafo del comando mal tipeado resaltado
@@ -126,7 +130,8 @@ Queda una última ventaja: separar responsabilidades administrativas. Es un argu
 
 Hay una propiedad más para sumar a la lista, y tiene un carácter distinto de las anteriores: es deseable, sí, pero deseable más o menos. Se trata de la transparencia en la distribución, un punto polémico de entrada, y lo que sigue es una posición tomada, apoyada en algunos papers. Muchas veces los sistemas distribuidos arrancan con la definición de que un sistema distribuido es uno formado por muchos componentes, pero donde ese hecho está escondido: el sistema se ve como uno solo, y los componentes internos no se ven desde afuera. Es casi la definición de sistema con la que empezamos esta lección, aplicada a los sistemas en general y no a los distribuidos en particular.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/transparencia-usuario.jpg' | relative_url }}" alt="Una persona que mira el sistema distribuido desde afuera y lo ve como un todo">
   <figcaption>
     <span class="figura-label">Figura</span>
     una persona que mira el sistema distribuido desde afuera y lo ve como un todo, con sus nodos internos apenas insinuados adentro
@@ -140,7 +145,8 @@ NFS, el Network File System, fue uno de esos intentos de completa transparencia 
 
 Pero la parte esencial del diseño, al menos en las primeras versiones, era que el Network File System se montaba como si fuera un file system más dentro del file system. Es decir, uno montaba el NFS igual que montaría ext4, o NTFS, o FAT.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/nfs-arquitectura.jpg' | relative_url }}" alt="La arquitectura de NFS, del cliente al servidor">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura de NFS — los procesos del cliente sobre el virtual file system, que deriva hacia el file system local o hacia el cliente NFS, y de ahí por la red hacia el servidor NFS y su propio disco
