@@ -23,7 +23,8 @@ Al escuchar "sistema distribuido", lo primero que uno piensa es en la red: cable
 
 La versión que vamos a usar es esta: un sistema es un conjunto de componentes interconectados que interactúan entre sí para producir un comportamiento observable en su interfaz con el entorno. Vale la pena desarmarla despacio. Lo primero que dice es que hay muchos componentes y que están interconectados: todas esas piezas hablan unas con otras. Lo segundo, y lo verdaderamente importante de cualquier sistema, es el concepto de abstracción. Si bien cada componente hace lo suyo, uno los termina viendo desde afuera como una gran unidad. Esa unidad es la interfaz que tiene el sistema distribuido, o cualquier otro sistema.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/sistema-interfaz-entorno.png' | relative_url }}" alt="Un óvalo con componentes unidos por flechas y la interfaz sobre la frontera">
   <figcaption>
     <span class="figura-label">Figura</span>
     óvalo con componentes interconectados por flechas; la frontera rotulada como interfaz/APIs, el adentro como lo que está en discusión y el afuera como el entorno
@@ -72,7 +73,8 @@ write(address, buffer)
 read(address, buffer)
 ```
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/memoria-dispositivos.png' | relative_url }}" alt="Ejemplos de dispositivos de memoria, con la interfaz write/read anotada al lado">
   <figcaption>
     <span class="figura-label">Figura</span>
     ejemplos de dispositivos de memoria, de la RAM y la flash a los sistemas de más alto nivel — RAID, file system, base de datos — con la interfaz write/read al costado
@@ -86,7 +88,8 @@ La segunda abstracción es el intérprete. Lo primero que uno piensa al escuchar
 
 ¿Y qué hace un intérprete? Tiene un entorno en el cual se ejecuta, tiene un lugar donde están las instrucciones, toma una instrucción, la interpreta y guarda el resultado en la memoria. En nuestro caso va a ser el elemento que hace cosas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/interprete-estructura.png' | relative_url }}" alt="Diagrama de la estructura de un intérprete abstracto">
   <figcaption>
     <span class="figura-label">Figura</span>
     estructura del intérprete abstracto: la referencia a la instrucción, el repertorio y la referencia al entorno, con el ciclo de traer una instrucción, interpretarla y volver a empezar
@@ -113,7 +116,8 @@ Los enlaces de comunicación sirven, entre otras cosas, para conectar dos comput
 
 De las tres abstracciones, la última merece más detenimiento, porque los enlaces son un elemento central de esta materia. En abstracto, un enlace de comunicación es esto: un nodo, otro nodo, y la línea que los une. El enlace es esa línea, y nada más.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/enlace-dos-nodos.png' | relative_url }}" alt="Dos nodos unidos por un enlace de comunicación">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos nodos unidos por un enlace de comunicación
@@ -142,7 +146,8 @@ Encima viene la capa de red, la que hace que las cosas lleguen de un lugar a otr
 
 Y arriba de todo, lo que a nosotros como programadores nos interesa son las tres capas superiores tomadas juntas, que podríamos llamar end to end, porque ese es típicamente el problema que vamos a resolver. A este nivel no nos interesa tanto cómo son los frames de Ethernet ni cómo funciona el ruteo. A nosotros nos interesa que una máquina, que puede estar en cualquier lugar del mundo, pueda mandarle un mensaje a otra máquina que está en otro lugar del mundo. Nuestros canales de comunicación viven ahí: eso es la materia.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/capas-osi-tcpip-materia.png' | relative_url }}" alt="Las pilas de capas de OSI, TCP/IP y el modelo de tres capas de la materia">
   <figcaption>
     <span class="figura-label">Figura</span>
     las tres pilas de capas comparadas — OSI numerada del 1 al 7, TCP/IP con su capa de acceso a la red, y el modelo de tres capas de la materia: end to end, red y enlace

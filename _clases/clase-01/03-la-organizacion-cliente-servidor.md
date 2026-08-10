@@ -16,7 +16,8 @@ La diferencia con el cliente y el servidor de TCP es sutil, y por eso mismo pued
 
 La asimetría se ve mejor por contraste con los sistemas peer to peer, donde todos son compañeros entre sí, todos comparten información y a lo sumo alguno obtiene temporalmente un rol. El ejemplo es Raft, un protocolo esencialmente peer to peer: todos los nodos pueden actuar de cualquier cosa, y ninguno tiene información más privilegiada. En cliente-servidor la situación es distinta: el servidor tiene algo y el cliente tiene otra cosa.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/cliente-servicio-p2p.png' | relative_url }}" alt="Cliente y servicio unidos por request y response; al lado, tres nodos peer to peer">
   <figcaption>
     <span class="figura-label">Figura</span>
     a la izquierda, cliente y servicio unidos por un request de ida y un response de vuelta; a la derecha, tres nodos en triángulo con flechas en todos los sentidos, rotulados peer to peer y Raft
@@ -30,7 +31,8 @@ El servicio del ejemplo es un servidor de tiempo: lo único que hace es decir la
 
 El cliente quiere calcular cuánto tarda la ejecución de una función. La secuencia es esta: manda un `get time` y el servidor le responde con el tiempo; ejecuta la función; vuelve a mandar un `get time` y el servidor le responde de nuevo; y hace la resta. Eso le da la duración de la función, más un pequeño excedente que para el ejemplo no importa.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/servidor-de-tiempo.jpg' | relative_url }}" alt="Diagrama de tiempo del servidor de tiempo, con sus dos get time">
   <figcaption>
     <span class="figura-label">Figura</span>
     diagrama de tiempo del servidor de tiempo — el tiempo corre hacia abajo, una línea para el cliente y otra para el servicio, el primer get time con su respuesta, la ejecución de la función en el medio, y el segundo get time con la suya
