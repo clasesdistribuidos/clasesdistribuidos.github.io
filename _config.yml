@@ -1,0 +1,92 @@
+title: Sistemas Distribuidos I
+description: Apuntes de clase — TA050, FIUBA
+lang: es
+
+url: https://clasesdistribuidos.github.io
+baseurl: ""
+
+theme: just-the-docs
+
+# ---------------------------------------------------------------------------
+# Estructura de contenido
+#
+# Las clases viven en la collection `clases`. La jerarquía del sidebar sale
+# exclusivamente del front matter (`parent` / `nav_order`): los headings del
+# cuerpo NUNCA entran a la navegación, así que el TOC queda en dos niveles
+# (clase -> sección) por construcción.
+# ---------------------------------------------------------------------------
+collections:
+  clases:
+    permalink: "/:path/"
+    output: true
+
+# Las páginas sueltas también con URL "linda" (/papers/ y no /papers.html).
+permalink: pretty
+
+defaults:
+  - scope:
+      path: ""
+      type: clases
+    values:
+      layout: default
+
+just_the_docs:
+  collections:
+    clases:
+      name: Clases
+      nav_fold: false
+
+# Búsqueda -------------------------------------------------------------------
+search_enabled: true
+search:
+  # Las subsecciones de cada apunte son h2, así quedan indexadas por separado.
+  heading_level: 2
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+  tokenizer_separator: /[\s/]+/
+  rel_url: true
+  button: false
+
+# Callouts -------------------------------------------------------------------
+callouts_level: quiet
+callouts:
+  nota:
+    title: Nota
+    color: blue
+
+# Apariencia -----------------------------------------------------------------
+color_scheme: light
+enable_copy_code_button: true
+heading_anchors: true
+back_to_top: true
+back_to_top_text: "Volver arriba"
+
+nav_footer_custom: true
+
+footer_content: >-
+  Apuntes de Sistemas Distribuidos I (TA050) — Facultad de Ingeniería, UBA.
+
+# Build ----------------------------------------------------------------------
+# El SCSS de just-the-docs todavía usa darken()/lighten(), deprecados en Sass
+# nuevo. Silenciamos las deprecaciones de las dependencias para que un warning
+# real de _sass/custom/custom.scss no quede tapado por 90 líneas de ruido.
+sass:
+  quiet_deps: true
+  # Los @import los hace el propio stylesheet del theme, que Sass considera
+  # "raíz" y por eso quiet_deps no lo cubre. No es algo que podamos arreglar
+  # sin forkear just-the-docs.
+  silence_deprecations:
+    - import
+
+plugins:
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor/
+  - scripts/
+  - _source/
+  - .bundle/

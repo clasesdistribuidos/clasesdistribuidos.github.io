@@ -1,0 +1,123 @@
+// ---------------------------------------------------------------------------
+// Figuras pendientes
+//
+// Los apuntes vienen con marcadores [FIGURA: ...] que todavía no tienen imagen.
+// Se renderizan como un recuadro punteado con la descripción, de modo que se
+// vea dónde va cada diagrama. Cuando exista la imagen, alcanza con meter un
+// <img> adentro del <figure>: el estilo ya lo contempla.
+// ---------------------------------------------------------------------------
+
+figure.figura {
+  margin: $sp-5 0;
+  padding: $sp-4;
+  border: 1px dashed $border-color;
+  border-radius: $border-radius;
+  background-color: $feedback-color;
+
+  > img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto $sp-3;
+    border-radius: $border-radius;
+  }
+
+  // Con imagen cargada el recuadro punteado deja de tener sentido.
+  &.figura-con-imagen {
+    border-style: solid;
+    background-color: transparent;
+  }
+
+  > figcaption {
+    @include fs-3;
+
+    color: $body-text-color;
+    text-align: left;
+  }
+}
+
+.figura-label {
+  @include fs-2;
+
+  display: block;
+  margin-bottom: $sp-2;
+  color: $link-color;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.figura-ref {
+  @include fs-1;
+
+  display: block;
+  margin-top: $sp-2;
+  color: $grey-dk-000;
+  font-style: italic;
+}
+
+// ---------------------------------------------------------------------------
+// Navegación secuencial anterior/siguiente
+// ---------------------------------------------------------------------------
+
+.nav-secuencial {
+  display: flex;
+  gap: $sp-3;
+  justify-content: space-between;
+  margin-top: $sp-6;
+}
+
+.nav-secuencial-hueco {
+  flex: 1 1 0;
+}
+
+.nav-secuencial-link {
+  flex: 1 1 0;
+  padding: $sp-3;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  background-image: none;
+  text-decoration: none;
+
+  &:hover {
+    border-color: $link-color;
+    background-image: none;
+  }
+}
+
+.nav-secuencial-next {
+  text-align: right;
+}
+
+.nav-secuencial-dir {
+  @include fs-1;
+
+  display: block;
+  margin-bottom: $sp-1;
+  color: $grey-dk-000;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nav-secuencial-titulo {
+  @include fs-3;
+
+  display: block;
+  color: $link-color;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+@media (max-width: 50rem) {
+  .nav-secuencial {
+    flex-direction: column;
+  }
+
+  .nav-secuencial-hueco {
+    display: none;
+  }
+
+  .nav-secuencial-next {
+    text-align: left;
+  }
+}
