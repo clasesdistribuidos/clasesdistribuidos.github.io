@@ -92,7 +92,7 @@ Alguien tiene que escribir esos stubs, y si hubiera que escribirlos a mano para 
 El ejemplo concreto va a ser la forma en que lo implementa Google en el lenguaje Go, y es además lo que vamos a usar en el primer trabajo práctico. La herramienta se llama **gRPC**. Uno tiende a leer la G como la inicial de Google, que efectivamente es quien lo inventó, pero el propio proyecto se encarga de desmentirlo: la sigla se lee como *gRPC Remote Procedure Calls*, en una definición recursiva, y la G cambia de significado en cada versión que publican.
 
 {: .nota }
-> el repositorio del proyecto mantiene el archivo `doc/g_stands_for.md` con la lista completa: en la versión 1.0 la G era por *gRPC*, en la 1.1 por *good*, en la 1.2 por *green*, en la 1.3 por *gentle*, y así sucesivamente.
+> El repositorio del proyecto mantiene el archivo `doc/g_stands_for.md` con la lista completa: en la versión 1.0 la G era por *gRPC*, en la 1.1 por *good*, en la 1.2 por *green*, en la 1.3 por *gentle*, y así sucesivamente.
 
 Tanto el programa del cliente como el del servidor tienen sus particularidades, pero lo más llamativo aparece antes que los dos. La especificación del protocolo no vive adentro del código: va en un archivo aparte, que en este ejemplo se llama `time.proto`. Ahí adentro se define un **servicio** —así se llama—, con el nombre que uno quiera, y dentro de ese servicio el nombre de cada función que se quiera poder ejecutar, junto con el tipo de lo que recibe y el tipo de lo que devuelve. En el servidor de tiempo, el pedido no lleva ningún parámetro, porque es simplemente un get; y la respuesta lleva justamente el tiempo. Ese archivo es lo que une todo con todo.
 
@@ -155,6 +155,9 @@ A esta altura uno ya estará pensando formas de solucionarlo. De eso se trata lo
 
 Esa imposibilidad de distinguir un request que se perdió de una respuesta que se perdió es la que da lugar a lo que vamos a llamar **semánticas de entrega**. Hay tres, básicamente, y lo que las distingue es qué podemos afirmar cuando la llamada termina.
 
+{: .nota }
+> La clasificación viene de la literatura fundacional de RPC. La primera taxonomía sistemática está en la tesis doctoral de Bruce Jay Nelson, *Remote Procedure Call* (Carnegie Mellon, 1981; publicada también como informe de Xerox PARC, CSL-81-9), cuya sección 2.2.2 se titula justamente "Call Semantics" y enumera bastante más de tres casos: *exactly-once*, *last-one*, *last-of-many*, *at-least-once*, *crash semantics*. Un trabajo paralelo de Alfred Spector, *Performing remote operations efficiently on a local computer network* (CACM 25(4), 1982), llegaba a distinciones parecidas del lado de los mensajes. La reducción a los tres nombres que usamos acá es la que hacen Saltzer y Kaashoek en el capítulo 4 del libro que seguimos. Vale la pena notar que Nelson perseguía *exactly-once* por la misma ambición de transparencia que produjo el Network File System, y que la implementación real que hizo después con Andrew Birrell en Xerox —*Implementing Remote Procedure Calls*, ACM TOCS 2(1), 1984— terminó ofreciendo garantías más débiles.
+
 La primera se llama **at-least-once**, al menos una vez. El escenario es el mismo diagrama anterior: del lado del cliente, la aplicación arriba y el stub abajo; del lado del servidor, el stub abajo y la aplicación arriba. Una forma de recuperarse ante ese tipo de problemas —siempre desde la perspectiva del cliente, que mandó algo y no está obteniendo respuesta— es hacer **retry**. Y lo hace el stub automáticamente: la capa de gRPC manda un request, no recibe respuesta, lo vuelve a mandar, y así insiste hasta que el otro responde.
 
 <figure class="figura">
@@ -196,14 +199,14 @@ Todo esto en general no es tan difícil, pero tampoco es tan automático como pa
 Sobre el gRPC que vamos a usar en el trabajo práctico, todo indica que esta es la semántica que trae por defecto: intenta mandar el pedido una vez y, a menos que uno lo configure, no hace retry automáticamente. Los retries hay que hacerlos de forma controlada. At-least-once, del otro lado, es algo que se activa.
 
 {: .nota }
-> efectivamente, en gRPC los reintentos vienen deshabilitados y se habilitan declarando una `retryPolicy` en la configuración del servicio, donde se fijan la cantidad máxima de intentos, los tiempos de espera entre uno y otro y los códigos de estado que ameritan reintentar.
+> Efectivamente, en gRPC los reintentos vienen deshabilitados y se habilitan declarando una `retryPolicy` en la configuración del servicio, donde se fijan la cantidad máxima de intentos, los tiempos de espera entre uno y otro y los códigos de estado que ameritan reintentar.
 
 Queda la tercera, **exactly-once**, exactamente una vez, que es la más simple de enunciar y ni siquiera necesita dibujo. Si el stub responde OK, se mandó una vez y nada más que una vez. Si el stub responde error, tenemos la seguridad de que no se mandó ninguna vez.
 
 Exactly-once: es el caso ideal, y por lo tanto es imposible. Imposible en sentido estricto. Podemos aproximarnos bastante, y de hecho es lo que se hace en general, usando las dos semánticas anteriores y algunos trucos. Pero nunca lo vamos a poder garantizarlo en un sentido estricto. La razón es la separación física de las máquinas: uno le manda un request a la otra máquina y, en ese instante, el data center sufre una falla catastrófica. La operación se ejecutó, pero nunca vamos a obtener la respuesta, así que no podemos garantizar nada. Si el otro no responde, no hay exactly-once posible.
 
 {: .nota }
-> por eso Martin Kleppmann, en el capítulo 11 de *Designing Data-Intensive Applications*, escribe que a este principio "se lo conoce como exactly-once semantics, aunque **effectively-once** sería un término más descriptivo". El argumento es el mismo que estamos por hacer: reintentar significa que un pedido puede llegar y procesarse muchas veces, y lo único que se consigue que ocurra una sola vez es el efecto observable. La frase la acuñó Viktor Klang en 2016, y su formulación es casi una receta: *effectively-once* es lo que se obtiene combinando at-least-once con operaciones idempotentes. Es literalmente lo que hacemos en lo que sigue con el idempotency id.
+> Por eso Martin Kleppmann, en el capítulo 11 de *Designing Data-Intensive Applications*, escribe que a este principio "se lo conoce como exactly-once semantics, aunque **effectively-once** sería un término más descriptivo". El argumento es el mismo que estamos por hacer: reintentar significa que un pedido puede llegar y procesarse muchas veces, y lo único que se consigue que ocurra una sola vez es el efecto observable. La frase la acuñó Viktor Klang en 2016, y su formulación es casi una receta: *effectively-once* es lo que se obtiene combinando at-least-once con operaciones idempotentes. Es literalmente lo que hacemos en lo que sigue con el idempotency id.
 
 Ahora bien, esos casos son poco frecuentes, así que en general se puede lograr algo suficientemente parecido. Una forma es apoyarse en at-least-once y, si la función del servidor no es idempotente por naturaleza —una transacción, por ejemplo—, introducirle la idempotencia nosotros.
 
