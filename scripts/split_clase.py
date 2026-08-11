@@ -56,8 +56,10 @@ RE_REFERENCIA = re.compile(r"^(.*)\s+—\s+((?:notas|pizarra)\b.*)$", re.DOTALL)
 # [CÓDIGO PENDIENTE: ...], con o sin backticks alrededor.
 RE_CODIGO = re.compile(r"^`?\[CÓDIGO PENDIENTE:\s*(.+?)\]`?\s*$")
 
-# *[Nota: ...]* — a veces seguida de prosa en la misma línea.
-RE_NOTA = re.compile(r"^\*\[Nota:\s*(.+?)\]\*\s*(.*)$")
+# *[Nota: ...]* — a veces seguida de prosa en la misma línea, y a veces
+# abarcando varios párrafos hasta el `]*` de cierre.
+RE_NOTA = re.compile(r"^\*\[Nota:\s*(.+?)\]\*\s*(.*)$", re.DOTALL)
+RE_ABRE_NOTA = re.compile(r"^\*\[Nota:")
 
 
 def slugify(texto: str, limite: int = 50) -> str:
@@ -144,44 +146,83 @@ def caja_figura(descripcion: str, clase_css: str, etiqueta: str) -> str:
     return "\n".join(partes)
 
 
+def capitalizar(texto: str) -> str:
+    """Arranca la nota en mayúscula, como el resto de las notas del sitio.
+
+    En el borrador las notas siguen a la palabra "Nota:" y por eso vienen en
+    minúscula. Solo se toca cuando la nota empieza con una palabra, saltando
+    las itálicas de apertura; si arranca con otra cosa —una cita entrecomillada,
+    un `§3.3`, código— se deja como está, porque ahí la mayúscula caería
+    adentro de algo que no es el comienzo de la oración.
+    """
+    i = 0
+    while i < len(texto) and texto[i] in "*_":
+        i += 1
+    if i < len(texto) and texto[i].islower():
+        return texto[:i] + texto[i].upper() + texto[i + 1:]
+    return texto
+
+
 def bloque_nota(contenido: str) -> str:
     """Callout `nota` de Just the Docs, preservando el markdown de adentro."""
-    lineas = [f"> {l}" if l.strip() else ">" for l in contenido.strip().splitlines()]
+    contenido = capitalizar(contenido.strip())
+    lineas = [f"> {l}" if l.strip() else ">" for l in contenido.splitlines()]
     return "{: .nota }\n" + "\n".join(lineas)
 
 
 def transformar_marcadores(texto: str) -> str:
     salida: list[str] = []
     en_bloque_codigo = False
+    lineas = texto.splitlines()
+    i = 0
 
-    for linea in texto.splitlines():
+    while i < len(lineas):
+        linea = lineas[i]
+
         if linea.lstrip().startswith("```"):
             en_bloque_codigo = not en_bloque_codigo
             salida.append(linea)
+            i += 1
             continue
         if en_bloque_codigo:
             salida.append(linea)
+            i += 1
             continue
 
         if m := RE_FIGURA.match(linea):
             salida.append(caja_figura(m.group(1), "figura", "Figura"))
+            i += 1
             continue
 
         if m := RE_CODIGO.match(linea):
             salida.append(caja_figura(m.group(1), "figura figura-codigo", "Código pendiente"))
+            i += 1
             continue
 
-        if m := RE_NOTA.match(linea):
-            salida.append(bloque_nota(m.group(1)))
-            resto = m.group(2).strip()
-            if resto:
-                # La nota venía inline con prosa detrás: la prosa pasa a ser
-                # su propio párrafo, después del callout.
-                salida.append("")
-                salida.append(resto)
-            continue
+        if RE_ABRE_NOTA.match(linea):
+            # Una nota puede abarcar varios párrafos: se juntan las líneas
+            # hasta el `]*` que la cierra. Si no cierra nunca, la línea queda
+            # como está y el marcador crudo se ve en la página, que es la
+            # señal de que el borrador está mal formado.
+            fin = i
+            bloque = linea
+            while "]*" not in bloque and fin + 1 < len(lineas):
+                fin += 1
+                bloque += "\n" + lineas[fin]
+
+            if m := RE_NOTA.match(bloque):
+                salida.append(bloque_nota(m.group(1)))
+                resto = m.group(2).strip()
+                if resto:
+                    # La nota venía inline con prosa detrás: la prosa pasa a
+                    # ser su propio párrafo, después del callout.
+                    salida.append("")
+                    salida.append(resto)
+                i = fin + 1
+                continue
 
         salida.append(linea)
+        i += 1
 
     return "\n".join(salida)
 
