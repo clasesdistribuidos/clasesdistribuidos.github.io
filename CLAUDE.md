@@ -191,17 +191,21 @@ theme, para que se vean bien en pantallas densas.
 
 ## Agregar una clase
 
-Crear `_clases/clase-NN/` con su `index.md` y una página por sección, copiando
-el front matter de una clase existente.
+El apunte de cada clase se escribe de corrido, fuera de este repo, y llega como
+un único `.md` con marcadores `[FIGURA:]`, `[CÓDIGO PENDIENTE:]` y `*[Nota:]*`.
+`scripts/split_clase.py` lo parte en una página por sección y traduce esos
+marcadores.
 
-Si el apunte se escribió de corrido en un único archivo —que suele ser lo más
-cómodo para transcribir—, `scripts/split_clase.py` lo parte en páginas y genera
-el front matter, los slugs, los índices internos y los recuadros de figura y
-código pendientes. Ver el docstring del script para el formato que espera.
+**El procedimiento completo está en la skill `nueva-clase`**
+(`.claude/skills/nueva-clase/SKILL.md`): branch propia por clase, qué contar
+antes y después, qué revisar, y qué no tocar.
 
 Ese borrador es un andamio: vive fuera del repo, no se versiona, y una vez
 partido las páginas son lo único que se mantiene. Por eso `--force` sobre una
 clase que ya existe es peligroso, pisa las ediciones hechas a mano.
+
+Cada clase se trabaja en una feature branch y se mergea a `main`. El recorte de
+las figuras va en una branch aparte, después de mergear el texto.
 
 ## La prosa
 

@@ -43,6 +43,9 @@ DIR_CLASES = RAIZ / "_clases"
 RE_FRONT_MATTER = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
 RE_SECCION = re.compile(r"^##\s+(\d+)\.\s+(.+?)\s*$", re.MULTILINE)
 RE_HEADING = re.compile(r"^(#{3,6})\s+(.*)$")
+# "3.2 El reparto" o "3.2. El reparto". Pide al menos un punto para no comerse
+# un título que arranque con un año o una cifra suelta.
+RE_NUMERACION = re.compile(r"^\d+(?:\.\d+)+\.?\s+")
 
 # [FIGURA: descripción — notas pág. 4 / pizarra pág. 11]
 RE_FIGURA = re.compile(r"^\[FIGURA:\s*(.+?)\]\s*$")
@@ -90,11 +93,15 @@ def separar_front_matter(texto: str) -> tuple[dict[str, str], str]:
 
 
 def promover_headings(texto: str) -> str:
-    """Sube un nivel los headings del cuerpo.
+    """Sube un nivel los headings del cuerpo y les saca la numeración.
 
     El `## N. Título` de la sección pasa a ser el `#` de su propia página, así
     que sus `###` tienen que volverse `##` para no saltear un nivel. Además el
     índice interno y la búsqueda de Just the Docs trabajan sobre h2.
+
+    Algunos borradores numeran las subsecciones (`### 3.2 El reparto`). Adentro
+    de una página que ya se titula "3. Del modelo al clúster" ese número sobra,
+    así que se lo saca.
     """
     salida = []
     en_bloque_codigo = False
@@ -106,6 +113,7 @@ def promover_headings(texto: str) -> str:
         match = RE_HEADING.match(linea) if not en_bloque_codigo else None
         if match:
             almohadillas, titulo = match.groups()
+            titulo = RE_NUMERACION.sub("", titulo)
             salida.append("#" * (len(almohadillas) - 1) + " " + titulo)
         else:
             salida.append(linea)
@@ -240,8 +248,14 @@ def render_seccion(seccion: Seccion, titulo_clase: str) -> str:
     return "\n".join(encabezado)
 
 
-def render_indice(titulo_clase: str, numero: int, preambulo: str) -> str:
-    partes = [
+def render_indice(titulo_clase: str, numero: int) -> str:
+    """Portada de la clase: solo el título.
+
+    Lo que el borrador trae antes de la primera sección es su propio título y
+    su tabla de contenidos, que acá duplicarían el sidebar. Se descarta; main()
+    avisa qué se tiró para que no se pierda nada en silencio.
+    """
+    return "\n".join([
         "---",
         f"title: {yaml_str(titulo_clase)}",
         f"nav_order: {numero}",
@@ -253,10 +267,7 @@ def render_indice(titulo_clase: str, numero: int, preambulo: str) -> str:
         "",
         f"# {titulo_clase}",
         "",
-    ]
-    if preambulo:
-        partes += [transformar_marcadores(promover_headings(preambulo)), ""]
-    return "\n".join(partes)
+    ])
 
 
 def main() -> int:
@@ -285,12 +296,18 @@ def main() -> int:
     if destino.exists() and not args.force and not args.dry_run:
         raise SystemExit(f"{destino.relative_to(RAIZ)} ya existe. Usá --force para sobrescribir.")
 
-    archivos = {destino / "index.md": render_indice(titulo_clase, numero, preambulo)}
+    archivos = {destino / "index.md": render_indice(titulo_clase, numero)}
     for seccion in secciones:
         archivos[destino / f"{seccion.slug}.md"] = render_seccion(seccion, titulo_clase)
 
     print(f"Clase {numero}: {titulo_clase}")
     print(f"  {len(secciones)} secciones -> {destino.relative_to(RAIZ)}/")
+    if preambulo:
+        print(f"  se descartaron {len(preambulo.splitlines())} líneas previas a la "
+              "primera sección (título y tabla de contenidos del borrador):")
+        for linea in preambulo.splitlines()[:4]:
+            print(f"      | {linea[:70]}")
+        print("      | ...")
     for ruta, contenido in archivos.items():
         print(f"    {ruta.name}  ({len(contenido.splitlines())} líneas)")
         if not args.dry_run:
