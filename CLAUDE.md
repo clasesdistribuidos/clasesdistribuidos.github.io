@@ -91,6 +91,10 @@ Solo aporta si la página tiene dos o más `##`; con una sola es ruido.
 > Texto de la nota.
 ```
 
+Arrancan en mayúscula, aunque en el borrador vengan en minúscula detrás de
+"Nota:". Se dejan como están cuando lo primero no es una palabra —una cita
+entrecomillada, un `§3.3`— porque ahí la mayúscula caería adentro de otra cosa.
+
 **Figura pendiente.** Recuadro punteado con la descripción de lo que va a ir
 ahí y la referencia a la página de donde va a salir el dibujo:
 
