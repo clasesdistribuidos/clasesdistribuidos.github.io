@@ -131,8 +131,10 @@ la etiqueta `Código pendiente`.
 ## Figuras: de la pizarra al sitio
 
 Las figuras no se dibujan de nuevo: se recortan de lo que el profesor usó en
-clase. Hay dos fuentes, y las dos viven en el repo de trabajo `clases-apuntes`,
-que está al lado de este (`../clases-apuntes/raw/claseN/`):
+clase. Hay dos fuentes, y las dos viven en el repo de trabajo `clases-apuntes`
+(`raw/claseN/`). Dónde está clonado es cosa de cada máquina, así que no se
+escribe acá: el script lo busca al lado de este repo y si no está se le pasa
+con `--apuntes`.
 
 - **La pizarra virtual** (`pizarra.pdf`), que dibujó en vivo. Es la fuente
   preferida: son trazos vectoriales, se rinden nítidos a cualquier resolución.
@@ -145,10 +147,11 @@ que está al lado de este (`../clases-apuntes/raw/claseN/`):
 Cuando se elige notas sobre pizarra, dejar un comentario en el script diciendo
 por qué. En la clase 1 pasó dos veces y las dos están anotadas.
 
-`scripts/recortar_figuras.py` es el registro del recorte: tiene una tabla con
-una caja por figura y regenera `assets/clase-NN/` entero. Es idempotente, así
-que corregir una caja es editar un número y volver a correrlo. Necesita
-`pdftoppm` (poppler), Pillow y numpy.
+`scripts/recortar_figuras.py` es el registro del recorte: tiene una tabla por
+clase con una caja por figura, y `--clase N` regenera `assets/clase-NN/` entero.
+Es idempotente, así que corregir una caja es editar un número y volver a
+correrlo — y volver a correr una clase vieja tiene que dar los mismos bytes.
+Necesita `pdftoppm` (poppler), Pillow y numpy.
 
 ### El proceso
 
@@ -164,7 +167,7 @@ que corregir una caja es editar un número y volver a correrlo. Necesita
    iterar:
 
    ```sh
-   python3 scripts/recortar_figuras.py --grilla
+   python3 scripts/recortar_figuras.py --clase N --grilla
    ```
 
    Vuelca en un directorio temporal cada página de la pizarra y de las notas

@@ -27,7 +27,8 @@ La razón es que así es más fácil. La alternativa sería pasarle al coordinad
 
 Del lado del coordinador, lo primero que hace cuando recibe un job es armarse un plan de trabajo con los parámetros que ya conocemos: con tres mappers y dos reducers, una primera fase con M1, M2 y M3 —cada uno con su input— y una segunda con R1 y R2.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/figure-1-anotada.jpg' | relative_url }}" alt="La Figure 1 del paper anotada">
   <figcaption>
     <span class="figura-label">Figura</span>
     la Figure 1 del paper anotada — el coordinador sobre el master, los heartbeats sobre la flecha del worker hacia él, y al costado el plan de trabajo en dos fases: primero M1, M2 y M3 con el worker 1 asignado a M1, después R1 y R2
@@ -54,7 +55,8 @@ Ahí hay dos partes distintas. Una es el shuffle, donde no hay alternativa: es i
 
 Lo que hicieron obliga a adelantar algo del Google File System, que vamos a estudiar más adelante. MapReduce corría en nodos que tenían un worker pero además un **chunk server**, que es un concepto de GFS: en los mismos nodos convivían los servidores de los dos sistemas. Un chunk server usa los discos locales de la máquina para guardar pedazos de archivos gigantes, de 64 MB cada uno; GFS se encarga de que todos esos pedazos repartidos entre muchas máquinas parezcan un único archivo gigantesco. Ese número explica hacia atrás el ejemplo de los mil mappers: mil chunks de 64 MB son un archivo de 64 GB, así que la cantidad de mappers no es un número elegido a mano sino una consecuencia de en cuántos pedazos quedó partido el input.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/colocacion-worker-chunkserver.jpg' | relative_url }}" alt="Un nodo con un worker y un chunk server, y el coordinador">
   <figcaption>
     <span class="figura-label">Figura</span>
     un nodo que contiene a la vez un worker de MapReduce y un chunk server de GFS, con el coordinador decidiendo qué map asignarle según qué chunks tiene en su disco local
@@ -73,7 +75,8 @@ Del lado del reducer se hace lo mismo: en vez de escribir el output en un chunk 
 
 El shuffle, en cambio, quedó afuera de esta optimización y se hace con comunicación directa entre nodos: ahí no aparece GFS, un worker se comunica con otro y se intercambian los archivos. La razón es que el beneficio de guardar esos archivos intermedios en GFS era escaso, porque de todos modos había que enviarlos por la red.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/chunk-local-y-shuffle.png' | relative_url }}" alt="El nodo con su chunk de 64 MB y la flecha del shuffle">
   <figcaption>
     <span class="figura-label">Figura</span>
     el nodo con su worker y su chunk server, el chunk de 64 MB en el disco local entrando como input, y la flecha del shuffle saliendo directamente hacia otro worker
@@ -103,7 +106,8 @@ La prohibición que más incomoda es la de entrada y salida. ¿Por qué el mappe
 {: .nota }
 > §3.3 agrega una asimetría que conviene tener explícita. Cuando un worker se cae, **las tareas de map que ya había completado se vuelven a ejecutar**, porque su output quedó en el disco local de la máquina caída; pero **las de reduce ya completadas no hace falta re-ejecutarlas**, porque su output está en el sistema de archivos global. La distinción entre disco local y GFS que motivaba la co-locación reaparece aquí determinando qué se pierde y qué no. El paper da también el mecanismo detrás de que el coordinador use una sola versión de cada mapper: cuando una tarea la ejecuta primero el worker A y después el B porque A falló, **todos los workers que están ejecutando tareas de reduce son notificados**, y cualquier reduce que todavía no haya leído los datos de A los va a leer de B. Como muestra de que el mecanismo funciona en la práctica: un mantenimiento de red dejaba inalcanzables grupos de 80 máquinas por varios minutos, y el master re-ejecutó su trabajo y siguió avanzando.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/tolerancia-a-fallas.png' | relative_url }}" alt="Reintentar los trabajos que fallaron y la condición de determinismo">
   <figcaption>
     <span class="figura-label">Figura</span>
     la estrategia de tolerancia a fallas —reintentar los trabajos que fallaron— y la condición que la habilita: map y reduce deterministas, sin random, sin entrada/salida y sin estado

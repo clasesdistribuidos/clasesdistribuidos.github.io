@@ -27,6 +27,15 @@ Todo este campo, cuando todavía no se llamaba sistemas distribuidos, surge de p
 
 La figura central de esa era es Leslie Lamport, y lo más fácil es presentarlo por algo más familiar que sus aportes a los sistemas distribuidos: inventó LaTeX, la herramienta con la que los científicos escriben sus papers. También inventó TLA+, un lenguaje para especificar sistemas, sobre el que escribió *Specifying Systems*, que está disponible gratuitamente en internet; es, en el fondo, un mecanismo para comprobar que un sistema distribuido es funcionalmente correcto. Estuvo cerca de entrar en el programa y quedó fuera porque nos llevaba demasiado lejos.
 
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/leslie-lamport.jpg' | relative_url }}" alt="Leslie Lamport">
+  <figcaption>
+    <span class="figura-label">Figura</span>
+    Leslie Lamport, la figura central de la era de los fundamentos teóricos
+    <span class="figura-ref">pizarra pág. 1</span>
+  </figcaption>
+</figure>
+
 Lamport era matemático y además sabía de física y de relatividad. De ahí salió una de sus primeras observaciones, que él mismo contó en alguna entrevista: algo que pasa en la relatividad —la imposibilidad de sincronizar relojes— también pasaba en los sistemas distribuidos.
 
 {: .nota }
@@ -38,7 +47,8 @@ La conclusión que sacó de ahí orienta el resto de la materia: si los tiempos 
 
 La pregunta de la era la planteaban, principalmente, matemáticos: no había todavía aplicaciones prácticas que lo impulsaran. Es cómo coordinar distintos procesos cuando hay dos recursos que no se pueden compartir: la memoria y el reloj. Ninguna de las dos está compartida en un sistema distribuido. Eso no lo vamos a resolver de manera definitiva: a lo largo del curso vamos a ver muchas técnicas que lo mitigan.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/recursos-no-compartidos.png' | relative_url }}" alt="Memoria y reloj tachados, y los relojes de Lamport">
   <figcaption>
     <span class="figura-label">Figura</span>
     los dos recursos que un sistema distribuido no comparte — memoria y reloj tachados — y lo que de ahí se deriva: relojes de Lamport, relojes vectoriales, causalidad
@@ -61,7 +71,8 @@ Pongámoslo con dos máquinas, A y B, y una secuencia de operaciones a, b, c y d
 
 Y con eso, aparentemente, resolvimos la replicación. Pero en realidad le pasamos el problema al orden: ahora la pregunta es cómo hacemos para que llegue el mismo orden a las dos máquinas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/maquina-de-estados-orden.png' | relative_url }}" alt="Dos máquinas recibiendo la misma tira de operaciones">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos máquinas A y B recibiendo la misma tira de operaciones a, b, c, d en el mismo orden, y la pregunta por el orden que lleva a consenso → Paxos → Raft
@@ -118,7 +129,8 @@ Vamos a los 90, y los problemas ya son de otro tipo. Es la época de la computac
 
 La decisión es esta: se descarta la idea de un sistema donde la red y la comunicación estén completamente escondidas. En lugar de esconderlas, se las reconoce y se les da un lugar propio en el dibujo. Arriba la aplicación, abajo la red, y en el medio una capa que se encarga de esas comunicaciones: el middleware. Eso es lo que la palabra significaba, literalmente: el software que estaba en el medio entre nuestra aplicación y la red.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/capas-y-middleware.png' | relative_url }}" alt="Aplicación, middleware y red, con las responsabilidades del middleware">
   <figcaption>
     <span class="figura-label">Figura</span>
     las tres capas —aplicación, middleware y red— y las cuatro responsabilidades que el middleware absorbe: comunicación, discovery, transmisión de datos y manejo de errores

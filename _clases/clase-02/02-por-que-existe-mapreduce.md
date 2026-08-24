@@ -23,7 +23,8 @@ El origen explica la forma que MapReduce terminó teniendo. Uno de sus dos cread
 
 Dean publicó hace poco, en febrero, un mensaje en el que contaba el origen de MapReduce: por qué se inventó, y coincide con lo que ya se sabía por otras fuentes. Lo que tenían que hacer, relata, era reconstruir el pipeline que indexaba la web. El contexto le da peso al problema: principios de los 2000, sin máquinas de gran potencia, y querían indexar la web entera con las máquinas que había.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/tweet-jeff-dean.jpg' | relative_url }}" alt="El tweet de Jeff Dean sobre el origen de MapReduce">
   <figcaption>
     <span class="figura-label">Figura</span>
     la publicación de Jeff Dean sobre el origen de MapReduce, con su traducción al español al lado
@@ -45,11 +46,12 @@ El paper lo escribieron ese mismo Jeff Dean y Sanjay Ghemawat. Es una dupla cono
 {: .nota }
 > El artículo es *The Friendship That Made Google Huge*, de James Somers, publicado en The New Yorker el 10 de diciembre de 2018. El paper de la clase es Jeffrey Dean y Sanjay Ghemawat,* MapReduce: Simplified Data Processing on Large Clusters*, OSDI 2004.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/dean-y-ghemawat.jpg' | relative_url }}" alt="Sanjay Ghemawat y Jeff Dean">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la caricatura del New Yorker de Jeff Dean y Sanjay Ghemawat que ilustra el artículo sobre la dupla
-    <span class="figura-ref">pizarra pág. 3</span>
+    Sanjay Ghemawat y Jeff Dean, los dos autores del paper
+    <span class="figura-ref">foto de ACM, 2016</span>
   </figcaption>
 </figure>
 
@@ -87,7 +89,8 @@ Hagámoslo con letras, que es más corto. El primer input emite (a,1) y (b,1); e
 
 Lo que tiene que hacer el reducer —y esta es la parte más interesante— es reunir todas las a de todos los mappers y enviárselas a una función reduce; agrupar todas las b y enviarlas a otra; y las c a una tercera, aunque la c aparezca una sola vez. Resultados: a vale 2, b vale 2 y c vale 1.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/flujo-map-reduce.jpg' | relative_url }}" alt="Tres inputs, tres maps, el agrupamiento por clave y los reduces">
   <figcaption>
     <span class="figura-label">Figura</span>
     el flujo del modelo — tres inputs, cada uno a un mapper, las tiras de pares intermedios (a,1)(b,1) / (b,1) / (a,1)(c,1), y el agrupamiento por clave intermedia hacia los reduces, con los resultados (a,2) (b,2) (c,1)

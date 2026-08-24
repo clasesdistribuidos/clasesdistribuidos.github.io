@@ -27,7 +27,8 @@ Lo primero que no funciona así es esa separación: no hay un conjunto de nodos 
 
 La razón queda a la vista en cuanto se piensa en los tiempos. No se pueden correr los reducers hasta que no terminen todos los mappers: hay dos fases bien diferenciadas. Con dos clústeres separados, uno iba a quedar ocioso esperando a la otra fase, y eso es un desperdicio de máquinas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/nodos-y-jobs-logicos.png' | relative_url }}" alt="Nodos mapper y nodos reducer, y M mappers y R reducers contra N nodos">
   <figcaption>
     <span class="figura-label">Figura</span>
     los nodos mapper y los nodos reducer dibujados como dos grupos, y la corrección de que son los mismos nodos cambiando de rol; al costado, M mappers y R reducers como jobs lógicos contra N nodos físicos, con M &gt;&gt; N
@@ -58,7 +59,8 @@ Vayamos a un ejemplo con tres mappers y dos reducers. Podemos imaginar los tres 
 
 Las claves que el mapper 1 va generando las va a tener que enviar, cada una, o a R1 o a R2. Y lo que pasa siempre —salvo con un input demasiado pequeño— es que de cada mapper salen claves para los dos reducers: M1 les envía a los dos, M2 también, y M3 también. Ese conjunto de flechas cruzadas es el shuffle.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/shuffle-mappers-reducers.png' | relative_url }}" alt="Tres mappers enviándole cada uno a los dos reducers">
   <figcaption>
     <span class="figura-label">Figura</span>
     tres mappers enviándole cada uno a los dos reducers, con las flechas de cada mapper en un color distinto, y la llave que rotula el conjunto como el shuffle
@@ -70,7 +72,8 @@ Lo que esa fase hace se ve mejor de otra manera. Supongamos que el universo ente
 
 Lo importante es una sola cosa: que todas las veces que aparece K1 vayan al mismo reducer, para que pueda contarlas a todas. Entonces queremos partir ese universo en dos conjuntos: uno con K1, K5 y K6, que va a R1, y otro con K2, K3 y K4, que va a R2.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/particion-de-claves.png' | relative_url }}" alt="El universo de claves intermedias partido en dos buckets">
   <figcaption>
     <span class="figura-label">Figura</span>
     el universo de claves intermedias K1 a K6 partido por la función de shuffle determinista en dos conjuntos, R1 = {K1, K5, K6} y R2 = {K2, K3, K4}

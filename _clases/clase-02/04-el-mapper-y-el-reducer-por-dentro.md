@@ -25,7 +25,8 @@ Lo que hay ahí es un recorrido. Entra un input, se le pasa a la función map qu
 
 Llamémosle mapper 1 a este nodo: al primero de esos archivos lo llamamos `M1_R1` y al segundo `M1_R2`. La nomenclatura se adivina sola: `M1_R1` es lo que el mapper 1 prepara para el R1, y `M1_R2` lo que prepara para el R2. Eventualmente cada uno va a ir a su destino.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/mapper-por-dentro.png' | relative_url }}" alt="El mapper 1 por dentro, del input a los archivos M1_R1 y M1_R2">
   <figcaption>
     <span class="figura-label">Figura</span>
     el mapper 1 por dentro con R=2 — el input entra a la función map, la tira de pares pasa por el hash y el módulo, y se escriben en disco local los dos archivos M1_R1 y M1_R2, con flechas punteadas hacia el reducer 1 y el reducer 2
@@ -42,7 +43,8 @@ Si queremos que queden juntas todas las instancias de una misma clave, hay que h
 {: .nota }
 > El paper confirma esto y agrega dos precisiones. Sobre el iterador, dice que es lo que permite manejar listas demasiado grandes para caber en memoria. Sobre el sort, da la razón complementaria: hace falta porque a una misma tarea de reduce le caen típicamente **muchas claves distintas**, no solo muchas apariciones de una; y si los datos intermedios no caben en memoria, se usa un **sort externo**. Lo otro es una consecuencia valiosa del sort, en §4.2: MapReduce **garantiza** que dentro de una partición los pares se procesan en orden creciente de clave, lo que deja ordenado el archivo de salida de cada reducer. Eso importa cuando el formato de salida tiene que soportar búsquedas eficientes por clave.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-02/reducer-por-dentro.png' | relative_url }}" alt="El reducer 1 por dentro, del sort al output">
   <figcaption>
     <span class="figura-label">Figura</span>
     el reducer 1 por dentro — los tres archivos M1_R1, M2_R1 y M3_R1 entrando a un sort, de ahí al reducer y de ahí al output
