@@ -29,7 +29,8 @@ Lo mismo, y esto es lo grave, puede ocurrir del otro lado del corte. El nodo que
 
 Lo que termina ocurriendo es que esto, que conceptualmente era un único sistema con un único estado replicado, se convirtió de repente en dos sistemas independientes, y el estado empieza a evolucionar por separado en cada uno. Las operaciones que envía uno de los clientes nunca llegan al otro lado, y a la inversa. Es un escenario muy serio.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/split-brain.png' | relative_url }}" alt="La cadena partida al medio por una partición de red">
   <figcaption>
     <span class="figura-label">Figura</span>
     la cadena partida al medio por una partición de red, un data center de cada lado y un cliente operando contra cada mitad: dos sistemas independientes evolucionando por separado
@@ -45,7 +46,8 @@ Por rudimentaria que fuera nuestra versión original, la del primary con sus bac
 
 ¿Cuál es el mecanismo para evitarlo? A estos sistemas de chain replication se los combina con un servicio de configuración. Ese servicio va monitoreando el estado de cada nodo y detecta cuando algo falla; la configuración nueva se decide dentro de ese servicio, y es él el que se la comunica a los demás. Nadie se autopromueve por su cuenta.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/servicio-de-configuracion.png' | relative_url }}" alt="La cadena con el servicio de configuración al costado">
   <figcaption>
     <span class="figura-label">Figura</span>
     la cadena con el servicio de configuración al costado, que no recibe los datos pero guarda la metadata de cómo se conecta cada nodo y les comunica la nueva configuración
@@ -73,7 +75,8 @@ La otra forma interesante es que el servicio de configuración en sí mismo sea 
 
 Y de paso queda claro por qué esos números son impares. Con cinco la mayoría es tres, así que sobrevive a dos caídas; con cuatro la mayoría sigue siendo tres, de modo que sobrevive a una sola: la cuarta máquina cuesta lo mismo y no aporta ninguna tolerancia adicional. Es una idea que vamos a reencontrar varias veces: Raft en el rol de servicio de configuración.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/raft-como-servicio-de-configuracion.png' | relative_url }}" alt="El servicio de configuración con cinco nodos de Raft">
   <figcaption>
     <span class="figura-label">Figura</span>
     el servicio de configuración con cinco nodos de Raft, atravesado por una partición que deja tres de un lado y dos del otro; la mayoría continúa operando

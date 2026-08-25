@@ -29,7 +29,8 @@ Hay algo aquí que resulta llamativo: el request se le envía a un nodo y el res
 
 ¿Cómo se resuelve? Los detalles finos los dejamos fuera del alcance, porque cada implementación determinará cómo hacerlo. Pero típicamente el cliente mantiene dos conexiones abiertas, una con el head y otra con el tail, y asumamos que ninguno falla. Con esa doble conexión la biblioteca que usamos envía las escrituras al head y recibe los **acknowledge** del tail. Solo cuando recibe ese ack la escritura está confirmada.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/chain-replication.png' | relative_url }}" alt="La cadena head, medio y tail, con un cliente en cada extremo">
   <figcaption>
     <span class="figura-label">Figura</span>
     la cadena head → medio → tail, con un cliente que escribe al head y recibe el acknowledge del tail, y un segundo cliente que lee del tail
@@ -73,7 +74,8 @@ Pero hay una precaución adicional. Todas las operaciones que el head le fue env
 
 El flujo de información, en realidad, es más rico de lo que veníamos suponiendo: los nodos se pueden comunicar constantemente entre sí y verificar el avance de cada uno. Una variación que se usa en la práctica hace eso: la escritura baja del head al del medio y del del medio al tail, y el tail responde dos veces, una al cliente y otra al head, informándole que la operación llegó al final. Ese aviso se propaga y permite realizar cierta limpieza.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/fallas-de-la-cadena.png' | relative_url }}" alt="Los tres casos de falla de la cadena">
   <figcaption>
     <span class="figura-label">Figura</span>
     los tres casos de falla, uno debajo del otro — falla el head y el segundo se promueve; falla el tail y el del medio lo reemplaza; falla el del medio y se lo omite, con el head consultándole al tail su versión
@@ -87,7 +89,8 @@ Queda un caso que no analizamos: cómo se agrega un nodo. Si tenemos dos o tres 
 
 El asunto es que un nodo recién incorporado no tiene nada y se tiene que poner al día. Una estrategia razonable es enviarle primero un snapshot —una imagen con todo el estado tal como está en un momento dado— y después el log, es decir las operaciones que ocurrieron desde ese momento. Se le sigue enviando log hasta alcanzar la misma versión —digamos la 10— que el nodo que lo precede, y solo entonces se reconfigura el sistema para que empiece a responderle los acks al cliente. Antes no, porque no tendría con qué respaldar esa confirmación.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/agregar-un-nodo.png' | relative_url }}" alt="Un nodo nuevo al final de la cadena">
   <figcaption>
     <span class="figura-label">Figura</span>
     un nodo nuevo al final de la cadena, recibiendo primero un snapshot y después el log hasta alcanzar la versión del tail actual

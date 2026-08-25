@@ -10,7 +10,8 @@ El sharding es parecido al particionado de un cómputo en muchas partes, pero co
 
 Eso es concretamente el sharding. Esa tabla se particiona de alguna forma en fragmentos, y cada fragmento termina en una máquina independiente. Y eso nos da directamente el escalado horizontal: cuando el sistema crece, agregamos más máquinas y repartimos los datos entre ellas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/dataset-shardeado.png' | relative_url }}" alt="Un dataset partido en tres, con una máquina tachada">
   <figcaption>
     <span class="figura-label">Figura</span>
     un dataset como columna alta dividido en tres partes, cada una con una flecha hacia su máquina; una máquina tachada marca la falla parcial
@@ -24,7 +25,8 @@ Basándose en qué concretamente, ahí no hay respuesta única y el tema es muy 
 
 Pero cualquiera sea el criterio, tiene que haber un mecanismo de nombres, y cada sistema lo resuelve de manera distinta. Lo que ese mecanismo hace es tomar cada dato individual —o cada registro, aunque al decir "registro" ya nos restringimos a un vocabulario de base de datos: Google File System no tiene registros, sino archivos partidos en fragmentos de 64 MB— y mapearlo a su ubicación física. Sin ese mapeo el particionado no serviría de nada: tendríamos los fragmentos repartidos y ninguna manera de saber a qué máquina ir a buscar un dato.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/mapeo-dato-ubicacion.png' | relative_url }}" alt="El mapeo de un dato a su ubicación física">
   <figcaption>
     <span class="figura-label">Figura</span>
     el mapeo de un dato a su ubicación física, con una flecha punteada hacia &quot;tabla&quot; y &quot;función&quot;

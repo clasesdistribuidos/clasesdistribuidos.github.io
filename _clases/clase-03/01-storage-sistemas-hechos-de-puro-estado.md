@@ -24,7 +24,8 @@ En un sistema de storage no vamos a poder recurrir a este tipo de estrategias. U
 
 Por eso siempre que se construye un sistema distribuido reaparece la misma escena. El ejemplo de la primera clase era un web server que guarda datos en una base de datos: si queríamos escalarlo, poníamos muchos servidores, un load balancer adelante, y del otro lado la base de datos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/web-servers-y-base-de-datos.png' | relative_url }}" alt="Web servers conectados a una única base de datos">
   <figcaption>
     <span class="figura-label">Figura</span>
     varios web servers con un load balancer adelante, conectados a una única base de datos dibujada como un sistema con su propia caja

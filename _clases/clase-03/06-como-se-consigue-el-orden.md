@@ -29,7 +29,8 @@ Una forma de resolverlo es delegarle el problema a otro sistema. No se usa tanto
 
 ¿Y cómo hace Kafka para mantenerlo? Es un problema en sí mismo, y más adelante vamos a leer su paper. Pero si lo damos por resuelto —lo instalamos, lo configuramos y no nos ocupamos de su funcionamiento interno—, lo que sigue es sencillo: todas las escrituras del cliente van al log y las instancias operan leyendo de ahí. Son todas iguales entre sí y reciben las mismas operaciones en el mismo orden.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/log-externo-kafka.png' | relative_url }}" alt="Un log gestionado por Kafka y varias réplicas consumiendo de él">
   <figcaption>
     <span class="figura-label">Figura</span>
     el log gestionado por Kafka, con el cliente escribiendo al log y varias réplicas iguales consumiendo de él
@@ -49,7 +50,8 @@ La segunda forma es la más interesante de las dos, y conviene detenerse en ella
 
 En qué consiste es fácil de describir. Existe una máquina particular, el primary, y muchas otras que son backups de esa primera. Cuando alguien escribe algo, necesariamente se lo envía al primary, y este a su vez les va enviando las operaciones a los backups. Cuando alguien lee, la lectura puede ir a los backups o directamente al primary. Lo esencial es que el primary actualiza su propio estado y después se lo transmite a los demás.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/primary-backup.png' | relative_url }}" alt="Un primary emitiendo el WAL a tres backups de solo lectura">
   <figcaption>
     <span class="figura-label">Figura</span>
     el primary recibiendo las escrituras y emitiendo el WAL a tres backups de solo lectura, con un cliente lector; al costado, master/slaves y writer/read-replica
@@ -98,7 +100,8 @@ Ese nodo intermedio no es una construcción teórica. Hay muchos productos que h
 
 Y del otro lado del log tenemos algo parecido al primer ejemplo: muchos nodos consumiendo del log. La diferencia es que aquí cada uno hace algo distinto, y ahí está lo verdaderamente útil: los consumidores no tienen que ser otras bases Postgres, pueden ser sistemas completamente diferentes.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/change-data-capture.png' | relative_url }}" alt="Postgres, Debezium, Kafka y tres consumidores distintos">
   <figcaption>
     <span class="figura-label">Figura</span>
     Postgres emitiendo su WAL a Debezium, que lo publica en Kafka, y del log tres consumidores: un data warehouse, un buscador de texto y un microservicio; dos llaves marcan el tramo primary-backup y el active-active

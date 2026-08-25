@@ -25,7 +25,8 @@ Todas las operaciones que los clientes van enviando se agregan a este log, y sie
 
 Por eso el log, como abstracción, relaciona dos elementos: no son simplemente operaciones ni son solamente datos, sino las operaciones *y* un orden. Y ese orden además es total: no hay jerarquías parciales, sino que se sabe con certeza que esta operación ocurrió antes que esta otra, y eso para todo par de operaciones. En algunos casos se relaja un poco, pero por ahora no importa.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/el-log.png' | relative_url }}" alt="El log como fila de celdas que crece hacia la derecha">
   <figcaption>
     <span class="figura-label">Figura</span>
     el log como fila de celdas que crece hacia la derecha, con las tres propiedades: operaciones más orden, append-only y totalmente ordenado
@@ -49,7 +50,8 @@ Además de las páginas había otra estructura, muy importante: la que resolvía
 
 El log de una base de datos tiene varios nombres, y van cambiando con el tiempo. La versión moderna es write-ahead log, WAL. Antes, en la época de Oracle, también se lo llamaba redo log, un nombre que ya casi no se utiliza.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/wal-de-postgres.png' | relative_url }}" alt="El interior de Postgres: las páginas y el WAL">
   <figcaption>
     <span class="figura-label">Figura</span>
     el interior de Postgres — arriba las páginas en un árbol B+, abajo el WAL con el inicio de transacción, las operaciones y el commit, y el estado inicial y final de cada entrada
@@ -73,7 +75,8 @@ Arriba está nuestra aplicación —llamémosla app—, que seguramente tenga un
 
 Todo eso junto constituye una máquina física. Al lado hay otra, con otra instancia de nuestra aplicación y su storage, y otra instancia de Raft. No suelen ser procesos diferentes: suelen ser parte del mismo proceso.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/raft-y-su-log.png' | relative_url }}" alt="Dos máquinas con la aplicación arriba y la capa de Raft abajo">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos máquinas, cada una con la aplicación y su storage arriba y la capa de Raft con su log abajo; los dos logs conectados y un cliente escribiéndole a la primera
@@ -89,7 +92,8 @@ No olvidemos para qué existe ese log: es lo que implementa la máquina de estad
 
 Ese log tiene además otra propiedad interesante, y aparece tanto si está materializado físicamente, como en Raft, como si lo tenemos en abstracto. Las operaciones van a tener una posición dentro del log, y a esa posición llamémosla timestamp. No es necesariamente el del reloj real: podría ser sintético, por ejemplo el orden dentro del log, 0, 1, 2, 3.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/log-como-versionado.png' | relative_url }}" alt="El log numerado y dos réplicas en estados distintos">
   <figcaption>
     <span class="figura-label">Figura</span>
     el log numerado 0 a 5 con la posición señalada como timestamp, y dos réplicas en el estado 11 y el estado 10

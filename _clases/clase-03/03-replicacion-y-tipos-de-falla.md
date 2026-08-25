@@ -10,7 +10,8 @@ Toda generalización de este tipo probablemente sea imprecisa, pero tomemos igua
 
 Qué significa que un sistema esté replicado se explica mejor por contraste. En el sharding hay muchas máquinas y en cada una hay datos distintos: el dataset está partido y cada fragmento vive en un lugar. En la replicación también hay muchas máquinas, pero tomamos el mismo dato y ponemos copias en varias: si el dato es x = 1, ese x = 1 lo vamos a tener en varias máquinas a la vez.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/replicas-desincronizadas.png' | relative_url }}" alt="Tres réplicas con el mismo dato y una que se desincroniza">
   <figcaption>
     <span class="figura-label">Figura</span>
     tres máquinas con el mismo dato x = 1 y una flecha que le entrega x = 2 a una sola, marcando la desincronización
@@ -26,7 +27,8 @@ Y hay un giro importante: el problema, de aquí en adelante, no va a ser que el 
 
 ¿De qué tipo de falla nos protege tener el dato en varios lugares? Hay dos grandes clases, y solo una nos va a ocupar.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-03/tipos-de-falla.png' | relative_url }}" alt="El árbol de tipos de falla">
   <figcaption>
     <span class="figura-label">Figura</span>
     el árbol de tipos de falla — fail-stop, que sí vamos a tratar, y bugs o fallas bizantinas, que no
