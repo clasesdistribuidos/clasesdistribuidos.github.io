@@ -185,10 +185,12 @@ Ese borrador es un andamio: vive fuera del repo, no se versiona, y una vez
 partido las páginas son lo único que se mantiene. Por eso `--force` sobre una
 clase que ya existe es peligroso, pisa las ediciones hechas a mano.
 
-Cada clase se trabaja en una feature branch y se mergea a `main`. Si el texto y
-las figuras van en la misma PR o en dos separadas lo decide el usuario clase por
-clase, así que conviene preguntarlo antes de abrir nada — y esperar a tener las
-dos mitades si van juntas.
+**Una branch por clase, `clase-NN`, y la clase entera adentro.** Cada clase es
+una feature independiente, así que su branch la contiene completa: el texto
+partido en páginas y las figuras recortadas. Adentro son dos fases y salen
+naturalmente como dos commits —primero las secciones, después las imágenes—,
+pero eso es una guía, no una regla: lo que importa es que la branch no se parta
+en dos y que la PR se abra recién cuando la clase está terminada.
 
 ## La prosa
 

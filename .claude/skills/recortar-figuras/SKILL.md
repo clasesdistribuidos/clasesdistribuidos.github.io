@@ -185,7 +185,9 @@ conjuntos de `(clase, nombre)`:
 
 ## Dónde va
 
-El recorte va en la branch de la clase mientras el texto no esté mergeado; si el
-texto ya está en `main`, en una branch propia. Conviene preguntar antes de abrir
-la PR: el criterio de si el texto y las figuras van juntos o separados lo decide
-el usuario, clase por clase.
+En la branch de la clase, `clase-NN`, la misma en la que se partió el apunte —no
+en una aparte. Cada clase es una feature independiente y su branch la contiene
+completa; el recorte es su segunda fase y va en un segundo commit.
+
+Recién ahí se abre la PR, con la clase terminada. Si la branch todavía no
+existe porque el texto ya está en `main`, entonces sí va una branch propia.

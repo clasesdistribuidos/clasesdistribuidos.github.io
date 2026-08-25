@@ -1,6 +1,6 @@
 ---
 name: nueva-clase
-description: Convierte el .md ya procesado de una clase en las páginas de _clases/clase-NN/, en una feature branch. Usar cuando el usuario pasa el apunte de una clase nueva (un único archivo de corrido, con marcadores [FIGURA:] y *[Nota:]*) y hay que dividirlo en secciones. No cubre el recorte de las figuras, que va después y por separado.
+description: Convierte el .md ya procesado de una clase en las páginas de _clases/clase-NN/, en una feature branch. Usar cuando el usuario pasa el apunte de una clase nueva (un único archivo de corrido, con marcadores [FIGURA:] y *[Nota:]*) y hay que dividirlo en secciones. Deja los placeholders de las figuras: recortarlas es la segunda fase de la clase, va en la misma branch y la cubre la skill `recortar-figuras`.
 ---
 
 # Agregar una clase al sitio
@@ -29,7 +29,9 @@ como texto suelto. Contarlos antes y después.
 
 ## Pasos
 
-1. **Branch propia**, desde `main` actualizado: `git switch -c clase-NN`.
+1. **Branch propia**, desde `main` actualizado: `git switch -c clase-NN`. Es la
+   branch de la clase entera, no la del texto: las figuras van después en esta
+   misma.
 
 2. **Copiar el borrador a un nombre con número**, fuera del repo — el
    scratchpad de la sesión sirve. El script saca el número de clase del nombre
@@ -78,8 +80,9 @@ como texto suelto. Contarlos antes y después.
    `Código pendiente`. Es criterio propio: listarlos en el mensaje final para
    que el usuario los apruebe o los saque.
 
-8. **Commit y push de la branch**, y PR contra `main`. El merge lo decide el
-   usuario.
+8. **Commit y push de la branch. La PR todavía no.** Partir el apunte es la
+   primera de las dos fases de la clase; la PR se abre cuando están las dos.
+   Ver "Después: las figuras".
 
 ## Lo que no hay que hacer
 
@@ -94,6 +97,9 @@ como texto suelto. Contarlos antes y después.
 
 ## Después: las figuras
 
-El proceso está en la skill `recortar-figuras`. Si van en esta misma branch o en
-una aparte lo decide el usuario: preguntarlo antes de abrir la PR, porque si van
-juntas conviene no abrirla hasta tener las figuras.
+Van en esta misma branch, en un segundo commit. El proceso está en la skill
+`recortar-figuras`.
+
+Una clase es una feature independiente y su branch la contiene completa, así que
+la PR se abre recién cuando el texto y las figuras están los dos. Abrirla al
+terminar de partir el apunte es apurarse.
