@@ -1,0 +1,12 @@
+# Config que se suma a _config.yml solo en el build de GitHub Pages.
+#
+# El measurement ID de Google Analytics vive acá y no en _config.yml para que
+# `jekyll serve` no mande hits: cada vez que uno revisa un apunte en localhost
+# se contaría como visita. No se puede resolver al revés (poner el ID en
+# _config.yml y anularlo en un config de desarrollo) porque el merge de Jekyll
+# ignora los nil del override: ve `ga_tracking: null` y se queda con el valor
+# anterior.
+#
+# Los archivos que arrancan con "_" no se publican, así que no hace falta
+# agregarlo a `exclude`.
+ga_tracking: G-TYJHN6FXZK
