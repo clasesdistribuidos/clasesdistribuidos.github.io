@@ -69,13 +69,6 @@ Y ahí está la clave del mecanismo: el primary es una máquina sola, y para una
 
 El ejemplo concreto es muy común en bases de datos. La documentación de Postgres explica qué comandos usar para definir una máquina como writer y las otras como réplicas, que se tienen que conectar a un slot de replicación. Es la forma más básica de todas y, por eso mismo, la que menos nos va a ocupar.
 
-<figure class="figura figura-codigo">
-  <figcaption>
-    <span class="figura-label">Código pendiente</span>
-    la configuración de replicación de Postgres — el slot en el writer y el <code>primary_conninfo</code> con el que la réplica se conecta a él
-  </figcaption>
-</figure>
-
 Es un esquema muy común en bases relacionales, y tiene un problema: en la implementación típica, a menos que se realicen verificaciones especiales, tiene consistencia eventual. Salvo que en cada operación el primary espere que todos los backups la reciban y vaya coordinando las escrituras, típicamente aplica localmente, continúa con su trabajo y se lo envía a las réplicas, que pueden estar un poco desactualizadas. Quien lee del primary tiene la fuente de verdad; si consulta un backup, quizás obtenga información desactualizada.
 
 Esta es probablemente la primera instancia de consistencia eventual que vemos, y le corresponde un nombre más académico: es un sistema **no linealizable**. Cuando veamos ZooKeeper vamos a definir con precisión qué es ser linealizable, pero por ahora alcanza con la caracterización. Un sistema linealizable —o de consistencia fuerte— garantiza que si le enviamos una escritura al sistema, visto como un todo abstracto, y después leemos, no vamos a leer una versión vieja. Y suele ser una propiedad global: siempre que cualquier nodo escribió algo y otro lo lee, lee el dato actualizado. Lograr eso es mucho más costoso. Aquí, en cambio, se consigue automáticamente si todas las lecturas van al primary.
