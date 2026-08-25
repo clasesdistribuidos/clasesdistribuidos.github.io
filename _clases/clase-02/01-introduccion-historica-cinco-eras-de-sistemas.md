@@ -39,7 +39,7 @@ La figura central de esa era es Leslie Lamport, y lo más fácil es presentarlo 
 Lamport era matemático y además sabía de física y de relatividad. De ahí salió una de sus primeras observaciones, que él mismo contó en alguna entrevista: algo que pasa en la relatividad —la imposibilidad de sincronizar relojes— también pasaba en los sistemas distribuidos.
 
 {: .nota }
-> La relatividad especial establece que no hay un orden total invariante de los eventos: dos observadores pueden discrepar sobre cuál de dos eventos ocurrió primero, y lo único que queda es un orden parcial en el que un evento precede a otro si puede afectarlo causalmente. Es esa estructura la que Lamport trasladó a los sistemas distribuidos. Referencia: Leslie Lamport,* Time, Clocks, and the Ordering of Events in a Distributed System*, CACM, vol. 21, n.º 7, julio de 1978, pp. 558-565.
+> La relatividad especial establece que no hay un orden total invariante de los eventos: dos observadores pueden discrepar sobre cuál de dos eventos ocurrió primero, y lo único que queda es un orden parcial en el que un evento precede a otro si puede afectarlo causalmente. Es esa estructura la que Lamport trasladó a los sistemas distribuidos. Referencia: Leslie Lamport, *Time, Clocks, and the Ordering of Events in a Distributed System*, CACM, vol. 21, n.º 7, julio de 1978, pp. 558-565.
 
 Dos relojes quieren ponerse en hora y solo pueden comunicarse enviándose mensajes. El primero le envía al segundo la hora que tiene, y cuando ese mensaje llega, el segundo no sabe cuánto tardó en el camino: puede ser que la hora recibida ya sea vieja. Pueden intercambiar mensajes indefinidamente: la sincronización exacta no se va a poder lograr.
 

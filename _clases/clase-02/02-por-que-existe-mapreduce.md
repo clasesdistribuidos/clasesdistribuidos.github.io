@@ -44,7 +44,7 @@ Esa distribución es transparente, pero no tanto. Queda prácticamente escondida
 El paper lo escribieron ese mismo Jeff Dean y Sanjay Ghemawat. Es una dupla conocida, y hay sobre los dos un artículo del New Yorker, "la amistad que hizo grande a Google", ilustrado con una caricatura de ambos; está detrás de un paywall, aunque circula una versión archivada. No tiene nada que ver con la materia, pero es interesante como retrato de dos ingenieros trabajando en las eras iniciales de los sistemas distribuidos, en un modo muy diferente al de hoy.
 
 {: .nota }
-> El artículo es *The Friendship That Made Google Huge*, de James Somers, publicado en The New Yorker el 10 de diciembre de 2018. El paper de la clase es Jeffrey Dean y Sanjay Ghemawat,* MapReduce: Simplified Data Processing on Large Clusters*, OSDI 2004.
+> El artículo es *The Friendship That Made Google Huge*, de James Somers, publicado en The New Yorker el 10 de diciembre de 2018. El paper de la clase es Jeffrey Dean y Sanjay Ghemawat, *MapReduce: Simplified Data Processing on Large Clusters*, OSDI 2004.
 
 <figure class="figura figura-con-imagen">
   <img src="{{ '/assets/clase-02/dean-y-ghemawat.jpg' | relative_url }}" alt="Sanjay Ghemawat y Jeff Dean">
