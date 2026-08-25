@@ -94,6 +94,6 @@ como texto suelto. Contarlos antes y después.
 
 ## Después: las figuras
 
-Van en su propia branch, después de mergear esta. El proceso está en CLAUDE.md,
-sección "Figuras: de la pizarra al sitio". Requiere que `scripts/recortar_figuras.py`
-—hoy cableado a la clase 1— se parametrice por clase.
+El proceso está en la skill `recortar-figuras`. Si van en esta misma branch o en
+una aparte lo decide el usuario: preguntarlo antes de abrir la PR, porque si van
+juntas conviene no abrirla hasta tener las figuras.

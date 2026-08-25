@@ -153,41 +153,15 @@ Es idempotente, así que corregir una caja es editar un número y volver a
 correrlo — y volver a correr una clase vieja tiene que dar los mismos bytes.
 Necesita `pdftoppm` (poppler), Pillow y numpy.
 
-### El proceso
+**El procedimiento completo está en la skill `recortar-figuras`**
+(`.claude/skills/recortar-figuras/SKILL.md`): qué contar antes, cómo sacar las
+cajas de un render con grilla, cómo revisarlas todas juntas y cómo insertar las
+imágenes en los placeholders.
 
-1. **Contar los placeholders primero.** `grep -c '<figure class="figura">'` en
-   las páginas de la clase da el número exacto de figuras que la tabla del
-   script tiene que tener. El script no lo verifica por su cuenta, y es fácil
-   saltearse una: en la clase 1 me faltó una y la cuenta no cerró recién al
-   final.
-2. **Leer el mapeo, no adivinarlo.** El `<span class="figura-ref">` de cada
-   placeholder ya dice de qué página sale esa figura. Está escrito desde que se
-   transcribió el apunte.
-3. **Sacar las coordenadas de un render con grilla**, no a ojo ni a fuerza de
-   iterar:
-
-   ```sh
-   python3 scripts/recortar_figuras.py --clase N --grilla
-   ```
-
-   Vuelca en un directorio temporal cada página de la pizarra y de las notas
-   con una grilla rotulada en el mismo espacio en el que se escriben las cajas.
-   Se miran esas imágenes y se leen las cajas directamente de la grilla.
-4. **Mirar la página entera antes de cortar.** Una página de pizarra suele
-   tener varias figuras (la 14 de la clase 1 tiene tres) y además texto que no
-   es parte de ninguna.
-5. **Llenar la tabla.** Las cajas de la pizarra van en coordenadas de 150 dpi
-   (1241x1754); el script rinde a 300 y las escala solo. Las de los scans van
-   en las coordenadas nativas del jpg. La caja no necesita ser precisa: el
-   script la ciñe al contenido real y le deja un margen parejo. Lo que sí
-   importa es que no entre contenido ajeno.
-6. **Tapar el texto vecino con `borrar`.** Títulos que el apunte ya dice con
-   palabras, separadores entre secciones de la pizarra, restos de la figura de
-   al lado: rectángulos blancos, en las mismas coordenadas que las cajas.
-7. **Revisar todo junto antes de darlo por bueno.** Armar una hoja de contactos
-   con los recortes en miniatura y mirarla de una: así saltan los que se
-   llevaron algo de al lado o cortaron una etiqueta. Recorte por recorte, eso
-   se pasa por alto.
+Dos cosas del script que conviene saber de antemano: la numeración del repo de
+apuntes y la del sitio ya no coinciden —la clase 3 del sitio se grabó como la
+4—, y eso vive en `FUENTE_POR_CLASE`; y `scripts/hoja_de_contactos.py` arma la
+grilla de miniaturas con la que se revisan los recortes de una sola mirada.
 
 ### Formatos
 
@@ -211,8 +185,10 @@ Ese borrador es un andamio: vive fuera del repo, no se versiona, y una vez
 partido las páginas son lo único que se mantiene. Por eso `--force` sobre una
 clase que ya existe es peligroso, pisa las ediciones hechas a mano.
 
-Cada clase se trabaja en una feature branch y se mergea a `main`. El recorte de
-las figuras va en una branch aparte, después de mergear el texto.
+Cada clase se trabaja en una feature branch y se mergea a `main`. Si el texto y
+las figuras van en la misma PR o en dos separadas lo decide el usuario clase por
+clase, así que conviene preguntarlo antes de abrir nada — y esperar a tener las
+dos mitades si van juntas.
 
 ## La prosa
 
