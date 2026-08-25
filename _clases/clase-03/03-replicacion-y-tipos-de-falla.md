@@ -1,10 +1,10 @@
 ---
-title: "2. Replicación y tipos de falla"
+title: "3. Replicación y tipos de falla"
 parent: "Clase 3 — Replicación y sharding"
-nav_order: 2
+nav_order: 3
 ---
 
-# 2. Replicación y tipos de falla
+# 3. Replicación y tipos de falla
 
 Toda generalización de este tipo probablemente sea imprecisa, pero tomemos igual esta: en general la replicación es más difícil que el sharding. No es que el sharding sea fácil —también es complicado—, sino que la replicación lo es por varias razones que van a ir apareciendo.
 

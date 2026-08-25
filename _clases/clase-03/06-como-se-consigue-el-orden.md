@@ -1,10 +1,10 @@
 ---
-title: "5. Cómo se consigue el orden"
+title: "6. Cómo se consigue el orden"
 parent: "Clase 3 — Replicación y sharding"
-nav_order: 5
+nav_order: 6
 ---
 
-# 5. Cómo se consigue el orden
+# 6. Cómo se consigue el orden
 {: .no_toc }
 
 <details open markdown="block">

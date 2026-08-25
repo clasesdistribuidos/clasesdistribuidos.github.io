@@ -1,10 +1,10 @@
 ---
-title: "1. Sharding: partir el dataset"
+title: "2. Sharding: partir el dataset"
 parent: "Clase 3 — Replicación y sharding"
-nav_order: 1
+nav_order: 2
 ---
 
-# 1. Sharding: partir el dataset
+# 2. Sharding: partir el dataset
 
 El sharding es parecido al particionado de un cómputo en muchas partes, pero con una diferencia decisiva: aquí lo que se parte no es un cómputo, sino un conjunto de datos. Representémoslo como una gran columna, un dataset abstracto: una cantidad enorme de datos y nada más. Puede ser un ZIP que contenga toda la web o cualquier otro conjunto: al sharding no le importa de qué están hechos los datos, le importa que haya muchos. Quizás lo más fácil de imaginar es una tabla gigantesca con mil millones de registros, donde cada interacción de un usuario genera un evento. Conviene hacer la cuenta, porque es la que fuerza todo lo demás: si cada evento ocupa un kilobyte, mil millones de eventos son un terabyte, y ya estamos discutiendo si eso entra en el disco de una máquina. Y un detalle clave: esa es una tabla *lógica*, no una que esté físicamente en una máquina en particular.
 

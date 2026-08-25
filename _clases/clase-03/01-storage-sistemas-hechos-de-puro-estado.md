@@ -1,10 +1,10 @@
 ---
-title: "0. Storage: sistemas hechos de puro estado"
+title: "1. Storage: sistemas hechos de puro estado"
 parent: "Clase 3 — Replicación y sharding"
-nav_order: 0
+nav_order: 1
 ---
 
-# 0. Storage: sistemas hechos de puro estado
+# 1. Storage: sistemas hechos de puro estado
 
 Storage es el término amplio con el que vamos a referirnos a los sistemas de archivos y a las bases de datos, y es un terreno con el que ya estamos familiarizados aunque no lo llamemos así: el sistema de archivos de Unix es storage, y Postgres también. A diferencia del tema de la clase anterior, que pertenece al cómputo —realizar un cómputo grande y repartirlo—, los sistemas de storage son considerablemente más complejos: se les puede dedicar un curso entero y aun así quedan temas sin tratar. Nosotros vamos a dedicarles varias clases.
 

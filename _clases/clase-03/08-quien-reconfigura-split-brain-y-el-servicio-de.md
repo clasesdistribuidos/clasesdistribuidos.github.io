@@ -1,10 +1,10 @@
 ---
-title: "7. Quién reconfigura: split-brain y el servicio de configuración"
+title: "8. Quién reconfigura: split-brain y el servicio de configuración"
 parent: "Clase 3 — Replicación y sharding"
-nav_order: 7
+nav_order: 8
 ---
 
-# 7. Quién reconfigura: split-brain y el servicio de configuración
+# 8. Quién reconfigura: split-brain y el servicio de configuración
 {: .no_toc }
 
 <details open markdown="block">

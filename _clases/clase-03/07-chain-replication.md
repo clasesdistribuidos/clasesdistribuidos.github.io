@@ -1,10 +1,10 @@
 ---
-title: "6. Chain replication"
+title: "7. Chain replication"
 parent: "Clase 3 — Replicación y sharding"
-nav_order: 6
+nav_order: 7
 ---
 
-# 6. Chain replication
+# 7. Chain replication
 {: .no_toc }
 
 <details open markdown="block">

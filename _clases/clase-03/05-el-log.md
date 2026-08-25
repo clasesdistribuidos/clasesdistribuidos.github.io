@@ -1,10 +1,10 @@
 ---
-title: "4. El log"
+title: "5. El log"
 parent: "Clase 3 — Replicación y sharding"
-nav_order: 4
+nav_order: 5
 ---
 
-# 4. El log
+# 5. El log
 {: .no_toc }
 
 <details open markdown="block">
