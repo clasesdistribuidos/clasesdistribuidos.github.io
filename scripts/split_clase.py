@@ -43,6 +43,9 @@ DIR_CLASES = RAIZ / "_clases"
 RE_FRONT_MATTER = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
 RE_SECCION = re.compile(r"^##\s+(\d+)\.\s+(.+?)\s*$", re.MULTILINE)
 RE_HEADING = re.compile(r"^(#{3,6})\s+(.*)$")
+# "3.2 El reparto" o "3.2. El reparto". Pide al menos un punto para no comerse
+# un título que arranque con un año o una cifra suelta.
+RE_NUMERACION = re.compile(r"^\d+(?:\.\d+)+\.?\s+")
 
 # [FIGURA: descripción — notas pág. 4 / pizarra pág. 11]
 RE_FIGURA = re.compile(r"^\[FIGURA:\s*(.+?)\]\s*$")
@@ -53,8 +56,10 @@ RE_REFERENCIA = re.compile(r"^(.*)\s+—\s+((?:notas|pizarra)\b.*)$", re.DOTALL)
 # [CÓDIGO PENDIENTE: ...], con o sin backticks alrededor.
 RE_CODIGO = re.compile(r"^`?\[CÓDIGO PENDIENTE:\s*(.+?)\]`?\s*$")
 
-# *[Nota: ...]* — a veces seguida de prosa en la misma línea.
-RE_NOTA = re.compile(r"^\*\[Nota:\s*(.+?)\]\*\s*(.*)$")
+# *[Nota: ...]* — a veces seguida de prosa en la misma línea, y a veces
+# abarcando varios párrafos hasta el `]*` de cierre.
+RE_NOTA = re.compile(r"^\*\[Nota:\s*(.+?)\]\*\s*(.*)$", re.DOTALL)
+RE_ABRE_NOTA = re.compile(r"^\*\[Nota:")
 
 
 def slugify(texto: str, limite: int = 50) -> str:
@@ -90,11 +95,15 @@ def separar_front_matter(texto: str) -> tuple[dict[str, str], str]:
 
 
 def promover_headings(texto: str) -> str:
-    """Sube un nivel los headings del cuerpo.
+    """Sube un nivel los headings del cuerpo y les saca la numeración.
 
     El `## N. Título` de la sección pasa a ser el `#` de su propia página, así
     que sus `###` tienen que volverse `##` para no saltear un nivel. Además el
     índice interno y la búsqueda de Just the Docs trabajan sobre h2.
+
+    Algunos borradores numeran las subsecciones (`### 3.2 El reparto`). Adentro
+    de una página que ya se titula "3. Del modelo al clúster" ese número sobra,
+    así que se lo saca.
     """
     salida = []
     en_bloque_codigo = False
@@ -106,6 +115,7 @@ def promover_headings(texto: str) -> str:
         match = RE_HEADING.match(linea) if not en_bloque_codigo else None
         if match:
             almohadillas, titulo = match.groups()
+            titulo = RE_NUMERACION.sub("", titulo)
             salida.append("#" * (len(almohadillas) - 1) + " " + titulo)
         else:
             salida.append(linea)
@@ -136,44 +146,83 @@ def caja_figura(descripcion: str, clase_css: str, etiqueta: str) -> str:
     return "\n".join(partes)
 
 
+def capitalizar(texto: str) -> str:
+    """Arranca la nota en mayúscula, como el resto de las notas del sitio.
+
+    En el borrador las notas siguen a la palabra "Nota:" y por eso vienen en
+    minúscula. Solo se toca cuando la nota empieza con una palabra, saltando
+    las itálicas de apertura; si arranca con otra cosa —una cita entrecomillada,
+    un `§3.3`, código— se deja como está, porque ahí la mayúscula caería
+    adentro de algo que no es el comienzo de la oración.
+    """
+    i = 0
+    while i < len(texto) and texto[i] in "*_":
+        i += 1
+    if i < len(texto) and texto[i].islower():
+        return texto[:i] + texto[i].upper() + texto[i + 1:]
+    return texto
+
+
 def bloque_nota(contenido: str) -> str:
     """Callout `nota` de Just the Docs, preservando el markdown de adentro."""
-    lineas = [f"> {l}" if l.strip() else ">" for l in contenido.strip().splitlines()]
+    contenido = capitalizar(contenido.strip())
+    lineas = [f"> {l}" if l.strip() else ">" for l in contenido.splitlines()]
     return "{: .nota }\n" + "\n".join(lineas)
 
 
 def transformar_marcadores(texto: str) -> str:
     salida: list[str] = []
     en_bloque_codigo = False
+    lineas = texto.splitlines()
+    i = 0
 
-    for linea in texto.splitlines():
+    while i < len(lineas):
+        linea = lineas[i]
+
         if linea.lstrip().startswith("```"):
             en_bloque_codigo = not en_bloque_codigo
             salida.append(linea)
+            i += 1
             continue
         if en_bloque_codigo:
             salida.append(linea)
+            i += 1
             continue
 
         if m := RE_FIGURA.match(linea):
             salida.append(caja_figura(m.group(1), "figura", "Figura"))
+            i += 1
             continue
 
         if m := RE_CODIGO.match(linea):
             salida.append(caja_figura(m.group(1), "figura figura-codigo", "Código pendiente"))
+            i += 1
             continue
 
-        if m := RE_NOTA.match(linea):
-            salida.append(bloque_nota(m.group(1)))
-            resto = m.group(2).strip()
-            if resto:
-                # La nota venía inline con prosa detrás: la prosa pasa a ser
-                # su propio párrafo, después del callout.
-                salida.append("")
-                salida.append(resto)
-            continue
+        if RE_ABRE_NOTA.match(linea):
+            # Una nota puede abarcar varios párrafos: se juntan las líneas
+            # hasta el `]*` que la cierra. Si no cierra nunca, la línea queda
+            # como está y el marcador crudo se ve en la página, que es la
+            # señal de que el borrador está mal formado.
+            fin = i
+            bloque = linea
+            while "]*" not in bloque and fin + 1 < len(lineas):
+                fin += 1
+                bloque += "\n" + lineas[fin]
+
+            if m := RE_NOTA.match(bloque):
+                salida.append(bloque_nota(m.group(1)))
+                resto = m.group(2).strip()
+                if resto:
+                    # La nota venía inline con prosa detrás: la prosa pasa a
+                    # ser su propio párrafo, después del callout.
+                    salida.append("")
+                    salida.append(resto)
+                i = fin + 1
+                continue
 
         salida.append(linea)
+        i += 1
 
     return "\n".join(salida)
 
@@ -240,8 +289,14 @@ def render_seccion(seccion: Seccion, titulo_clase: str) -> str:
     return "\n".join(encabezado)
 
 
-def render_indice(titulo_clase: str, numero: int, preambulo: str) -> str:
-    partes = [
+def render_indice(titulo_clase: str, numero: int) -> str:
+    """Portada de la clase: solo el título.
+
+    Lo que el borrador trae antes de la primera sección es su propio título y
+    su tabla de contenidos, que acá duplicarían el sidebar. Se descarta; main()
+    avisa qué se tiró para que no se pierda nada en silencio.
+    """
+    return "\n".join([
         "---",
         f"title: {yaml_str(titulo_clase)}",
         f"nav_order: {numero}",
@@ -253,10 +308,7 @@ def render_indice(titulo_clase: str, numero: int, preambulo: str) -> str:
         "",
         f"# {titulo_clase}",
         "",
-    ]
-    if preambulo:
-        partes += [transformar_marcadores(promover_headings(preambulo)), ""]
-    return "\n".join(partes)
+    ])
 
 
 def main() -> int:
@@ -285,12 +337,18 @@ def main() -> int:
     if destino.exists() and not args.force and not args.dry_run:
         raise SystemExit(f"{destino.relative_to(RAIZ)} ya existe. Usá --force para sobrescribir.")
 
-    archivos = {destino / "index.md": render_indice(titulo_clase, numero, preambulo)}
+    archivos = {destino / "index.md": render_indice(titulo_clase, numero)}
     for seccion in secciones:
         archivos[destino / f"{seccion.slug}.md"] = render_seccion(seccion, titulo_clase)
 
     print(f"Clase {numero}: {titulo_clase}")
     print(f"  {len(secciones)} secciones -> {destino.relative_to(RAIZ)}/")
+    if preambulo:
+        print(f"  se descartaron {len(preambulo.splitlines())} líneas previas a la "
+              "primera sección (título y tabla de contenidos del borrador):")
+        for linea in preambulo.splitlines()[:4]:
+            print(f"      | {linea[:70]}")
+        print("      | ...")
     for ruta, contenido in archivos.items():
         print(f"    {ruta.name}  ({len(contenido.splitlines())} líneas)")
         if not args.dry_run:

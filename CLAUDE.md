@@ -91,6 +91,10 @@ Solo aporta si la página tiene dos o más `##`; con una sola es ruido.
 > Texto de la nota.
 ```
 
+Arrancan en mayúscula, aunque en el borrador vengan en minúscula detrás de
+"Nota:". Se dejan como están cuando lo primero no es una palabra —una cita
+entrecomillada, un `§3.3`— porque ahí la mayúscula caería adentro de otra cosa.
+
 **Figura pendiente.** Recuadro punteado con la descripción de lo que va a ir
 ahí y la referencia a la página de donde va a salir el dibujo:
 
@@ -127,8 +131,10 @@ la etiqueta `Código pendiente`.
 ## Figuras: de la pizarra al sitio
 
 Las figuras no se dibujan de nuevo: se recortan de lo que el profesor usó en
-clase. Hay dos fuentes, y las dos viven en el repo de trabajo `clases-apuntes`,
-que está al lado de este (`../clases-apuntes/raw/claseN/`):
+clase. Hay dos fuentes, y las dos viven en el repo de trabajo `clases-apuntes`
+(`raw/claseN/`). Dónde está clonado es cosa de cada máquina, así que no se
+escribe acá: el script lo busca al lado de este repo y si no está se le pasa
+con `--apuntes`.
 
 - **La pizarra virtual** (`pizarra.pdf`), que dibujó en vivo. Es la fuente
   preferida: son trazos vectoriales, se rinden nítidos a cualquier resolución.
@@ -141,10 +147,11 @@ que está al lado de este (`../clases-apuntes/raw/claseN/`):
 Cuando se elige notas sobre pizarra, dejar un comentario en el script diciendo
 por qué. En la clase 1 pasó dos veces y las dos están anotadas.
 
-`scripts/recortar_figuras.py` es el registro del recorte: tiene una tabla con
-una caja por figura y regenera `assets/clase-NN/` entero. Es idempotente, así
-que corregir una caja es editar un número y volver a correrlo. Necesita
-`pdftoppm` (poppler), Pillow y numpy.
+`scripts/recortar_figuras.py` es el registro del recorte: tiene una tabla por
+clase con una caja por figura, y `--clase N` regenera `assets/clase-NN/` entero.
+Es idempotente, así que corregir una caja es editar un número y volver a
+correrlo — y volver a correr una clase vieja tiene que dar los mismos bytes.
+Necesita `pdftoppm` (poppler), Pillow y numpy.
 
 ### El proceso
 
@@ -160,7 +167,7 @@ que corregir una caja es editar un número y volver a correrlo. Necesita
    iterar:
 
    ```sh
-   python3 scripts/recortar_figuras.py --grilla
+   python3 scripts/recortar_figuras.py --clase N --grilla
    ```
 
    Vuelca en un directorio temporal cada página de la pizarra y de las notas
@@ -191,17 +198,21 @@ theme, para que se vean bien en pantallas densas.
 
 ## Agregar una clase
 
-Crear `_clases/clase-NN/` con su `index.md` y una página por sección, copiando
-el front matter de una clase existente.
+El apunte de cada clase se escribe de corrido, fuera de este repo, y llega como
+un único `.md` con marcadores `[FIGURA:]`, `[CÓDIGO PENDIENTE:]` y `*[Nota:]*`.
+`scripts/split_clase.py` lo parte en una página por sección y traduce esos
+marcadores.
 
-Si el apunte se escribió de corrido en un único archivo —que suele ser lo más
-cómodo para transcribir—, `scripts/split_clase.py` lo parte en páginas y genera
-el front matter, los slugs, los índices internos y los recuadros de figura y
-código pendientes. Ver el docstring del script para el formato que espera.
+**El procedimiento completo está en la skill `nueva-clase`**
+(`.claude/skills/nueva-clase/SKILL.md`): branch propia por clase, qué contar
+antes y después, qué revisar, y qué no tocar.
 
 Ese borrador es un andamio: vive fuera del repo, no se versiona, y una vez
 partido las páginas son lo único que se mantiene. Por eso `--force` sobre una
 clase que ya existe es peligroso, pisa las ediciones hechas a mano.
+
+Cada clase se trabaja en una feature branch y se mergea a `main`. El recorte de
+las figuras va en una branch aparte, después de mergear el texto.
 
 ## La prosa
 
