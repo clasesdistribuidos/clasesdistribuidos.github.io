@@ -10,7 +10,8 @@ Estos dos sistemas se combinaban de una manera muy inteligente. La idea quedó a
 
 Lo que hacían en esa época, por lo que se describe principalmente en el paper de MapReduce, era poner en la misma máquina un worker de MapReduce y un chunkserver. Imaginemos un host físico y, dentro de él, dos programas que en principio no guardan relación entre sí: un map worker y un chunkserver. Ese host tiene un disco, y en ese disco están los chunks, gobernados por el chunkserver. Afuera, en otras máquinas, están el master de MapReduce y el coordinador del GFS.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/colocacion-worker-chunkserver.png' | relative_url }}" alt="Un worker de MapReduce y un chunkserver en el mismo host">
   <figcaption>
     <span class="figura-label">Figura</span>
     un host físico con un worker de MapReduce y un chunkserver conviviendo en su interior, y el disco con los chunks colgando del chunkserver; afuera, el master de MapReduce y el coordinador de GFS, con los cuatro pasos numerados: el master le pregunta al coordinador por las ubicaciones, le asigna el trabajo al worker, el worker le pregunta al coordinador por los chunks, y el worker lee del chunkserver local
@@ -22,7 +23,8 @@ Y la idea es la siguiente: si el master de MapReduce es astuto, puede asignar lo
 
 Este punto no está del todo documentado; no se habla mucho de cómo se particiona el input que se les da a los mappers. Pero en algún lado se dice que una forma de particionar ese trabajo inicial es usar directamente los slices —el término que usaba MapReduce para cada pedazo del input— y que cada slice sea directamente un chunk. Si un archivo grande vive en el GFS y está partido en chunks, cada chunk se mapea directamente con un mapper: un archivo de 100 chunks, 100 jobs de tipo mapper.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/chunk-por-mapper.png' | relative_url }}" alt="Cada chunk del archivo mapeado a un mapper">
   <figcaption>
     <span class="figura-label">Figura</span>
     un archivo grande dibujado como una columna de chunks, con cada chunk mapeándose directamente a un mapper

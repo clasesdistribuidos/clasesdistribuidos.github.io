@@ -43,7 +43,8 @@ El cliente 1, por último, reintenta su append de B. Y aparece otra de las relaj
 
 El resultado es incómodo. Las dos primeras réplicas quedaron iguales entre sí, con A, B, C y B: el registro B duplicado. La tercera quedó con A, un hueco de padding, C y B. Ninguna de las tres es una copia fiel de las otras dos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/region-inconsistente.png' | relative_url }}" alt="Tres réplicas con una región inconsistente">
   <figcaption>
     <span class="figura-label">Figura</span>
     el ejemplo de la región inconsistente — tres columnas, secondary, primary y secondary, con los registros apilados de abajo hacia arriba; en las dos primeras quedan A, B, C y B, y en la tercera A, un hueco de padding, C y B; a la izquierda la secuencia de appends que lo produjo

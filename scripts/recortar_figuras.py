@@ -58,8 +58,9 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 
 # Clase del sitio -> clase del repo de apuntes, para las que no coinciden. La
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
-# tiene `notas/`. Lo que falta acá se asume igual a sí mismo.
-FUENTE_POR_CLASE = {3: 4}
+# tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
+# repo. Lo que falta acá se asume igual a sí mismo.
+FUENTE_POR_CLASE = {3: 4, 4: 5}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -172,6 +173,37 @@ FIGURAS_POR_CLASE = {
         ("split-brain",                   ("pizarra", 9), (250, 505, 930, 910),   True),
         ("servicio-de-configuracion",     ("pizarra", 9), (280, 950, 830, 1295),  True),
         ("raft-como-servicio-de-configuracion", ("pizarra", 9), (280, 1300, 760, 1700), True),
+    ],
+
+    # Es la primera clase en la que el material de las dos fuentes no se
+    # superpone: la pizarra tiene los dibujos y las notas tienen escritos los
+    # protocolos paso por paso, así que hay dos figuras que solo están ahí.
+    4: [
+        # La pizarra (pág. 2) dibuja el archivo partido en chunks, pero no anota
+        # que cada uno se replica en varios chunkservers, que es la mitad de lo
+        # que la figura tiene que decir. Las notas sí lo escriben.
+        ("archivo-en-chunks",           ("notas", 1),   (30, 1420, 715, 2025),   False),
+        ("arquitectura-gfs",            ("pizarra", 3), (148, 145, 1000, 520),   True,
+         [(996, 296, 1006, 326)]),                                 # la punta de la llave de "metadata"
+        # Los dos pasos del read, en la pizarra, son los rótulos de la figura 1
+        # del paper —o sea la figura anterior—, así que recortarlos sería
+        # repetirla. En las notas están escritos aparte, paso por paso.
+        ("flujo-de-lectura",            ("notas", 2),   (200, 610, 1445, 960),   False),
+        ("anti-patron-de-escritura",    ("pizarra", 3), (340, 575, 750, 905),    True),
+        ("coordinador-y-replica-group", ("pizarra", 3), (340, 1026, 1215, 1752), True,
+         [(335, 1400, 715, 1700)]),                                # las tres funciones del coordinador
+        ("flujo-de-escritura",          ("pizarra", 4), (340, 345, 866, 845),    True,
+         [(828, 345, 872, 640)]),                                  # "si todas responden OK / si alguna, error"
+        # El "} región inconsistente" del final se sale de la hoja y queda
+        # cortado en la fuente, así que el recorte termina en el padding.
+        ("region-inconsistente",        ("pizarra", 4), (0, 1135, 1080, 1615),   True),
+        ("colocacion-worker-chunkserver", ("pizarra", 6), (190, 100, 600, 605),  True),
+        ("chunk-por-mapper",            ("pizarra", 6), (660, 100, 1241, 570),   True),
+        ("coordinador-por-dentro",      ("pizarra", 7), (50, 220, 305, 500),     True),
+        ("promocion-de-primary",        ("pizarra", 7), (350, 955, 830, 1345),   True),
+        ("split-brain",                 ("pizarra", 7), (130, 1350, 955, 1710),  True,
+         [(840, 1610, 960, 1715)]),                                # "} SPLIT BRAIN"
+        ("coordinador-y-backup",        ("pizarra", 8), (280, 300, 690, 560),    True),
     ],
 }
 

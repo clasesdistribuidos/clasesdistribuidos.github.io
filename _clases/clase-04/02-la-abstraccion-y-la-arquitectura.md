@@ -21,7 +21,8 @@ La abstracción fundamental del sistema es el archivo: tiene un nombre y una eno
 
 A esos fragmentos les llaman, literalmente, pedazos: en inglés, chunks. Tienen un tamaño fijo, que en Google eligieron después de evaluar cuál sería razonable: 64 megabytes. Para los estándares actuales resulta pequeño, pero a principios de los 2000 era un archivo de gran tamaño.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/archivo-en-chunks.jpg' | relative_url }}" alt="Un archivo partido en chunks de 64 MB">
   <figcaption>
     <span class="figura-label">Figura</span>
     un archivo lógico dibujado como una columna dividida en chunks de 64 MB, rotulado /dir/file.txt, con la aclaración de que cada chunk se replica en varios chunkservers
@@ -41,7 +42,8 @@ Los segundos, y son los importantes, son los chunkservers: una máquina común, 
 
 El tercero es el cliente. La idea era que cada aplicación tuviera lo que se suele llamar un cliente, aunque este se parece más a un middleware.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/arquitectura-gfs.png' | relative_url }}" alt="La arquitectura del GFS, figura 1 del paper">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura de GFS (figura 1 del paper) — aplicación y cliente a la izquierda, el master con el namespace de archivos arriba, dos chunkservers sobre Linux con sus discos abajo; flechas finas para los mensajes de control y gruesas para los de datos
@@ -67,7 +69,8 @@ El cliente cachea esos datos en memoria por dos razones: para no estar interactu
 
 Sabiendo dónde están las réplicas, el cliente va directo al chunkserver que el paper llama el más cercano. Cómo se calcula esa cercanía es más rudimentario de lo que uno esperaría: la topología de la red es lo bastante simple como para estimar las distancias con precisión a partir de las direcciones IP. El más cercano puede estar en el mismo data center, en el mismo rack, o incluso correr en la misma máquina, porque ejecutaban varios servicios diferentes dentro de un mismo host: podía haber un mapper de MapReduce y un chunkserver conviviendo, y podía ocurrir que ese chunkserver tuviera precisamente los archivos que necesitamos. En ese caso la llamada es local y es mucho más rápida; vamos a ver más adelante que eso lo hacen a propósito. Elegida la réplica, el cliente le envía el byte range que quiere leer y el chunkserver le devuelve los datos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/flujo-de-lectura.jpg' | relative_url }}" alt="Los dos pasos de una lectura">
   <figcaption>
     <span class="figura-label">Figura</span>
     los dos pasos de una lectura sobre la arquitectura anterior: el cliente envía (file name, chunk index) al coordinador y recibe (chunk handle, locations); después envía (chunk handle, byte range) al chunkserver más cercano y recibe los bytes

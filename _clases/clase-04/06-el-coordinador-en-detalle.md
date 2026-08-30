@@ -21,7 +21,8 @@ Conviene abrir el coordinador y examinar qué guarda dentro, porque de aquí en 
 
 La primera decisión es sobre las estructuras de datos, y está tomada pensando en la velocidad: el coordinador tiene prácticamente todas sus estructuras en memoria, seguramente muchas hash tables. De ahí salen las respuestas que les da a los clientes. Y además tiene una parte persistente: un log, en el sentido de base de datos, al que de vez en cuando se le sacan snapshots.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/coordinador-por-dentro.png' | relative_url }}" alt="El coordinador con sus tablas en memoria y su log">
   <figcaption>
     <span class="figura-label">Figura</span>
     el coordinador por dentro — arriba las tablas en memoria, abajo la tira de celdas del log al que se le van sacando snapshots
@@ -47,7 +48,8 @@ El mecanismo es un sistema de leases, basado en tiempo. Un lease es un permiso p
 
 Empecemos por el caso normal: el coordinador y tres chunkservers, uno primary y dos secondaries, los tres enviándole heartbeats. Si el primary falla, queremos que el coordinador determine que ya no lo es y promueva a uno de los dos secondaries.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/promocion-de-primary.png' | relative_url }}" alt="El coordinador promoviendo a primary a un secondary">
   <figcaption>
     <span class="figura-label">Figura</span>
     el caso normal — el coordinador arriba y tres chunkservers abajo enviando heartbeats; el que era primary falla, y el coordinador promueve a primary a uno de los secondaries
@@ -61,7 +63,8 @@ Volvamos a la misma escena, pero ahora no falla la máquina sino la conexión de
 
 Lo que puede ocurrir es que se interrumpa esa única conexión y que del otro lado la actividad continúe: clientes que siguen comunicándose con ese primary sin inconvenientes, y un primary que quizá siga teniendo conexión con las demás réplicas. Si el coordinador se precipita y designa a uno de los secondaries como nuevo primary, el resultado es una situación confusa. Una máquina que sigue pensando que es el primary, porque con la conexión cortada el coordinador nunca le pudo decir lo contrario. Clientes que, con la información cacheada, la siguen tratando como primary. Y clientes nuevos que consultaron al coordinador y se dirigen al otro. En parte porque la falla de red no es uniforme y en parte por el cacheo, terminamos con dos primaries. Eso es el split brain, y es justamente lo que no queremos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-04/split-brain.png' | relative_url }}" alt="Dos primaries a la vez a los dos lados de un corte de red">
   <figcaption>
     <span class="figura-label">Figura</span>
     el split brain — el coordinador y tres chunkservers; la conexión con el primary se corta, y el coordinador promueve a primary a uno de los dos que sigue viendo. El primary viejo queda del otro lado del corte, todavía creyéndose primary y atendiendo a sus propios clientes: dos primaries a la vez
