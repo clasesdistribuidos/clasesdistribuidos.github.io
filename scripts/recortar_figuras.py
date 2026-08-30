@@ -8,6 +8,11 @@ en vivo (`raw/claseN/pizarra.pdf`) y los scans de las notas que preparó antes
 (`raw/claseN/notas/pagina-NN.jpg`). Cada página trae varias figuras, así que
 hay que recortarlas de a una.
 
+Esa N no es necesariamente la de la clase en el sitio: la numeración del repo
+de apuntes cuenta las grabaciones y la del sitio cuenta las clases publicadas,
+y ya se separaron. `FUENTE_POR_CLASE` guarda las que no coinciden, para que
+`--clase N` a secas siga dando lo mismo; `--fuente` lo pisa para probar.
+
 Las cajas de recorte se escriben a mano, mirando las páginas. Están en el
 espacio de coordenadas de la pizarra renderizada a 150 dpi (1241x1754), que es
 un tamaño cómodo para leer coordenadas de un render con grilla; el render de
@@ -51,11 +56,22 @@ REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # lado de este repo, que es lo habitual, pero no se da por sentado.
 APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 
+# Clase del sitio -> clase del repo de apuntes, para las que no coinciden. La
+# clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
+# tiene `notas/`. Lo que falta acá se asume igual a sí mismo.
+FUENTE_POR_CLASE = {3: 4}
+
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
 # png y el diagrama de capas de la clase 1, que es todo trazo y tiene que
 # quedarse en png, pesa 238 KB.
 FOTOS = {(2, "leslie-lamport")}
+
+# La otra mitad del mismo problema: recortes que son puro trazo y se pasan del
+# umbral de peso, así que el criterio automático los mandaría a jpeg y se
+# ensuciarían. Los tres casos de falla de la cadena son una figura alta —tres
+# bloques uno debajo del otro— y por eso pesa: 301 KB en png contra 132 en jpeg.
+TRAZOS = {(3, "fallas-de-la-cadena")}
 
 ANCHO_MAX = 1400  # el ancho de la columna del theme es bastante menor
 DPI = 300         # el doble de las coordenadas de las cajas
@@ -122,6 +138,41 @@ FIGURAS_POR_CLASE = {
         ("chunk-local-y-shuffle",       ("pizarra", 9),  (60, 5, 750, 650),       True),
         ("tolerancia-a-fallas",         ("pizarra", 9),  (35, 730, 1150, 1090),   True),
     ],
+
+    # Las 21 figuras salen de la pizarra: no hubo que ir a las notas ni una vez.
+    # Es la primera clase en la que pasa. La pizarra de esta clase está bien
+    # separada en bloques y casi no hay dibujos apretados contra otros; lo que
+    # sí abunda son los títulos de sección, y de ahí que haya tantos `borrar`.
+    3: [
+        ("web-servers-y-base-de-datos",   ("pizarra", 1), (340, 995, 830, 1490),  True),
+        ("dataset-shardeado",             ("pizarra", 2), (60, 335, 500, 790),    True,
+         [(40, 335, 245, 405)]),                                   # "SHARDING"
+        ("mapeo-dato-ubicacion",          ("pizarra", 2), (690, 505, 1200, 775),  True),
+        ("replicas-desincronizadas",      ("pizarra", 3), (385, 60, 830, 215),    True),
+        ("tipos-de-falla",                ("pizarra", 3), (50, 240, 850, 440),    True),
+        ("state-transfer",                ("pizarra", 3), (180, 822, 600, 1145),  True,
+         [(170, 805, 330, 826)]),                                  # "STATE TRANSFER"
+        # El borde de abajo lo fija el subíndice de S₀, que baja hasta 1362;
+        # justo debajo arranca la llave de "¿cómo conseguimos eso?".
+        ("maquina-de-estados-replicada",  ("pizarra", 3), (155, 1168, 1241, 1370), True,
+         [(145, 1352, 480, 1420)]),                                # la llave de abajo
+        ("clientes-sin-orden",            ("pizarra", 4), (200, 0, 490, 400),     True),
+        ("el-log",                        ("pizarra", 4), (330, 685, 880, 980),   True),
+        ("wal-de-postgres",               ("pizarra", 4), (300, 1080, 1040, 1480), True),
+        ("raft-y-su-log",                 ("pizarra", 5), (200, 15, 960, 560),    True,
+         [(185, 15, 280, 82)]),                                    # "Eg2 RAFT"
+        ("log-como-versionado",           ("pizarra", 5), (70, 600, 1140, 840),   True),
+        ("log-externo-kafka",             ("pizarra", 6), (90, 20, 860, 500),     True),
+        ("primary-backup",                ("pizarra", 6), (150, 610, 1190, 890),  True),
+        ("change-data-capture",           ("pizarra", 7), (140, 15, 1220, 545),   True,
+         [(130, 8, 470, 80)]),                                     # "COMBINACIÓN INTERESANTE"
+        ("chain-replication",             ("pizarra", 8), (320, 80, 878, 415),    True),
+        ("fallas-de-la-cadena",           ("pizarra", 8), (180, 412, 1200, 1355), True),
+        ("agregar-un-nodo",               ("pizarra", 9), (210, 0, 700, 375),     True),
+        ("split-brain",                   ("pizarra", 9), (250, 505, 930, 910),   True),
+        ("servicio-de-configuracion",     ("pizarra", 9), (280, 950, 830, 1295),  True),
+        ("raft-como-servicio-de-configuracion", ("pizarra", 9), (280, 1300, 760, 1700), True),
+    ],
 }
 
 # No todas las figuras salen de la pizarra o de las notas. `dean-y-ghemawat.jpg`
@@ -140,10 +191,25 @@ def renderizar_pizarra(tmp, apuntes):
     )
 
 
+def paginas_pizarra(tmp):
+    """Número de página -> archivo, para lo que dejó pdftoppm.
+
+    pdftoppm rellena con ceros a la izquierda según cuántas páginas tenga el
+    PDF: con 18 páginas escribe `p-01.png` y con 9 escribe `p-1.png`. Así que
+    el ancho no se puede dar por sentado —dárlo por sentado hacía que las
+    clases de menos de diez páginas se saltearan enteras— y se descubre.
+    """
+    return {int(re.search(r"p-(\d+)\.png$", f).group(1)): f
+            for f in glob.glob(os.path.join(tmp, "p-*.png"))}
+
+
 def abrir(tmp, apuntes, tipo, n):
     """Devuelve la página y la escala entre sus píxeles y los de la caja."""
     if tipo == "pizarra":
-        return Image.open(f"{tmp}/p-{n:02d}.png").convert("RGB"), DPI // 150
+        paginas = paginas_pizarra(tmp)
+        if n not in paginas:
+            raise FileNotFoundError(f"la pizarra no tiene página {n}")
+        return Image.open(paginas[n]).convert("RGB"), DPI // 150
     return Image.open(f"{apuntes}/notas/pagina-{n:02d}.jpg").convert("RGB"), 1
 
 
@@ -178,14 +244,11 @@ def exportar_grillas(tmp, apuntes, destino):
     """Vuelca las páginas con grilla, para leer de ahí las cajas de recorte."""
     os.makedirs(destino, exist_ok=True)
     # Cuántas páginas hay es cosa de cada clase, así que se descubren.
-    paginas = [("pizarra", n) for n in range(1, len(glob.glob(f"{tmp}/p-*.png")) + 1)]
+    paginas = [("pizarra", n) for n in sorted(paginas_pizarra(tmp))]
     paginas += [("notas", int(re.search(r"(\d+)", os.path.basename(f)).group(1)))
                 for f in sorted(glob.glob(f"{apuntes}/notas/pagina-*.jpg"))]
     for tipo, n in paginas:
-        try:
-            pagina, escala = abrir(tmp, apuntes, tipo, n)
-        except FileNotFoundError:
-            continue
+        pagina, escala = abrir(tmp, apuntes, tipo, n)
         paso = 100 if tipo == "pizarra" else 200
         im = dibujar_grilla(pagina, paso, escala)
         im.thumbnail((900, 1300))  # legible en un vistazo, sin ser enorme
@@ -201,11 +264,15 @@ def main():
     ap.add_argument("--apuntes", default=APUNTES_DEFAULT,
                     help="dónde está clonado el repo clases-apuntes "
                          f"(default: {APUNTES_DEFAULT})")
+    ap.add_argument("--fuente", type=int,
+                    help="clase del repo de apuntes de la que salen las páginas, "
+                         "cuando no es la misma que --clase (default: FUENTE_POR_CLASE)")
     ap.add_argument("--grilla", action="store_true",
                     help="volcar las páginas con grilla en vez de recortar")
     args = ap.parse_args()
 
-    apuntes = os.path.join(args.apuntes, "raw", f"clase{args.clase}")
+    fuente = args.fuente or FUENTE_POR_CLASE.get(args.clase, args.clase)
+    apuntes = os.path.join(args.apuntes, "raw", f"clase{fuente}")
     if not os.path.isdir(apuntes):
         sys.exit(f"no está el material de la clase {args.clase} en {apuntes}\n"
                  f"pasá la ubicación de clases-apuntes con --apuntes")
@@ -243,9 +310,10 @@ def main():
             # Los trazos de la pizarra se ensucian en jpeg, así que van en png;
             # las fotos y los scans pesan mucho menos en jpeg y no se nota.
             es_foto = fuente[0] == "notas" or (args.clase, nombre) in FOTOS
+            es_trazo = (args.clase, nombre) in TRAZOS
             png = os.path.join(destino, nombre + ".png")
             im.save(png, optimize=True)
-            if os.path.getsize(png) > 250_000 or es_foto:
+            if not es_trazo and (os.path.getsize(png) > 250_000 or es_foto):
                 os.remove(png)
                 archivo = os.path.join(destino, nombre + ".jpg")
                 im.save(archivo, quality=88, optimize=True, progressive=True)
