@@ -1,10 +1,10 @@
 ---
-title: "4. La consistencia relajada"
+title: "4. Garantías de consistencia"
 parent: "Clase 4 — Google File System"
 nav_order: 4
 ---
 
-# 4. La consistencia relajada
+# 4. Garantías de consistencia
 {: .no_toc }
 
 <details open markdown="block">
