@@ -15,7 +15,7 @@ nav_order: 3
 </details>
 
 
-## Del anti-patrón al primary-backup
+## Replicación de chunks
 
 Hay un supuesto que quedó implícito: las réplicas de un chunk, las copias que residen en cada chunkserver, son todas iguales. Vamos a ver que no lo son necesariamente, pero por ahora quedémonos con la versión simple.
 

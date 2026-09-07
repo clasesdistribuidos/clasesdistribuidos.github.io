@@ -32,7 +32,7 @@ Este punto no está del todo documentado; no se habla mucho de cómo se particio
   </figcaption>
 </figure>
 
-Lo que hace entonces el master de MapReduce al seleccionar qué le toca a cada quién es preguntarle al coordinador del GFS, para el archivo que tiene que particionar y repartir, en qué lugares físicos están las réplicas de esos chunks. Con esa información hace una selección afín de cada worker con los chunks que ya están ahí: le asigna algo que sabe que tiene localmente.
+Lo que hace entonces el master de MapReduce al seleccionar qué le toca a cada quien es preguntarle al coordinador del GFS, para el archivo que tiene que particionar y repartir, en qué lugares físicos están las réplicas de esos chunks. Con esa información hace una selección afín de cada worker con los chunks que ya están ahí: le asigna algo que sabe que tiene localmente.
 
 Después el worker, que va a actuar como un cliente común del GFS, le pregunta por los chunks al coordinador, que le responde lo de siempre: el primary, un secondary, otro secondary. Pero puede ocurrir que uno esté justo donde el worker se está ejecutando, y entonces lo aprovecha: al estar local, no necesita conectarse por la red.
 

@@ -1,10 +1,10 @@
 ---
-title: "7. Hasta dónde llegó GFS"
+title: "7. Limitaciones de GFS"
 parent: "Clase 4 — Google File System"
 nav_order: 7
 ---
 
-# 7. Hasta dónde llegó GFS
+# 7. Limitaciones de GFS
 
 El punto sensible es el coordinador, el mismo que ya nos había aparecido en MapReduce: es una única máquina física, y si falla, falla todo.
 

@@ -15,7 +15,7 @@ nav_order: 2
 </details>
 
 
-## El archivo partido en chunks y las piezas que lo sirven
+## Abstracciones fundamentales
 
 La abstracción fundamental del sistema es el archivo: tiene un nombre y una enorme cantidad de datos, y se lo ubica dentro de un sistema de directorios que sirve para nombrar los objetos, algo como `/dir/file.txt`. Hasta ahí ninguna sorpresa. La particularidad, además de ser muy grande, es que se lo divide en fragmentos.
 
@@ -57,7 +57,7 @@ La primera de esas cuentas aparece enseguida. Cuando queremos leer o escribir so
 
 Que un cliente cargue con esa clase de lógica no es una decisión inocente, y funcionaba porque era Google: internamente se daba por supuesto que sus desarrolladores sabían usar bien estas herramientas, y por eso podían permitirse entregarles un cliente complejo. Más que un cliente, era una biblioteca para acceder a todos estos sistemas.
 
-## Una lectura de extremo a extremo
+## Una lectura end-to-end
 
 Sigamos una lectura de extremo a extremo, que es la forma más sencilla de entenderla. El cliente llama a `read` con el file name, el offset y quizás un buffer, según cómo esté implementada la biblioteca; con eso calcula el chunk index. Y lo primero que hace es preguntarle al coordinador dónde están los servidores concretos que tienen ese chunk. En el dibujo hay dos chunkservers, pero la escala real son cientos o miles de máquinas, cada una con muchos chunks de muchos archivos distintos.
 

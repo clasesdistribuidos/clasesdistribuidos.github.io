@@ -15,7 +15,7 @@ nav_order: 4
 </details>
 
 
-## Sin atomic write: el append y su ejemplo
+## Sin atomic write: el append
 
 Ese error merece que nos detengamos, porque es aquí donde el GFS muestra su costado más delicado: los requisitos de consistencia son sumamente relajados. Relajados quiere decir, ante todo, que el sistema no implementa lo que sería un atomic write: justamente la propiedad que uno esperaría de un sistema de storage.
 
