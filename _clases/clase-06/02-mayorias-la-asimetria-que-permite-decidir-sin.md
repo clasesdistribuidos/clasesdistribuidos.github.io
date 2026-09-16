@@ -25,7 +25,8 @@ La intuición que nos interesa es más específica: los sistemas donde usamos ma
 
 Con tres nodos, N vale tres y M vale dos. La propiedad de los sistemas impares es esta: si particionamos la red de cualquier forma, siempre queda una mitad con mayoría y una con minoría. Con cinco se ve mejor porque hay más cortes posibles. Si el corte aísla un solo nodo, queda una mitad con cuatro y otra con uno; si cae más al medio, una con tres y otra con dos, y mirados desde el otro lado son los mismos dos casos. En todos hay al menos tres nodos de un lado, y esa es la mitad que continuaría.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/particion-mayoria-minoria.png' | relative_url }}" alt="Particiones de mayoría y de minoría con tres y cinco nodos">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos filas de nodos con el rayo de la partición —tres nodos con el corte entre el segundo y el tercero, cinco nodos con el corte entre el tercero y el cuarto— y las llaves que rotulan la partición de mayoría y la de minoría
@@ -53,7 +54,8 @@ Esa asimetría se ve mejor con un anticipo de lo que viene: la elección de líd
 
 Uno de esos nodos va a manifestar que quiere ser líder, por razones que vamos a ver después. Se transforma en candidato, y lo que hace es pedirles votos a los demás. Los servidores le responden, y cuando el candidato recibe una mayoría de votos se convierte en líder. Hagamos el conteo con detenimiento: el candidato típicamente se vota a sí mismo, así que le hacen falta dos votos ajenos para llegar a la mayoría de tres.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/candidato-request-vote.jpg' | relative_url }}" alt="Un candidato pidiendo el voto a los otros cuatro nodos">
   <figcaption>
     <span class="figura-label">Figura</span>
     S1 rotulado candidato, con cuatro flechas hacia S2, S3, S4 y S5, una de ellas rotulada REQUEST VOTE
@@ -67,7 +69,8 @@ Del lado grande, el candidato le pide un voto a un vecino y ese dice que sí; le
 
 El conteo de ese lado es donde suele producirse la confusión. Ese candidato tiene dos votos: el propio y el del vecino. Necesita tres, porque el sistema total es de cinco. Le hacen falta dos votos externos y consiguió uno solo.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/eleccion-con-particion.png' | relative_url }}" alt="Elección de líder con la red particionada">
   <figcaption>
     <span class="figura-label">Figura</span>
     los cinco nodos partidos en diagonal por el rayo de la partición; del lado grande, el candidato 1 con su propio voto y dos flechas hacia sus vecinos, que se convierte en líder; del lado pequeño, el candidato 2 con una sola flecha, que no llega a líder; al pie, las llaves que rotulan la mitad no degradada y la degradada

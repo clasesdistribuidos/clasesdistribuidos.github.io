@@ -23,7 +23,8 @@ Volvamos a los cinco nodos de siempre, con el quórum de lectura y el de escritu
 
 Si encerramos tres de esos nodos en un círculo, eso es un quórum, por definición. Elijamos ahora otro cualquiera, también de tres. La propiedad principal es esta: dos quórums tienen al menos un elemento en común. Asociando quórum a mayoría: dos mayorías siempre contienen un nodo en común. Es casi evidente, y aun así vale la pena detenerse en ello. No hace falta que sean grupos dibujados cerca uno del otro: podemos comparar el primer grupo de tres contra cualquier otro elegido lo más lejos posible, y también van a compartir un elemento. Con cinco nodos y grupos de tres no hay lugar para construir dos que no se solapen.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/dos-quorums-se-tocan.png' | relative_url }}" alt="Dos mayorías de cinco nodos que se solapan en el del medio">
   <figcaption>
     <span class="figura-label">Figura</span>
     cinco nodos en fila; una elipse encierra los tres primeros y otra los tres últimos, y las dos se solapan exactamente en el nodo del medio
@@ -35,7 +36,8 @@ De ahí sale el corolario que nos interesa: toda mayoría tiene un servidor actu
 
 Tenemos los cinco nodos y un cliente, C1, que le envía la escritura `Wx1` a tres de ellos; le respondió OK una mayoría, no las cinco. Después viene otro cliente, C2, que quiere leer. Le envía `Rx` a un nodo, y de ahí puede obtener cualquier valor, porque nada garantiza que esté actualizado: bien puede ser uno de los dos que quedaron fuera de la escritura. Le envía `Rx` a otro, y a un tercero, y entre esos tres va a obtener el valor que corresponde. Si leyó tres nodos, tiene la garantía de que uno le va a devolver un valor actualizado, y esa garantía no depende de la suerte: sale de la propiedad de la intersección.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/quorum-lectura-escritura.jpg' | relative_url }}" alt="Quórum de escritura y de lectura de tres sobre cinco nodos">
   <figcaption>
     <span class="figura-label">Figura</span>
     los cinco nodos en fila; C1 abajo a la izquierda con tres flechas rotuladas Wx1 hacia los nodos 1, 2 y 3; C2 abajo al centro con tres flechas rotuladas Rx1 hacia los nodos 3, 4 y 5, y al pie la leyenda de que C2 siempre lee un valor actual al menos una vez
@@ -49,7 +51,8 @@ Pongámosle nombres: el quórum de lectura —anotado R— es tres, el de escrit
 
 Ahora la generalización, que no vamos a usar en Raft pero conviene tener vista: los quorum systems. Esos tres valores tienen que respetar una fórmula, `W + R > N`, que en el ejemplo de arriba se cumple: 3 + 3 es 6, y N es 5. Eso permite diseñar sistemas más flexibles. Si quisiéramos leer de dos máquinas, escribir en tres ya no alcanza: puede pasar que las dos que leímos no tengan la versión actualizada. Y la fórmula lo dice antes de que lo veamos en el dibujo, porque 3 más 2 es 5, y 5 no es mayor que 5. Va a haber que escribir en una máquina más: `R = 2`, `W = 4`, N igual a cinco, y ahora la suma da 6.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/quorum-w4-r2.png' | relative_url }}" alt="Quórum de escritura de cuatro y de lectura de dos">
   <figcaption>
     <span class="figura-label">Figura</span>
     cinco nodos en fila; abajo, un cliente con cuatro flechas rotuladas Wx1 hacia los cuatro primeros; arriba a la derecha, C2 con dos flechas rotuladas Rx1 hacia los nodos 4 y 5, siendo el 4 la intersección
@@ -74,7 +77,8 @@ Lo que no dijimos es el contraejemplo, que vuelve evidente la necesidad de ese n
 
 Y el número impar no es una superstición de ingenieros: la cuarta máquina no aporta nada. Con tres nodos la mayoría es dos y el sistema tolera que se caiga uno. Con cuatro, la mayoría pasa a ser tres, así que sigue tolerando que se caiga uno solo. Se paga un 33 % más de hardware por exactamente cero tolerancia adicional, y además se abre el corte 2-2 que antes no existía.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/cuatro-nodos-n4-m3.png' | relative_url }}" alt="Cuatro nodos partidos dos y dos">
   <figcaption>
     <span class="figura-label">Figura</span>
     cuatro nodos con una barra que los parte en dos y dos, y debajo N = 4, M = 3

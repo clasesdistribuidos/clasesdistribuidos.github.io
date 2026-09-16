@@ -122,6 +122,39 @@ FIGURAS_POR_CLASE = {
         ("chunk-local-y-shuffle",       ("pizarra", 9),  (60, 5, 750, 650),       True),
         ("tolerancia-a-fallas",         ("pizarra", 9),  (35, 730, 1150, 1090),   True),
     ],
+
+    6: [
+        ("gfs-append-sin-atomicidad",   ("pizarra", 1),  (250, 145, 1110, 500),   True),
+        ("spf-y-split-brain",           ("pizarra", 1),  (5, 758, 1110, 920),     True),
+        ("particion-o-caida",           ("pizarra", 1),  (140, 940, 1210, 1355),  True),
+        ("particion-mayoria-minoria",   ("pizarra", 2),  (225, 250, 1030, 765),   True),
+        # La pizarra pág. 2 dibuja la elección pero sin rotular el REQUEST VOTE;
+        # las notas sí lo tienen.
+        ("candidato-request-vote",      ("notas", 2),    (400, 1540, 945, 2010),  False,
+         [(0, 1520, 615, 1625)]),                                  # "Eg elegir un líder"
+        ("eleccion-con-particion",      ("pizarra", 3),  (225, 15, 960, 485),     True),
+        ("dos-quorums-se-tocan",        ("pizarra", 3),  (290, 610, 870, 830),    True),
+        # La pizarra pág. 3 no tiene la leyenda "C2 siempre lee un valor actual
+        # al menos una vez" que describe el pie; las notas sí.
+        ("quorum-lectura-escritura",    ("notas", 3),    (470, 1355, 1215, 2045), False,
+         [(0, 1870, 560, 2160)]),                                  # "Quorums W = R = 3"
+        ("quorum-w4-r2",                ("pizarra", 4),  (380, 215, 1100, 580),   True),
+        ("cuatro-nodos-n4-m3",          ("pizarra", 4),  (10, 955, 200, 1120),    True),
+        ("estructura-basica-raft",      ("pizarra", 6),  (80, 25, 1110, 575),     True,
+         [(20, 28, 430, 100)]),                                    # "Estructura básica Raft"
+        # La pizarra no tiene el nodo con los estados C y L punteados.
+        ("estados-follower-candidato-lider", ("notas", 6), (740, 1355, 1115, 1790), False),
+        ("lider-y-followers-rv",        ("pizarra", 7),  (385, 70, 790, 480),     True,
+         [(0, 20, 400, 85)]),                                      # "Elección de líder"
+        ("voto-dividido",               ("pizarra", 7),  (245, 635, 975, 955),    True,
+         [(0, 586, 300, 650)]),                                    # "Voto dividido"
+        ("election-timeout-jitter",     ("pizarra", 7),  (40, 975, 730, 1445),    True),
+        ("logs-iguales",                ("pizarra", 8),  (10, 485, 510, 835),     True),
+        ("replicacion-con-falla",       ("pizarra", 8),  (750, 418, 1160, 925),   True),
+        ("logs-divergentes",            ("pizarra", 9),  (5, 90, 390, 400),      True),
+        ("dos-lideres-y-falla",         ("pizarra", 9),  (700, 10, 1205, 600),    True,
+         [(690, 540, 740, 600)]),                                  # la flecha que viene de la tabla
+    ],
 }
 
 # No todas las figuras salen de la pizarra o de las notas. `dean-y-ghemawat.jpg`
@@ -138,6 +171,12 @@ def renderizar_pizarra(tmp, apuntes):
     subprocess.run(
         ["pdftoppm", "-r", str(DPI), "-png", pdf, os.path.join(tmp, "p")], check=True
     )
+    # pdftoppm numera con el ancho justo para la cantidad de páginas, así que un
+    # pdf de menos de diez deja `p-1.png` y no `p-01.png`. Se emparejan todos a
+    # dos dígitos para que las páginas se nombren igual venga de donde venga.
+    for f in glob.glob(os.path.join(tmp, "p-*.png")):
+        n = int(re.search(r"p-(\d+)\.png$", f).group(1))
+        os.replace(f, os.path.join(tmp, f"p-{n:02d}.png"))
 
 
 def abrir(tmp, apuntes, tipo, n):

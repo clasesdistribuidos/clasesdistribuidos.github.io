@@ -21,7 +21,8 @@ La segunda de esas condiciones —votar solamente candidatos actualizados— par
 
 Empecemos por el estado al que queremos llegar. Tenemos tres servidores, S1, S2 y S3, con el log de cada uno como una fila de casilleros. Recordemos la convención: el número de cada casillero no es el dato, es el término en que se escribió. S1 tiene una sola entrada, del término 3; S2 tiene dos, las dos del término 3; y S3 también tiene dos del término 3. Algo que vamos a poder demostrar más adelante y que por ahora tomamos como dado: si dos servidores tienen dos entradas del término 3, está garantizado que su contenido es el mismo. No son dos entradas cualesquiera en cada uno; son las mismas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/logs-iguales.png' | relative_url }}" alt="Logs de tres servidores con los mismos términos">
   <figcaption>
     <span class="figura-label">Figura</span>
     tabla de términos por índice de log, con las columnas 1 y 2 y las filas S1, S2, S3; S1 tiene 3, S2 tiene 3 3 y S3 tiene 3 3
@@ -31,7 +32,8 @@ Empecemos por el estado al que queremos llegar. Tenemos tres servidores, S1, S2 
 
 ¿Cómo se llega ahí? Dibujemos las tres líneas de tiempo y asumamos que el líder es S2. Podría ser S3 también; con S1 como líder, en cambio, no se llega a ninguna parte. Al principio los tres logs están vacíos. El líder toma la primera entrada del término 3, la guarda en su log y se la envía a los otros dos, que la escriben. Después aparece una segunda: la escribe localmente y se la envía a uno, que también la escribe. Y cuando va a enviársela al otro, muere. Así quedamos exactamente con los tres logs descritos arriba. Lo que importa es eso: ese estado, que parece un accidente improbable, es alcanzable.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/replicacion-con-falla.png' | relative_url }}" alt="El líder replica dos entradas y la segunda no llega a un follower">
   <figcaption>
     <span class="figura-label">Figura</span>
     tres líneas de vida verticales S1, S2 y S3, con S2 recuadrado y rotulado LÍDER al centro; las entradas son cuadrados con el término dentro; el líder replica la primera entrada a los dos, después replica la segunda a uno, y la flecha hacia el otro muere en una X
@@ -56,7 +58,8 @@ Y así es muy fácil saber qué está comiteado, porque comitear en Raft no depe
 
 El segundo ejemplo es más complicado, y ahí el log queda en un estado más extraño. Partamos del caso que acabamos de construir y agreguémosle un par de fallas más. El estado al que vamos a llegar es este: S1 tiene una sola entrada del término 3; S2 tiene dos del término 3 y una tercera del término 4; y S3 tiene dos del término 3 y una tercera del término 5. Esas dos últimas filas merecen detenerse: dos servidores tienen, en el mismo casillero, el tercero, términos distintos: uno un cuatro y el otro un cinco. Los logs divergieron.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/logs-divergentes.png' | relative_url }}" alt="Logs con un 4 y un 5 en el mismo índice">
   <figcaption>
     <span class="figura-label">Figura</span>
     tabla de términos por índice de log con las filas S1 (3), S2 (3 3 4) y S3 (3 3 5), con el 4 y el 5 destacados por ser los términos que difieren en el mismo índice
@@ -70,7 +73,8 @@ Eventualmente se elige un segundo líder, que va a ser S2. A ese líder le llega
 
 Entonces el primero revive, justo en un momento en que no hay ningún líder. Se inicia una nueva elección, es elegido líder otra vez, y escribe una entrada del término 5 en el mismo casillero en el que el otro había escrito su cuatro. Y hasta ahí llega: muere otra vez sin enviársela a nadie. Después reviven los tres, y así llegamos al estado dibujado más arriba. El recorrido sirve para mostrar que es posible llegar a estados tan poco intuitivos como este, con máquinas que mueren y reviven constantemente.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/dos-lideres-y-falla.png' | relative_url }}" alt="Dos líderes sucesivos que caen dejando logs divergentes">
   <figcaption>
     <span class="figura-label">Figura</span>
     tres líneas de vida, con S3 recuadrado y rotulado LÍDER 1 y S2 recuadrado y rotulado LÍDER 2; las entradas son cuadrados con el término dentro; el primer líder replica un 3 a los otros dos, después replica un segundo 3 a uno solo y muere en una X; el segundo líder agrega un cuadrado con un 4 y muere en otra X; después el primero revive, agrega un 5 en el mismo índice y también muere

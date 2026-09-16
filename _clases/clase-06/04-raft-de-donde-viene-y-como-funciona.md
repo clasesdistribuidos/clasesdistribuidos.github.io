@@ -55,7 +55,8 @@ Lo que Raft implementa internamente es una sola estructura: un log. Y sobre ese 
 
 El dibujo se repite tres veces, una por máquina. Cada una tiene arriba la tabla —la misma en las tres— y abajo un log. Y una de las tres va a ser el líder, elegido dinámicamente. Para el ejemplo, digamos que es el del medio.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/estructura-basica-raft.png' | relative_url }}" alt="Tres servidores con la aplicación arriba y el log de Raft abajo">
   <figcaption>
     <span class="figura-label">Figura</span>
     los tres servidores lado a lado, cada uno partido en la tabla de dos columnas de la aplicación RSM arriba y la fila de celdas del log de Raft abajo; el del medio rotulado líder, con el PUT(k,v) de C₁ entrando a su aplicación y el OK saliendo, las flechas AppendEntries hacia los dos followers y los ACK de vuelta, y las flechas COMMIT subiendo de la capa Raft a la capa de aplicación
