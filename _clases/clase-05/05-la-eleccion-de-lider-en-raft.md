@@ -29,7 +29,8 @@ Cuánto es ese tiempo es lo que se llama el election timeout. Cuando pasa esa ca
 
 Todo esto se ordena mejor como un diagrama de estados, que es como lo presenta el paper en su figura 4. Cuando un nodo inicia, está en modo follower. Hay detalles que se terminan de entender al leer el algoritmo completo, pero lo esencial es simple: si un follower recibe un heartbeat de un líder, automáticamente lo acepta. La transición interesante es la otra: si se le expira el election timeout, pasa al estado candidato. Decide, sin consultar a nadie, que quiere ser el nuevo líder.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-05/estados-follower-candidato-lider.jpg' | relative_url }}" alt="Un follower que pasa a candidato y a líder">
   <figcaption>
     <span class="figura-label">Figura</span>
     el nodo en doble círculo rotulado F con las letras C y L punteadas debajo, y cinco flechas saliendo hacia cinco followers rotulados F
@@ -47,7 +48,8 @@ Al inicio los cinco son followers, todos en el término uno, y cada nodo tiene e
 
 El nodo cuyo timeout expira primero aumenta el término y envía un RequestVote a todos los nodos. El orden importa: se pone en modo candidato y al hacerlo aumenta el término, de manera que el pedido de voto sale ya con el término nuevo. Los votos que van llegando se le acumulan hasta alcanzar la mayoría: si de esos cuatro dos le responden que sí, esos dos sumados al propio lo transforman en líder. Ese es el caso fácil y feliz.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-05/lider-y-followers-rv.png' | relative_url }}" alt="Un nodo enviando RequestVote a cuatro followers">
   <figcaption>
     <span class="figura-label">Figura</span>
     el candidato en un círculo rotulado C con cuatro flechas hacia cuatro followers rotulados F, la primera flecha rotulada RV
@@ -85,7 +87,8 @@ El resultado es previsible: cada candidato obtuvo un voto y el sistema quedó bl
 
 La situación se desbloquea sola, aunque con demora. Los election timers siguen corriendo, y en algún momento el ciclo comienza nuevamente. Si los términos venían uno, dos, tres, puede ocurrir que el cuatro quede vacante y que todos empiecen una nueva elección en el cinco. Lo que se va a ver en los logs es que ese término quedó omitido: un término sin líder es un término sin entradas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-05/voto-dividido.png' | relative_url }}" alt="Voto dividido entre dos candidatos">
   <figcaption>
     <span class="figura-label">Figura</span>
     el líder caído tachado con una X arriba; a la izquierda un candidato C con una flecha hacia un nodo y a la derecha otro candidato C con una flecha hacia otro nodo, sin que ninguno junte mayoría; al costado, la fila de términos 1 2 3 4 5 con una flecha bajo el 4 rotulada vacante
@@ -97,7 +100,8 @@ Para evitar que eso pase constantemente se agrega randomización, que es lo que 
 
 El resultado es el que buscábamos: cada servidor cae en un momento distinto, a uno se le va a vencer el timeout primero, y ese inicia la elección. Los demás lo reconocen como candidato antes de que sus propios timeouts expiren, de manera que el segundo en la fila nunca llega a postularse.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-05/election-timeout-jitter.png' | relative_url }}" alt="Election timeout con su mínimo y el jitter">
   <figcaption>
     <span class="figura-label">Figura</span>
     una línea de tiempo con la flecha H del heartbeat al comienzo, la marca ET_MIN y la llave JITTER extendiéndose hasta la marca ET; debajo, una segunda línea de tiempo con las marcas de los election timeouts de varios servidores cayendo en distinto orden

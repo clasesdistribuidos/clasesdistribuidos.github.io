@@ -25,7 +25,8 @@ El punto de partida es una pregunta que quedó pendiente de la clase pasada, con
 
 Un chunk vive replicado en tres chunkservers. El cliente le envía un registro al sistema; ese registro se escribe primero en el primary, y el primary después trata de escribirlo en los dos peers que tienen las otras copias. A uno se lo envía y llega. Cuando intenta enviárselo al otro, puede fallar la conexión, no llegar nunca la respuesta, reintentar todo lo que quiera y que la respuesta siga sin llegar. ¿Qué hace el Google File System? Le informa al cliente que la operación falló y que la resuelva él. Literalmente: "esto falló, resuélvalo usted".
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-05/gfs-append-sin-atomicidad.png' | relative_url }}" alt="Tres réplicas de un chunk con el append fallido en la tercera">
   <figcaption>
     <span class="figura-label">Figura</span>
     las tres réplicas de un chunk; el append llega a las dos primeras y en la tercera queda tachado
@@ -62,7 +63,8 @@ Hay un segundo problema que estos algoritmos vienen a resolver, y estaba en los 
 
 El problema es directo: ese nodo era una máquina, y si moría, moría todo el sistema. ¿Cómo se evita? Que en vez de ser uno sean varios. Se soluciona con replicación.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-05/spf-y-split-brain.png' | relative_url }}" alt="El punto único de falla y la cadena hacia el split brain">
   <figcaption>
     <span class="figura-label">Figura</span>
     el nodo privilegiado rotulado SPF con sus nodos pequeños dispuestos debajo, y al lado la cadena coordinador/master → replicación → split brain
@@ -80,7 +82,8 @@ Le escribimos el 15 a uno y también al otro. Si el otro responde afirmativament
 
 Pero una no respuesta puede ser otra cosa: que la red se haya particionado. No falló el servidor, sino un router, un switch, cualquier componente de red en el medio. ¿Qué implica? Que quizás nos quedaron algunos clientes de un lado de la red y otros del otro —pensemos en dos data centers—. Del otro lado quedó el cliente dos, que quiere escribir un valor distinto, digamos 20, y que también está intentando enviarle su escritura al otro servidor, y a él también le falla.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-05/particion-o-caida.png' | relative_url }}" alt="Diagrama de tiempo de una partición entre dos servidores">
   <figcaption>
     <span class="figura-label">Figura</span>
     diagrama de tiempo de la partición: C1 envía Wx15 a S1 y su segundo intento hacia S2 muere en una X; C2 envía Wx20 a S2 y su intento hacia S1 muere en otra X; entre las dos líneas de vida, el rayo de la partición, y al pie las dos opciones indistinguibles
