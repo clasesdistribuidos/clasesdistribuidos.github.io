@@ -39,7 +39,8 @@ El escenario concreto es el peor que puede ocurrirnos: el follower le responde a
 
 Aquí conviene un cambio de perspectiva que ordena todo el asunto: estas situaciones siempre hay que analizarlas desde el punto de vista del cliente, y en este caso hay que considerar que el líder es el cliente que le está enviando datos al follower. Si el follower responde OK, el líder cuenta con esa garantía: el OK significa que la entrada está en el disco del otro, no en su memoria.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/lider-persiste-y-responde.png' | relative_url }}" alt="El líder recibe la entrada, la replica y recibe el OK">
   <figcaption>
     <span class="figura-label">Figura</span>
     el líder —doble círculo, con la marca verde— recibiendo la entrada del cliente C₁, enviándosela al follower y recibiendo el OK de vuelta; el esquema del líder como cliente del follower

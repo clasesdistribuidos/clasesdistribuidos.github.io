@@ -35,7 +35,8 @@ Y después toma el log y elimina todo lo anterior a ese punto, liberando el espa
 
 Hay un detalle de la representación que conviene aclarar para no confundirse con los índices: el tramo eliminado se considera conceptualmente existente. No se reinicia la numeración; esa entrada sigue siendo la 13, y desde allí continúa. Simplemente el log se eliminó desde ese punto hacia atrás.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/log-compaction.png' | relative_url }}" alt="El log compactado en un snapshot en el índice 12">
   <figcaption>
     <span class="figura-label">Figura</span>
     el diagrama de compaction — arriba la aplicación como tabla, abajo el log como secuencia de celdas numeradas 10, 11, 12, 13 y siguientes, con la flecha vertical marcando el punto de snapshot en el 12; debajo el log truncado desde el 13 con el tramo previo en línea de puntos, y al costado el snapshot etiquetado con un 12 recuadrado y la línea punteada que baja de la aplicación al snapshot
@@ -45,7 +46,8 @@ Hay un detalle de la representación que conviene aclarar para no confundirse co
 
 Las ventajas son evidentes. Cuando un servidor caiga y deba recuperarse, restaurar la aplicación va a ser mucho más rápido, porque no tiene que recorrer el log desde el principio; ni siquiera lo conserva, el principio ya no existe. Lo que ejecuta es el restore, en dos pasos: primero toma el snapshot y se lo envía a la capa de aplicación, que del mismo modo en que lo serializó ahora lo deserializa y lo coloca nuevamente en memoria; después toma el log desde la posición 13 —porque sabe que en el 12 estábamos aplicados— y aplica cada una de esas entradas de nuevo, un replay con el que se pone al día.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/restore.jpg' | relative_url }}" alt="Restore desde el snapshot y replay del log">
   <figcaption>
     <span class="figura-label">Figura</span>
     el restore — la caja de un servidor dividida en aplicación arriba y Raft abajo, el log truncado desde el 13, el snapshot etiquetado 12, y las dos flechas numeradas ① del snapshot a la aplicación y ② del replay del log a la aplicación
@@ -63,7 +65,8 @@ Queda un último detalle, y es el que mayor dificultad va a presentar a la hora 
 
 Veamos un ejemplo sencillo. Dos servidores, S1 y S2, y en algún lugar estará el tercero. S1 tiene apenas dos entradas; S2 tiene varias, pero las primeras están dibujadas en otro color, y ese color significa algo preciso: ese tramo del log fue eliminado, ya no existe, no está en disco ni en ningún otro lugar.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/log-eliminado.png' | relative_url }}" alt="Un follower atrasado frente a un log ya compactado">
   <figcaption>
     <span class="figura-label">Figura</span>
     los dos logs comparados — S1 con dos entradas y S2 con varias, las primeras marcadas en otro color y la llave &quot;log eliminado&quot; debajo
@@ -81,7 +84,8 @@ Le envía una operación diferente, `InstallSnapshot`. Hasta este punto todo el 
 
 El receptor realiza dos acciones. La primera: su log ya no le resulta útil, puede eliminarlo por completo. La segunda: recibe el snapshot, lo almacena en algún lugar —quizás ni siquiera lo almacene— y se lo transfiere a la capa de aplicación, que debe restaurarlo. A esa altura vamos a estar con un snapshot en la posición 12 del log anterior, porque ese 12 es lo que nos lo indica. Y después falta lo que va del 13 en adelante, que el líder debe enviarle para que lo aplique. Eso viaja por separado: la operación nueva transporta únicamente el snapshot, junto con el índice y el término hasta los que está aplicado, y si el snapshot es grande se divide en fragmentos y viaja en varios mensajes. Las entradas siguientes vuelven por el `AppendEntries` habitual, con el mecanismo que ya conocemos, una vez que el follower quedó posicionado en el 12.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/install-snapshot.png' | relative_url }}" alt="El líder envía su snapshot al follower con InstallSnapshot">
   <figcaption>
     <span class="figura-label">Figura</span>
     las dos cajas de líder y follower, cada una con su log como secuencia etiquetada 12 y su snapshot como tabla, la flecha curva rotulada `InstallSnapshot` del líder al follower, y del lado del follower las dos flechas hacia arriba, snapshot a la aplicación y log a la aplicación

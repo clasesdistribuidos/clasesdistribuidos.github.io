@@ -27,7 +27,8 @@ Empecemos con el ejemplo habitual de cinco nodos, con el que se visualiza casi t
 
 El líder les envía esa entrada a dos vecinos con un `AppendEntries`. Los dos la agregan a su log y responden afirmativamente. Con esas dos respuestas el líder comitea la entrada, y recién entonces le responde OK al cliente. Ese OK significa que la entrada está comiteada, es decir, que está por lo menos en una mayoría de nodos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/cluster-put-y-ack.png' | relative_url }}" alt="Cluster de cinco con el líder recibiendo un PUT y replicándolo">
   <figcaption>
     <span class="figura-label">Figura</span>
     cluster de cinco nodos, el líder al centro marcado con doble círculo, el cliente C1 enviándole un PUT, flechas AE hacia dos vecinos y OK de vuelta, más el OK final al cliente; tres nodos con marca verde y dos vacíos
@@ -41,7 +42,8 @@ Fijemos el estado antes de introducir la falla. El líder está actualizado y do
 
 La primera falla que introducimos es una partición de red, de manera tal que el líder queda de un lado con un solo vecino y los otros tres quedan del otro lado.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/cluster-particionado.png' | relative_url }}" alt="El cluster de cinco cruzado por una partición">
   <figcaption>
     <span class="figura-label">Figura</span>
     el mismo cluster de cinco cruzado por la línea roja de la partición, con el líder viejo y un follower de un lado y tres nodos del otro
@@ -111,7 +113,8 @@ Los cuatro nodos que quedan dejan de recibir heartbeats y van a iniciar una elec
 
 Numeremos los nodos: S2, S3, S4 y S5 son los cuatro que siguen en funcionamiento, y S2 es el que tiene la marca verde.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/lider-caido.jpg' | relative_url }}" alt="Cluster de cinco con el líder S1 tachado">
   <figcaption>
     <span class="figura-label">Figura</span>
     cluster de cinco nodos con el líder S1 tachado en rojo, S2 con la marca verde y S3, S4 y S5 vacíos
@@ -133,7 +136,8 @@ Ese es el primer caso, y el más llamativo de los dos. Habría convenido empezar
 
 El caso sencillo es que el candidato sea, por ejemplo, S3. Les envía `RequestVote` a todos. S2 lo rechaza, porque S3 no está más actualizado que él, pero S4 y S5 votan a favor, y con esos dos votos se transforma en el nuevo líder. Tres de los cuatro ya están sincronizados entre sí, así que con ellos no hay nada que hacer; con el restante sí: el nuevo líder le va a eliminar esa entrada a S2.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/candidato-si-y-no.png' | relative_url }}" alt="S3 candidato recibiendo dos sí y un no">
   <figcaption>
     <span class="figura-label">Figura</span>
     cluster de cinco con S1 tachado, S3 rotulado como candidato, flechas rotuladas &quot;sí&quot; hacia S4 y S5 y una flecha rotulada &quot;NO&quot; hacia S2

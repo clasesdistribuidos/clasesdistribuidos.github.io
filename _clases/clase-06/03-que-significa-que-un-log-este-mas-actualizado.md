@@ -25,7 +25,8 @@ La primera: el término de la última entrada del log del candidato tiene que se
 
 Enunciado así, de manera escueta, confunde más de lo que aclara. Veamos un ejemplo de tres servidores, sin índices porque no son relevantes: lo único que importa son los términos. S1 tiene tres entradas, de los términos 5, 6 y 7; S2 tiene dos, de los términos 5 y 8; S3 tiene lo mismo que S2. El contraste es lo que interesa: S1 es el más largo, pero su última entrada es del término 7; los otros dos son más cortos, pero su última entrada es del 8.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/logs-567-y-58.png' | relative_url }}" alt="Logs 5 6 7, 5 8 y 5 8">
   <figcaption>
     <span class="figura-label">Figura</span>
     tabla de logs de S1, S2 y S3 con los términos `5 6 7` / `5 8` / `5 8`, sin índices
@@ -43,7 +44,8 @@ El razonamiento inmediato es equivocado, y vale la pena verlo caer. Podría pens
 
 Y con eso ya estamos en el término ocho. ¿Cómo lo saben los nodos? Porque estuvieron intercambiando mensajes mientras votaban previamente, y esos mensajes les fueron informando el término.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/traza-cronologica.jpg' | relative_url }}" alt="Secuencia de fallas y elecciones que lleva a esos logs">
   <figcaption>
     <span class="figura-label">Figura</span>
     la traza cronológica de cómo se llega a esa tabla — S1 líder escribe el 6, falla, se recupera, vuelve a ser líder y escribe el 7, falla, y S2 es elegido líder en el término 8 con S3 actualizando su término; términos recuadrados, líneas verdes para &quot;líder/recuperación&quot; y rojas para &quot;falla&quot;

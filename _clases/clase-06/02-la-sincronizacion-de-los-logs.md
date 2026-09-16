@@ -21,7 +21,8 @@ En los escenarios anteriores apareció varias veces el mismo movimiento: el líd
 
 Conviene reducir la escala. Este ejemplo va a ser de tres servidores, S1, S2 y S3, y vamos a observar solamente cuatro posiciones del log: los índices 10, 11, 12 y 13. El estado del que partimos ya lo habíamos visto la clase anterior. En el índice 10 hay una entrada en cada uno de los tres, las tres del término 3. En el 11 hay dos, en S2 y en S3, también del término 3. En el 12 hay dos otra vez, pero no coinciden: en S2 una del término 4 y en S3 una del término 5. Y en el 13 hay una sola, en S3, del término 6.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/log-rollback-appendentries.png' | relative_url }}" alt="Logs de tres servidores y los campos del AppendEntries">
   <figcaption>
     <span class="figura-label">Figura</span>
     tabla de logs de los tres servidores sobre los índices 10 a 13 (`3` / `3 3 4` / `3 3 5 6`), con la entrada del término 4 recuadrada en rojo y la del 5 en verde, y al costado el bloque de campos del AppendEntries: ENTRY[6], prevLogIndex = 12, prevLogTerm = 5
@@ -43,7 +44,8 @@ Falta justificar por qué con esos dos números alcanza, y la justificación es 
 
 Dónde se observa esto en el diagrama: en el índice 11. Esas dos entradas están en la misma posición del log de dos servidores distintos y son las dos del término 3, así que si pudiéramos abrir esa celda y ver el comando que contiene, sería exactamente el mismo. Ese es el caso favorable, y es el que el algoritmo va a buscar.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/caso-favorable.jpg' | relative_url }}" alt="Dos logs que coinciden en el índice 11">
   <figcaption>
     <span class="figura-label">Figura</span>
     el recuadro del &quot;caso favorable&quot;, con las dos entradas del término 3 del índice 11 recuadradas y unidas por un signo igual
@@ -61,7 +63,8 @@ Lo rechaza porque aceptarlo produciría el problema con el que cerramos la subse
 
 El líder, ante ese rechazo, comienza a rebobinar. El puntero que mantiene para ese follower —`nextIndex`, en el vocabulario del paper— pasa de 13 a 12. Y ahora le va a enviar dos entradas: toma el 5 y el 6 y se los envía juntos en un solo mensaje. El par de campos que valía 12 y 5 se corre un lugar hacia atrás: `prevLogIndex` 11, porque ahora la entrada anterior a lo que le envía es la del índice 11, y `prevLogTerm` 3, el término que hay en esa posición del log del líder. Ese es el patrón: cada vez que le rechazan un `AppendEntries`, el líder retrocede un índice y el paquete de entradas que envía crece en una.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-06/rebobinado.png' | relative_url }}" alt="El líder rebobina y reemplaza la entrada del término 4">
   <figcaption>
     <span class="figura-label">Figura</span>
     la tabla del rebobinado — la entrada del término 4 tachada, el paquete de las entradas 5 y 6 recuadrado entrando con una flecha, y al costado prevLogIndex = 11, prevLogTerm = 3
