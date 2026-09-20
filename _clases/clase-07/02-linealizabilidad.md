@@ -29,7 +29,8 @@ Hay una clave del análisis que conviene tener presente desde el comienzo: lo qu
 
 Empecemos por el caso sencillo, el de las operaciones separadas en el tiempo, las no concurrentes. Un cliente escribe uno y otro lee, y debe leer uno. Si la operación del primero comenzó y terminó antes de que el segundo iniciara la suya, la única opción posible es esa: `Wx1` primero y `Rx1` después.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/operaciones-no-concurrentes.jpg' | relative_url }}" alt="Dos historias de ejecución que no se solapan">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos historias de ejecución no concurrentes, C1 con Wx1 y C2 con Rx1 empezando después de que terminó la escritura
@@ -47,7 +48,8 @@ Allí aparece la parte contraintuitiva. Misma situación, mismo solapamiento, co
 
 Puede haber ocurrido lo siguiente. El cliente dos envió la lectura y la recibió tarde, pero ese tramo puede haber sido absorbido por un delay de la red, y la lectura concreta sobre una de las réplicas se ejecutó antes que la escritura. Entonces el orden es primero `Rx0` y después `Wx1`, con las marcas invertidas, y el orden lógico también tiene sentido: primero leímos un valor anterior y después actualizamos al nuevo. Contrariamente a lo que uno imaginaría, esto también es linealizable, y esa es la intuición del asunto: los dos órdenes son legales.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/operaciones-concurrentes.jpg' | relative_url }}" alt="Dos casos de operaciones concurrentes con sus puntos de ejecución">
   <figcaption>
     <span class="figura-label">Figura</span>
     operaciones concurrentes en dos casos apilados — arriba C1 con Wx1 y C2 con Rx1 solapados, cada uno con su marca roja vertical y la de la escritura antes que la de la lectura; abajo el mismo solapamiento con C2 leyendo Rx0 y las marcas al revés; al costado los dos órdenes Wx1 → Rx1 y Rx0 → Wx1, ambos legales
@@ -61,7 +63,8 @@ Con eso podemos enunciar la definición, que tiene dos condiciones. La primera e
 
 Con las dos condiciones planteadas, el ejemplo evidente de algo no linealizable es el que ya habíamos mencionado: un cliente escribe `Wx1` y el otro lee `Rx0`, sin solapamiento. Necesariamente una ocurrió primero, de modo que sobre el orden no tenemos opción: no hay marcas que desplazar. La condición uno se cumple; la dos no tiene sentido, y allí está la falla. En rojo: no es legal leer valores anteriores.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/contraejemplo.jpg' | relative_url }}" alt="Wx1 y Rx0 sin solapamiento, con el chequeo de las dos condiciones">
   <figcaption>
     <span class="figura-label">Figura</span>
     el contraejemplo — Wx1 y debajo Rx0 sin solapamiento, con el chequeo de las dos condiciones al pie: la primera se cumple porque Wx1 ocurrió necesariamente antes que Rx0, la segunda falla porque Rx0 no es legal después de Wx1
@@ -85,7 +88,8 @@ El primer ejemplo: un cliente envía `Wx1` y después `Wx2`; otro cliente lee y 
 
 El procedimiento mental es el mismo que vamos a emplear siempre: recorrer el tiempo de izquierda a derecha, ubicar las marcas rojas a medida que aparecen, y después examinar la secuencia y verificar si tiene orden lógico. Aquí lo tiene, y puede enunciarse casi en voz alta: escribimos uno, lo sobrescribimos con dos, y leímos dos. Es linealizable, y lo único que hubo que hacer fue asignar los puntos de ejecución.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/ejemplo-1.jpg' | relative_url }}" alt="Historia del ejemplo 1">
   <figcaption>
     <span class="figura-label">Figura</span>
     historia del ejemplo 1 — arriba Wx1 y Wx2 consecutivos, abajo Rx2 solapado con Wx2, los tres con su marca roja, y el orden resultante Wx1 → Wx2 → Rx2
@@ -95,7 +99,8 @@ El procedimiento mental es el mismo que vamos a emplear siempre: recorrer el tie
 
 El segundo ejemplo tiene tres clientes. El primero escribió `Wx1` y después `Wx2`; un segundo leyó `Rx2` y un tercero leyó `Rx1`. Están dispuestos así deliberadamente, de manera simétrica, para que resulte llamativo: dos clientes casi al mismo tiempo leyeron valores distintos, en un sistema de consistencia fuerte. ¿Sería posible? Conviene intentar resolverlo antes de continuar. La respuesta es afirmativa, y el orden que lo justifica es el siguiente: la primera escritura se materializa en algún punto de su segmento, después la lectura del cliente que leyó uno, después la segunda escritura, y por último la lectura del que leyó dos. Nos queda `Wx1`, `Rx1`, `Wx2`, `Rx2`, y funciona: cada lectura devolvió el último valor escrito antes de su propia marca.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/ejemplo-2.jpg' | relative_url }}" alt="Historia del ejemplo 2, con tres clientes">
   <figcaption>
     <span class="figura-label">Figura</span>
     historia del ejemplo 2, tres clientes — arriba Wx1 y Wx2, abajo un Rx2 largo cruzando las dos escrituras y más abajo un Rx1 más corto, todos con su marca roja, y al costado el orden Wx1 → Rx1 → Wx2 → Rx2
@@ -105,7 +110,8 @@ El segundo ejemplo tiene tres clientes. El primero escribió `Wx1` y después `W
 
 Vamos a complicarlo un poco. El tercer ejemplo es parecido: arriba las mismas dos escrituras; abajo una lectura que obtuvo el dos, comenzando durante la primera escritura, y después otra que obtuvo `Rx1`. ¿Es linealizable? Aquí también la primera escritura puede ubicarse en cualquier lugar. La clave está en la otra: `Wx2` debe ocurrir siempre antes que `Rx2`. En el peor de los casos las ubicamos lo más próximas posible, para dejar el máximo de espacio libre a la derecha. Y entonces `Rx1` necesariamente viene después, todo lo cerca que se quiera pero después. Allí está el problema: la secuencia queda `Wx1`, `Wx2`, `Rx2` y solo al final `Rx1`, y no existe otra forma de acomodar las marcas. Esta historia no es linealizable.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/ejemplo-3.jpg' | relative_url }}" alt="Historia del ejemplo 3">
   <figcaption>
     <span class="figura-label">Figura</span>
     historia del ejemplo 3 — arriba Wx1 y Wx2, abajo Rx2 empezando durante Wx1 y después Rx1, sin marcas rojas posibles: no es linealizable
@@ -117,7 +123,8 @@ El cuarto y último ejemplo tiene dos partes. Arriba `Wx1` y después, algo desp
 
 Conviene admitir que el ejemplo es engañoso, y el equívoco está en los números elegidos: ¿por qué denominar `x = 2` a lo que en el resultado final aparece primero? Eso confunde, aunque la historia se transforme igualmente. Pero manteniendo la parte superior y modificando la inferior aparece la segunda parte del ejemplo: las mismas dos escrituras solapadas, y abajo las dos lecturas cruzadas, `Rx1` primero y `Rx2` después. El primer caso es linealizable y el segundo no. Cuesta un poco advertirlo, aunque la intuición debería ser suficiente: no hay forma de haber leído `Rx2`, después `Rx1`, y que además el cliente de arriba pueda volver a leer `Rx1`. Con las lecturas cruzadas, las marcas de los dos clientes inferiores se vuelven incompatibles, y eso invalida el esquema.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/ejemplo-4.jpg' | relative_url }}" alt="Historia del ejemplo 4, en dos partes">
   <figcaption>
     <span class="figura-label">Figura</span>
     ejemplo 4 en dos partes — arriba Wx0 y después Wx1 y Wx2 solapados entre sí, con Rx2 y Rx1 debajo y marcas verdes en todas: sí es linealizable; separado por una línea de puntos, los mismos writes con los reads cruzados, Rx1 y después Rx2, sin marcas posibles: no lo es

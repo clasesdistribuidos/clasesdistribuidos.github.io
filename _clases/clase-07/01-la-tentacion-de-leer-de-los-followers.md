@@ -20,7 +20,8 @@ Si el cliente hiciera ahora una lectura dirigida al líder, obtendría la inform
 
 Extendamos el diagrama, aclarando que estamos retrasando los commits intencionalmente. El problema ocurre cuando el cliente lee dirigiéndose directamente a un follower: le envía un `Rx` y el follower le responde el valor anterior, `x = 0`, porque nunca vio la escritura previa. No la vio porque el aviso de commit llega tarde: solo cuando el líder, en otra operación posterior, le envía una escritura nueva, aprovecha ese `AppendEntries` para informarle el commit del anterior. A partir de ese momento cada follower ve la escritura que le faltaba. El riesgo de leer de los nodos que no son líderes es ese: podemos ver información desactualizada porque los commits llegaron tarde.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/leer-de-un-follower.jpg' | relative_url }}" alt="Diagrama de secuencia entre el cliente, el líder y dos followers">
   <figcaption>
     <span class="figura-label">Figura</span>
     diagrama de secuencia con cliente, líder y dos followers arrancando en x=0; Wx1 al líder, AppendEntries a cada follower, el OK al cliente, la lectura al líder que devuelve x=1 y la lectura al segundo follower que devuelve x=0, y abajo los dos COMMIT tardíos
@@ -30,7 +31,8 @@ Extendamos el diagrama, aclarando que estamos retrasando los commits intencional
 
 Hay otro tipo de diagrama que vamos a usar durante toda la clase: el que muestra qué observa el cliente, y se llama historia de ejecución. La historia del cliente uno comienza con esa escritura, y el segmento que la representa significa algo preciso: el extremo izquierdo es el momento en que envió el request y el derecho aquel en que recibió el response. Equivale a mirar el diagrama anterior en horizontal. Siguiendo la misma línea de tiempo, después vino la lectura dirigida al líder, que resultó correcta: `Rx1`. Y luego la tercera operación, donde la situación se complica: otra lectura que recibió `Rx0`. No solamente escribió un valor y al final obtuvo el anterior: primero obtuvo el correcto y después el incorrecto.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/una-historia-de-ejecucion.jpg' | relative_url }}" alt="Una historia de ejecución con el request y el response marcados">
   <figcaption>
     <span class="figura-label">Figura</span>
     una historia de ejecución del cliente C1: el segmento Wx1 con las etiquetas REQUEST y RESPONSE en sus extremos, después Rx1 y después Rx0
@@ -40,7 +42,8 @@ Hay otro tipo de diagrama que vamos a usar durante toda la clase: el que muestra
 
 Eso ocurre, como sabemos por el funcionamiento de Raft, porque hay múltiples réplicas: si dos lecturas dieron resultados diferentes, es porque nos dirigimos a máquinas distintas. Y si el sistema continúa funcionando correctamente, eventualmente la situación se restablece: si leyéramos más adelante, obtendríamos siempre el valor que corresponde, y a partir de ahí se estabiliza.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/consistencia-eventual.jpg' | relative_url }}" alt="Un segmento Rx1 con la leyenda de que eventualmente responde el valor correcto">
   <figcaption>
     <span class="figura-label">Figura</span>
     un segmento aislado Rx1 con la leyenda &quot;eventualmente responde el valor correcto&quot;

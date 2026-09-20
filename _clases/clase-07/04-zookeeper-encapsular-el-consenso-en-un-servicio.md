@@ -36,7 +36,8 @@ El contraste se aprecia mejor en un diagrama. En lugar de la aplicación con Raf
 
 El diagrama puede inducir a confusión en un punto: esa caja representa un sistema, no una máquina. Es la que va a contener los cinco nodos comunicándose entre sí.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/servicio-como-caja-negra.jpg' | relative_url }}" alt="Una app hablándole por RPC a un cuadrado con cinco nodos adentro">
   <figcaption>
     <span class="figura-label">Figura</span>
     la caja negra — una caja rotulada App con una flecha RPC hacia un cuadrado grande que contiene cinco nodos sueltos
@@ -92,7 +93,8 @@ Con eso ya sabemos para qué sirve. Su funcionamiento presenta poca novedad —s
 
 Dibujemos tres máquinas, y asignémosle a cada una dos mitades. La superior podemos denominarla Zookeeper propiamente dicho, y la inferior implementa ZAB. Arriba la estructura es un storage un tanto oculto: uno imaginaría una gran base de datos, pero lo que hay es una base de datos pequeña con estructura de file system. Abajo, el elemento principal de ZAB es un log. Esos logs se comunican entre sí y las operaciones se aplican en la capa superior —el file system de cada nodo— del mismo modo que en Raft. Es la estructura que vamos a construir en el TP2 y el TP3, y cada réplica contiene exactamente lo mismo.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/arquitectura-de-zookeeper.jpg' | relative_url }}" alt="Tres máquinas con el árbol de nodos arriba y el log abajo">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura de Zookeeper — tres máquinas en fila, cada una dividida en dos mitades, arriba un árbol de nodos rotulado ZOOKEEPER y abajo una tira de celdas que es el log de ZAB, con flechas de doble punta entre máquinas contiguas
@@ -102,7 +104,8 @@ Dibujemos tres máquinas, y asignémosle a cada una dos mitades. La superior pod
 
 El paper expresa exactamente eso: la figura ilustra la estructura jerárquica de los nodos, que se asemejan mucho a un file system. Cada nodo puede contener un dato además del nombre, y los paths se forman igual que en un file system. Y hay un punto importante: eso no introduce ninguna diferencia. Es simplemente la manera en que está implementado ese storage de la capa superior, y la optimización de cómo hacerlo eficiente constituye otro tema que no vamos a abordar.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/arbol-de-znodes.png' | relative_url }}" alt="Árbol jerárquico de znodes con dos subárboles">
   <figcaption>
     <span class="figura-label">Figura</span>
     la estructura jerárquica de los nodos — el árbol con los paths de las distintas cosas y los nodos que pueden tener un dato adentro además del nombre — figura 1 del paper de Zookeeper, §2.2

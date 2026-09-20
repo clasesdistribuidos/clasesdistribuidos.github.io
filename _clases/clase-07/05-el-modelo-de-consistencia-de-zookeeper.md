@@ -39,7 +39,8 @@ Y aquí aparece la excepción, con todas las letras. Si otro cliente en otro lug
 
 La otra propiedad, *monotonic reads*, consiste esencialmente en que no puede leerse información del pasado. Imaginemos que ese cliente que leyó el valor anterior lee nuevamente y ahora sí obtiene el nuevo: es correcto, para eso existe la consistencia eventual. Lo que agrega esta propiedad es que si lee una vez más, debe volver a obtener el valor nuevo, no el anterior. No puede ocurrir que a veces responda datos del pasado y a veces datos actualizados: si ya leímos un valor, lo que leamos ahora debe estar al menos igual de actualizado.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/garantias-de-zookeeper.jpg' | relative_url }}" alt="Historia con read your writes, una lectura no linealizable y monotonic reads">
   <figcaption>
     <span class="figura-label">Figura</span>
     la historia de ejecución que muestra las dos propiedades a la vez — arriba el cliente C1 con Wx1 y después Rx1; abajo el cliente C2 con Rx0, después Rx1 y después otro Rx1; y tres llaves debajo rotulando cada tramo: *read your writes* bajo el par de C1, &quot;lectura no linealizable&quot; bajo el Rx0 de C2 (legal aunque el valor sea viejo) y *monotonic reads* bajo los dos Rx1 consecutivos
@@ -59,7 +60,8 @@ La escritura llega, se transmite a la capa inferior, se agrega al log, y desde a
 
 Ese ZXID es la posición del log en la que quedó comiteada esa operación. Nada más que eso.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/escritura-y-su-zxid.jpg' | relative_url }}" alt="Una escritura llegando a Zookeeper y el ZXID que devuelve">
   <figcaption>
     <span class="figura-label">Figura</span>
     la escritura y su ZXID — el cliente C1 le manda Wx1 a una máquina dibujada con el árbol de nodos arriba y el log de operaciones abajo, la celda que se agrega al log destacada en color, y la respuesta (OK, ZXID) volviendo al cliente, con la anotación de que el ZXID es el índice en el log
@@ -75,7 +77,8 @@ Y lo que el cliente pretende ahora es leer lo que acaba de escribir. Por la gara
 
 Ese ZXID el follower no lo tiene. El paper no especifica qué hacer, pero supongamos que queda bloqueado hasta actualizarse. Eventualmente el líder le va a enviar esa información, el follower la va a agregar a su log, la va a comitear, la va a aplicar a la capa superior, y solo entonces le va a responder `Rx1`.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/lectura-con-zxid.jpg' | relative_url }}" alt="Una lectura con ZXID contra un follower atrasado">
   <figcaption>
     <span class="figura-label">Figura</span>
     la lectura contra un follower atrasado — el cliente le manda (Rx, ZXID) a otra máquina cuyo log es más corto y le falta la entrada destacada, y recibe (Rx1, ZXID) con el ZXID nuevo, con la anotación de que el commit index del follower debe ser mayor o igual que el ZXID del request y que si no lo es, bloquea

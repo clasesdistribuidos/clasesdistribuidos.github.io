@@ -38,7 +38,8 @@ Del lado del lector, antes de leer hay que invocar `exists`. No queda del todo c
 
 Y cuando `exists` devuelve `true` disponemos de una garantía que antes no teníamos: estamos leyendo de un lugar cuyo ZXID es 103 como mínimo. Entonces, al solicitarle las dos lecturas a ese mismo lugar, vamos a obtener el último valor de `A`, que es `V3`, y el de `B`, que es `V2`.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/servicio-de-configuracion.jpg' | relative_url }}" alt="Traza del servicio de configuración con sus ZXID">
   <figcaption>
     <span class="figura-label">Figura</span>
     la traza completa del ejemplo — a la izquierda la columna de operaciones del escritor con su ZXID (100 setData(A,V1), 101 setData(B,V2), 102 setData(A,V3), 103 create(&quot;/ready&quot;)), la flecha de sincronización que baja hacia la columna del lector (exists(&quot;/ready&quot;), read(A), read(B)), y a la derecha los dos resultados: sin el nodo ready se lee V1 desde la posición 100 y V2 desde la 101, y con el ready en 103 se leen V3 y V2, las dos desde la 103
@@ -76,7 +77,8 @@ Aquí intervienen los watches. Se pasa `watch = true`, y eso significa que cuand
 
 Cómo gestionamos ese aviso depende de lo que estemos intentando hacer. Pero en este ejemplo, cuando se modifica el `ready` —si existía y se modificó, significa que alguien lo borró— hay que volver al principio: un `goto start`, que expresado así resulta poco elegante, pero es exactamente eso. Nos disponemos a esperar nuevamente que el nodo exista, y solo así vamos a alcanzar su existencia en la segunda ronda, y allí lo leemos otra vez. Esa es la función de los watches: enterarnos de cuándo algo se modificó, para poder actualizarnos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/uso-de-watches.jpg' | relative_url }}" alt="Traza de dos rondas de escritura con un watch sobre el nodo ready">
   <figcaption>
     <span class="figura-label">Figura</span>
     la traza de las dos rondas con watches — a la izquierda dos bloques de escritura con su ZXID (97 delete(ready), 98 setData(A), 99 setData(B), 100 create(ready); 101 delete(ready), 102 setData(A), 103 setData(B), 104 create(ready)) y a la derecha el lector: exists(ready, watch=true) satisfecho en la 100, read(A) leído de la 98, la flecha de notify con ZXID 101 que sale del delete de la segunda ronda, y el abort y retry con la flecha que vuelve al exists; al margen, la anotación de lo que se evita: leer A de la 98 junto con B de la 103
@@ -104,7 +106,8 @@ Lo relevante es lo que ocurre con el otro cliente. En su lectura obtuvo el valor
 
 Eso se resuelve como siempre en el optimistic locking: reintentando. Al leerlo nuevamente va a obtener el valor dos y la versión dos, y en ese momento sí va a funcionar. Lo cual significa que todo esto debería estar dentro de un loop, iterando hasta que eventualmente resulte exitoso.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/contador-distribuido.jpg' | relative_url }}" alt="El contador distribuido, sin optimistic locking y con él">
   <figcaption>
     <span class="figura-label">Figura</span>
     el contador distribuido en dos versiones, con una columna para el cliente C1 y otra para C2 — arriba, sin optimistic locking: los dos hacen read(C) → 1 y los dos hacen write(C,2), y se pierde un incremento; abajo, con optimistic locking: los dos hacen read(C) → (1, V1), C1 hace write(C,2,V1) y funciona, y C2 hace write(C,2,V1) y recibe error, y reintenta
@@ -124,7 +127,8 @@ Queda un detalle de implementación, que puede aparecer o no en el TP3: cuándo 
 
 Hay que proceder a la inversa: primero agregar al log lo que pretendemos escribir, ese `x = 1` con su versión, enviarlo a todas las réplicas, y solo cuando retorna verificar la versión, porque en ese caso sí respetamos el orden del log. Allí es donde se manifiesta la linealizabilidad de las escrituras. La verificación debe ubicarse al final porque en ese momento tenemos la garantía de que la versión ya incorporó todos los cambios anteriores: si lo estamos aplicando nosotros, sabemos que lo previo ya fue aplicado. Si verificamos apenas llega el pedido, no disponemos de esa garantía.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/cuando-se-chequea-la-version.jpg' | relative_url }}" alt="Una escritura condicional llegando a una máquina de Zookeeper">
   <figcaption>
     <span class="figura-label">Figura</span>
     la escritura condicional llegando a una máquina de Zookeeper, dibujada con el árbol de nodos arriba y el log abajo — en el log ya hay una entrada anterior pendiente de aplicar y la nueva entrada se agrega al final, para mostrar que la versión hay que chequearla después de pasar por el log y no cuando llega el pedido
@@ -146,7 +150,8 @@ La otra son los nodos secuenciales. Dicho sea de paso, allí sí podría haberse
 
 ¿Cómo implementamos entonces un lock distribuido? Lo que ellos proponen es lo siguiente. Hay un directorio donde todo aquel que pretenda obtener el lock debe escribir un archivo con el mismo prefijo; abreviándolo como `L`, lo que se va formando es `L1`, `L2`, `L3`, `L4`. Ubiquémonos en la posición de alguien que pretende obtener el lock, porque una vez obtenido podemos realizar lo que necesitemos sabiendo que operamos en exclusividad, y después lo liberamos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/cola-de-locks.jpg' | relative_url }}" alt="La lista de nodos lock-1 a lock-4, el último marcado como efímero">
   <figcaption>
     <span class="figura-label">Figura</span>
     la cola de locks en el directorio — la lista de nodos `lock-1`, `lock-2`, `lock-3` y `lock-4` uno debajo del otro, y una flecha que señala al último con la etiqueta `EFÍMERO`
