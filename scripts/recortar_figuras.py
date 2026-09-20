@@ -60,7 +60,7 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
 # tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
 # repo, la 5 es la 6 y la 6 es la 7. Lo que falta acá se asume igual a sí mismo.
-FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7}
+FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -272,19 +272,86 @@ FIGURAS_POR_CLASE = {
         ("log-eliminado",               ("pizarra", 6),  (0, 160, 550, 420),      True),
         ("install-snapshot",            ("pizarra", 6),  (360, 450, 1025, 855),   True),
     ],
+
+    # Sale de la grabación 8 (ver FUENTE_POR_CLASE) y es la única clase sin
+    # `pizarra.pdf`: el cronograma no tiene el link. Así que por una vez no hay
+    # nada que elegir —las 20 figuras salen de los scans— y no hace falta
+    # justificar ninguna, al revés que en las clases anteriores.
+    #
+    # Las otras siete figuras de la clase no salen de acá. Seis las dibujó en
+    # vivo y solo existen en el video (ver el comentario del final); la séptima
+    # es la figura 1 del paper de Zookeeper, que también está abajo.
+    7: [
+        ("leer-de-un-follower",          ("notas", 1), (310, 532, 1560, 1362),  False),
+        ("una-historia-de-ejecucion",    ("notas", 1), (20, 1470, 640, 1755),   False,
+         [(10, 1395, 190, 1512), (10, 1395, 300, 1479)]),         # "UNA HISTORIA" y su subrayado
+        ("consistencia-eventual",        ("notas", 1), (650, 1640, 1485, 1775), False),
+        ("operaciones-no-concurrentes",  ("notas", 2), (292, 377, 765, 558),    False),
+        # La definición formal queda adentro de la caja, entre el dibujo y las
+        # dos flechas del costado que el pie sí nombra; el apunte la dice con
+        # palabras justo antes.
+        ("operaciones-concurrentes",     ("notas", 2), (348, 645, 1675, 1080),  False,
+         [(940, 635, 1699, 800)]),                                 # la definición formal
+        ("contraejemplo",                ("notas", 2), (825, 1120, 1665, 1510), False),
+        ("ejemplo-1",                    ("notas", 2), (20, 1700, 760, 1960),   False,
+         [(15, 1675, 235, 1765)]),                                 # "EJEMPLOS" y su subrayado
+        ("ejemplo-2",                    ("notas", 3), (18, 25, 1250, 268),     False),
+        ("ejemplo-3",                    ("notas", 3), (20, 338, 1150, 590),    False),
+        ("ejemplo-4",                    ("notas", 3), (15, 630, 1090, 1010),   False),
+        # El título de la hoja se mete en la caja porque arranca a la misma
+        # altura que el cuadrado, un poco más a la izquierda.
+        ("servicio-como-caja-negra",     ("notas", 4), (395, 165, 935, 392),    False,
+         [(390, 120, 670, 182)]),                                  # "SERVICIO DE COORDINACIÓN"
+        ("arquitectura-de-zookeeper",    ("notas", 4), (405, 1528, 1210, 1760), False),
+        ("garantias-de-zookeeper",       ("notas", 5), (310, 612, 1490, 1000),  False),
+        ("escritura-y-su-zxid",          ("notas", 5), (305, 1105, 945, 1440),  False),
+        ("lectura-con-zxid",             ("notas", 5), (330, 1445, 1600, 2020), False),
+        ("servicio-de-configuracion",    ("notas", 6), (140, 338, 1600, 772),   False),
+        ("uso-de-watches",               ("notas", 6), (20, 845, 1670, 1360),   False),
+        ("contador-distribuido",         ("notas", 6), (30, 1500, 1580, 2045),  False,
+         [(15, 1480, 1010, 1546)]),                                # "OPTIMISTIC LOCKING"
+        ("cuando-se-chequea-la-version",  ("notas", 7), (320, 118, 940, 475),   False),
+        ("cola-de-locks",                ("notas", 7), (1070, 708, 1640, 955),  False),
+    ],
 }
 
-# No todas las figuras salen de la pizarra o de las notas. `dean-y-ghemawat.jpg`
-# de la clase 2 es la foto que publicó ACM al darles el premio ACM-Infosys
-# (https://x.com/TheOfficialACM/status/714464706195378176); está versionada en
-# `assets/clase-02/` y este script no la toca. Va acá para que no quede como un
-# archivo suelto sin explicación al leer la tabla.
+# No todas las figuras salen de la pizarra o de las notas. Las que siguen están
+# versionadas en `assets/` y este script no las toca; van acá para que no queden
+# como archivos sueltos sin explicación al leer la tabla.
+#
+# `dean-y-ghemawat.jpg` de la clase 2 es la foto que publicó ACM al darles el
+# premio ACM-Infosys (https://x.com/TheOfficialACM/status/714464706195378176).
+#
+# `arbol-de-znodes.png` de la clase 7 es la figura 1 del paper de Zookeeper
+# (https://www.usenix.org/legacy/event/atc10/tech/full_papers/Hunt.pdf), a la
+# que el profesor apunta en las notas con un recuadro que dice "FIGURA 1 /
+# SECCIÓN 2.2" en vez de volver a dibujarla. Sale de la página 3 del PDF
+# renderizada a 300 dpi, recortando el árbol sin el epígrafe del paper: la caja
+# es x 407-1126, y 630-1043 más 16 px de margen. Es puro trazo, así que png.
+#
+# Las otras seis figuras de la clase 7 el profesor las dibujó en vivo, y como
+# esa clase es la única sin `pizarra.pdf`, solo existen en el video
+# (https://www.youtube.com/watch?v=Taiz1RYsX3Y). Sus placeholders siguen
+# punteados en `_clases/clase-07/`. Dónde está cada una, según el transcript:
+# el cluster particionado ~33:20, la lectura escrita al log ~34:40, biblioteca
+# vs. servicio ~43:40, el anillo de consistent hashing ~50:45, el Google File
+# System ~52:00 y el ciclo del algoritmo del lock ~1:40:00.
 
 
-def renderizar_pizarra(tmp, apuntes):
+def renderizar_pizarra(tmp, apuntes, obligatoria=True):
+    """Rinde la pizarra, si la hay.
+
+    La clase 8 del repo de apuntes —la 7 del sitio— no tiene `pizarra.pdf`: es
+    la única de la serie sin export de la pizarra virtual, y todas sus figuras
+    salen de los scans. Por eso faltar no siempre es un error; lo es solo
+    cuando la tabla de la clase pide alguna página de la pizarra.
+    """
     pdf = os.path.join(apuntes, "pizarra.pdf")
     if not os.path.exists(pdf):
-        sys.exit(f"no está la pizarra en {pdf}")
+        if obligatoria:
+            sys.exit(f"no está la pizarra en {pdf}")
+        print(f"sin pizarra en {pdf}: se recorta solo de las notas")
+        return
     subprocess.run(
         ["pdftoppm", "-r", str(DPI), "-png", pdf, os.path.join(tmp, "p")], check=True
     )
@@ -383,7 +450,9 @@ def main():
     if not args.grilla:
         os.makedirs(destino, exist_ok=True)
     with tempfile.TemporaryDirectory() as tmp:
-        renderizar_pizarra(tmp, apuntes)
+        necesita_pizarra = not args.grilla and any(
+            f[1][0] == "pizarra" for f in figuras)
+        renderizar_pizarra(tmp, apuntes, necesita_pizarra)
         if args.grilla:
             salida = tempfile.mkdtemp(prefix=f"figuras-grilla-clase{args.clase}-")
             exportar_grillas(tmp, apuntes, salida)
