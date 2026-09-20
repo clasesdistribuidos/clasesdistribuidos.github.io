@@ -59,8 +59,8 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # Clase del sitio -> clase del repo de apuntes, para las que no coinciden. La
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
 # tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
-# repo, y la 5 es la 6. Lo que falta acá se asume igual a sí mismo.
-FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6}
+# repo, la 5 es la 6 y la 6 es la 7. Lo que falta acá se asume igual a sí mismo.
+FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -239,6 +239,38 @@ FIGURAS_POR_CLASE = {
         ("logs-divergentes",            ("pizarra", 9),  (5, 90, 390, 400),      True),
         ("dos-lideres-y-falla",         ("pizarra", 9),  (700, 10, 1205, 600),    True,
          [(690, 540, 740, 600)]),                                  # la flecha que viene de la tabla
+    ],
+
+    # Sale de la grabación 7 (ver FUENTE_POR_CLASE). Son 14 de las 18 figuras
+    # de la clase; las otras cuatro no están dibujadas en ninguna fuente y sus
+    # placeholders quedan como están:
+    #   - la mitad mayor eligiendo líder con los términos 7, 8 vacante y 9: el
+    #     profesor la contó de palabra; la fig. 2 de las notas pág. 1 que cita
+    #     el apunte es la partición con "no reciben 2 votos", otra cosa.
+    #   - las tres sobre la figura 7 del paper, que no está en la pizarra y en
+    #     las notas es solo el rótulo "FIGURA 7".
+    6: [
+        ("cluster-put-y-ack",           ("pizarra", 1),  (215, 395, 730, 775),    True),
+        ("cluster-particionado",        ("pizarra", 1),  (160, 880, 745, 1385),   True),
+        # La pizarra no tiene el cluster con el líder caído.
+        ("lider-caido",                 ("notas", 1),    (610, 1010, 1000, 1465), False),
+        ("candidato-si-y-no",           ("pizarra", 2),  (330, 70, 730, 535),     True),
+        ("log-rollback-appendentries",  ("pizarra", 2),  (10, 795, 1110, 1300),   True),
+        # El recuadro del caso favorable solo está en las notas.
+        ("caso-favorable",              ("notas", 2),    (1165, 125, 1645, 512),  False,
+         [(1100, 505, 1240, 560)]),                                # "parte de AppendEntries"
+        ("rebobinado",                  ("pizarra", 3),  (5, 20, 1025, 405),      True),
+        ("logs-567-y-58",               ("pizarra", 3),  (60, 750, 410, 970),     True),
+        # La traza cronológica solo está en las notas.
+        ("traza-cronologica",           ("notas", 3),    (1120, 400, 1660, 745),  False),
+        ("lider-persiste-y-responde",   ("pizarra", 4),  (685, 130, 1035, 325),   True),
+        ("log-compaction",              ("pizarra", 5),  (40, 25, 1090, 575),     True,
+         [(0, 20, 330, 80)]),                                      # "Log compaction"
+        # En la pizarra (pág. 5) el restore quedó a medio dibujar: sin la caja
+        # del servidor ni las flechas ① y ② que describe el pie.
+        ("restore",                     ("notas", 5),    (480, 235, 890, 695),    False),
+        ("log-eliminado",               ("pizarra", 6),  (0, 160, 550, 420),      True),
+        ("install-snapshot",            ("pizarra", 6),  (360, 450, 1025, 855),   True),
     ],
 }
 
