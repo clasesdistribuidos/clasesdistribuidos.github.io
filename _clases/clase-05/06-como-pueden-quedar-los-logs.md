@@ -1,7 +1,7 @@
 ---
 title: "6. Cómo pueden quedar los logs"
 parent: "Clase 5 — Raft I"
-nav_order: 5
+nav_order: 6
 ---
 
 # 6. Cómo pueden quedar los logs

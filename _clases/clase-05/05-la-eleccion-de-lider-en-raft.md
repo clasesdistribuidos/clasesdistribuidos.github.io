@@ -126,7 +126,7 @@ El compromiso del parámetro es directo: cuanto más largo el election timeout, 
 
 Los followers responden a un pedido de voto a veces que sí y a veces que no. En el caso feliz que sí, pero hay dos condiciones que el votante tiene que cumplir antes de conceder el voto.
 
-La primera es de la mayor importancia: un voto por término. Igual que en la democracia real, quien ya votó no puede volver a votar a otra persona. Y la razón es la de siempre: si uno de esos followers emitiera dos votos distintos a dos candidatos, toda la construcción de las mayorías se rompe, porque deja de cerrar matemáticamente: dos candidatos distintos podrían reunir una mayoría en el mismo término.
+La primera es de la mayor importancia: un voto por término. Igual que en una elección, quien ya votó no puede volver a votar a otra persona. Y la razón es la de siempre: si uno de esos followers emitiera dos votos distintos a dos candidatos, toda la construcción de las mayorías se rompe, porque deja de cerrar matemáticamente: dos candidatos distintos podrían reunir una mayoría en el mismo término.
 
 Es tan importante que tiene una consecuencia directa de implementación: hay que persistirlo en disco. En la clase siguiente vamos a ver qué cosas se persisten y cuáles no; casi nada, pero el log sí, y también por quién votó cada nodo. Antes de responderle al candidato, el votante tiene que guardar en disco a quién le dio el voto. De lo contrario podría morir, revivir, no acordarse de por quién votó, y terminar votando dos veces en el mismo término solo porque en el medio murió. El voto emitido es, junto con el log, uno de los muy pocos elementos que Raft escribe en disco.
 

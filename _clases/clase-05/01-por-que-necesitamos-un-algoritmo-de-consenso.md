@@ -23,7 +23,7 @@ El nombre engaña un poco. Más allá de que varias máquinas se pongan de acuer
 
 El punto de partida es una pregunta que quedó pendiente de la clase pasada, con el Google File System. La idea de Google era muy buena —les sirvió para hacer grande la empresa—, pero el sistema tenía problemas de consistencia serios, y son esos problemas los que justifican la clase de hoy.
 
-Un chunk vive replicado en tres chunkservers. El cliente le envía un registro al sistema; ese registro se escribe primero en el primary, y el primary después trata de escribirlo en los dos peers que tienen las otras copias. A uno se lo envía y llega. Cuando intenta enviárselo al otro, puede fallar la conexión, no llegar nunca la respuesta, reintentar todo lo que quiera y que la respuesta siga sin llegar. ¿Qué hace el Google File System? Le informa al cliente que la operación falló y que la resuelva él. Literalmente: "esto falló, resuélvalo usted".
+Un chunk vive replicado en tres chunkservers. El cliente le envía un registro al sistema; ese registro se escribe primero en el primary, y el primary después trata de escribirlo en los dos peers que tienen las otras copias. A uno se lo envía y llega. Cuando intenta enviárselo al otro, puede fallar la conexión, no llegar nunca la respuesta, reintentar todo lo que quiera y que la respuesta siga sin llegar. ¿Qué hace el Google File System? Le informa al cliente que la operación falló y delega en él la recuperación.
 
 <figure class="figura figura-con-imagen">
   <img src="{{ '/assets/clase-05/gfs-append-sin-atomicidad.png' | relative_url }}" alt="Tres réplicas de un chunk con el append fallido en la tercera">
@@ -34,7 +34,7 @@ Un chunk vive replicado en tres chunkservers. El cliente le envía un registro a
   </figcaption>
 </figure>
 
-Lo que se supone que tiene que hacer el cliente es un retry. Y aquí aparece la primera sutileza: el retry no hace ninguna magia para quitar los duplicados. El Google File System no compara el registro que llega contra los que ya tiene escritos ni lleva memoria de qué pedidos atendió antes: aplica la operación otra vez, y con suerte ahora ese segundo servidor sí funciona. Eso nos deja dos problemas.
+Lo que se supone que tiene que hacer el cliente es un retry. Y aquí aparece la primera sutileza: el retry no hace ninguna magia para quitar los duplicados. El Google File System no compara el registro que llega contra los que ya tiene escritos ni lleva memoria de qué pedidos atendió antes: aplica la operación otra vez, y si el segundo servidor ahora responde, la escritura se completa. Eso nos deja dos problemas.
 
 El primero es que nos quedan tres réplicas que no son tan réplicas. En una de las máquinas hay una zona del chunk donde no hay ningún registro: puede estar vacía, puede contener restos de datos, pero difiere de las demás. Con eso se cae la garantía ideal, la de leer en cualquier lugar y obtener la misma información: si las cosas fallan, los tres chunks pueden quedar inconsistentes de forma permanente.
 
@@ -53,7 +53,7 @@ Un par de clases más adelante va a aparecer otra técnica, para cuando queramos
 
 Hay una segunda propiedad que el Google File System tampoco provee: la consistencia fuerte. Ahí, según dónde leamos, puede que veamos una escritura y puede que no. Lo ideal sería que si le enviamos una operación y nos responde afirmativamente, la siguiente operación —la nuestra o la de cualquier otro cliente— vea lo que escribimos. Raft tiene consistencia fuerte.
 
-"Consistencia fuerte" es un nombre algo ambiguo. El más académico, el que vamos a usar, es linealizabilidad, casi imposible de pronunciar en castellano pero así se llama: escribimos algo, el sistema nos responde, y al leer obtenemos lo mismo que escribimos. Su definición precisa es tema de la clase que viene.
+"Consistencia fuerte" es un nombre algo ambiguo. El más académico, el que vamos a usar, es linealizabilidad: escribimos algo, el sistema nos responde, y al leer obtenemos lo mismo que escribimos. Su definición precisa es tema de la clase que viene.
 
 Existe una versión relajada que Raft inicialmente no provee, la consistencia débil o eventual: escribimos, el sistema responde que está bien, leemos nuevamente y nos devuelve un valor desactualizado, aunque eventualmente se actualice. Raft se puede modificar para eso, pero el paper intenta la versión fuerte, la que garantiza que si nos dio OK, después va a responder lo que corresponde.
 
@@ -74,7 +74,7 @@ El problema es directo: ese nodo era una máquina, y si moría, moría todo el s
 
 Solo que aquí tenemos un problema del huevo y la gallina. Ese nodo era único justamente para simplificar el problema, para tener un lugar donde el estado fuera uno solo y no hubiera que ponerse de acuerdo con nadie. Si lo replicamos sin cuidado, aparece la otra situación que teníamos que evitar: el split brain.
 
-El split brain es lo que ocurre cuando, en un sistema distribuido con replicación, los nodos se descoordinan y el sistema empieza a comportarse como si fuera dos sistemas. El estado avanza por los dos lados y diverge, y después no hay forma automática de unificarlo —y quizás tampoco haya forma razonable—. Pensemos en un sistema financiero donde la cuenta de alguien tiene un valor en un lugar y otro distinto en otro. Ahí termina nuestro trabajo de ingenieros y hay que ir con los abogados para que decidan cuánto dinero tiene esa persona. Eso es mucho más indeseable que perder disponibilidad, y por eso el objetivo de todo lo que sigue es evitarlo a toda costa: es una situación irreconciliable.
+El split brain es lo que ocurre cuando, en un sistema distribuido con replicación, los nodos se descoordinan y el sistema empieza a comportarse como si fuera dos sistemas. El estado avanza por los dos lados y diverge, y después no hay forma automática de unificarlo —y quizás tampoco haya forma razonable—. Pensemos en un sistema financiero donde la cuenta de alguien tiene un valor en un lugar y otro distinto en otro. Ya no hay forma técnica de determinar cuál es el saldo correcto. Eso es mucho más indeseable que perder disponibilidad, y por eso el objetivo de todo lo que sigue es evitarlo a toda costa: es una situación irreconciliable.
 
 El ejemplo merece verse de nuevo. Sobre un diagrama de tiempo, un cliente envía un pedido de escritura del valor 15. La nomenclatura —la misma del MIT— es `Wx15`: un write del valor 15 en la variable x. Después ese cliente intenta escribir lo mismo en la otra réplica. Las réplicas son dos, S1 y S2, y supongamos que con ellas estamos tratando de resolver ingenuamente el problema del nodo central: implementar una máquina de estados replicada, pero de forma manual.
 

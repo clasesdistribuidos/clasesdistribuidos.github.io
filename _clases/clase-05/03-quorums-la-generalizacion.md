@@ -17,7 +17,7 @@ nav_order: 3
 
 ## Dos quórums siempre se tocan
 
-Todo lo que venimos mirando es casi un caso particular de algo más general: los quórums. La palabra viene del latín, igual que el quórum del Senado, aunque de la mecánica parlamentaria conviene no depender demasiado: tomamos prestado el nombre y nada más. Los quórums distribuidos son una generalización del concepto de mayoría, y en qué sentido lo son se entiende mejor mirando la propiedad que justifica la palabra.
+Todo lo que venimos mirando es casi un caso particular de algo más general: los quórums. La palabra viene del latín, igual que el quórum del Senado: tomamos prestado el nombre y nada más. Los quórums distribuidos son una generalización del concepto de mayoría, y en qué sentido lo son se entiende mejor mirando la propiedad que justifica la palabra.
 
 Volvamos a los cinco nodos de siempre, con el quórum de lectura y el de escritura valiendo tres —el quórum de este sistema es tres, aunque bien podría ser otro número—. Digamos que el quórum es igual que la mayoría, y dejemos de lado las particiones por un momento, porque la particularidad interesante de esa configuración es otra.
 
@@ -71,7 +71,7 @@ En el caso de Raft no vamos a usar nada inusual: vamos a usar mayoría. Tenemos 
 
 ## El principio de funcionamiento de los algoritmos de consenso
 
-Las dos propiedades valen cada una por separado. La primera: frente a fallas de nodos o a particiones de red —si fallan todos, obviamente estamos perdidos— siempre queda una partición con mayoría, y eso viene simplemente de que la cantidad de nodos es impar.
+Las dos propiedades valen cada una por separado. La primera: frente a fallas de nodos o a particiones de red —si fallan todos, el sistema no puede operar— siempre queda una partición con mayoría, y eso viene simplemente de que la cantidad de nodos es impar.
 
 Lo que no dijimos es el contraejemplo, que vuelve evidente la necesidad de ese número impar. Con `N = 4` la mayoría es tres, y la red se puede particionar justo por el medio, dejando dos nodos de cada lado: ahí no sirve ninguna de las dos mitades.
 
