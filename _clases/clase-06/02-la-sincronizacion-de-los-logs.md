@@ -15,7 +15,7 @@ nav_order: 2
 </details>
 
 
-En los escenarios anteriores apareció varias veces el mismo movimiento: el líder nuevo, apenas el sistema se estabiliza, les envía su log a los demás, agregándoles entradas que no tenían o eliminándoles las que les sobraban. Dijimos que el log del líder es el log, sin explicar cómo se lleva a cabo. Corresponde examinar en detalle esa sincronización, que es la parte más difícil de todo esto. Le vamos a dar un nombre: rollback. No es seguro que el paper la denomine así, y quizás sincronización describa mejor lo que ocurre, pero resulta útil.
+En los escenarios anteriores apareció varias veces el mismo movimiento: el líder nuevo, apenas el sistema se estabiliza, les envía su log a los demás, agregándoles entradas que no tenían o eliminándoles las que les sobraban. Dijimos que el log del líder es el log, sin explicar cómo se lleva a cabo. Corresponde examinar en detalle esa sincronización, que es la parte más difícil de todo esto. Le vamos a dar un nombre: rollback. El paper no usa ese término; describe el mecanismo como el líder forzando a los followers a replicar su propio log (sección 5.3).
 
 ## Los dos campos de AppendEntries y la Log Matching Property
 
@@ -98,6 +98,6 @@ Lo que hay que retener es el algoritmo básico: una entrada por vez, comparando 
 
 Un detalle que aparece al pasar y conviene conservar es cuál es la información que determina todo esto: lo que importa es el índice y el término, no el commit. Los commits aparecen después, porque es el líder quien avisa cuándo comiteó las entradas, y por lo tanto puede haber entradas que tengan quórum y no estén marcadas como comiteadas en ninguna parte. Supongamos que al líder le llega una entrada, la escribe localmente, la escriben también dos followers, y caen todos: el líder no llegó a enterarse de que esos dos la habían escrito, pero en el momento en que cayó había quórum, y eso debería estar comiteado. El índice de commit, de hecho, se reconstruye cuando los servidores se recuperan, y eso lo vamos a ver más adelante.
 
-En el paper, esa optimización se presenta señalando que, si se desea, el protocolo se puede optimizar para reducir el número de `AppendEntries` rechazados, y después, en un párrafo breve, explica cómo evitar tantas idas y vueltas. Lo interesante es cómo está marcada: en gris, con una línea al costado. Y el paper que leemos se denomina *extended version*: las partes que tienen esa marca —que son pocas— no estaban en el paper original y se agregaron en una segunda versión. Esa optimización, evidentemente, les fue reclamada: la misma pregunta que nos hacemos nosotros se la hicieron a los autores. Conviene leer el paper en detalle, que está bastante claro.
+En el paper, esa optimización se presenta señalando que, si se desea, el protocolo se puede optimizar para reducir el número de `AppendEntries` rechazados, y después, en un párrafo breve, explica cómo evitar tantas idas y vueltas. Los autores la presentan como opcional y aclaran que dudan de que sea necesaria en la práctica, porque las fallas son poco frecuentes y es improbable que se acumulen muchas entradas inconsistentes. Conviene leer el paper en detalle, que está bastante claro.
 
 ---

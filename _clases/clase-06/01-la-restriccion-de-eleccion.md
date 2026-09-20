@@ -19,7 +19,7 @@ La pregunta que quedó abierta en la clase anterior reaparece en la segunda part
 
 ## La partición de red y el split brain aparente
 
-Hay dos restricciones al voto, una evidente y una sutil. La evidente ya apareció la clase anterior: si el nodo que recibe el pedido ya votó por alguien, no vota dos veces, igual que en las elecciones de la vida real.
+Hay dos restricciones al voto, una evidente y una sutil. La evidente ya apareció la clase anterior: si el nodo que recibe el pedido ya votó por alguien en ese término, no vota dos veces.
 
 La sutil es la que nos ocupa. Para responderle a un candidato que lo acepta como nuevo líder, el candidato tiene que demostrarle al votante que su log está más actualizado que el del votante: no se puede votar a alguien desactualizado. Qué significa exactamente "más actualizado" lo vamos a definir con precisión más adelante; por ahora alcanza con la noción intuitiva, porque lo primero que hay que construir es la intuición de por qué la restricción debe existir.
 
@@ -81,7 +81,7 @@ Hay un detalle que queda oculto: qué hace un líder anterior si alguien le pide
 
 La razón está en los términos. Supongamos que todo el sistema estaba en el término siete y que los cinco nodos lo sabían. Cuando la red se corta, el candidato, al convertirse en candidato, incrementa el término: pasa al ocho. Y una regla general de Raft, que ordena muchas otras cosas, es que si a un nodo le envían un mensaje con un término más nuevo que el suyo, debe asumir que ahora estamos en ese término. Si al líder anterior le llega un mensaje del término ocho, tiene que dejar de ser líder, y después responder afirmativa o negativamente según el estado de su log.
 
-De esa regla se desprende una advertencia de ingeniería. El sistema es sensible a que los tiempos estén bien elegidos: con un election timeout demasiado corto van a aparecer candidatos permanentemente, interfiriendo con el trabajo del líder. Y si una máquina quiere provocar fallas deliberadamente, el procedimiento es sencillo: incrementar el término cada tanto y enviarles `RequestVote` a los demás; con eso alcanza para destituir al líder una y otra vez y dejar al sistema ocupado en elegir en lugar de trabajar.
+De esa regla se desprende una advertencia de ingeniería. El sistema es sensible a que los tiempos estén bien elegidos: con un election timeout demasiado corto van a aparecer candidatos permanentemente, interfiriendo con el trabajo del líder. Y si una máquina quiere provocar fallas deliberadamente, el procedimiento es sencillo: incrementar el término cada tanto y enviarles `RequestVote` a los demás; con eso alcanza para destituir al líder una y otra vez y dejar al sistema ocupado en elegir en lugar de trabajar. Conviene aclarar que Raft asume fallas no bizantinas, así que no está diseñado para defenderse de nodos maliciosos. El paper sí trata un caso parecido y no malicioso en la sección 6: los servidores removidos del cluster pueden interrumpir al líder de esta forma, y el paper lo mitiga haciendo que un servidor ignore los `RequestVote` si escuchó a un líder vigente hace menos que el election timeout mínimo.
 
 Volvamos a la partición, con el término ocho vacante. Lo que sigue es el caso previsible, el que hace que el sistema se recupere: en algún momento el nodo que tiene la marca verde va a ser el primero al que se le expire el timeout. Conviene insistir en que esto es aleatorio: en teoría esta mitad podría quedar indefinidamente sin líder por una cuestión de probabilidades. Eventualmente el nodo actualizado va a intentarlo y va a ganar.
 
@@ -132,7 +132,7 @@ El mecanismo por el que llega a comitearse no es el que uno supondría. El líde
 
 Y lo que decidieron los autores de Raft es precisamente eso: que ese líder puede determinar por sí solo que su log es el log. Lo grave sería que eliminara entradas ya comiteadas; aquí no elimina nada comiteado, agrega entradas que no lo estaban.
 
-Ese es el primer caso, y el más llamativo de los dos. Habría convenido empezar por el otro, más previsible, pero este muestra mejor las situaciones inesperadas que pueden llegar a producirse.
+Ese es el primer caso, y el más llamativo de los dos: muestra bien las situaciones inesperadas que pueden llegar a producirse.
 
 El caso sencillo es que el candidato sea, por ejemplo, S3. Les envía `RequestVote` a todos. S2 lo rechaza, porque S3 no está más actualizado que él, pero S4 y S5 votan a favor, y con esos dos votos se transforma en el nuevo líder. Tres de los cuatro ya están sincronizados entre sí, así que con ellos no hay nada que hacer; con el restante sí: el nuevo líder le va a eliminar esa entrada a S2.
 
