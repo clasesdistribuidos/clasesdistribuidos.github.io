@@ -10,13 +10,17 @@ theme: just-the-docs
 # ---------------------------------------------------------------------------
 # Estructura de contenido
 #
-# Las clases viven en la collection `clases`. La jerarquía del sidebar sale
-# exclusivamente del front matter (`parent` / `nav_order`): los headings del
-# cuerpo NUNCA entran a la navegación, así que el TOC queda en dos niveles
-# (clase -> sección) por construcción.
+# Las clases viven en la collection `clases` y las prácticas en `practicas`;
+# cada una es un bloque propio del sidebar. La jerarquía sale exclusivamente
+# del front matter (`parent` / `nav_order`): los headings del cuerpo NUNCA
+# entran a la navegación, así que el TOC queda en dos niveles (clase ->
+# sección, práctica -> sección) por construcción.
 # ---------------------------------------------------------------------------
 collections:
   clases:
+    permalink: "/:path/"
+    output: true
+  practicas:
     permalink: "/:path/"
     output: true
 
@@ -29,11 +33,19 @@ defaults:
       type: clases
     values:
       layout: default
+  - scope:
+      path: ""
+      type: practicas
+    values:
+      layout: default
 
 just_the_docs:
   collections:
     clases:
       name: Clases
+      nav_fold: false
+    practicas:
+      name: Prácticas
       nav_fold: false
 
 # Búsqueda -------------------------------------------------------------------

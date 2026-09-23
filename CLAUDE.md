@@ -3,7 +3,7 @@
 Apuntes de **TA050 — Sistemas Distribuidos I** (FIUBA), como sitio Jekyll con
 el theme [Just the Docs](https://just-the-docs.com).
 
-El contenido son los `.md` de `_clases/`. Se editan a mano y son la única
+El contenido son los `.md` de `_clases/` y `_practicas/`. Se editan a mano y son la única
 fuente: no hay ningún formato intermedio del que se generen ni ningún paso de
 build que los toque. Lo que está en el archivo es lo que se publica.
 
@@ -32,6 +32,8 @@ numeradas con cero a la izquierda.
 _clases/clase-NN/
   index.md            portada de la clase   (has_children: true)
   NN-slug.md          una página por sección (parent: <título de la clase>)
+_practicas/practica-NN/
+                      igual que una clase, en su propia collection
 assets/clase-NN/      las figuras recortadas de esa clase
 _includes/            navegación secuencial al pie
 _sass/custom/         estilos propios (figuras, nav secuencial)
@@ -169,6 +171,23 @@ El script decide solo, y el criterio es: los trazos de la pizarra se ensucian
 en jpeg, así que van en png; las fotos y los scans pesan mucho menos en jpeg y
 la diferencia no se ve. Ancho máximo 1400 px, bastante más que la columna del
 theme, para que se vean bien en pantallas densas.
+
+## Prácticas
+
+Las clases prácticas son una collection aparte, `practicas`, con la misma
+anatomía que una clase: portada con `has_children` y una página por sección.
+El sidebar las muestra en un bloque propio, "Prácticas", debajo de las clases,
+y la portada del sitio las lista en su propia sección. Siguen siendo dos
+niveles, práctica → sección.
+
+Clases y prácticas son dos secuencias de anterior/siguiente separadas: el
+footer ordena por URL dentro de la collection de la página.
+
+Se parten con el mismo `split_clase.py`: si el borrador se llama
+`practica-NN.md`, las páginas van a `_practicas/practica-NN/` con permalink
+`/practica-NN/`. A diferencia de las teóricas, el apunte de una práctica trae
+código real tomado del repo de la práctica, con links a sus branches, en vez
+de `[CÓDIGO PENDIENTE]`.
 
 ## Agregar una clase
 
