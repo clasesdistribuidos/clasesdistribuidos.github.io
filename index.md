@@ -22,6 +22,14 @@ el índice lateral, o buscar cualquier término con el buscador de arriba.
 - [**{{ clase.title }}**]({{ clase.url | relative_url }}) — {{ secciones | size }} secciones
 {% endfor %}
 
+## Prácticas
+
+{% assign practicas = site.practicas | where: "has_children", true | sort: "nav_order" %}
+{% for practica in practicas -%}
+{%- assign secciones = site.practicas | where: "parent", practica.title | sort: "nav_order" -%}
+- [**{{ practica.title }}**]({{ practica.url | relative_url }}) — {{ secciones | size }} secciones
+{% endfor %}
+
 ## Cómo se estudia
 
 El método de la materia son papers de sistemas reales de empresas reales. La

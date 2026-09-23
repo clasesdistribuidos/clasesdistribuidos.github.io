@@ -12,10 +12,13 @@
   Las páginas índice de cada clase entran en la secuencia, así que al terminar
   la última sección de una clase se cae naturalmente en la portada de la
   siguiente.
+
+  Clases y prácticas son dos secuencias separadas: la última clase no lleva a
+  la primera práctica, ni al revés.
 {%- endcomment -%}
 
-{%- if page.collection == "clases" -%}
-  {%- assign secuencia = site.clases | sort: "url" -%}
+{%- if page.collection == "clases" or page.collection == "practicas" -%}
+  {%- assign secuencia = site[page.collection] | sort: "url" -%}
   {%- assign pos = nil -%}
   {%- for p in secuencia -%}
     {%- if p.url == page.url -%}{%- assign pos = forloop.index0 -%}{%- endif -%}

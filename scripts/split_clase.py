@@ -25,6 +25,10 @@ Además traduce tres marcadores de taquigrafía, cómodos al transcribir:
 
 El número de clase sale del nombre del archivo (`clase-02.md` -> 2). El título
 sale del front matter del borrador (`titulo:`) o de --titulo.
+
+Las prácticas se parten igual, pero van a su propia collection: un borrador
+llamado `practica-01.md` se escribe en `_practicas/practica-01/`, que el sidebar
+muestra en un bloque aparte.
 """
 
 from __future__ import annotations
@@ -38,7 +42,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 RAIZ = Path(__file__).resolve().parent.parent
-DIR_CLASES = RAIZ / "_clases"
+# El prefijo del nombre del borrador decide la collection: `clase-02.md` va a
+# `_clases/clase-02/`, `practica-01.md` a `_practicas/practica-01/`.
+DIR_POR_TIPO = {"clase": RAIZ / "_clases", "practica": RAIZ / "_practicas"}
 
 RE_FRONT_MATTER = re.compile(r"\A---\n(.*?)\n---\n", re.DOTALL)
 RE_SECCION = re.compile(r"^##\s+(\d+)\.\s+(.+?)\s*$", re.MULTILINE)
@@ -289,7 +295,7 @@ def render_seccion(seccion: Seccion, titulo_clase: str) -> str:
     return "\n".join(encabezado)
 
 
-def render_indice(titulo_clase: str, numero: int) -> str:
+def render_indice(titulo_clase: str, numero: int, tipo: str) -> str:
     """Portada de la clase: solo el título.
 
     Lo que el borrador trae antes de la primera sección es su propio título y
@@ -303,7 +309,7 @@ def render_indice(titulo_clase: str, numero: int) -> str:
         "has_children: true",
         # Sin esto la portada de la clase caería en /clase-NN/index/, porque
         # el `:path` de la collection incluye el nombre del archivo.
-        f"permalink: /clase-{numero:02d}/",
+        f"permalink: /{tipo}-{numero:02d}/",
         "---",
         "",
         f"# {titulo_clase}",
@@ -322,26 +328,27 @@ def main() -> int:
     texto = args.fuente.read_text(encoding="utf-8")
     campos, cuerpo = separar_front_matter(texto)
 
-    match_numero = re.search(r"(\d+)", args.fuente.stem)
-    if not match_numero:
-        raise SystemExit(f"No pude sacar el número de clase de '{args.fuente.name}'.")
-    numero = int(match_numero.group(1))
+    match_nombre = re.match(r"(clase|practica)-(\d+)$", args.fuente.stem)
+    if not match_nombre:
+        raise SystemExit(f"El borrador tiene que llamarse clase-NN.md o practica-NN.md, "
+                         f"no '{args.fuente.name}'.")
+    tipo, numero = match_nombre.group(1), int(match_nombre.group(2))
 
     titulo_clase = args.titulo or campos.get("titulo")
     if not titulo_clase:
         raise SystemExit("Falta el título de la clase: usá --titulo o `titulo:` en el front matter.")
 
     preambulo, secciones = partir(cuerpo)
-    destino = DIR_CLASES / f"clase-{numero:02d}"
+    destino = DIR_POR_TIPO[tipo] / f"{tipo}-{numero:02d}"
 
     if destino.exists() and not args.force and not args.dry_run:
         raise SystemExit(f"{destino.relative_to(RAIZ)} ya existe. Usá --force para sobrescribir.")
 
-    archivos = {destino / "index.md": render_indice(titulo_clase, numero)}
+    archivos = {destino / "index.md": render_indice(titulo_clase, numero, tipo)}
     for seccion in secciones:
         archivos[destino / f"{seccion.slug}.md"] = render_seccion(seccion, titulo_clase)
 
-    print(f"Clase {numero}: {titulo_clase}")
+    print(f"{tipo.capitalize()} {numero}: {titulo_clase}")
     print(f"  {len(secciones)} secciones -> {destino.relative_to(RAIZ)}/")
     if preambulo:
         print(f"  se descartaron {len(preambulo.splitlines())} líneas previas a la "
