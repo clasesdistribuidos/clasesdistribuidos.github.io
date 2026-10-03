@@ -60,7 +60,8 @@ La mecánica se apoya en tres reglas, y conviene tenerlas enunciadas antes de mi
 
 La tercera es la interesante, la que hace que todo funcione. El que recibe también tiene su propio reloj, y al recibir tiene que actualizarlo de manera tal que le quede por delante a las dos cosas que ya ocurrieron. La cuenta es un máximo entre dos candidatos: su propio contador más uno, que es el valor que le habría tocado a ese evento de recepción si no hubiera recibido nada; y el reloj que venía adjuntado en el mensaje, también más uno. Se toma el mayor. La razón de tomar el máximo, y no otra combinación, es que el reloj nunca puede retroceder.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/relojes-logicos-figura-1.png' | relative_url }}" alt="La figura 1 de Lamport con los relojes lógicos anotados">
   <figcaption>
     <span class="figura-label">Figura</span>
     los relojes lógicos sobre el diagrama de espacio-tiempo — la figura 1 de Lamport con el valor del reloj anotado sobre cada evento, y el caso donde el contador local daría 3 pero el mensaje entrante trae 4 y obliga a poner 5

@@ -374,9 +374,14 @@ FIGURAS_POR_CLASE = {
 # de abajo: la caja es x 224-1240, y 212-1044, ceñida con 16 px de margen. Es
 # puro trazo, así que png.
 #
-# La figura siguiente, la misma figura 1 con los valores del reloj anotados
-# sobre cada evento, no está en ninguna fuente —en las notas es solo el rótulo
-# "NUEVAMENTE FIGURA 1"— y su placeholder sigue punteado.
+# `relojes-logicos-figura-1.png`, la misma figura 1 con los valores del reloj
+# anotados sobre cada evento, no está en ninguna de las dos fuentes —en las
+# notas es solo el rótulo "NUEVAMENTE FIGURA 1"— porque el profesor la anotó
+# en vivo sobre el paper pegado en Xournal, en una página que el `pizarra.pdf`
+# exportado no trae. Sale del video (https://www.youtube.com/watch?v=pyxXqi3wC7s),
+# del frame de 58:45 a 1080p: la caja es x 225-760, y 330-748, ceñida con 12 px
+# de margen. Es el último frame antes de que dibuje la flecha de r2 a q7, que
+# ya es de la explicación siguiente.
 #
 # Las otras seis figuras de la clase 7 el profesor las dibujó en vivo, y como
 # esa clase es la única sin `pizarra.pdf`, solo existen en el video
