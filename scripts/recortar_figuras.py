@@ -331,9 +331,15 @@ FIGURAS_POR_CLASE = {
 #
 # Las otras seis figuras de la clase 7 el profesor las dibujó en vivo, y como
 # esa clase es la única sin `pizarra.pdf`, solo existen en el video
-# (https://www.youtube.com/watch?v=Taiz1RYsX3Y). Sus placeholders siguen
-# punteados en `_clases/clase-07/`. Dónde está cada una, según el transcript:
-# el cluster particionado ~33:20, la lectura escrita al log ~34:40, biblioteca
+# (https://www.youtube.com/watch?v=Taiz1RYsX3Y).
+#
+# `cluster-particionado.png` sale del frame de 33:30 a 1080p, el último antes
+# de que la página baje para la figura siguiente: la caja es x 330-810,
+# y 265-610, con el título "RAFT Y LINEALIZABILIDAD" tapado (x 180-615,
+# y 265-340), ceñida con 12 px de margen.
+#
+# Las cinco restantes siguen punteadas en `_clases/clase-07/`. Dónde está cada
+# una, según el transcript: la lectura escrita al log ~34:40, biblioteca
 # vs. servicio ~43:40, el anillo de consistent hashing ~50:45, el Google File
 # System ~52:00 y el ciclo del algoritmo del lock ~1:40:00.
 

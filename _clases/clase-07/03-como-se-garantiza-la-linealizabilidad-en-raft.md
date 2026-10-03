@@ -10,7 +10,8 @@ Con la definición disponible, volvamos a Raft. El tema no es tan evidente: en p
 
 No alcanza por situaciones como la que vimos la clase pasada. Imaginemos un líder y, repentinamente, una partición de red. Del otro lado se elige un nuevo líder, y esa mitad comienza a avanzar. Y entonces llega un cliente y lee del líder —o, más precisamente, de quien cree ser líder—: ese nodo le responde un valor que puede estar desactualizado, uno que del otro lado ya cambió. Dirigirse al líder no es suficiente, al menos no ante fallas, y se requieren condiciones adicionales. El caso debería resultar claro: leímos de un líder que en realidad es una especie de follower desactualizado, y que eventualmente se va a convertir en follower.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/cluster-particionado.png' | relative_url }}" alt="El cluster partido en dos, con el cliente del lado del líder viejo">
   <figcaption>
     <span class="figura-label">Figura</span>
     el cluster particionado — de un lado el líder viejo que sigue creyendo que es líder y el cliente que le manda una lectura y recibe un valor desactualizado, del otro lado el nuevo líder elegido y su mitad avanzando — dibujada en vivo, sin respaldo en las notas
