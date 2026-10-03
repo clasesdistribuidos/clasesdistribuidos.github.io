@@ -22,7 +22,8 @@ La pregunta es cómo garantizar que las lecturas sean linealizables. Y la respue
 
 Veámoslo dibujando solamente al líder. Le llega una lectura de `x`, y supongamos que sobre ese nodo tenemos la base de datos efectiva. La forma rápida sería que la lectura se dirija directamente, lea y devuelva el valor. La estrictamente linealizable es contraintuitiva: lo primero que hace el líder es escribirla en el log, con el ID de la operación, enviarla a los vecinos y recibir un quórum; solo entonces volvemos a la capa superior y, como se trata de una lectura, simplemente se realiza y se devuelve. No estamos modificando la base de datos: le indicamos que complete la operación por la que el cliente esperó todo ese tiempo, después de todo el intercambio con los vecinos y su confirmación, como si se tratara de una escritura.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/lectura-escrita-al-log.png' | relative_url }}" alt="El líder con la base de datos y el log">
   <figcaption>
     <span class="figura-label">Figura</span>
     el líder solo, con la base de datos arriba y el log abajo — llega la lectura Rx, se escribe la entrada de la lectura en el log, se replica a los vecinos y se espera el quórum, y solo después se hace la lectura sobre la base de datos y se responde al cliente — dibujada en vivo, sin respaldo en las notas

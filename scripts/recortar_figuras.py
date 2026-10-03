@@ -338,10 +338,20 @@ FIGURAS_POR_CLASE = {
 # y 265-610, con el título "RAFT Y LINEALIZABILIDAD" tapado (x 180-615,
 # y 265-340), ceñida con 12 px de margen.
 #
-# Las cinco restantes siguen punteadas en `_clases/clase-07/`. Dónde está cada
-# una, según el transcript: la lectura escrita al log ~34:40, biblioteca
-# vs. servicio ~43:40, el anillo de consistent hashing ~50:45, el Google File
-# System ~52:00 y el ciclo del algoritmo del lock ~1:40:00.
+# Las otras, también de frames a 1080p, ceñidas con 12 px de margen:
+#   - `lectura-escrita-al-log.png`, frame de 35:10, caja x 440-930, y 430-800.
+#   - `anillo-consistent-hashing.png`, frame de 50:45, el último antes de que
+#     la página baje; caja x 1095-1320, y 470-720, con el cursor de Xournal
+#     tapado (x 1100-1148, y 575-622).
+#   - `google-file-system.png`, frame de 53:00, caja x 280-620, y 480-740. Es
+#     el estado final, con el master ya reemplazado por el grupo con consenso;
+#     el master solo (51:15) lo dibujó en el mismo lugar y no quedó al lado.
+#
+# Dos siguen punteadas porque el video no tiene lo que describe el pie:
+#   - biblioteca vs. servicio (~43:40): solo dibujó el lado del servicio; a las
+#     43:00 la página está vacía salvo el título.
+#   - el ciclo del lock (~1:40:00): no lo dibujó, mostró el pseudocódigo del lock
+#     del paper de Zookeeper con la cola L-1…L-4 anotada al costado.
 
 
 def renderizar_pizarra(tmp, apuntes, obligatoria=True):

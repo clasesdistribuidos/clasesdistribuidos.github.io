@@ -65,7 +65,8 @@ El segundo ejemplo es la elección de líder. Parece sencilla, pero a esta altur
 
 El tercero es la membresía de grupo: un repositorio donde se registra qué elementos integran un grupo. Un caso particular es un cluster de máquinas y la pregunta de cuáles son sus componentes. Aquí conviene conectar con algo ya visto: Dynamo, o el consistent hashing, donde se arma un anillo y los elementos se distribuyen alrededor. Lo que probablemente no se mencionó es que, para que eso funcione, todas las máquinas deben saber dónde están todas, que son cinco, y enterarse si alguna falla. Eso suele denominarse la configuración del sistema: qué máquinas hay y qué se conecta con qué. Y puede delegarse a un sistema como Zookeeper.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/anillo-consistent-hashing.png' | relative_url }}" alt="Nodos dispuestos en anillo">
   <figcaption>
     <span class="figura-label">Figura</span>
     el anillo de consistent hashing, con las máquinas distribuidas alrededor y las cosas que se mandan al anillo — dibujada en vivo, sin respaldo en las notas
@@ -74,7 +75,8 @@ El tercero es la membresía de grupo: un repositorio donde se registra qué elem
 
 Para pasar a ejemplos más concretos, conviene volver al Google File System. Allí teníamos varios chunkservers y el master, que contenía toda la información general del sistema. El problema era que el master constituía el punto débil: si fallaba, fallaba todo el sistema. Eso puede evolucionar: que no sea una máquina única, un único punto de falla, sino un sistema distribuido reducido con consenso en su interior. Ese sistema podría ser Zookeeper, o Chubby, o el ALF de Amazon, y de ese modo se incorpora tolerancia a fallas. Aparentemente es algo de ese estilo lo que hicieron con la versión siguiente del GFS, denominada Colossus.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/google-file-system.png' | relative_url }}" alt="Los chunkservers y el master hecho de un grupo con consenso">
   <figcaption>
     <span class="figura-label">Figura</span>
     el Google File System — los chunkservers por un lado y el master por otro, con la comunicación entre ellos y el master marcado como único punto de falla, y al lado la evolución en la que ese master se reemplaza por un mini sistema distribuido con consenso adentro — dibujada en vivo, sin respaldo en las notas
