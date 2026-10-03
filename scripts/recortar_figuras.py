@@ -60,7 +60,7 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
 # tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
 # repo, la 5 es la 6 y la 6 es la 7. Lo que falta acá se asume igual a sí mismo.
-FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8}
+FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 9: 11}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -72,7 +72,7 @@ FOTOS = {(2, "leslie-lamport")}
 # umbral de peso, así que el criterio automático los mandaría a jpeg y se
 # ensuciarían. Los tres casos de falla de la cadena son una figura alta —tres
 # bloques uno debajo del otro— y por eso pesa: 301 KB en png contra 132 en jpeg.
-TRAZOS = {(3, "fallas-de-la-cadena")}
+TRAZOS = {(3, "fallas-de-la-cadena"), (9, "operaciones-de-cada-plano")}
 
 ANCHO_MAX = 1400  # el ancho de la columna del theme es bastante menor
 DPI = 300         # el doble de las coordenadas de las cajas
@@ -313,6 +313,48 @@ FIGURAS_POR_CLASE = {
         ("cuando-se-chequea-la-version",  ("notas", 7), (320, 118, 940, 475),   False),
         ("cola-de-locks",                ("notas", 7), (1070, 708, 1640, 955),  False),
     ],
+
+    # Sale de la grabación 11 (ver FUENTE_POR_CLASE). Son 23 de las 25 figuras;
+    # las otras dos son las figuras 1 y 2 del paper de DynamoDB, que están abajo.
+    9: [
+        ("tecnicas-de-dynamo",          ("pizarra", 1), (95, 45, 570, 575),     True),
+        # El anillo de la pizarra (pág. 1) no tiene rotulados los nodos, y el pie
+        # nombra S1, S2, S3 y S4.
+        ("anillo-preference-list",      ("notas", 1),   (140, 1190, 470, 1490), False),
+        ("escritura-con-quorum",        ("notas", 1),   (550, 1255, 1220, 1445), False,
+         [(550, 1255, 580, 1275)]),                                # resto del rótulo de arriba
+        ("lectura-version-vieja",       ("pizarra", 2), (260, 20, 940, 262),    True),
+        ("hinted-handoff",              ("pizarra", 2), (230, 266, 930, 545),   True),
+        ("sincronizacion-directa",      ("pizarra", 2), (90, 875, 495, 1150),   True),
+        ("arbol-de-hashes",             ("notas", 2),   (180, 1650, 1000, 2100), False),
+        ("descenso-por-los-arboles",    ("pizarra", 2), (40, 1295, 1010, 1754), True),
+        ("group-membership",            ("pizarra", 3), (60, 110, 570, 450),    True,
+         [(400, 140, 640, 210)]),                                  # "ALTERNATIVA #1"
+        ("servicio-de-configuracion",   ("pizarra", 3), (680, 170, 1215, 535),  True),
+        # En la pizarra (pág. 3) gossip es una estrella de flechas de una punta
+        # que salen de un nodo; el pie describe la versión de las notas, pares
+        # unidos por flechas de doble punta.
+        ("gossip-entre-pares",          ("notas", 3),   (520, 1225, 790, 1475), False),
+        ("tabla-host-ip",               ("pizarra", 3), (835, 635, 1060, 875),  True),
+        # En la pizarra (pág. 4) el tercer estilo quedó sin rótulo; en las notas
+        # están los tres nombrados, push, pull y push-pull.
+        ("push-pull",                   ("notas", 4),   (60, 100, 1500, 375),   False),
+        ("cliente-contra-la-api",       ("notas", 5),   (270, 662, 1530, 1030), False,
+         [(270, 655, 900, 684)]),                                  # la cola de "1. FULLY MANAGED"
+        ("circuito-del-cobro",          ("pizarra", 6), (100, 490, 550, 860),   True),
+        ("genealogia-de-dynamodb",      ("pizarra", 6), (340, 880, 1125, 1000), True),
+        ("hash-de-la-partition-key",    ("pizarra", 6), (40, 1262, 1175, 1754), True),
+        # La pizarra (pág. 7) tiene el recorrido del put pero no el dibujo de la
+        # arquitectura con el partition metadata y "no usa un anillo".
+        ("arquitectura-de-dynamodb",    ("notas", 7),   (400, 130, 1150, 660),  False,
+         [(390, 180, 432, 330)]),                                  # el recuadro "VER FIGURA 4"
+        ("partition-metadata",          ("pizarra", 7), (110, 125, 505, 480),   True),
+        ("recorrido-de-un-put",         ("pizarra", 7), (120, 476, 1010, 1015), True),
+        ("operaciones-de-cada-plano",   ("pizarra", 8), (180, 118, 950, 660),   True),
+        ("disponibilidad-no-uniforme",  ("pizarra", 8), (280, 805, 935, 1033),  True,
+         [(640, 1033, 940, 1100)]),                                # "DATA PLANE" y la frontera, de la de abajo
+        ("create-table",                ("pizarra", 8), (25, 1045, 1095, 1515), True),
+    ],
 }
 
 # No todas las figuras salen de la pizarra o de las notas. Las que siguen están
@@ -354,6 +396,16 @@ FIGURAS_POR_CLASE = {
 #   - `algoritmo-del-lock.png`, frame de 1:40:35, caja x 330-1150, y 250-582.
 #     El ciclo no lo dibujó: mostró el pseudocódigo del paper anotado, y el pie
 #     se ajustó a eso. Queda afuera el "L-4" del margen, que solo no se entiende.
+#
+# `dynamodb-linea-de-tiempo.png` y `dynamodb-storage-node.png` de la clase 9
+# son las figuras 1 y 2 del paper de DynamoDB, *Amazon DynamoDB: A Scalable,
+# Predictably Performant, and Fully Managed NoSQL Database Service*
+# (https://www.usenix.org/system/files/atc22-elhemali.pdf): en las notas solo
+# están los recuadros "VER FIGURA 1 PAPER" y "VER FIGURA 2". Salen de las
+# páginas 3 y 5 del PDF renderizadas a 300 dpi, sin el epígrafe, ceñidas con
+# 16 px de margen: la línea de tiempo es x 247-2293, y 315-641, reducida a
+# 1400 de ancho; el storage node es x 253-1198, y 301-682, con el bucket de
+# S3 incluido porque es parte de la figura. Las dos en png.
 
 
 def renderizar_pizarra(tmp, apuntes, obligatoria=True):

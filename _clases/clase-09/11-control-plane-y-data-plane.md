@@ -27,7 +27,8 @@ Eso lleva a un criterio de diseño muy aplicado en servicios para muchos cliente
 
 Las operaciones de cada lado ya dan una idea. En el data plane están put item, get item, update y delete: poner, leer, modificar y borrar un item. Del otro lado hay operaciones de otra naturaleza, que no tocan ningún item: create table, create index, update table. Y en ambos casos hay muchas más.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/operaciones-de-cada-plano.png' | relative_url }}" alt="Operaciones del control plane frente a las del data plane">
   <figcaption>
     <span class="figura-label">Figura</span>
     las operaciones de cada plano, una columna frente a la otra — del lado del data plane put item, get item y delete; del lado del control plane create table, create index y update table; con la conclusión de que tienen distintos requisitos funcionales y no funcionales
@@ -39,7 +40,8 @@ La primera intuición es que, aunque el servicio tenga un SLA de disponibilidad 
 
 Es decir, las dos partes tienen **distintos requisitos**: son dos subsistemas con requisitos funcionales y no funcionales diferentes. Funcionales, evidentemente, porque atienden operaciones distintas. Pero lo interesante es que la disponibilidad, un requisito no funcional, no es uniforme en todo el sistema.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/disponibilidad-no-uniforme.png' | relative_url }}" alt="El control plane se cae, el data plane sigue funcionando">
   <figcaption>
     <span class="figura-label">Figura</span>
     la disponibilidad no es uniforme — dos cajas lado a lado, el control plane que se cae y el data plane que sigue funcionando
@@ -57,7 +59,8 @@ Seguir un create table desde que entra muestra para qué sirve esta separación.
 
 El auto-admin lo hace en dos movimientos. Primero registra en el partition metadata los storage nodes elegidos, para que dónde vive cada rango quede asentado antes de que alguien lo necesite. Después les manda a los elegidos la configuración inicial para inicializar la tabla en esos tres lugares.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/create-table.png' | relative_url }}" alt="El create table del auto-admin cruzando hacia el data plane">
   <figcaption>
     <span class="figura-label">Figura</span>
     el create table cruzando la frontera — el pedido entra al auto-admin; una curva parte el dibujo en dos mitades rotuladas control plane y data plane; del auto-admin sale una flecha hacia abajo al partition metadata y otras tres que cruzan la curva y aterrizan cada una en un storage node distinto de una grilla de nueve

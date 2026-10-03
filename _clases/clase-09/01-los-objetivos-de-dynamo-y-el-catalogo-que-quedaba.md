@@ -8,7 +8,8 @@ nav_order: 1
 
 En el paper de Dynamo hay una tabla, la tabla uno, que resume todas las técnicas de sistemas distribuidos que usa el sistema. Se parece mucho a nuestro propio programa: son casi las mismas técnicas que nos interesan, algunas mucho más que otras.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/tecnicas-de-dynamo.jpg' | relative_url }}" alt="Tabla 1 del paper de Dynamo: problemas, técnicas y ventajas">
   <figcaption>
     <span class="figura-label">Figura</span>
     Table 1 del paper de Dynamo — las cinco técnicas (consistent hashing, relojes vectoriales, sloppy quorum con hinted handoff, anti-entropy con Merkle trees, gossip) con el problema que resuelve cada una y su ventaja

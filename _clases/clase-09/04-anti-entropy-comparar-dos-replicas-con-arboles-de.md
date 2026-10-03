@@ -23,7 +23,8 @@ Primero hay que aclarar que las dos réplicas no van a ser exactamente iguales, 
 
 Imaginemos entonces la tabla de claves y valores de Dynamo, una para el servidor uno y otra para el servidor dos, enfrentadas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/sincronizacion-directa.png' | relative_url }}" alt="Las tablas de S1 y S2 comparadas fila por fila">
   <figcaption>
     <span class="figura-label">Figura</span>
     la sincronización directa — las tablas de claves y valores de S1 y S2, una frente a la otra, con una flecha de doble punta entre ellas
@@ -45,7 +46,8 @@ El final del razonamiento se ve antes que el principio. Para saber si dos tablas
 
 Los Merkle trees son más astutos: no solo dicen que las tablas difieren, sino exactamente cuáles filas son las diferentes. Para eso construyen un árbol de hashes. A cada fila le calculan su hash, y después unen esos hashes de a pares: el hash de los dos hashes. Si alguno de los de abajo se modifica, el de arriba también. Y así nivel por nivel, uniendo de a pares hasta que queda un solo hash en la punta. Si la cantidad de filas es impar —y en nuestro ejemplo lo es—, la última queda sin par y sube sola.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/arbol-de-hashes.jpg' | relative_url }}" alt="La tabla de S1, los MD5 de cada fila y el hash raíz">
   <figcaption>
     <span class="figura-label">Figura</span>
     el árbol de hashes de una réplica — la tabla de claves y valores, el hash MD5 de cada fila, los hashes combinados de a pares nivel por nivel (con la última fila impar sin par) y el hash raíz
@@ -59,7 +61,8 @@ El hash de la punta no es el mismo que daría calcular el hash de la tabla enter
 
 Si la otra tabla usó el mismo procedimiento, la comparación se vuelve un descenso. Empezamos por arriba: si los dos hashes de la punta son iguales, las dos tablas enteras son iguales. Si difieren, miramos el segundo nivel. Si los dos primeros nodos coinciden, toda esa mitad de la tabla es igual, y descartamos la mitad del problema. Si los otros dos difieren, miramos sus hijos, y los hijos de esos, hasta llegar a los que son diferentes.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/descenso-por-los-arboles.png' | relative_url }}" alt="El Merkle tree con el camino marcado hasta las filas que difieren">
   <figcaption>
     <span class="figura-label">Figura</span>
     el descenso por los dos árboles — las raíces que difieren, el nivel intermedio donde una mitad coincide y se descarta, y el camino marcado hasta las filas que efectivamente difieren

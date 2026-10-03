@@ -18,7 +18,8 @@ El tercero es DynamoDB, una base de datos, que combina dos dimensiones: storage 
 
 Esto tiene una consecuencia arquitectónica, y es lo más interesante. El usuario se conecta en abstracto con el servicio cloud y lo usa. Pero internamente estas empresas tuvieron que inventar otros servicios para que el cobro por uso sea posible. El servicio cloud le manda datos a un servicio que suele llamarse *metering*, el equivalente del medidor de gas de una casa: le va mandando las métricas de uso de cada usuario. En Dynamo, donde se cobran requests por segundo, le reporta cada cierto tiempo cuántos requests hizo cada usuario. El metering agrega todos esos datos y se los pasa al servicio de *billing*, que los combina con los precios, hace todas las complicaciones contables, y el resultado vuelve al usuario: la factura, que después hay que pagar.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/circuito-del-cobro.png' | relative_url }}" alt="Usuario, servicio cloud, metering y billing">
   <figcaption>
     <span class="figura-label">Figura</span>
     el circuito del cobro — el usuario y el servicio cloud arriba, con una flecha de doble punta entre ellos; del servicio baja una flecha al metering, del metering una flecha horizontal al billing, y del billing sube al usuario la flecha de la factura, rotulada con el signo $

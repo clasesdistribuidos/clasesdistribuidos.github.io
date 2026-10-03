@@ -21,7 +21,8 @@ El último tema del paper es uno de los más interesantes, aunque hoy no se use 
 
 Y ahí está la clave, porque el mecanismo asume exactamente eso: que todos los nodos conocen el anillo completo y dónde está cada uno. En base a eso les mandan las escrituras a los vecinos y saben cuál es la preference list de cada clave. Todo Dynamo descansa sobre ese supuesto, que nunca justificamos. El problema tiene nombre propio: *group membership*, averiguar quiénes son los miembros del grupo.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/group-membership.png' | relative_url }}" alt="El anillo y el problema del group membership">
   <figcaption>
     <span class="figura-label">Figura</span>
     el problema del group membership — el anillo con sus nodos, y la pregunta de cómo cada uno averigua quiénes son los demás y qué posición ocupa
@@ -37,7 +38,8 @@ La primera alternativa ya la vimos un par de veces en la materia: aparte del ani
 
 ZooKeeper sería la mejor de las tres. O, si fuéramos Google, Chubby, el otro paper que no vimos, que resolvía cosas similares. El orden histórico es el inverso del que uno supondría por la fama: Chubby es de 2006 y ZooKeeper de 2008, así que ZooKeeper es la versión abierta de Chubby, y no al revés. Ninguno de los dos está pensado para soportar una base de datos entera, pero los dos soportan perfectamente esta clase de información de configuración, con alta disponibilidad. Así cada nodo averiguaría su lugar en el anillo y quedaría resuelto el group membership.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/servicio-de-configuracion.png' | relative_url }}" alt="Los nodos reportando a un config service">
   <figcaption>
     <span class="figura-label">Figura</span>
     alternativa 1, el servicio de configuración — los nodos sueltos y sus flechas convergiendo en una única caja rotulada config service, con las tres implementaciones posibles al costado: ZooKeeper o Chubby, una base de datos, un host
@@ -53,7 +55,8 @@ En su versión básica, los servidores se reportan a todos los compañeros. Eso 
 
 A partir de eso se puede hacer algo más interesante. En vez de decir "sigo vivo, estoy aquí", decir "sigo vivo, y esta es mi visión de todo el mundo". Todos se van pasando colaborativamente, como un rumor, el estado global de las cosas. De ahí el nombre del algoritmo.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/gossip-entre-pares.jpg' | relative_url }}" alt="Nodos que intercambian estado de a pares">
   <figcaption>
     <span class="figura-label">Figura</span>
     alternativa 2, gossip — los nodos unidos por flechas de doble punta entre pares, de a dos y no todos con todos
@@ -63,7 +66,8 @@ A partir de eso se puede hacer algo más interesante. En vez de decir "sigo vivo
 
 ¿Qué sería concretamente ese estado global? Por ejemplo, el host y su IP: una fila por nodo con su nombre y su dirección. Esa tabla no existe en ninguna base centralizada: cada nodo tiene su propia copia, tan al día como se lo permitió el último intercambio, y todos se la pasan hasta que todos la conocen.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/tabla-host-ip.png' | relative_url }}" alt="La tabla de host e IP que se gossipea">
   <figcaption>
     <span class="figura-label">Figura</span>
     la tabla de estado que se gossipea — dos columnas, host e IP, con una fila por nodo del clúster
@@ -92,7 +96,8 @@ Falta la parte cuantitativa, que es la que convence. El paper original —de 198
 
 El paso de intercambiar estado con el peer admite variantes. Con un nodo A y su peer, una forma es *push*: A le envía sus datos al otro sin que este los haya pedido. Otra es *pull*: A le pide al peer y el peer le manda su estado. Y lo típico es intercambiar: A manda su estado y el peer responde con el suyo. Es más rápido, porque en una sola ida y vuelta los dos ya intercambiaron toda su información.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/push-pull.jpg' | relative_url }}" alt="Push, pull y push-pull entre A y un peer">
   <figcaption>
     <span class="figura-label">Figura</span>
     los tres estilos de intercambio — push, donde A le manda su estado al peer; pull, donde A pide y el peer responde con el suyo; y push-pull, donde los dos estados se cruzan en una sola ida y vuelta

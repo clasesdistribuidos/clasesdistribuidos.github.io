@@ -12,7 +12,8 @@ La historia explica buena parte de lo que sigue. Las bases no relacionales se ha
 
 Cuando veamos la arquitectura vamos a comprobar que no tiene prácticamente nada que ver con la que estudiamos. Conserva la idea general de Dynamo, y nada más; conviene no confundirlos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/genealogia-de-dynamodb.png' | relative_url }}" alt="SimpleDB lleva a DynamoDB; la flecha desde Dynamo, tachada">
   <figcaption>
     <span class="figura-label">Figura</span>
     la genealogía de DynamoDB — SimpleDB da lugar a DynamoDB, y la flecha que vendría de Dynamo aparece tachada con una cruz: del paper de 2007 viene el nombre, no la arquitectura
@@ -24,7 +25,8 @@ La primera diferencia está en la abstracción que se ofrece. Dynamo no tenía t
 
 La figura 1 del paper muestra la evolución del servicio: se parte del paper de Dynamo, varios años después sale DynamoDB, y con el tiempo se le incorporan nuevas funcionalidades. De todas ellas vamos a estudiar una en particular: las transacciones. Primero veremos cómo las implementa DynamoDB, y después, en la última clase de bases de datos distribuidas, cómo las implementa Spanner. Son dos formas completamente diferentes.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/dynamodb-linea-de-tiempo.png' | relative_url }}" alt="Línea de tiempo de DynamoDB, de 2007 a 2021">
   <figcaption>
     <span class="figura-label">Figura</span>
     figura 1 del paper de DynamoDB — la línea de tiempo del servicio, desde el paper de Dynamo hasta DynamoDB y las funcionalidades que se le fueron agregando
@@ -38,7 +40,8 @@ La partition key importa porque es la que se usa para shardear, terreno que ya c
 
 Y aquí aparece la diferencia que importa: no hay ningún anillo. Hay un espacio de direcciones del hash de 2¹²⁸ − 1 posiciones, desde el 0 hasta el último valor. Son unas 3,4 × 10³⁸ direcciones, muchas más que las claves que va a tener jamás cualquier tabla, y esa desproporción le permite al sistema partir el espacio donde quiera y con la granularidad que quiera: siempre quedan direcciones libres a los dos lados de cualquier corte. El hash de una clave cae en algún lugar de ese espacio. Dónde empieza y termina cada partición es arbitrario: no es aleatorio, sino que lo elige el sistema según varias consideraciones. Tendería a ser uniforme, aunque no necesariamente: una región muy accedida se puede volver a subdividir. Así el espacio queda partido en las particiones uno, dos, tres, cuatro y cinco.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/hash-de-la-partition-key.png' | relative_url }}" alt="El hash de la partition key sobre el espacio de 0 a 2^128 − 1">
   <figcaption>
     <span class="figura-label">Figura</span>
     el hash de la partition key sobre el espacio de direcciones — la partition key entra a una función de hash, y el hash cae en un punto del eje que va de 0 a 2¹²⁸ − 1; el eje está partido en cinco particiones de tamaños distintos y arbitrarios, y al costado la advertencia de que no se usa consistent hashing

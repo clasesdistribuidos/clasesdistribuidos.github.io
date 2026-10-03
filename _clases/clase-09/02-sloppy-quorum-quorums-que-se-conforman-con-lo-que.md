@@ -31,7 +31,8 @@ Partamos de una versión simplificada del sloppy quorum, que después vamos a co
 
 La mecánica real es un poco distinta, y ahí está la gracia. En lugar de responderle al cliente habiendo escrito en un solo lugar, Dynamo toma el siguiente nodo del anillo —o cualquier otro— y escribe ahí. Si no puede escribir donde corresponde, elige otro lugar y deja para más adelante la tarea de reubicar el dato. Lo importante es que el dato queda durable en dos lugares, y recién entonces le responde al cliente. De ahí el nombre: un quórum desordenado, que se conforma con lo que hay.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/anillo-preference-list.jpg' | relative_url }}" alt="El anillo con la preference list S1, S2, S3 y el nodo S4">
   <figcaption>
     <span class="figura-label">Figura</span>
     el anillo y la preference list — el hash de la clave cae en el arco superior y se recorre el anillo hasta los tres nodos S1, S2, S3; S4 es el nodo de más, el que recibe la escritura cuando uno de los tres no responde
@@ -41,7 +42,8 @@ La mecánica real es un poco distinta, y ahí está la gracia. En lugar de respo
 
 Las escrituras pasan por un coordinador, y el mismo mecanismo nos va a servir para las lecturas. El cliente sabe cuáles son los tres nodos del anillo que le tocan a su clave: los tres consecutivos siguiendo el anillo desde donde cae el hash, la preference list. Le manda la escritura a uno y le asigna, en efecto, el rol de coordinador. Por omisión es el primero de los tres, y si la escritura llega a un nodo que no está entre ellos, ese nodo se la reenvía al primero; pero hacer coordinar siempre al primero repartía la carga de manera desigual y llegaba a violar el SLA, así que se admite que coordine cualquiera de los tres. El coordinador escribe localmente y trata de escribirles a los otros dos. Si uno está caído, elige otro nodo y le envía el dato. Con eso tiene el valor en dos lugares y llegó al quórum; pero aun cuando no llegue a dos, elige algún otro nodo y le envía el valor.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/escritura-con-quorum.jpg' | relative_url }}" alt="put(k, x) entra a S2, que replica en S1 y S3">
   <figcaption>
     <span class="figura-label">Figura</span>
     la escritura con quórum — put(k, x) entra al coordinador S2, que replica hacia S1 y S3
@@ -61,7 +63,8 @@ Supongamos ahora que los dos primeros nodos de la preference list están caídos
 
 En el ejemplo, S1 y S2 tenían el dato y están caídos, así que S3 coordina la lectura y les pide el valor a S4 y S5. De sus respuestas sale el quórum: con los relojes vectoriales vemos cuál versión es la más reciente y respondemos esa.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/lectura-version-vieja.png' | relative_url }}" alt="S1 y S2 caídos; S3 coordina la lectura contra S4 y S5">
   <figcaption>
     <span class="figura-label">Figura</span>
     la lectura que devuelve una versión vieja — S1 y S2 tienen el dato pero están caídos, S3 coordina la lectura y les pide a S4 y S5; S5 responde primero

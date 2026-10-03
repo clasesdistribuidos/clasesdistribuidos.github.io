@@ -10,7 +10,8 @@ Dynamo tiene varios métodos para recuperarse de esas situaciones. No son exacta
 
 En el ejemplo, teníamos que escribir en S1, S2 y S3, y S3 está caído. Escribimos en S1 y S2, y el dato se lo mandamos a S4. Pero a S4 no le mandamos solamente la clave y el valor: en el mismo mensaje le mandamos también S3. El mensaje le indica algo preciso: ese dato no le corresponde a S4, que debe conservarlo disponible por si alguien lo solicita y entregarlo a S3 en cuanto sea posible. Ese dato adjunto, el nombre del destinatario que no pudo recibirlo, es el *hint*, y el mecanismo se llama **hinted handoff**.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/hinted-handoff.png' | relative_url }}" alt="El hinted handoff de S2 a S4, con el hint S3">
   <figcaption>
     <span class="figura-label">Figura</span>
     el hinted handoff — la preference list S1, S2, S3 encerrada en un óvalo; el coordinador S2 replica en S1, S3 está tachado, y un arco largo lleva a S4 el par (k, v) junto con el hint S3; una flecha de vuelta de S4 a S3 entrega el dato cuando S3 revive

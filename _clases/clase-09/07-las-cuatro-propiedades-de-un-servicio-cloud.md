@@ -23,7 +23,8 @@ Cuando a uno le toca usar DynamoDB —y es probable que en algún momento de la 
 
 El escalado también lo manejan ellos. La actualización del software depende del sistema, pero en la mayoría uno no se tiene que preocupar por actualizar el sistema operativo de lo que corre su tabla. Después viene la tolerancia a fallas, y aquí hay algo casi paradójico: si la maneja Amazon, parece que esta clase no tuviera sentido, porque llevamos dos meses hablando de tolerancia a fallas y, si uno usa Dynamo, se olvida del tema. Aunque hay un matiz: si uno quiere trabajar en Amazon, tiene que aprender cómo funciona y todas las técnicas que la implementan, que también se usan a pequeña escala. Con la replicación pasa lo mismo. Y la lista es más larga: estos son apenas algunos ejemplos de lo que un servicio fully managed resuelve por el cliente.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-09/cliente-contra-la-api.jpg' | relative_url }}" alt="El cliente contra la API de DynamoDB">
   <figcaption>
     <span class="figura-label">Figura</span>
     el cliente contra la API de DynamoDB — el cliente a la izquierda, la flecha rotulada API, la caja del servicio a la derecha, y al costado la lista de lo que el cliente ya no hace: aprovisionamiento, escalado, actualización del software, tolerancia a fallas, replicación
