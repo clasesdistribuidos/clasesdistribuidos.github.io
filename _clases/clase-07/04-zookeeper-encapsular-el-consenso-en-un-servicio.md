@@ -27,10 +27,11 @@ La otra propuesta, la que adoptaron varias empresas, es encapsular el algoritmo 
 
 El contraste se aprecia mejor en un diagrama. En lugar de la aplicación con Raft por debajo, tenemos la aplicación sola comunicándose por la red con un servicio: una caja negra, el sistema de coordinación, que va a ser Zookeeper. Se comunica con RPC, con REST o con el protocolo que sea, y cuál sea no introduce diferencias, porque lo que define al servicio es que del otro lado de la red hay una interfaz bien definida, una API. Es comparable a un servidor web: algo separado de la aplicación, con la red en el medio. Nunca accedemos al algoritmo de consenso directamente, sino a través de esa interfaz.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/zookeeper-como-servicio.png' | relative_url }}" alt="La App hablándole por la red a Zookeeper">
   <figcaption>
     <span class="figura-label">Figura</span>
-    las dos opciones enfrentadas — a la izquierda una caja App con el algoritmo de consenso debajo, incorporado como biblioteca; a la derecha la misma App hablándole por la red a un servicio separado — dibujada en vivo, sin respaldo en las notas
+    la opción del servicio separado — la App hablándole por la red, con RPC o REST, a Zookeeper, una caja con los nodos comunicándose entre sí adentro; al costado, el objetivo: encapsular Raft en un servicio separado — dibujada en vivo, sin respaldo en las notas
   </figcaption>
 </figure>
 

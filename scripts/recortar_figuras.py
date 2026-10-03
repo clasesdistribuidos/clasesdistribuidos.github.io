@@ -346,12 +346,14 @@ FIGURAS_POR_CLASE = {
 #   - `google-file-system.png`, frame de 53:00, caja x 280-620, y 480-740. Es
 #     el estado final, con el master ya reemplazado por el grupo con consenso;
 #     el master solo (51:15) lo dibujó en el mismo lugar y no quedó al lado.
-#
-# Dos siguen punteadas porque el video no tiene lo que describe el pie:
-#   - biblioteca vs. servicio (~43:40): solo dibujó el lado del servicio; a las
-#     43:00 la página está vacía salvo el título.
-#   - el ciclo del lock (~1:40:00): no lo dibujó, mostró el pseudocódigo del lock
-#     del paper de Zookeeper con la cola L-1…L-4 anotada al costado.
+#   - `zookeeper-como-servicio.png`, frame de 45:55, caja x 360-1370,
+#     y 300-715, con restos del título tapados (x 360-420, y 300-330 y
+#     x 360-990, y 300-314). El pie pedía las dos opciones enfrentadas, pero
+#     solo dibujó la del servicio —a las 43:00 la página está vacía salvo el
+#     título—, así que el pie se ajustó a lo que muestra.
+#   - `algoritmo-del-lock.png`, frame de 1:40:35, caja x 330-1150, y 250-582.
+#     El ciclo no lo dibujó: mostró el pseudocódigo del paper anotado, y el pie
+#     se ajustó a eso. Queda afuera el "L-4" del margen, que solo no se entiende.
 
 
 def renderizar_pizarra(tmp, apuntes, obligatoria=True):
