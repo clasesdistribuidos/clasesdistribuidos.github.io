@@ -60,7 +60,7 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
 # tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
 # repo, la 5 es la 6 y la 6 es la 7. Lo que falta acá se asume igual a sí mismo.
-FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 9: 11}
+FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -314,6 +314,43 @@ FIGURAS_POR_CLASE = {
         ("cola-de-locks",                ("notas", 7), (1070, 708, 1640, 955),  False),
     ],
 
+    # Sale de la grabación 10 (ver FUENTE_POR_CLASE): la 9 es la de Memcache, que
+    # no está en el sitio. Son 20 de las 22 figuras; las otras dos son la figura
+    # 1 del paper de Lamport, que está abajo.
+    8: [
+        ("primary-backup",               ("pizarra", 1), (300, 150, 940, 430),   True),
+        ("triangulo-cap",                ("pizarra", 1), (740, 515, 1200, 795),  True),
+        ("split-brain",                  ("pizarra", 1), (475, 1152, 760, 1250), True),
+        ("claves-en-shards",             ("pizarra", 2), (825, 535, 1200, 655),  True),
+        ("rehashing",                    ("pizarra", 3), (360, 125, 1005, 300),  True),
+        ("anillo",                       ("pizarra", 3), (305, 325, 745, 730),   True),
+        ("agregar-un-nodo",              ("pizarra", 3), (355, 780, 740, 1120),  True),
+        ("preference-list",              ("pizarra", 3), (420, 1190, 975, 1620), True),
+        ("relojes-desincronizados",      ("pizarra", 5), (245, 126, 815, 400),   True,
+         [(225, 115, 292, 142)]),                                  # la cola de "relojes" del título
+        ("round-trip-get-time",          ("pizarra", 5), (455, 420, 780, 775),   True),
+        ("secuenciador-centralizado",    ("pizarra", 5), (330, 1135, 800, 1500), True),
+        # La pizarra (pág. 6) tiene la bifurcación pero no la llave con "da
+        # información limitada" que nombra el pie.
+        ("bifurcacion-clock-condition",  ("notas", 6),   (850, 1410, 1440, 1800), False),
+        # En la pizarra (pág. 6) la tira quedó sin las dos flechas de "orden
+        # parcial" que señalan a y b, que el pie sí describe.
+        ("orden-total",                  ("notas", 7),   (415, 600, 1005, 840),   False),
+        # El chat room solo está en las notas: la pág. 7 de la pizarra es una
+        # foto pegada de esta misma hoja.
+        ("chat-room",                    ("notas", 7),   (205, 1195, 1555, 1990), False,
+         [(940, 1832, 1555, 2060)]),                               # el orden reacomodado de abajo
+        ("reglas-vector-clocks",         ("pizarra", 8), (240, 145, 1005, 400),  True),
+        ("vector-clocks-ejemplo",        ("pizarra", 8), (350, 560, 1025, 830),  True),
+        ("primera-escritura",            ("pizarra", 9), (315, 15, 840, 295),    True),
+        ("update",                       ("pizarra", 9), (190, 390, 930, 935),   True,
+         [(670, 830, 1090, 895)]),                                 # "reconciliación sintáctica"
+        ("escrituras-concurrentes",      ("pizarra", 9), (215, 1040, 1105, 1390), True,
+         [(30, 1060, 390, 1125)]),                                 # "Caso concurrente"
+        # El split brain reconciliado solo está en las notas.
+        ("split-brain-reconciliado",     ("notas", 10),  (410, 1740, 930, 1960),  False),
+    ],
+
     # Sale de la grabación 11 (ver FUENTE_POR_CLASE). Son 23 de las 25 figuras;
     # las otras dos son las figuras 1 y 2 del paper de DynamoDB, que están abajo.
     9: [
@@ -370,6 +407,23 @@ FIGURAS_POR_CLASE = {
 # SECCIÓN 2.2" en vez de volver a dibujarla. Sale de la página 3 del PDF
 # renderizada a 300 dpi, recortando el árbol sin el epígrafe del paper: la caja
 # es x 407-1126, y 630-1043 más 16 px de margen. Es puro trazo, así que png.
+#
+# `happens-before-figura-1.png` de la clase 8 es la figura 1 del paper de
+# Lamport, *Time, Clocks, and the Ordering of Events in a Distributed System*
+# (https://lamport.azurewebsites.net/pubs/time-clocks.pdf): el profesor la
+# mostró del paper y en las notas solo dice "VER FIGURA 1 LAMPORT". Sale de la
+# página 2 del PDF renderizada a 300 dpi, sin el rótulo "Fig. 1." ni el texto
+# de abajo: la caja es x 224-1240, y 212-1044, ceñida con 16 px de margen. Es
+# puro trazo, así que png.
+#
+# `relojes-logicos-figura-1.png`, la misma figura 1 con los valores del reloj
+# anotados sobre cada evento, no está en ninguna de las dos fuentes —en las
+# notas es solo el rótulo "NUEVAMENTE FIGURA 1"— porque el profesor la anotó
+# en vivo sobre el paper pegado en Xournal, en una página que el `pizarra.pdf`
+# exportado no trae. Sale del video (https://www.youtube.com/watch?v=pyxXqi3wC7s),
+# del frame de 58:45 a 1080p: la caja es x 225-760, y 330-748, ceñida con 12 px
+# de margen. Es el último frame antes de que dibuje la flecha de r2 a q7, que
+# ya es de la explicación siguiente.
 #
 # Las otras seis figuras de la clase 7 el profesor las dibujó en vivo, y como
 # esa clase es la única sin `pizarra.pdf`, solo existen en el video
