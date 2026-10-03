@@ -26,7 +26,8 @@ Lo que hizo ahí —y conviene decir que se puso a pensar antes que decir que de
 
 El ejemplo que lo muestra no es de Lamport, es uno construido para entender el asunto, pero resulta suficiente. Supongamos dos procesos separados, un proceso uno y un proceso dos, con el tiempo corriendo de arriba hacia abajo. En algún punto del proceso uno ocurre un evento, E1. Más abajo, en el proceso dos, ocurre otro, E2. Como lo estamos mirando desde afuera, con una visión global que ningún proceso tiene, sabemos con total certeza que el uno ocurrió antes que el dos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/relojes-desincronizados.png' | relative_url }}" alt="Dos relojes desincronizados">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos relojes desincronizados — dos líneas de tiempo verticales P1 y P2 con el tiempo hacia abajo; sobre P1 el evento e1 marcado T1 = 10:03 y más abajo, sobre P2, el evento e2 marcado T2 = 10:00
@@ -48,7 +49,8 @@ El problema es que ese ε no se puede determinar con precisión, y el intento fa
 
 Tenemos un proceso uno y un proceso dos. Necesitamos calcular el tiempo de un lado, T1, y el del otro, T2, al mismo tiempo; con esos dos números, ε es simplemente T2 − T1. En teoría la cuenta es impecable. Lo que pasa es que estamos en el mundo físico. Pongamos que quien hace la cuenta es la máquina del proceso uno: para saber el valor de T2 le tiene que mandar un mensaje a la otra —un `get_time`—, la otra calcula su tiempo y en algún momento le responde con un ok y el valor que le salió.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/round-trip-get-time.png' | relative_url }}" alt="El round-trip de get_time">
   <figcaption>
     <span class="figura-label">Figura</span>
     el round-trip de get_time — dos líneas de tiempo P1 y P2, la flecha de ida rotulada get_time, la de vuelta rotulada ok, las marcas de tiempo sobre cada línea, y las líneas punteadas de los caminos alternativos posibles
@@ -83,7 +85,8 @@ Lo que hace en el fondo es el recurso que utilizamos de vez en cuando, la misma 
 
 El ejemplo mínimo son tres líneas de tiempo: en el medio el servidor de timestamps, y a los costados el proceso uno y el proceso dos. El proceso uno le pregunta el tiempo, el servidor le responde con T1, y con eso crea su evento y le asocia ese timestamp. El proceso dos hace lo mismo, recibe T2, y crea su evento con ese otro timestamp.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/secuenciador-centralizado.png' | relative_url }}" alt="El secuenciador centralizado">
   <figcaption>
     <span class="figura-label">Figura</span>
     el secuenciador centralizado — tres líneas de tiempo verticales, el proceso uno, el servidor de timestamps en el medio y el proceso dos; cada proceso con su ida y vuelta, y las marcas T1 y T2 sobre la línea central

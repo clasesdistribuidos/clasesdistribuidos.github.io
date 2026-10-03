@@ -27,7 +27,8 @@ Ese `V(a)` ya no es un contador suelto: es un vector, un array de números, uno 
 
 Las reglas son tres, con una aclaración previa: todos los contadores arrancan en cero. Los de Lamport también arrancaban en cero, aunque no lo hayamos dicho explícitamente; aquí el punto de partida es un vector entero de ceros. La primera regla es que justo antes de que ocurra un evento local se incrementa el contador, y lo interesante es cuál: el que corresponde a la posición propia. Si son tres posiciones, una le corresponde a este nodo, y esa es la única que toca; las otras dos quedan como estaban. La segunda es que se incluye el vector entero en cada mensaje, igual que con Lamport se mandaba el contador. Y la tercera es que, al recibirlo, hay que aplicar la misma regla que en Lamport, pero considerando que cada posición del vector es un reloj de Lamport individual.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/reglas-vector-clocks.png' | relative_url }}" alt="Las reglas VC1 a VC4">
   <figcaption>
     <span class="figura-label">Figura</span>
     las reglas de los relojes vectoriales — inicialización en cero, incremento de la posición propia antes de cada evento, envío del vector completo en cada mensaje, y la actualización al recibir tomando el máximo componente a componente
@@ -37,7 +38,8 @@ Las reglas son tres, con una aclaración previa: todos los contadores arrancan e
 
 Es mucho más fácil verlo con un ejemplo. Tenemos tres procesos y todos arrancan en `(0,0,0)`.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/vector-clocks-ejemplo.png' | relative_url }}" alt="La figura 14.7 del Coulouris">
   <figcaption>
     <span class="figura-label">Figura</span>
     el ejemplo numérico de los relojes vectoriales — tres procesos con los vectores anotados sobre cada evento: (1,0,0) y (2,0,0) en el primero, el mensaje que lleva (2,0,0) hasta (2,1,0) y después (2,2,0) en el segundo, el evento aislado (0,0,1) en el tercero, y el segundo mensaje que lo lleva a (2,2,2)
@@ -75,7 +77,8 @@ La escritura de algo nuevo funciona así: se elige uno de los tres, se le manda 
 
 El nodo elegido es lo que el paper llama el coordinador, y lo que hace es incrementar su propia posición dentro de los tres números del vector. Si el elegido fue el del medio, el reloj queda en `(0,1,0)`. Después replica: les manda a sus dos compañeros la clave `k1`, el valor `v1` y el mismo vector `(0,1,0)`, y ellos también lo escriben.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/primera-escritura.png' | relative_url }}" alt="La primera escritura en Dynamo">
   <figcaption>
     <span class="figura-label">Figura</span>
     la primera escritura — tres réplicas, el put que entra por el nodo del medio, que pasa a ser el coordinador e incrementa su posición dejando el vector (0,1,0), y los dos arcos que replican clave, valor y vector
@@ -100,7 +103,8 @@ Después, cuando hacemos el `put(k1, v2)`, tenemos que mandarle el mismo reloj v
 
 Pero lo interesante es qué pasa cuando llega ese request. Tenemos de vuelta los tres nodos, y para complicarlo un poco imaginemos que esta vez se elige un coordinador distinto del anterior, y que el `put` aterriza ahí.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/update.png' | relative_url }}" alt="El update con el contexto">
   <figcaption>
     <span class="figura-label">Figura</span>
     el update — el get que devuelve el valor junto con el vector (0,1,0) dentro del contexto opaco, el put que lo devuelve intacto y entra por un coordinador distinto, el vector que pasa a (1,1,0) al aceptarse, y la propagación a las réplicas que verifican la precedencia
@@ -124,7 +128,8 @@ Ahora llega alguien y le pone un put a S1. Y al mismo tiempo llega otro y le pon
 
 S1 hace lo que ya sabemos que hace un coordinador: guarda el valor localmente e incrementa su propia posición, la primera, con lo cual el vector le queda en `(1,1,0)`. S3 hace lo mismo con la suya, la tercera, y le queda `(0,1,1)`. Y después cada uno hace lo otro que le toca, replicar: S1 intenta replicar hacia S3 y, al mismo tiempo, S3 hacia S1. Uno manda `(1,1,0)` y el otro `(0,1,1)`, y los dos mensajes se cruzan en el camino.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/escrituras-concurrentes.png' | relative_url }}" alt="Dos escrituras concurrentes">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos escrituras concurrentes — tres réplicas S1, S2 y S3, un put entrando por S1 y otro por S3 al mismo tiempo, S1 quedando en (1,1,0) y S3 en (0,1,1), y los dos arcos de replicación cruzada
@@ -152,7 +157,8 @@ Dynamo no puede tomar ninguna decisión razonable, y la razón es de fondo. Para
 
 Mirado desde arriba, ¿qué estamos resolviendo con todo esto? Un split brain. Si hubiera una partición de red esto pasaría definitivamente, y las dos mitades empezarían a avanzar cada una por separado; eventualmente el cliente tiene que usar lógica de negocio propia para reconciliarlas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/split-brain-reconciliado.jpg' | relative_url }}" alt="El split brain reconciliado">
   <figcaption>
     <span class="figura-label">Figura</span>
     el split brain que se reconcilia — un conjunto de nodos partido en dos mitades por la partición, cada mitad atendiendo a su propio cliente, y debajo el sistema vuelto a unir

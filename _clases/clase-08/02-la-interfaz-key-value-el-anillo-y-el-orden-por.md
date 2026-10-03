@@ -27,7 +27,8 @@ Una semántica tan limitada es lo que facilita la distribución, y el que hace e
 
 La primera ventaja es que resulta fácil de particionar, porque por definición del sistema no existe ninguna relación entre claves. Dynamo ni siquiera tenía el concepto de tablas adentro: era una bolsa de claves. Nunca hay que hacer joins, nunca hay que combinar lo que está en una partición con lo que está en otra. Y ahí es donde están las cosas difíciles: combinar datos que viven en particiones distintas es exactamente donde se complica el asunto. Con esta interfaz, las operaciones nunca tienen que cruzar shards: va a haber muchos shards, cada uno con algunas claves adentro, y nunca va a hacer falta una operación que le pregunte claves a otro para combinarlas con las propias. Cada shard se transforma en una pequeña base de datos independiente.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/claves-en-shards.png' | relative_url }}" alt="Claves repartidas en tres shards">
   <figcaption>
     <span class="figura-label">Figura</span>
     las claves repartidas en shards — tres hojas, cada una con unas pocas claves adentro y sin relación entre ellas
@@ -51,7 +52,8 @@ El problema venía al agregar un servidor nuevo. Supongamos que aparece S3: ese 
 
 Con tres servidores el costo es tolerable. En las escalas de Amazon, que tenía miles, sí lo es. Agregar uno solo hace que mil servidores empiecen a mandarse información de un lugar a otro y que se mueva casi todo lo guardado: al pasar de mil servidores a mil uno, una clave conserva su destino solamente si su hash da el mismo resto con los dos módulos, y eso ocurre en aproximadamente una de cada mil. El otro 99,9 % cambia de dueño.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/rehashing.png' | relative_url }}" alt="Rehashing al agregar un cuarto servidor">
   <figcaption>
     <span class="figura-label">Figura</span>
     el rehashing del módulo — cuatro servidores en fila, el cuarto recién agregado, y flechas que reasignan claves de cada uno al siguiente
@@ -61,7 +63,8 @@ Con tres servidores el costo es tolerable. En las escalas de Amazon, que tenía 
 
 Consistent hashing es un truco más inteligente. La representación típica es un anillo: un círculo que representa todos los números desde el cero hasta el tamaño del hash. Con MD5 el hash es de 128 bits, así que en el corte de arriba del círculo está el 2^128 − 1 de un lado y el 0 del otro. Cada hash de clave termina cayendo en algún lugar de esa circunferencia, y cada servidor también está asignado a un valor dentro del círculo, inicialmente random. La idea central es la regla que une las dos cosas: si el elemento cayó en algún lugar del anillo, hay que seguir avanzando por el círculo hasta llegar al primer servidor que aparezca, y ese es el que le toca.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/anillo.png' | relative_url }}" alt="El anillo de consistent hashing">
   <figcaption>
     <span class="figura-label">Figura</span>
     el anillo de consistent hashing — el corte entre 0 y 2^128−1 arriba, tres servidores repartidos y una clave que cae en un arco y avanza hasta el primer servidor
@@ -71,7 +74,8 @@ Consistent hashing es un truco más inteligente. La representación típica es u
 
 Con esa regla, agregar un nodo deja de ser un problema grave. Partamos de tres servidores sobre el anillo y agreguemos uno nuevo en cualquier lugar. Antes, todo ese tramo del círculo iba a parar a un mismo servidor, el primero avanzando. Al meter el nodo nuevo en el medio, el tramo queda partido en dos: los del tramo de un lado van al nuevo, y los del otro siguen yendo al de antes. En la práctica, solamente ese servidor le tiene que mandar parte de sus claves al que le apareció antes en el círculo. Hay rehashing, sí, pero uno que afecta a un solo servidor y no a los mil: se mueven las claves de un arco, del orden del uno por mil del total, en lugar del 99,9 % de recién. Para eso sirve consistent hashing: para poder agregar y quitar cosas fácilmente.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/agregar-un-nodo.png' | relative_url }}" alt="Un nodo nuevo intercalado en el anillo">
   <figcaption>
     <span class="figura-label">Figura</span>
     agregar un nodo al anillo — el nodo nuevo intercalado entre dos existentes, el arco viejo partido en dos y la transferencia de claves desde un único vecino
@@ -96,7 +100,8 @@ El consistent hashing resuelve el particionado: dada una clave, ya sabemos qué 
 
 La forma de replicar consiste en cambiar esa última parte por definición. El grupo de replicación no va a ser un solo nodo, sino típicamente tres, o un N configurable por quien use el sistema. Si N es 3, se toma ese nodo que le seguía a la clave y los dos que siguen a ese sobre el anillo. La clave termina guardada en los tres, y a ese conjunto se lo llama preference list.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/preference-list.png' | relative_url }}" alt="La preference list sobre el anillo">
   <figcaption>
     <span class="figura-label">Figura</span>
     la preference list — el anillo con varios nodos, una clave que cae sobre un arco, y un lazo que abraza los tres nodos consecutivos

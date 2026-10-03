@@ -25,7 +25,8 @@ Así que lo importante era altísima disponibilidad y latencia predecible. El se
 
 La forma que tanto Amazon como el resto de la industria usaba para guardar los datos era una base relacional. ¿Y cómo se distribuye una relacional? Vale como repaso. La típica es replicación con lo que se suele llamar un writer y unos readers: una variación de primary y secondary. A favor tiene que es fácil de implementar. Se escribe siempre en el writer, que les transmite todas las modificaciones a los readers; las lecturas, que se supone que son más frecuentes que las escrituras, se sirven desde abajo.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/primary-backup.png' | relative_url }}" alt="Un writer replicando hacia tres readers">
   <figcaption>
     <span class="figura-label">Figura</span>
     replicación primary-backup — un nodo writer arriba con tres flechas hacia tres nodos reader
@@ -50,7 +51,8 @@ Se dibuja como un triángulo con tres vértices. La C quiere decir consistencia,
 {: .nota }
 > El propio Eric Brewer matizó después esa formulación. En *CAP Twelve Years Later: How the "Rules" Have Changed* (IEEE Computer, febrero de 2012) escribe que el enunciado de "dos de tres" siempre fue engañoso, por tres razones: las particiones son raras, y mientras no hay partición no hay motivo para resignar ni C ni A; la elección entre C y A puede tomarse muchas veces dentro del mismo sistema y con granularidad muy fina, incluso según la operación o el dato; y las tres propiedades son continuas antes que binarias. La lectura que sigue —que P no se negocia y que la disyuntiva aparece cuando hay una partición— es justamente la versión corregida.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/triangulo-cap.png' | relative_url }}" alt="El triángulo CAP">
   <figcaption>
     <span class="figura-label">Figura</span>
     el triángulo CAP — consistencia arriba, availability abajo a la izquierda y partition tolerance abajo a la derecha, con una flecha que señala P
@@ -72,7 +74,8 @@ La segunda es que siempre acepta escrituras, y trae una consecuencia inesperada.
 
 La tercera está muy relacionada: el sistema permite escrituras conflictivas. Si un conjunto de nodos se parte por la mitad, se pueden seguir escribiendo cosas de un lado y del otro; inclusive se puede seguir escribiendo el mismo elemento, la misma row, en las dos mitades a la vez.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/split-brain.png' | relative_url }}" alt="Nodos partidos recibiendo escrituras de los dos lados">
   <figcaption>
     <span class="figura-label">Figura</span>
     el split brain que Dynamo acepta — un conjunto de nodos partido en dos mitades, cada una recibiendo escrituras sobre el mismo elemento

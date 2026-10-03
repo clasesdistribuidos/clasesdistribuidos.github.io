@@ -21,7 +21,8 @@ A esa condición —que una cosa ocurra antes que otra— Lamport le puso nombre
 
 La definición se apoya en un diagrama de tres procesos, que en el paper es la figura 1. Lamport los llama P, Q y R, y conviene adoptar esos nombres; el único detalle a tener en cuenta es que ahí el tiempo corre hacia arriba, al revés de como lo dibujamos nosotros. Sobre cada línea hay eventos marcados, y entre las líneas hay mensajes que las cruzan.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/happens-before-figura-1.png' | relative_url }}" alt="La figura 1 del paper de Lamport">
   <figcaption>
     <span class="figura-label">Figura</span>
     el diagrama de espacio-tiempo de happens-before — tres procesos P, Q y R como líneas verticales, eventos sobre cada una, mensajes cruzando, y el camino de precedencias que encadena algunos eventos mientras otros quedan sin relación
@@ -89,7 +90,8 @@ La sutileza tiene una razón precisa: la clock condition es mucho menos útil de
 
 El planteo concreto es este. Supongamos que alguien nos dice que el reloj del evento uno es menor que el del evento dos. ¿Qué podemos concluir? Hay dos cosas distintas que pueden estar pasando. Una es el caso feliz: E1 efectivamente ocurrió antes que E2, y por eso se respeta la clock condition. Pero tranquilamente puede estar pasando la otra, que E1 y E2 hayan sido concurrentes, que hayan ocurrido en paralelo, y que los números hayan quedado ordenados así de todos modos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/bifurcacion-clock-condition.jpg' | relative_url }}" alt="La bifurcación de la clock condition">
   <figcaption>
     <span class="figura-label">Figura</span>
     la bifurcación de la clock condition — de C(a) &lt; C(b) salen dos flechas, una hacia &quot;a ocurrió antes que b&quot; y otra hacia &quot;a y b son concurrentes&quot;, con la leyenda de que da información limitada
@@ -117,7 +119,8 @@ Se arma así: se toman todos los eventos del sistema, se los numera y se los ord
 
 Lo interesante es la propiedad que tiene. Supongamos que tomamos todos los eventos, los ponemos en un array y hacemos un sort por reloj lógico, y que entre dos de ellos, A y B, había una relación real de que A ocurrió antes que B. Al ordenarlos, A va a aparecer antes que B.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/orden-total.jpg' | relative_url }}" alt="El orden total que contiene al parcial">
   <figcaption>
     <span class="figura-label">Figura</span>
     el orden total que contiene al orden parcial — una tira horizontal de celdas con todos los eventos ordenados por reloj lógico, y dos flechas que señalan las celdas de a y de b indicando que la relación de orden parcial quedó respetada
@@ -139,7 +142,8 @@ Lo que cada participante manda junto con el texto es su reloj de Lamport concate
 
 Los mensajes pueden llegar de maneras muy distintas. A le manda su pregunta a B y también a C, pero la red se comporta de forma irregular y a C le llega con mucho retraso. C manda lo suyo, B manda lo suyo, y cada mensaje hace su propio camino, de modo que a cada destinatario le llega el conjunto en un orden distinto. A A le llegaron M1, M2 y M3, en ese orden, que respeta la única precedencia que había. A B le llegaron M1, M3 y M2, y eso sigue estando bien, porque la pregunta le llegó antes que la respuesta; aunque en su caso era obvio de entrada, porque si B está respondiendo es porque leyó el mensaje antes de contestar. Donde la situación se invierte de verdad es en C: ahí los dos mensajes que sí estaban relacionados quedaron al revés.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-08/chat-room.jpg' | relative_url }}" alt="El chat room distribuido">
   <figcaption>
     <span class="figura-label">Figura</span>
     el chat room distribuido — tres líneas verticales A, B y C con los valores del reloj lógico anotados; los tres mensajes cruzando, cada uno rotulado con su par (reloj, proceso): (1,A) &quot;¿quién viene a comer?&quot;, (1,C) &quot;qué calor&quot; y (4,B) &quot;yo voy&quot;; al costado, las tres colas de llegada y el orden total resultante
