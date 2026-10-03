@@ -166,10 +166,11 @@ Y cuando desaparece puede deberse a dos razones, que constituyen el punto centra
 
 Pueden presentarse casos menos favorables: por ejemplo, que la máquina que tenía `lock-3` haya fallado, que se haya desconectado repentinamente. Y aquí es donde adquiere relevancia la otra flag: como el nodo es efímero, si esa máquina se desconecta el nodo desaparece, y eso también activa la notificación. Volvemos al paso dos, listamos, y comprobamos que todavía hay dos antes que nosotros, de modo que permanecemos esperando nuevamente: ahora colocamos un watch en `lock-2`. Eventualmente puede fallar también ese y ocurre lo mismo, o pueden liberarse en orden, y entonces sí obtenemos el lock.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-07/algoritmo-del-lock.png' | relative_url }}" alt="El pseudocódigo del lock del paper de Zookeeper">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el ciclo del algoritmo del lock — el `create` del nodo efímero y secuencial en el directorio, el listado de los hijos, y la bifurcación: si el nuestro es el primero tenemos el lock y salimos, y si no, el watch sobre el nodo inmediatamente anterior y la flecha que vuelve al listado de los hijos cuando ese nodo desaparece — dibujada en vivo, sin respaldo en las notas
+    el algoritmo del lock — el `create` del nodo efímero y secuencial en el directorio, el listado de los hijos, la salida si el nuestro es el primero, y si no el watch sobre el nodo inmediatamente anterior y el `goto` que vuelve al listado de los hijos; anotado al margen, que sirve también para la elección de líder — el pseudocódigo del paper de Zookeeper, mostrado en clase
   </figcaption>
 </figure>
 

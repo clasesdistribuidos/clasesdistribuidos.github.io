@@ -331,11 +331,29 @@ FIGURAS_POR_CLASE = {
 #
 # Las otras seis figuras de la clase 7 el profesor las dibujó en vivo, y como
 # esa clase es la única sin `pizarra.pdf`, solo existen en el video
-# (https://www.youtube.com/watch?v=Taiz1RYsX3Y). Sus placeholders siguen
-# punteados en `_clases/clase-07/`. Dónde está cada una, según el transcript:
-# el cluster particionado ~33:20, la lectura escrita al log ~34:40, biblioteca
-# vs. servicio ~43:40, el anillo de consistent hashing ~50:45, el Google File
-# System ~52:00 y el ciclo del algoritmo del lock ~1:40:00.
+# (https://www.youtube.com/watch?v=Taiz1RYsX3Y).
+#
+# `cluster-particionado.png` sale del frame de 33:30 a 1080p, el último antes
+# de que la página baje para la figura siguiente: la caja es x 330-810,
+# y 265-610, con el título "RAFT Y LINEALIZABILIDAD" tapado (x 180-615,
+# y 265-340), ceñida con 12 px de margen.
+#
+# Las otras, también de frames a 1080p, ceñidas con 12 px de margen:
+#   - `lectura-escrita-al-log.png`, frame de 35:10, caja x 440-930, y 430-800.
+#   - `anillo-consistent-hashing.png`, frame de 50:45, el último antes de que
+#     la página baje; caja x 1095-1320, y 470-720, con el cursor de Xournal
+#     tapado (x 1100-1148, y 575-622).
+#   - `google-file-system.png`, frame de 53:00, caja x 280-620, y 480-740. Es
+#     el estado final, con el master ya reemplazado por el grupo con consenso;
+#     el master solo (51:15) lo dibujó en el mismo lugar y no quedó al lado.
+#   - `zookeeper-como-servicio.png`, frame de 45:55, caja x 360-1370,
+#     y 300-715, con restos del título tapados (x 360-420, y 300-330 y
+#     x 360-990, y 300-314). El pie pedía las dos opciones enfrentadas, pero
+#     solo dibujó la del servicio —a las 43:00 la página está vacía salvo el
+#     título—, así que el pie se ajustó a lo que muestra.
+#   - `algoritmo-del-lock.png`, frame de 1:40:35, caja x 330-1150, y 250-582.
+#     El ciclo no lo dibujó: mostró el pseudocódigo del paper anotado, y el pie
+#     se ajustó a eso. Queda afuera el "L-4" del margen, que solo no se entiende.
 
 
 def renderizar_pizarra(tmp, apuntes, obligatoria=True):
