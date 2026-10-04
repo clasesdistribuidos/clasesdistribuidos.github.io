@@ -1,10 +1,10 @@
 ---
-title: "12. Cumplir el SLA por diseño"
+title: "8. Cumplir el SLA por diseño"
 parent: "Clase 9 — Dynamo II y DynamoDB"
-nav_order: 12
+nav_order: 8
 ---
 
-# 12. Cumplir el SLA por diseño
+# 8. Cumplir el SLA por diseño
 
 Del dibujo de la arquitectura queda una pregunta pendiente: si los clientes acceden al data plane. Sí, acceden; y con eso en mente aparece una pieza de ubicación discutible. El request router es polémico. En los put y get es necesariamente parte del data plane, porque esas operaciones se resuelven en el momento; en los create table y las demás, no. Típicamente está compartido, en los dos lugares a la vez, y ahí la frontera se vuelve difusa. Suele decirse que es parte del control plane, pero si se cae tampoco funcionan los put ni los get, y eso lo empuja del otro lado. Es un caso ambiguo. Con el partition metadata no hay duda: los clientes definitivamente no acceden a él directamente. Pero el camino de llegar al router, y del router a los data nodes, es parte del data plane.
 

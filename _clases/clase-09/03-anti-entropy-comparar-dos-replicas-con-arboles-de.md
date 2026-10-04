@@ -1,10 +1,10 @@
 ---
-title: "4. Anti-entropy: comparar dos réplicas con árboles de hashes"
+title: "3. Anti-entropy: comparar dos réplicas con árboles de hashes"
 parent: "Clase 9 — Dynamo II y DynamoDB"
-nav_order: 4
+nav_order: 3
 ---
 
-# 4. Anti-entropy: comparar dos réplicas con árboles de hashes
+# 3. Anti-entropy: comparar dos réplicas con árboles de hashes
 {: .no_toc }
 
 <details open markdown="block">

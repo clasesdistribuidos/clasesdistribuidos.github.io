@@ -1,10 +1,10 @@
 ---
-title: "11. Control plane y data plane"
+title: "7. Control plane y data plane"
 parent: "Clase 9 — Dynamo II y DynamoDB"
-nav_order: 11
+nav_order: 7
 ---
 
-# 11. Control plane y data plane
+# 7. Control plane y data plane
 {: .no_toc }
 
 <details open markdown="block">

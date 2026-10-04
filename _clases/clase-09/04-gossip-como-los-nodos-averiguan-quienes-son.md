@@ -1,10 +1,10 @@
 ---
-title: "5. Gossip: cómo los nodos averiguan quiénes son"
+title: "4. Gossip: cómo los nodos averiguan quiénes son"
 parent: "Clase 9 — Dynamo II y DynamoDB"
-nav_order: 5
+nav_order: 4
 ---
 
-# 5. Gossip: cómo los nodos averiguan quiénes son
+# 4. Gossip: cómo los nodos averiguan quiénes son
 {: .no_toc }
 
 <details open markdown="block">
