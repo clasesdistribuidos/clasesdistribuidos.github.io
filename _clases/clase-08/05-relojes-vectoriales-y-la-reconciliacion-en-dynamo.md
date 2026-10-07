@@ -96,9 +96,6 @@ Los updates en Dynamo no se pueden hacer a ciegas. Siempre hay que obtener la cl
 
 La secuencia concreta es así. Primero hacemos un `get(k1)`, y eso nos devuelve dos cosas: el valor y el reloj vectorial que esa clave tiene asociado en ese momento. El reloj no viene suelto, y aquí hay un detalle que el paper se toma el trabajo de explicar: viene dentro de un campo opaco al que llama contexto. Opaco quiere decir que no tenemos por qué interpretarlo ni derecho a depender de su formato: para nosotros es una cadena de bytes sin significado. ¿Para qué nos lo manda, entonces? Para que se lo terminemos devolviendo.
 
-{: .nota }
-> En clase se dice que el contexto viene encriptado. El paper no habla de cifrado: dice que el contexto "codifica metadatos del sistema sobre el objeto, que son opacos para quien llama, e incluye información como la versión del objeto". La consecuencia práctica es la misma —el cliente lo recibe, no lo toca y lo devuelve intacto en el `put`—, pero la razón no es criptográfica sino de contrato: el formato es interno y el sistema se reserva el derecho a cambiarlo.
-
 Después, cuando hacemos el `put(k1, v2)`, tenemos que mandarle el mismo reloj vectorial que nos había dado originalmente: el contexto va y vuelve intacto. Eso sirve, en principio, para saber si hay dos clientes modificando la misma clave concurrentemente: es la misma idea del locking optimista.
 
 Pero lo interesante es qué pasa cuando llega ese request. Tenemos de vuelta los tres nodos, y para complicarlo un poco imaginemos que esta vez se elige un coordinador distinto del anterior, y que el `put` aterriza ahí.
