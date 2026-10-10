@@ -61,6 +61,9 @@ Las transacciones entran en esta clase porque el problema es mucho más común d
 
 No siempre hace falta un sistema de transacciones complicadísimo para resolver esas mini transacciones de escribir en una base y mandar por una cola sin perder nada; en la clase de message queues y message oriented middleware lo vamos a repensar con otras herramientas. Pero si lo queremos resolver formalmente, como transacciones distribuidas, primero necesitamos una introducción al tema, y después podemos mirar cómo lo resolvió DynamoDB. En DynamoDB uno escribe items individuales —ni siquiera les llaman filas—, y nada más. El pedido de escribir muchos items a la vez estuvo desde siempre, y eventualmente lo implementaron; eso también lo vamos a estudiar. Pero vamos primero por lo más abstracto, las transacciones en general, que para quien vio bases de datos va a ser casi lo mismo.
 
+{: .nota }
+> Este problema ya apareció en la [Práctica 1]({{ '/practica-01/08-dual-writes-y-contextos-de-ejecucion-durables/' | relative_url }}) con su nombre más conocido, *dual writes*: un contexto de ejecución sin estado durable que escribe en dos sistemas que no comparten una transacción. Ahí se resolvió sin transacciones distribuidas, con una variante del *outbox pattern*: un consumidor que lee los cambios desde el WAL de la base. Con ese mismo nombre lo tratan Martin Kleppmann y Chris Riccomini en *Designing Data-Intensive Applications* (2.ª ed., O'Reilly, 2026), cap. 12, "Keeping Systems in Sync", donde señalan que lograr que las dos escrituras ocurran o fallen juntas es un caso del problema de atomic commit, el que resuelve el two-phase commit.
+
 ## Las cuatro letras y las dos que importan
 
 ¿Qué queremos lograr con una transacción? Las propiedades son las cuatro de siempre, ACID, y de ellas nos interesan principalmente dos.
