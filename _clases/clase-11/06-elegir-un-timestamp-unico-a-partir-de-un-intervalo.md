@@ -25,7 +25,8 @@ Empecemos por un caso hipotético con tiempo absoluto. Es justamente lo que no v
 
 Pongámosle números. La escritura tiene timestamp 10, definido en el commit; la lectura, que ocurrió después, tiene 11. Simplemente se le pide al reloj local, y funciona: la lectura ve los valores guardados con timestamp 10. Coincide el timestamp de la versión guardada con el de la lectura, y está todo bien.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/caso-con-tiempo-absoluto.png' | relative_url }}" alt="Escritura con timestamp 10 y lectura con timestamp 11, con tiempo absoluto">
   <figcaption>
     <span class="figura-label">Figura</span>
     las dos líneas del caso hipotético con tiempo absoluto — T1 escribiendo x=1 con su timestamp definido al commit, y T2 leyendo x con su timestamp definido al inicio, con el 10 y el 11
@@ -49,7 +50,8 @@ El caso fácil es el primero. Si eligiéramos el earliest, si pusiéramos que la
 
 La solución es la que uno adivina siguiendo el razonamiento: elegir el latest, siempre un valor garantizado en el futuro. Con un timestamp de lectura garantizado del futuro, vamos a poder ver las cosas anteriores.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/lectura-en-el-latest.png' | relative_url }}" alt="La lectura toma el latest de su intervalo de TrueTime">
   <figcaption>
     <span class="figura-label">Figura</span>
     T1 con la escritura en el 10 y T2 con la lectura, y debajo de la lectura el intervalo de TrueTime con earliest 9, tiempo real 11 y latest 12, con las dos flechas: el 9 oculta la escritura, el 12 garantiza verla
@@ -69,7 +71,8 @@ Hagamos el mismo dibujo: T1 escribe X y una posterior T2 lee X. Supongamos que a
 
 ¿Cuál es el problema? La lectura hizo lo mismo: obtuvo 10 y 11, y toma el 11. Tenemos el mismo problema de antes, pero al revés: si elegimos el latest para la escritura, que ocurrió antes, le pusimos un time del futuro —el 12— y la ocultamos. La lectura no la puede ver.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/escritura-en-el-latest.png' | relative_url }}" alt="La escritura toma el latest 12 y la lectura en 11 no la ve">
   <figcaption>
     <span class="figura-label">Figura</span>
     el caso que falla al revés — T1 con la escritura tomando el latest 12 y su intervalo [9, 12], y T2 con la lectura en el 11 y su intervalo [10, 11]; el latest de la escritura la esconde de la lectura
@@ -106,7 +109,8 @@ Lo interesante es el read posterior. Supongamos que el cliente manda la lectura 
 
 La regla de las lecturas era la fácil: tomar el latest. La lectura ocurre en el 17, que es mayor que el 12, así que ve la escritura. Y el commit no quedó respondido ni en el futuro ni en el pasado.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/commit-wait.png' | relative_url }}" alt="Commit wait: la escritura espera hasta que su timestamp quede en el pasado">
   <figcaption>
     <span class="figura-label">Figura</span>
     el diagrama completo del commit wait — la escritura con su intervalo [9, 10, 12, 15, 18], la barra de espera entre &quot;todos OK para commit&quot; y &quot;el timestamp está garantizado en el pasado&quot;, las dos acciones que salen de ahí (commit a todos los participantes y respuesta al cliente), y abajo la lectura en el 17 con su intervalo [14, 17]

@@ -12,7 +12,8 @@ El paper de Spanner es de los más difíciles de la materia, y el sistema probab
 
 El objetivo es una base de datos distribuida que soporte transacciones como las que ya conocemos. Uno escribe un `begin`, un `read X`, un `read Y`, después `X = X + Y`, le hace `commit`, y la transacción se confirma.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/transaccion-de-ejemplo.png' | relative_url }}" alt="Transacción de ejemplo: BEGIN, dos lecturas, una escritura y COMMIT">
   <figcaption>
     <span class="figura-label">Figura</span>
     bloque de código de la transacción de ejemplo — BEGIN / READ x / READ y / x = x + y / COMMIT
@@ -31,7 +32,8 @@ El storage es lo básico y no es lo que más nos interesa, porque a esta altura 
 
 Lo que hace Spanner con esas tablas es lo mismo que venimos viendo en todo el curso: shardear, tomar la tabla y partirla en pedazos. Y se parte por rangos de primary key. Esto tampoco es lo principal —lo vimos cinco veces ya—, pero conviene retener que no usa hashing, sino los rangos comunes de la primary key. Es una decisión que tomaron ellos, y no es evidente por qué.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/tabla-por-rangos-de-pk.png' | relative_url }}" alt="Tabla con la primary key, partida en rangos de PK">
   <figcaption>
     <span class="figura-label">Figura</span>
     tabla con la primary key marcada y una llave con flechas hacia los data centers, rotulada &quot;particionado por rangos de keys, no hash&quot;
@@ -41,7 +43,8 @@ Lo que hace Spanner con esas tablas es lo mismo que venimos viendo en todo el cu
 
 Lo interesante es qué hacen con esos shards: los replican en distintos data centers. Imaginemos tres, DC1, DC2 y DC3, cada uno con los mismos shards adentro. Un rango cualquiera de la tabla existe entonces tres veces, una en cada data center, y a esas tres copias del mismo rango las agrupamos: eso es un grupo de replicación.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/grupo-de-replicacion.png' | relative_url }}" alt="Tres data centers con sus shards y un grupo de replicación">
   <figcaption>
     <span class="figura-label">Figura</span>
     tres data centers (DC1, DC2, DC3) como rectángulos verticales, cada uno con tres shards; un óvalo que agrupa el mismo rango en los tres → &quot;grupo de replicación → Paxos (símil Raft)&quot;

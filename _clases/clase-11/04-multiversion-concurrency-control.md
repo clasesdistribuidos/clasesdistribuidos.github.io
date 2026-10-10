@@ -33,7 +33,8 @@ Y se cuela una segunda pregunta, que de entrada suena sospechosa: ¿leer cosas a
 
 ¿Por qué no se pudo leer el segundo valor? Por la comparación de los números, y la aritmética merece quedar escrita, porque es toda la regla. En el primer caso, 10 es menor que 13, y 12 es menor que 13, y por eso funcionó. En el segundo, 10 es menor que 11, pero 12 no es menor que 11, y ahí viene el problema.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/timestamp-ordering.png' | relative_url }}" alt="Tabla de timestamp ordering y dos lecturas read-only, en 13 y en 11">
   <figcaption>
     <span class="figura-label">Figura</span>
     la tabla del timestamp ordering — clave | valor | timestamp, con x/valor uno/10 e y/valor dos/12, y al costado los dos casos: la read-only at 13 con las dos comparaciones en verde, y la read-only at 11 con la segunda comparación fallando en rojo, &quot;falla → retry&quot;
@@ -49,7 +50,8 @@ Imaginemos que x, en el time 10, tenía un cierto valor; que y, en el 9, valía 
 
 Nos llega una read-only en el tiempo 11, que lee x y lee y. Lo interesante es y, porque tenemos dos versiones: una está en el futuro respecto del timestamp de la lectura, y la otra en el pasado. La que queremos leer es la del pasado.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/tabla-del-mvcc.png' | relative_url }}" alt="Tabla del MVCC indexada por clave y timestamp, con la lectura en 11">
   <figcaption>
     <span class="figura-label">Figura</span>
     la tabla del MVCC — el par (clave, timestamp) como índice y el valor aparte, con (x,10), (y,9) y (y,12), la lectura en el 11 y las dos flechas hacia los valores que le corresponden
@@ -80,7 +82,8 @@ Bajemos al nivel de las réplicas. Tenemos las tres réplicas del grupo, una es 
 
 Hagamos el ejemplo con una read-only en el timestamp 12. Si leemos de la réplica atrasada, vamos a leer el valor viejo cuando tendríamos que leer el otro, simplemente porque Paxos no lo mandó todavía. Vamos a hacer, sin querer, una lectura del pasado, violando la linealizabilidad en un sistema en el que buscábamos la consistencia más fuerte posible.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/replica-desactualizada.png' | relative_url }}" alt="Tres réplicas con su safe time y una lectura en 12 que va a la atrasada">
   <figcaption>
     <span class="figura-label">Figura</span>
     las tres réplicas con su safe time y su contenido —11, el líder en 11, y la tercera en 10—, y la lectura en el timestamp 12 apuntando a la atrasada → &quot;lee un valor viejo, a pesar de MVCC&quot;

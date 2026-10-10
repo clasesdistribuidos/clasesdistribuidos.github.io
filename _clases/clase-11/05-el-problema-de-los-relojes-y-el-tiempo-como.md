@@ -41,7 +41,8 @@ Mirando el tiempo real, esta lectura tendría que devolver el valor de la transa
 
 Pero esta máquina está atrasada y tiene timestamp 5. Aunque la lectura se ejecutó después de las dos escrituras, el MVCC va a buscar una versión menor a 5; como la escritura de x = 2 está en el 10, la lectura cae en el medio y devuelve x = 1. Eso está mal: tendría que haber caído después de la escritura del 10. Que una máquina tenga el reloj atrasado invalida todas las garantías.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/lector-atrasado.png' | relative_url }}" alt="Lector atrasado: T3 en el timestamp 5 lee el valor de T1">
   <figcaption>
     <span class="figura-label">Figura</span>
     el ejemplo del lector atrasado — T1 en el timestamp 0 escribiendo x=1, T2 en el 10 escribiendo x=2 y T3 en el 5 leyendo x, sobre un eje de tiempo real, con una flecha marcando de dónde va a leer y otra dónde debería leer
@@ -63,7 +64,8 @@ Se parece bastante a un intervalo de confianza, y la comparación ayuda. En un i
 
 Hay dos primitivas más en el paper. Una es `after`, que recibe otro tiempo y devuelve verdadero si ya pasó. Pensemos cómo se hace. Sobre una línea de tiempo está nuestro intervalo, con su earliest y su latest. Para estar seguros de que el otro valor ya ocurrió, el earliest del otro tiene que ser mayor que nuestro latest: los intervalos no se tienen que solapar. Si se solapan, no hay seguridad. Si no se solapan, ahí reside toda la potencia del invento: tenemos la garantía de que realmente ocurrió después. No sabemos exactamente cuándo, pero sabemos que después, y esa es la base de toda la solución.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/tt-after.png' | relative_url }}" alt="Dos intervalos de TrueTime que no se solapan">
   <figcaption>
     <span class="figura-label">Figura</span>
     los dos intervalos que no se solapan sobre una línea de tiempo, el primero con su earliest y su latest y el segundo empezando después del latest del primero — la ilustración de TT.after(t)
@@ -81,7 +83,8 @@ El mecanismo es este. Cuando hacemos un `get time`, nos devuelve un intervalo co
 
 Y aquí se ve de dónde salen los 30 segundos, porque los dos números se multiplican: treinta segundos a 200 microsegundos por segundo son exactamente 6 milisegundos de ensanchamiento. Es lo que puede acumular el intervalo justo antes de la siguiente consulta, y explica la forma de la incertidumbre en producción: un diente de sierra que arranca angosto después de cada get time, crece hasta unos 6 milisegundos y vuelve a caer. Sumado al milisegundo que cuesta la comunicación con el time master, el intervalo va de 1 a 7 milisegundos, y se queda en 4 la mayor parte del tiempo. Esos 4 milisegundos son la moneda con la que vamos a pagar todo lo que viene después.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/arquitectura-de-truetime.png' | relative_url }}" alt="Servidor, time master y reloj atómico o GPS">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura del reloj — el servidor pidiendo get time cada 30 segundos al time master, y el time master conectado al reloj atómico o GPS de drift mínimo; el intervalo que vuelve y, debajo, la comparación entre el intervalo recién pedido y el mismo intervalo ya ensanchado por el drift local

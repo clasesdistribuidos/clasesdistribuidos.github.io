@@ -8,7 +8,8 @@ nav_order: 2
 
 Vamos primero con las read-write, y esto es en buena medida un repaso de two-phase commit. Imaginemos dos participantes —en un sistema real la lista seguramente sea más larga, pero con dos alcanza para ver la mecánica— y el cliente, que es el que les manda las cosas. El cliente somos nosotros usando el sistema: un frontend, cualquier programa que consulte la base.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/two-phase-commit.png' | relative_url }}" alt="Diagrama de secuencia del two-phase commit entre el cliente, P1 y P2">
   <figcaption>
     <span class="figura-label">Figura</span>
     diagrama de secuencia completo del 2PC — cliente / P1 / P2 con sus tres réplicas, read → read lock, buffer de valores intermedios, elige TC, write → write lock, prepare → log → ok, commit → libera locks
