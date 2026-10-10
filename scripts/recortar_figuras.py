@@ -60,7 +60,7 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
 # tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
 # repo, la 5 es la 6 y la 6 es la 7. Lo que falta acá se asume igual a sí mismo.
-FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11}
+FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11, 11: 14}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -72,7 +72,8 @@ FOTOS = {(2, "leslie-lamport")}
 # umbral de peso, así que el criterio automático los mandaría a jpeg y se
 # ensuciarían. Los tres casos de falla de la cadena son una figura alta —tres
 # bloques uno debajo del otro— y por eso pesa: 301 KB en png contra 132 en jpeg.
-TRAZOS = {(3, "fallas-de-la-cadena"), (9, "operaciones-de-cada-plano")}
+TRAZOS = {(3, "fallas-de-la-cadena"), (9, "operaciones-de-cada-plano"),
+          (11, "two-phase-commit")}
 
 ANCHO_MAX = 1400  # el ancho de la columna del theme es bastante menor
 DPI = 300         # el doble de las coordenadas de las cajas
@@ -391,6 +392,34 @@ FIGURAS_POR_CLASE = {
         ("disponibilidad-no-uniforme",  ("pizarra", 8), (280, 805, 935, 1033),  True,
          [(640, 1033, 940, 1100)]),                                # "DATA PLANE" y la frontera, de la de abajo
         ("create-table",                ("pizarra", 8), (25, 1045, 1095, 1515), True),
+    ],
+    # Sale de la grabación 14 (ver FUENTE_POR_CLASE).
+    11: [
+        ("transaccion-de-ejemplo",      ("pizarra", 1), (500, 215, 800, 500),   True),
+        ("tabla-por-rangos-de-pk",      ("pizarra", 1), (30, 622, 645, 930),    True,
+         [(644, 600, 660, 664), (632, 692, 660, 960)]),            # el borde de DS1, que la flecha toca
+        ("grupo-de-replicacion",        ("pizarra", 1), (640, 465, 1205, 950),  True,
+         [(630, 660, 645, 690)]),                                  # la punta de la flecha de "RANGOS DE PK"
+        ("two-phase-commit",            ("pizarra", 2), (10, 10, 1215, 830),    True,
+         [(0, 0, 370, 108), (0, 108, 345, 132)]),                  # "READ/WRITE TX" y su subrayado
+        # La pizarra (pág. 2) tiene solo la lectura que cae bien entre dos
+        # celdas; el caso en rojo de la que mezcla transacciones está en las notas.
+        ("cinta-del-log",               ("notas", 2),   (1055, 1900, 1699, 2115), False),
+        ("transaccion-read-only",       ("pizarra", 2), (810, 1455, 1030, 1690), True),
+        ("external-consistency",        ("pizarra", 3), (210, 290, 760, 480),   True),
+        ("serializable-no-linealizable", ("pizarra", 3), (310, 745, 1100, 1180), True),
+        ("timestamp-ordering",          ("pizarra", 4), (320, 100, 1180, 685),  True,
+         [(0, 0, 545, 215)]),                                      # "CÓMO LO LOGRAMOS?" y "REPASO TIMESTAMP ORDERING"
+        ("tabla-del-mvcc",              ("pizarra", 4), (20, 848, 1000, 1195),  True),
+        ("replica-desactualizada",      ("pizarra", 4), (215, 1342, 1241, 1640), True),
+        ("lector-atrasado",             ("pizarra", 5), (186, 1089, 910, 1524), True,
+         [(0, 1040, 225, 1112)]),                                  # la cola de "EJEMPLO"
+        ("tt-after",                    ("pizarra", 6), (255, 775, 765, 955),   True),
+        ("arquitectura-de-truetime",    ("pizarra", 6), (160, 1100, 1125, 1490), True),
+        ("caso-con-tiempo-absoluto",    ("pizarra", 7), (241, 176, 1100, 545),  True),
+        ("lectura-en-el-latest",        ("pizarra", 7), (165, 730, 1241, 1225), True),
+        ("escritura-en-el-latest",      ("pizarra", 8), (240, 82, 990, 455),    True),
+        ("commit-wait",                 ("pizarra", 8), (220, 1192, 1241, 1754), True),
     ],
 }
 
