@@ -49,7 +49,8 @@ El algoritmo es simple. Antes de acceder a un dato, para leerlo o escribirlo, ha
 
 Hay varias versiones de en qué momento exactamente hacer esto. En todos los ejemplos vamos a usar una que tiene dos nombres: two-phase locking riguroso, o *strict strong two-phase locking*. La secuencia es begin de la transacción, growing, commit o abort, y solo entonces shrinking.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/fases-del-2pl-riguroso.png' | relative_url }}" alt="Las fases del 2PL riguroso">
   <figcaption>
     <span class="figura-label">Figura</span>
     la secuencia de fases del 2PL riguroso — BEGIN TX → GROWING (se piden los locks) → COMMIT/ABORT → SHRINKING (se liberan)
@@ -65,7 +66,8 @@ Quedan dos cuestiones relevantes para nuestro tema. La primera es que el algorit
 
 Hay muchas formas, pero típicamente —sobre todo en two-phase locking, donde hay que pedir muchos locks— se guardan en la misma base que tiene el dato. Volvamos al ejemplo del principio. Un sistema tenía una tabla de asientos, con el 2B que pedimos. Otro, el de tickets, tiene una tabla de tickets, con un ID cualquiera, el 233. El lock se suele guardar desparramado: la tabla de asientos tiene los locks de los asientos, generalmente en la misma tabla, o al menos conceptualmente. Va a haber un objeto que representa el lock y que típicamente registra quién lockeó: por ejemplo, el host 1. Del lado de los tickets pasa lo mismo. La granularidad es por registro: no se lockea la tabla entera sino la fila. En términos precisos: el lock vive en el servidor que contiene el dato.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/donde-viven-los-locks.png' | relative_url }}" alt="Dos participantes, cada uno con su tabla de locks">
   <figcaption>
     <span class="figura-label">Figura</span>
     dónde viven los locks — dos participantes lado a lado, el de asientos con la tabla ASIENTO | LOCK y la fila 2B | HOST 1, el de tickets con la tabla TICKET | LOCK y la fila 233 | HOST 1, y al costado el rótulo &quot;granularidad por registro&quot;

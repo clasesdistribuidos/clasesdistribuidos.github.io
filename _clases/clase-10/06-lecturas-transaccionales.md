@@ -21,7 +21,8 @@ Todo lo anterior fue para las escrituras. Para los reads transaccionales tambié
 
 Tomemos el hilo de todas las transacciones: la uno, la dos, y así. Entre transacción y transacción queda dibujada una línea divisoria, y esas líneas son lo interesante. Es como una máquina de estados —ni siquiera distribuida—: la base va pasando de un snapshot a otro según las transacciones que llegan. Y como las transacciones son serializables, es decir, como si hubieran ocurrido una después de otra, conceptualmente se pueden identificar esos lugares intermedios y leer el estado del sistema exactamente ahí. Eso es un snapshot read: leer todos los valores tal como estaban en ese punto.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/snapshot-entre-transacciones.png' | relative_url }}" alt="El snapshot read entre dos transacciones">
   <figcaption>
     <span class="figura-label">Figura</span>
     el snapshot entre transacciones — una barra horizontal partida en celdas rotuladas TS₁, TS₂, TS₃, con una flecha que señala la línea divisoria entre dos celdas (no la celda), rotulada SNAPSHOT READ
@@ -31,7 +32,8 @@ Tomemos el hilo de todas las transacciones: la uno, la dos, y así. Entre transa
 
 Qué **no** es un snapshot read es más fácil de pensar, y se parece al primer ejemplo de la clase. Dos transacciones, la primera con timestamp TS₁ y la segunda con TS₂. En la primera queda `x = 1` e `y = 1`; en la segunda, `x = 2` e `y = 2`. Mandamos un `get x` y un `get y`. Si no se manda como snapshot read o read transaccional —que vendrían a ser lo mismo—, nos puede caer una lectura de cada lado: el `get x` antes de la segunda transacción y el `get y` después. El primero da 1 y el segundo da 2.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/lectura-que-no-es-snapshot.jpg' | relative_url }}" alt="Dos lecturas que caen en transacciones distintas">
   <figcaption>
     <span class="figura-label">Figura</span>
     la lectura que no es snapshot — un rectángulo partido en dos mitades por una barra vertical, la izquierda con TX₁ / x = 1 / y = 1 y la derecha con TX₂ / x = 2 / y = 2, y dos flechas entrantes desde abajo, una que aterriza antes de la barra y otra después, rotuladas GET(x) = 1 y GET(y) = 2
@@ -63,7 +65,8 @@ Esa escritura tiene que ser rechazada, pero con los datos que tenemos no podemos
 
 ¿Cómo se soluciona? Se le ponen al ítem dos timestamps, uno de escritura y otro de lectura, lo cual es atípico. Cada vez que se lee el valor se actualiza el timestamp de lectura, de manera que si llega un write que lo hubiera modificado antes, comparamos contra los dos. Si el timestamp que viene es posterior a ambos, se acepta; si alguno es más nuevo, se rechaza. Y ahí funciona, porque 11 es más chico que 12.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/dos-timestamps-del-item.png' | relative_url }}" alt="Un ítem con timestamp de escritura y de lectura">
   <figcaption>
     <span class="figura-label">Figura</span>
     los dos timestamps del ítem — la tabla de cuatro columnas k | v | TSw | TSR con la fila x | 2 | 10 | 12, y a la derecha las dos operaciones con su veredicto, GET(x, TS = 12) aceptada y PUT(x, 3, TS = 11) rechazada, con la anotación 11 &lt; 12
@@ -79,7 +82,8 @@ Los ingenieros de Amazon señalan que no querían eso. No querían que, por agre
 
 Mismas transacciones de antes: `x = 1` e `y = 1` de un lado y `x = 2` e `y = 2` del otro. En la primera fase el cliente lee todo normal, con lo cual puede leer uno de cada lado: `get x = 1` y `get y = 2`. Ese es el caso a rechazar, porque leyó mitad de un estado y mitad del otro. ¿Cómo lo detectan? Esa fue la fase uno; ahora lee todo de nuevo, `get x` y `get y` otra vez, y le da 2 y 2. Compara ambas lecturas, dieron distinto, entonces falló: no fue un snapshot read, se intercaló una transacción, la operación falla y el cliente reintenta.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/two-phase-read.jpg' | relative_url }}" alt="Las dos fases del two-phase read">
   <figcaption>
     <span class="figura-label">Figura</span>
     el two-phase read — el rectángulo partido en dos con x = 1 / y = 1 y x = 2 / y = 2, con dos flechas entrantes; debajo, las dos fases lado a lado, GET(x) = 1 / GET(y) = 2 / FASE 1 y, después de una flecha, GET(x) = 2 / GET(y) = 2 / FASE 2, con el rótulo &quot;si no cambiaron, es un snapshot&quot;

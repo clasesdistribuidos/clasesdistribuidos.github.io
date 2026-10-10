@@ -26,7 +26,8 @@ Llegamos a la parte más interesante, y conviene advertirlo: es también donde e
 
 ¿Dónde aparece lo optimista? Viene una transacción nueva, el coordinador la marca con 14 y la trata de ejecutar. Va a ser aceptada, porque vino después de la 12. Ahora viene otra y el coordinador la marca con un valor un poco más viejo —es más fácil pensarlo imaginando que llegaron casi todas juntas—: le tocó 13. La última que se ejecutó fue la de 14. Entonces esta va a ser abortada, simplemente porque tiene un timestamp más viejo que la última que se ejecutó.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/orden-serial-por-timestamps.png' | relative_url }}" alt="Transacciones ordenadas por timestamp, una aceptada y otra rechazada">
   <figcaption>
     <span class="figura-label">Figura</span>
     el orden serial por timestamps — una barra partida en celdas rotuladas Ts = 9, Ts = 11, Ts = 12, T = 14; desde abajo, una caja T = 14 con una flecha y un tilde verde hacia el final de la fila, y al costado una caja T = 13 con una cruz roja
@@ -52,7 +53,8 @@ El mecanismo aterriza en los storage nodes, que son los que lo aplican. Tenemos 
 
 El storage node guarda para cada ítem el último timestamp con que se escribió: esa es la columna de más, y en nuestra fila hay, por ejemplo, un 10. Al recibir el prepare compara el timestamp recibido con el de la fila. Como es posterior, no hay conflicto: esta transacción ocurrió después de la última que escribió ese valor. Responde OK. Si en cambio le mandamos un `prepare(k₁, v₃, 9)` —un coordinador algo atrasado—, responde que no: esa transacción no puede avanzar.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/validacion-del-timestamp.png' | relative_url }}" alt="Dos prepares contra el timestamp de un ítem en el storage node">
   <figcaption>
     <span class="figura-label">Figura</span>
     la validación del timestamp en el storage node — el SN₁ con una tabla de tres columnas KEY | VALUE | TS y la fila k₁ | v₁ | 10; desde la izquierda entra PREPARE(k₁, v₂, 11) con un OK en verde como respuesta, y PREPARE(k₁, v₃, 9) con un NO en rojo
@@ -77,7 +79,8 @@ Supongamos que al final de la historia de un ítem hay una escritura con timesta
 
 El razonamiento es: si hubiera aceptado ese valor y después hubiera ejecutado el put que lo pisó, lo podría haber aceptado de cualquier forma. No importa qué escriba el prepare viejo: la operación siguiente pisó el valor. Entonces, para no bloquear innecesariamente, si después hubo un put la acepta de todos modos: el prepare con 9 responde OK. Es una conclusión a la que probablemente habríamos llegado por nuestra cuenta. Los ingenieros de Amazon hacen esta y otra tanda de optimizaciones, pero esta es quizás la más ingeniosa.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/thomas-write-rule.png' | relative_url }}" alt="La Thomas write rule">
   <figcaption>
     <span class="figura-label">Figura</span>
     la Thomas write rule — una barra horizontal cuyas dos últimas celdas son T = 8 y T = 10 PUT, y desde abajo a la derecha una caja T = 9 PUT con una flecha que apunta al borde de la celda del 10; al costado, el veredicto OK
@@ -97,7 +100,8 @@ Hay dos formas de resolverlo. Una son los tombstones, también llamados borrado 
 
 La solución que armaron es exclusiva de este paper: guardar el max delete por partición, por storage node. Con un ejemplo: una tabla con k₁, k₂ y k₃, valores v₁, v₂ y v₃, y timestamps de escritura 8, 10 y 7. Vienen los deletes: primero k₁, después k₂, después k₃. El storage node, además de la tabla, guarda el max delete, el valor más grande que vio entre los borrados. Al borrar k₁ lo pone en 8. Al borrar k₂, en 10. Al borrar k₃ no lo actualiza, porque 10 ya es más grande que 7. Siempre guarda el delete más grande visto en la partición.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/max-delete-timestamp.png' | relative_url }}" alt="El max delete timestamp y los prepares que acepta o rechaza">
   <figcaption>
     <span class="figura-label">Figura</span>
     el max delete timestamp — a la izquierda un recuadro MAX_DELETE con el valor 10; al lado, la tabla k | v | TS con las filas k₁ | v₁ | 8, k₂ | v₂ | 10, k₃ | v₃ | 7, las tres tachadas porque ya fueron borradas; a la derecha, la traza de los tres deletes actualizando el max delete (8, después 10, después nada) y los tres prepares con su veredicto: (k₁, v₄, 12) aceptado, (k₂, v₅, 9) rechazado y (k₃, vₙ, 9) rechazado, este último marcado como el falso positivo

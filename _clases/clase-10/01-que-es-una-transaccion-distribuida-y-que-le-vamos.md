@@ -21,7 +21,8 @@ Agrupar varias operaciones para que se comporten como una sola es mucho más com
 
 El ejemplo que mejor lo muestra es un sistema distribuido que a primera vista no lo parece. Imaginemos un sistema de reserva de vuelos —de tickets, más precisamente—. Está el usuario, el frontend con el que habla, y detrás una base. Para complicar un poco el cuadro, supongamos que en lugar de una sola base tenemos dos sistemas separados: uno que reserva los asientos y otro que emite los tickets. En la vida real cada uno tiene a su vez varios subsistemas comunicándose entre sí, pero con dos alcanza para ver el problema. Llamémoslos asientos y tickets.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/sistema-de-reserva.png' | relative_url }}" alt="El frontend con sus flechas al sistema de asientos y al de tickets">
   <figcaption>
     <span class="figura-label">Figura</span>
     el sistema de reserva — usuario y FRONTEND, con una flecha RESERVE(2B) al sistema de asientos y otra EMITTICKET(…, 2B) al sistema de tickets
@@ -35,7 +36,8 @@ Esto, aunque no lo parezca, es una transacción. Si fueran dos tablas de una bas
 
 Un diagrama de tiempo separa lo que puede funcionar bien de lo que puede funcionar mal. Tenemos tres líneas de vida: frontend, asientos y tickets. El usuario le manda el pedido al frontend, el frontend le manda `reserve` a asientos, asientos responde OK, y solo con ese OK el frontend le manda el `emit` a tickets, que también responde OK. Ese es el camino feliz. ¿Qué puede salir mal?
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/implementacion-naive.png' | relative_url }}" alt="Diagrama de secuencia de la implementación naïve con sus puntos de falla">
   <figcaption>
     <span class="figura-label">Figura</span>
     diagrama de secuencia de la implementación naïve — tres líneas de vida (frontend, asientos, tickets), RESERVE/OK, EMIT/OK, tres cruces rojas numeradas sobre los tres puntos de falla y una flecha roja UNRESERVE de regreso desde asientos
@@ -85,7 +87,8 @@ Si ejecutamos Tx1 primero obtenemos 11 y 9: primero se modificó y después se i
 
 ¿Qué sería una ejecución no serializable? Una donde las operaciones se intercalan de formas raras. Supongamos que se ejecuta `ADD(x, 1)`, después `V1 = GET(x)`, después `V2 = GET(y)` y al final `ADD(y, −1)`. Obtuvimos la x después de sumarle, 11, y la y antes de restarle, 10. Ese resultado, 11 y 10, no está entre los dos que teníamos. No es legal, precisamente porque se mezclaron las operaciones: esa ejecución no es serializable.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/ordenes-seriales.png' | relative_url }}" alt="Tx1 y Tx2, los dos órdenes seriales y la ejecución entrelazada">
   <figcaption>
     <span class="figura-label">Figura</span>
     Tx1 y Tx2 con sus operaciones, los dos órdenes seriales legales con sus resultados (11, 9) y (10, 10), y la ejecución entrelazada que da (11, 10) marcada como no válida

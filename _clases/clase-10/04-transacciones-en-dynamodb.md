@@ -25,7 +25,8 @@ Así como antes teníamos el sistema de tickets y el de asientos, en DynamoDB lo
 
 Y no es un caso rebuscado, porque las claves están repartidas por todos lados. El sistema tenía una tabla de rangos y storage nodes —un rango del cero al mil, por ejemplo, y así sucesivamente—, y distintas claves van a parar a distintas entradas. Queremos escribir atómicamente en todas o en ninguna.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/arquitectura-de-dynamodb.png' | relative_url }}" alt="La arquitectura de DynamoDB: request router, partition metadata y storage nodes">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura de DynamoDB — el cliente con una flecha PUT a un REQUEST ROUTER; del router una flecha PUT hacia una pila de tres storage nodes, con otras dos pilas arriba y abajo; del router una flecha hacia abajo a PARTITION METADATA; y a la derecha la tabla de rangos y storage nodes, con flechas que van a cada pila
@@ -58,7 +59,8 @@ El paper tiene muchos ejemplos en código: toma una operación que actualiza un 
 
 ¿Cómo se resuelve? Con dos técnicas: un two-phase commit con algunas particularidades, y optimistic locking. Antes del two-phase commit conviene mirar la figura de arquitectura del paper. El authentication system y el metadata system ya los conocemos. Lo que hicieron fue agregar un componente nuevo: el transaction coordinator.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/dynamodb-transaction-coordinator.png' | relative_url }}" alt="La arquitectura de DynamoDB con el transaction coordinator, según el paper">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura de DynamoDB con el transaction coordinator agregado
@@ -74,7 +76,8 @@ El request router es lo suficientemente inteligente para distinguir los casos. U
 
 El resto es igual. Le manda el prepare al otro participante con sus operaciones, el otro dice OK, y eventualmente les manda el commit a los dos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/two-phase-commit-dynamodb.png' | relative_url }}" alt="El two-phase commit de DynamoDB entre el coordinador y dos storage nodes">
   <figcaption>
     <span class="figura-label">Figura</span>
     el two-phase commit de DynamoDB — diagrama de secuencia con CO, SN₁ y SN₂; PREPARE(PUT, DEL) del coordinador al primero y su OK; PREPARE(PUT) al segundo y su OK; y después COMMIT a los dos, con las operaciones concretas viajando adentro del prepare
@@ -91,7 +94,7 @@ El paper también muestra cómo resolvieron la tolerancia a fallas del transacti
 <figure class="figura figura-codigo">
   <figcaption>
     <span class="figura-label">Código pendiente</span>
-    el listing del paper de DynamoDB con la implementación de write items en el transaction coordinator — la máquina de estados PREPARING, COMMITTING, CANCELING y COMPLETED
+    el listing 2 del paper de DynamoDB con la implementación de write items en el transaction coordinator — la máquina de estados PREPARING, COMMITTING, CANCELING y COMPLETED
   </figcaption>
 </figure>
 
@@ -109,7 +112,8 @@ La clave es que cada vez que se modifica el estado se actualiza también `update
 
 En otra parte del sistema hay otro componente, que no está en la figura, llamado recovery manager. Cada cierto tiempo hace un scan del ledger mirando los `updated_at`. Si encuentra un registro que supera cierto umbral, una transacción que parece bloqueada porque su estado no se actualiza desde hace un tiempo, toma otro transaction coordinator y le manda el transaction ID que tiene que heredar. El coordinador nuevo lee el estado de la tabla y sigue desde donde el otro se murió.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/ledger-y-recovery-manager.png' | relative_url }}" alt="El ledger, el recovery manager y dos transaction coordinators">
   <figcaption>
     <span class="figura-label">Figura</span>
     el ledger y el recovery manager — tres cajas arriba (TC, RECOVERY MANAGER y otro TC, con una flecha rotulada TxID del recovery manager al segundo TC), flechas del primer TC y del recovery manager bajando a un cilindro LEDGER que también está en DynamoDB, un reloj rotulado SCAN LEDGER colgado del recovery manager, y a la derecha la tabla TxID | ESTADO | UPDATED AT

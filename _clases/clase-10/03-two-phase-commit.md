@@ -25,7 +25,8 @@ Primero hay una fase en la que el coordinador manda operaciones sueltas a los pa
 
 Nada de eso es todavía two-phase commit. Lo que le da nombre al algoritmo es lo que pasa al hacer el commit: se hace en dos fases. Primero el coordinador les envía prepare a todos, y cada uno contesta OK, o no. Le pregunta al primero, que dice OK; al segundo, que también dice OK. Ese es el caso feliz. Con todas las respuestas viene la fase siguiente: le manda el commit al primero, que responde OK, y al segundo, que también responde OK. Ese último OK no es tan crítico como el otro, pero también importa. Esas son las dos fases.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/two-phase-commit.png' | relative_url }}" alt="Diagrama de secuencia del two-phase commit">
   <figcaption>
     <span class="figura-label">Figura</span>
     el algoritmo completo — diagrama de secuencia con TRANSACTION COORDINATOR, PARTICIPANT 1 y PARTICIPANT 2; arriba las flechas punteadas de WRITES, READS (TxID), después PREPARE y su OK, después COMMIT y su OK, y sobre la línea de P2 el tramo marcado como punto de no retorno
@@ -43,7 +44,8 @@ Antes de responder OK al prepare, el participante puede abortar cuando quiera. S
 
 Por eso, típicamente, antes de responder al prepare tiene que guardar en disco. Y si queremos algo más fuerte que el disco —como en un sistema distribuido, según vamos a ver— en ese punto tiene que estar garantizado que el valor está replicado.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/regimenes-del-participante.jpg' | relative_url }}" alt="Los dos regímenes del participante, antes y después del prepare">
   <figcaption>
     <span class="figura-label">Figura</span>
     los dos regímenes del participante — su línea de vida con PREPARE entrando arriba y COMMIT entrando abajo, y una llave que abraza los dos tramos, rotulados &quot;puede abortar unilateralmente&quot; y &quot;está comprometido a hacer commit&quot;
@@ -67,7 +69,8 @@ Ordenemos primero lo de los participantes. En toda la primera parte, si falla al
 
 ¿Y el coordinador? Manda prepares a todos y después commits. Cada respuesta la tiene que ir guardando en disco —o en un sistema distribuido tolerante a fallas—, de manera que si muere y levantamos otro, ese otro pueda leer el estado. Típicamente es un log: le mandé prepare a tal, me respondió prepare OK, y así toda la secuencia. El que lo reemplace tiene que poder heredar ese estado; si no, el sistema queda bloqueado con los locks tomados.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-10/coordinador-persiste-estado.png' | relative_url }}" alt="El coordinador guardando su estado en disco entre el prepare y el commit">
   <figcaption>
     <span class="figura-label">Figura</span>
     el coordinador que persiste su estado — su línea de vida con la tanda de PREPARE saliendo arriba y la tanda de COMMITS saliendo abajo, y entre ambas un punto del que salen flechas hacia un cilindro, donde escribe el estado y lo vuelve a leer al revivir
