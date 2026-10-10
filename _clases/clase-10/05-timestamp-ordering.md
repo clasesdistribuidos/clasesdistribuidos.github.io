@@ -15,7 +15,7 @@ nav_order: 5
 </details>
 
 
-## El orden serial se define a priori
+## Orden serial definido por timestamp
 
 Llegamos a la parte más interesante, porque es la ocasión de ver en concreto el control de concurrencia optimista —optimistic concurrency control, OCC—. La variante que aparece es muy antigua y se llama timestamp ordering. Está en un paper de Bernstein, otro nombre importante del área, que tiene además un par de libros sobre transacciones. No usa locks: garantiza la serializabilidad de manera optimista.
 
@@ -37,7 +37,7 @@ Llegamos a la parte más interesante, porque es la ocasión de ver en concreto e
 
 ¿Dónde se hacen esas verificaciones? En los participantes mismos. Si un participante recibe una operación con un timestamp más viejo, la rechaza. No hay un coordinador de coordinadores verificando el orden; cada componente verifica cada operación individual. Como el timestamp viaja pegado a la operación, la verificación se puede hacer en cualquier punto del sistema, sin que nadie mire el cuadro completo. Y como todo sucede dentro del two-phase commit, en el prepare, el participante le dice directamente al coordinador que le llegó una operación vieja y que la transacción no puede seguir; el coordinador aborta todo. Esa es la idea básica del mecanismo.
 
-## Por qué acá sí sirven los relojes físicos
+## Uso de relojes físicos
 
 Hay un detalle para retener. Dedicamos una hora y media a los relojes de Lamport y a por qué usar timestamps de tiempo real es un problema serio. Este caso es interesante justamente por lo contrario: el mecanismo funciona también con relojes físicos.
 
@@ -47,7 +47,7 @@ Pueden pasar cosas problemáticas, claro. Si al asignar el 14 esa máquina estab
 
 Esa es la respuesta a por qué acá sí podemos usar relojes normales y no necesitamos relojes lógicos. Un coordinador con el reloj muy adelantado puede causar problemas; eso es lo único problemático.
 
-## La verificación en el storage node
+## Validación del timestamp en el storage node
 
 El mecanismo aterriza en los storage nodes, que son los que lo aplican. Tenemos el storage node uno con una tabla de clave, valor y una columna más; por ahora tiene k₁ con valor v₁. Llega un prepare con la operación —un put de k₁ con valor v₂— y un tercer dato, el timestamp: 11. El coordinador, antes de mandar los prepares, decidió un timestamp para toda la transacción, y a todos les manda ese mismo 11.
 
@@ -68,7 +68,7 @@ De ahí salen dos preguntas con consecuencias. La primera es sobre los puts comu
 
 La segunda pregunta es si puede pasar que un solo nodo amerite rechazar el prepare mientras el resto está bien, y si por ese único nodo se revierte todo. Exactamente. Con uno solo desactualizado —o, más precisamente, con uno solo al que ya le llegó una transacción más nueva—, ese nodo rechaza a todas las demás. Es un criterio restrictivo, y esa restricción da pie a lo que viene.
 
-## La Thomas write rule
+## Thomas write rule
 
 Sobre esa restricción hay una optimización que el paper de DynamoDB no menciona por su nombre, pero que en el paper original de Bernstein figura con un nombre curioso: la Thomas write rule. Va como nota al margen.
 
@@ -90,7 +90,7 @@ El razonamiento es: si hubiera aceptado ese valor y después hubiera ejecutado e
 
 El razonamiento completo: la operación de timestamp 10 pisa el valor de la que estaríamos rechazando, así que la aceptamos; si la transacción se termina confirmando, directamente no aplicamos la operación, la descartamos, y el resultado es correcto. Si fuera un abort, también la descartamos. Lo interesante es el commit en el que no aplicamos la operación, porque la posterior la hubiera pisado de todos modos.
 
-## Los deletes, el max delete y las cuatro reglas del prepare
+## Deletes, max delete timestamp y reglas del prepare
 
 Hay otro caso, exclusivo de lo que hicieron los ingenieros de Amazon, pero interesante de analizar: ¿qué pasa con los deletes?
 
@@ -121,11 +121,30 @@ Eso es en sí mismo como un mecanismo de lock aparte, y hace que lo demás resul
 
 Los listings se leen distinto con esto en la cabeza. Hay uno que muestra cómo se procesa un prepare, y hace exactamente eso: evalúa las condiciones, las restricciones del sistema, los timestamps —el timestamp ordering— y que no haya ninguna ongoing transaction, es decir, nada preparado. Quizás en algún otro cuatrimestre aparezca el caso donde las dos reglas juntas son necesarias. Si a alguien se le ocurre, vale la pena decirlo; en principio parece innecesario.
 
-<figure class="figura figura-codigo">
-  <figcaption>
-    <span class="figura-label">Código pendiente</span>
-    el listing 3 del paper de DynamoDB: cómo procesa un prepare el storage node — precondiciones, restricciones del sistema, timestamp y que no haya una ongoing transaction
-  </figcaption>
-</figure>
+```python
+def processPrepare(PrepareInput input):
+  item = readItem(input)
+
+  if item != NONE:
+    if evaluateConditionsOnItem(item, input.conditions)
+       AND evaluateSystemRestrictions(item, input)
+       AND item.timestamp < input.timestamp
+       AND item.ongoingTransactions == NONE:
+         item.ongoingTransaction = input.transactionId
+         return SUCCESS
+    else:
+         return FAILED
+  else: #item does not exist
+    item = new Item(input.item)
+    if evaluateConditionsOnItem(input.conditions)
+       AND evaluateSystemRestrictions(input)
+       AND partition.maxDeleteTimestamp < input.timestamp:
+         item.ongoingTransaction = input.transactionId
+         return SUCCESS
+  return FAILED
+```
+
+{: .fs-2 .text-grey-dk-000 }
+Listing 3 de [*Distributed Transactions at Scale in Amazon DynamoDB*](https://www.usenix.org/system/files/atc23-idziorek.pdf): la fase de prepare en el storage node.
 
 ---

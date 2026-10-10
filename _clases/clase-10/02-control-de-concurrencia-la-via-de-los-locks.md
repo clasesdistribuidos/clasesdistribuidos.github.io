@@ -1,10 +1,10 @@
 ---
-title: "2. Control de concurrencia: la vía de los locks"
+title: "2. Control de concurrencia y two-phase locking"
 parent: "Clase 10 — Transacciones distribuidas"
 nav_order: 2
 ---
 
-# 2. Control de concurrencia: la vía de los locks
+# 2. Control de concurrencia y two-phase locking
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 2
 </details>
 
 
-## Dos categorías, y un tal Jim Gray
+## Control de concurrencia pesimista y optimista
 
 El concepto de serializabilidad es exactamente el mismo para las transacciones distribuidas. Uno esperaría que conseguirlo también fuera fácil, y no lo es; el tema es más complejo de lo esperado. Quien haya estudiado el tema va a reconocer lo que viene. El tema se llama control de concurrencia, y hay dos grandes categorías: la pesimista —un nombre algo curioso— y la optimista.
 
@@ -28,7 +28,7 @@ No fue el único que trabajó en esto, pero el más relevante fue Jim Gray, y el
 
 Tiene además una historia trágica. A Gray le gustaba navegar, y el 28 de enero de 2007 salió solo en su velero desde la bahía de San Francisco, rumbo a las islas Farallón, a esparcir las cenizas de su madre por el mar. Desapareció y nunca lo encontraron. Hubo gente del ambiente que armó sistemas para analizar fotos satelitales del mar frente a la costa de San Francisco, sin resultado, y no fue hasta enero de 2012, cinco años después, que lo declararon legalmente muerto. Era una figura casi tan importante como Lamport pero para el mundo de las bases de datos: el que más contribuyó al tema de las transacciones.
 
-## Esperar o reintentar
+## Bloqueo frente a reintento
 
 Volvamos a las dos categorías. El locking optimista es, justamente, el que no usa locks, y se define sobre todo por eso: nadie se queda esperando. Hay una asimetría: para el pesimista no hay muchas formas —es two-phase locking y listo—, mientras que para el optimista hay muchísimas. Los primeros en proponerlo fueron Kung y Robinson, en 1981; ese es el paper para quien quiera profundizar.
 
@@ -38,7 +38,7 @@ El optimista es lo contrario. No hay locks en el sentido tradicional. Se llama o
 
 Lo principal es que acá no hay espera, y de ahí se sigue otra consecuencia: no hay deadlock. Los deadlocks se ven en sistemas operativos y en Programación Concurrente, así que sabemos de qué se trata: si nadie espera por nadie, nadie puede quedar bloqueado esperando. Es una gran ventaja de implementación, aunque no para el cliente, que ahora tiene que hacer los retries.
 
-## Las dos fases, y dónde viven los locks
+## Fases del two-phase locking y ubicación de los locks
 
 El two-phase locking tiene, lógicamente, dos fases: la expansiva o *growing* y la contractiva o *shrinking* —la traducción no es del todo estándar, así que conviene quedarse con los nombres en inglés—.
 

@@ -15,7 +15,7 @@ nav_order: 3
 </details>
 
 
-## Los participantes, el coordinador y las dos fases
+## Participantes, coordinador y fases del algoritmo
 
 Pasemos al otro gran tema, el más interesante desde el punto de vista de los sistemas distribuidos: la atomicidad, el todo o nada, también cuando hay fallas. Queremos el atomic write que ya nombramos, y la manera de obtenerlo es el famoso two-phase commit. Como también se ve por otro lado, varias cosas van a sonar repetidas; vale la pena recorrerlas de todos modos, relativamente rápido.
 
@@ -36,7 +36,7 @@ Nada de eso es todavía two-phase commit. Lo que le da nombre al algoritmo es lo
 
 ¿Por qué en dos fases? Por lo que pasa cuando algún participante, en lugar de responder OK al prepare, responde que no. La clave del algoritmo es que en la primera fase todos —subrayado— tienen que estar OK para avanzar. Algunos textos dicen que todos tienen que votar positivamente, y la palabra votar puede engañar: si es una votación, es unánime. No hay quórums. Solo cuando el coordinador recibe un OK de absolutamente todas las partes pasa a la fase de commit. Con uno solo que diga que no alcanza para cancelar la transacción para todos.
 
-## El punto de no retorno
+## Punto de no retorno del participante
 
 Eso parece obvio. Lo más importante del algoritmo aparece al mirarlo desde cada host en lugar de desde arriba. Hay un punto en la línea de vida de cada participante que conviene nombrar, porque es la clave de todo: el punto de no retorno.
 
@@ -61,7 +61,7 @@ En el ejemplo se ve mejor. Si uno decide que pasó mucho tiempo, que el coordina
 
 Un matiz: el participante ya hizo flush a disco antes de responder al prepare, pero eso puede haber sido en un lugar temporal; no es que el dato ya está visible para todos. El punto es otro: si el coordinador no le dice si la transacción se abortó o se confirmó, el participante no puede decidir solo. Eventualmente el coordinador podrá mandarle un "actualizate" al reconectarse, pero hasta entonces no hay nada que resolver por su cuenta.
 
-## El coordinador tiene que tolerar fallas
+## Tolerancia a fallas del coordinador
 
 Llegamos así al punto central: el coordinador tiene que ser altamente tolerante a fallas. El mecanismo se apoya en dos cosas. Una es la que vimos: el participante debe poder hacer commit después del prepare. La otra es peor: el coordinador debe tolerar fallas y, si las hay, poder restaurarse.
 

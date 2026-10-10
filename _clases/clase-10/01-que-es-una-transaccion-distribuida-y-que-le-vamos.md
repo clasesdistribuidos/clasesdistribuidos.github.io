@@ -1,10 +1,10 @@
 ---
-title: "1. Qué es una transacción distribuida y qué le vamos a exigir"
+title: "1. Transacciones distribuidas y propiedades ACID"
 parent: "Clase 10 — Transacciones distribuidas"
 nav_order: 1
 ---
 
-# 1. Qué es una transacción distribuida y qué le vamos a exigir
+# 1. Transacciones distribuidas y propiedades ACID
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 1
 </details>
 
 
-## Un sistema distribuido que no parece uno
+## Ejemplo: reserva de vuelos con dos servicios
 
 Agrupar varias operaciones para que se comporten como una sola es mucho más común de lo que uno piensa. Pasa incluso cuando no estamos construyendo un sistema distribuido: la gente implementa transacciones distribuidas de manera implícita todo el tiempo, sin darse cuenta. La intuición ya la tenemos —quien cursó bases de datos vio transacciones, y todos cursamos Programación Concurrente, así que varias cosas van a sonar conocidas—: tomar un conjunto de operaciones y tratarlo como una unidad. El objetivo es el mismo de las transacciones de siempre, con las mismas propiedades. Lo que cambia es que ahora las operaciones ocurren en sistemas distintos, y entre hoy y la clase que viene vamos a recorrer distintas maneras de implementarlas en ese escenario.
 
@@ -53,7 +53,7 @@ A esta altura deberíamos estar pensando que ninguno de estos problemas es tan t
 
 La segunda es que este ejemplo es quizás el más relevante de toda la clase, porque es el error que se comete una y otra vez. Cuando hay que llamar a dos sistemas, la reacción habitual es ignorar el problema: se asume que los dos van a funcionar y ni se piensan los casos de falla. A veces se piensa un poco y aparece la solución de la excepción: si funciona el primero y falla el segundo, un `catch` revierte el primero. Recorrámoslo. El asiento se reserva, el segundo llamado falla y tenemos la certeza de que falló. En el `catch` llamamos al sistema de asientos y le decimos `unreserve` —una operación que estamos inventando en el momento, porque no existía hasta que la necesitamos—. El problema es que si falla el mecanismo de reversión, seguimos exactamente en el mismo lugar: apenas movimos el punto donde se rompe. Por suerte cómo mitigar esto ya lo pensó mucha gente, pero en la vida real nos lo vamos a encontrar con frecuencia, incluso a niveles más abstractos.
 
-## Escribir en la base y avisar por una cola
+## Escritura en la base y aviso por una cola
 
 La otra situación típica aparece en sistemas por todos lados: escribimos en la base de datos y después mandamos un mensaje por una cola para avisarle a otro sistema que escribimos. Las variantes fallan de tres maneras. Si escribimos en la base pero falla la cola, el otro nunca se enteró. Si invertimos el orden, puede fallar la base: mandamos un mensaje, alguien lo recibió, y no hay nada escrito. Y la tercera variante es peor, porque no requiere que falle nada: mandamos el mensaje, la escritura se demora un poco, el receptor va a la base a buscar lo que supuestamente escribimos, no encuentra nada, aborta lo que tenía que hacer, y solo después escribimos. Nadie falló y, aun así, el resultado quedó mal.
 
@@ -64,7 +64,7 @@ No siempre hace falta un sistema de transacciones complicadísimo para resolver 
 {: .nota }
 > Este problema ya apareció en la [Práctica 1]({{ '/practica-01/08-dual-writes-y-contextos-de-ejecucion-durables/' | relative_url }}) con su nombre más conocido, *dual writes*: un contexto de ejecución sin estado durable que escribe en dos sistemas que no comparten una transacción. Ahí se resolvió sin transacciones distribuidas, con una variante del *outbox pattern*: un consumidor que lee los cambios desde el WAL de la base. Con ese mismo nombre lo tratan Martin Kleppmann y Chris Riccomini en *Designing Data-Intensive Applications* (2.ª ed., O'Reilly, 2026), cap. 12, "Keeping Systems in Sync", donde señalan que lograr que las dos escrituras ocurran o fallen juntas es un caso del problema de atomic commit, el que resuelve el two-phase commit.
 
-## Las cuatro letras y las dos que importan
+## Propiedades ACID
 
 ¿Qué queremos lograr con una transacción? Las propiedades son las cuatro de siempre, ACID, y de ellas nos interesan principalmente dos.
 

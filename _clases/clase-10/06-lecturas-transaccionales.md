@@ -15,7 +15,7 @@ nav_order: 6
 </details>
 
 
-## El snapshot read
+## Snapshot read
 
 Todo lo anterior fue para las escrituras. Para los reads transaccionales también hay que hacer cosas, y terminamos por ahí. Un transactional read es el problema del snapshot read, un tema que vamos a ver bastante más en Spanner.
 
@@ -43,7 +43,7 @@ Qué **no** es un snapshot read es más fácil de pensar, y se parece al primer 
 
 Y ese snapshot no existió nunca. Existió el estado con x e y en 1, y el estado con x e y en 2, pero el que armamos con esas dos lecturas no existió. Con lecturas sueltas, entonces, no funciona. Queremos transacciones también para las lecturas, precisamente para evitar esto.
 
-## El timestamp de la lectura
+## Timestamp ordering en lecturas
 
 El timestamp ordering de Bernstein sigue funcionando del mismo modo. Volvamos a la tabla: clave, valor y timestamp. Tenemos `x` con valor 2 y su timestamp.
 
@@ -53,7 +53,7 @@ El sistema infiere que ese 9 es más viejo que el de escritura del ítem. Si eje
 
 Más formalmente: el timestamp del read tiene que ser mayor que el timestamp del ítem. Queda la duda de si podría ser igual, y qué dice el paper habría que verificarlo; pero si se cumple esa condición el mecanismo funciona. Eso garantiza que, si todos responden que sí, leímos el valor actualizado de todos los participantes.
 
-## La escritura que llega tarde y la lectura encubierta
+## Timestamp de lectura del ítem
 
 Hay un caso más sutil: qué pasa si se lee un valor y después llega una transacción de escritura más vieja. Es algo más difícil de entender que lo anterior, pero no tanto.
 
@@ -76,7 +76,7 @@ Esa escritura tiene que ser rechazada, pero con los datos que tenemos no podemos
 
 Esta es quizás la parte menos intuitiva del algoritmo. ¿Por qué? Porque una lectura produce una escritura en la base. El `get`, aunque lee, tiene que acceder en modo escritura para actualizar el timestamp de lectura. Y si hay cachés u otras capas intermedias, esto complica bastante el diseño: es una lectura que no es una lectura, una escritura encubierta.
 
-## El two-phase read
+## Two-phase read
 
 Los ingenieros de Amazon señalan que no querían eso. No querían que, por agregar transacciones, todas las lecturas se transformaran en escrituras, que en general son mucho más costosas. Lo que hicieron es ingenioso, aunque también puede dar falsos positivos: un two-phase read, que es básicamente leer los mismos valores dos veces.
 

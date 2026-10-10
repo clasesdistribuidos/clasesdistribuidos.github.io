@@ -15,7 +15,7 @@ nav_order: 4
 </details>
 
 
-## Un put que tiene que llegar a varios grupos de replicación
+## Transacciones entre grupos de replicación
 
 La estructura de DynamoDB la vimos la clase pasada, y repasarla deja claro qué queremos resolver. El cliente le manda el pedido a un request router, que tiene colgado un partition metadata que le dice dónde están las particiones. El router le manda un put a un grupo de storage nodes, típicamente tres, con lo cual el put del cliente termina en un put sobre el grupo de replicación que corresponda.
 
@@ -39,7 +39,7 @@ Durante muchísimo tiempo DynamoDB no tuvo nada de esto: quien quería una escri
 {: .nota }
 > El repositorio es *awslabs/dynamodb-transactions*, una biblioteca Java que resolvía las transacciones del lado del cliente; se archivó el 6 de septiembre de 2024 y su README remite a las APIs transaccionales nativas, disponibles desde noviembre de 2018. El paper es *Distributed Transactions at Scale in Amazon DynamoDB*, de Idziorek, Keyes, Lazier, Perianayagam, Ramanathan, Sorenson III, Terry y Vig (USENIX ATC 2023); de ahí salen los listings y las figuras que la clase recorre en pantalla.
 
-## Una bolsa de operaciones, y un prepare que las lleva adentro
+## API transaccional y two-phase commit en DynamoDB
 
 La interfaz define el problema. Las operaciones de DynamoDB son pocas y básicas: put, update, delete y get. Hoy tiene alguna más, pero esas son las unitarias, no transaccionales. Lo que agregaron fue `TransactGetItems`, `TransactWriteItems` y una operación de verificación, `CheckItem`.
 
@@ -50,12 +50,35 @@ Para quien conozca las transacciones de SQL, lo de DynamoDB es muchísimo más l
 
 El paper tiene muchos ejemplos en código: toma una operación que actualiza un item, otra que hace un put, y las pone una al lado de la otra en la misma transacción. También está la operación de verificación, que es como una lectura que verifica algo y en base a eso escribe o no; también entra en la bolsa. Es, básicamente, una bolsa de operaciones con la instrucción de ejecutar todo o nada. Eso es lo primero que hay que entender, y notar que es mucho más fácil que resolver una transacción general como las de SQL.
 
-<figure class="figura figura-codigo">
-  <figcaption>
-    <span class="figura-label">Código pendiente</span>
-    el listing 1 del paper de DynamoDB: una llamada a TransactWriteItems que junta un update, un put y un check en la misma transacción
-  </figcaption>
-</figure>
+```java
+//Check if customer exists
+Check checkItem = new Check()
+        .withTableName("Customers")
+        .withKey("CustomerUniqueId")
+        .withConditionExpression("attribute_exists(CustomerId)");
+
+//Update status of the item in Products
+Update updateItem = new Update()
+        .withTableName("Products")
+        .withKey("BookUniqueId")
+        .withConditionExpression("expected_status" = "IN_STOCK")
+        .withUpdateExpression("SET ProductStatus = SOLD");
+
+//Insert the order item in the orders table
+Put putItem = new Put()
+        .withTableName("Orders")
+        .withItem("{"OrderId": "OrderUniqueId", "ProductId": "BookUniqueId", "CustomerId": "CustomerUniqueId", "OrderStatus": "CONFIRMED", "OrderCost": 100}")
+        .withConditionExpression("attribute_not_exists(OrderId)")
+
+TransactWriteItemsRequest twiReq = new TransactWriteItemsRequest()
+        .withTransactItems([checkItem, putItem, updateItem]);
+
+//Single transaction call to DynamoDB
+DynamoDBclient.transactWriteItems(twiReq);
+```
+
+{: .fs-2 .text-grey-dk-000 }
+Listing 1 de [*Distributed Transactions at Scale in Amazon DynamoDB*](https://www.usenix.org/system/files/atc23-idziorek.pdf): una compra que en una sola llamada a `TransactWriteItems` verifica que el cliente exista, marca el libro como vendido y crea la orden.
 
 ¿Cómo se resuelve? Con dos técnicas: un two-phase commit con algunas particularidades, y optimistic locking. Antes del two-phase commit conviene mirar la figura de arquitectura del paper. El authentication system y el metadata system ya los conocemos. Lo que hicieron fue agregar un componente nuevo: el transaction coordinator.
 
@@ -87,18 +110,40 @@ El resto es igual. Le manda el prepare al otro participante con sus operaciones,
 
 Más allá de usar el prepare para llevar también las operaciones, es un two-phase commit común, con una particularidad más en los locks: el coordinador no obtiene locks pesimistas sino optimistas, que es lo que veremos en la última parte.
 
-## El ledger y el recovery manager
+## Recuperación del coordinador: ledger y recovery manager
 
 El paper también muestra cómo resolvieron la tolerancia a fallas del transaction coordinator, y cómo escribieron el código: incluye un listing con la implementación, dentro del coordinador, de una operación de write items.
 
-<figure class="figura figura-codigo">
-  <figcaption>
-    <span class="figura-label">Código pendiente</span>
-    el listing 2 del paper de DynamoDB con la implementación de write items en el transaction coordinator — la máquina de estados PREPARING, COMMITTING, CANCELING y COMPLETED
-  </figcaption>
-</figure>
+```python
+TransactWriteItem(TransactWriteItems input):
+  #Prepare all items
+  TransactionState = PREPARING
+  for operation in input:
+      sendPrepareAsyncToSN(operation)
 
-Lo primero que salta a la vista es una máquina de estados: `PREPARING`, `COMMITTING`, `CANCELING`. El coordinador, para esa transacción, va pasando por distintos estados. Arranca en `PREPARING`, y con un for les envía el prepare a todos; después espera las respuestas.
+  waitForAllPreparesToComplete()
+
+  #Evaluate whether to commit or cancel the transaction
+  if all prepares succeeded:
+     TransactionState = COMMITTING
+     for operation in input:
+         sendCommitAsyncToSN(operation)
+     waitForAllCommitsToComplete()
+     TransactionState = COMPLETED
+     return SUCCESS
+  else:
+     TransactionState = CANCELLING
+     for operation in input:
+         sendCancellationAsyncToSN(operation)
+     waitForAllCancellationsToComplete()
+     TransactionState = COMPLETED
+     return ReasonForCancellation
+```
+
+{: .fs-2 .text-grey-dk-000 }
+Listing 2 de [*Distributed Transactions at Scale in Amazon DynamoDB*](https://www.usenix.org/system/files/atc23-idziorek.pdf): el protocolo de `TransactWriteItem` en el transaction coordinator.
+
+Lo primero que salta a la vista es una máquina de estados: `PREPARING`, `COMMITTING`, `CANCELLING`. El coordinador, para esa transacción, va pasando por distintos estados. Arranca en `PREPARING`, y con un for les envía el prepare a todos; después espera las respuestas.
 
 Ahí se decide el destino de la transacción: si todos respondieron OK, va a ser un commit; si alguno no, cancela. Si todo está en orden, pasa a `COMMITTING` y le manda el commit a cada participante. Espera los OK de todos, pasa a `COMPLETED` y devuelve success. Es, en código, exactamente lo del diagrama.
 
