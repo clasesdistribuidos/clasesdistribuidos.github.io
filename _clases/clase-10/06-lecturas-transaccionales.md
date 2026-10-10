@@ -74,7 +74,7 @@ Esa escritura tiene que ser rechazada, pero con los datos que tenemos no podemos
   </figcaption>
 </figure>
 
-Esta es quizás la parte más esotérica del algoritmo. ¿Por qué? Porque una lectura produce una escritura en la base. El `get`, aunque lee, tiene que acceder en modo escritura para actualizar el timestamp de lectura. Y si hay cachés u otras capas intermedias, esto complica bastante el diseño: es una lectura que no es una lectura, una escritura encubierta.
+Esta es quizás la parte menos intuitiva del algoritmo. ¿Por qué? Porque una lectura produce una escritura en la base. El `get`, aunque lee, tiene que acceder en modo escritura para actualizar el timestamp de lectura. Y si hay cachés u otras capas intermedias, esto complica bastante el diseño: es una lectura que no es una lectura, una escritura encubierta.
 
 ## El two-phase read
 
@@ -91,13 +91,10 @@ Mismas transacciones de antes: `x = 1` e `y = 1` de un lado y `x = 2` e `y = 2` 
   </figcaption>
 </figure>
 
-Un detalle de implementación: según el paper, no compara los valores directamente sino la posición en el log —porque esto era como Raft, tenía un log interno—. Cada valor escrito queda asociado a una posición del log; si las posiciones son iguales, el ítem no cambió; si son diferentes, cambió. No compara el ítem directamente porque, si es grande, sería una comparación costosa y un desperdicio, aunque eso no importa tanto.
+Un detalle de implementación: según el paper, no compara los valores directamente sino la posición en el log de cada ítem, su *log sequence number* (LSN). Los grupos de replicación de DynamoDB tienen un log interno, como el de Raft, aunque lo que corren es multi-Paxos. Cada valor escrito queda asociado a una posición del log; si las posiciones son iguales, el ítem no cambió; si son diferentes, cambió. Además, verifica que ningún ítem tenga una transacción preparada encima. No compara el ítem directamente porque, si es grande, sería una comparación costosa y un desperdicio, aunque eso no importa tanto.
 
-{: .nota }
-> Lo que el paper compara entre las dos lecturas es el *log sequence number* (LSN) de cada ítem, y además verifica que ninguno tenga el campo *ongoingTransaction* seteado, es decir, que no haya una transacción preparada sobre él. La comparación con Raft es pedagógica: el log interno existe, pero los grupos de replicación de DynamoDB corren multi-Paxos, no Raft —el mismo punto que aparece en la clase 11.
+Esto puede dar falsos positivos; cuál es exactamente ese caso queda como duda abierta, no lo tenemos anotado. Pero así lo resolvieron. Se llama two-phase read, y lo que hace es simple: leer todo dos veces y, si coincide, darlo por bueno, como si se hubiera leído transaccionalmente. El precio es exactamente el doble de lecturas, y eso eligieron antes que convertir cada lectura del sistema en una escritura.
 
-Esto puede dar falsos positivos; cuál es exactamente ese caso queda como duda abierta, no lo tenemos anotado. Pero así lo resolvieron. Se llama two-phase read, un nombre algo ambicioso para lo que hace: leer todo dos veces y, si coincide, darlo por bueno, como si se hubiera leído transaccionalmente. El precio es exactamente el doble de lecturas, y eso eligieron antes que convertir cada lectura del sistema en una escritura.
-
-Con eso llegamos al final de la primera mitad de las transacciones distribuidas. El paper le dedica muy poca atención a este tema: es el read transactional protocol, y son dos párrafos. Esto último quedó explicado brevemente, y vale la advertencia de no hacer preguntas finas, porque es un algoritmo extraño. El oficial, el que corresponde de verdad, sería usar la escritura adicional para garantizar ese caso.
+Con eso llegamos al final de la primera mitad de las transacciones distribuidas. El paper le dedica muy poca atención a este tema: es el read transactional protocol, y son dos párrafos. El oficial, el que corresponde de verdad, sería usar la escritura adicional para garantizar ese caso.
 
 Todo esto era además una excusa para dar el timestamp ordering, que contradice todo lo de los relojes de Lamport: es otro caso donde se usa tiempo físico de verdad para garantizar la concurrencia. ¿Y dónde estaba lo optimista? En las cruces. Cada cruz roja en lugar de un tilde verde implicaba que quien hace la operación falla y tiene que reintentar. Nadie se queda esperando, y el sistema no reintenta automáticamente por nosotros. Ahí está lo optimista: asumir que la cosa iba a funcionar, descubrir al final que falló, y volver a intentar. Es una apuesta, y como toda apuesta se paga cuando sale mal —con un reintento del lado del cliente— a cambio de no hacer esperar a nadie mientras sale bien. En Spanner la apuesta va a ser la contraria.

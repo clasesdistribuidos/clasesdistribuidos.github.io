@@ -26,10 +26,7 @@ No fue el único que trabajó en esto, pero el más relevante fue Jim Gray, y el
 {: .nota }
 > El paper canónico del two-phase locking es *The Notions of Consistency and Predicate Locks in a Database System*, de K. P. Eswaran, J. N. Gray, R. A. Lorie e I. L. Traiger (CACM 19(11), noviembre de 1976): Gray es uno de cuatro autores. El libro es *Transaction Processing: Concepts and Techniques*, de Jim Gray y Andreas Reuter (Morgan Kaufmann, 1992). La cita del Turing Award de 1998 es "for seminal contributions to database and transaction processing research and technical leadership in system implementation".
 
-Tiene además una historia trágica. A Gray le gustaba navegar, y el 28 de enero de 2007 salió solo desde la bahía de San Francisco a esparcir las cenizas de su madre por el mar. Desapareció y nunca lo encontraron. Hubo gente del ambiente que armó sistemas para analizar fotos satelitales del mar frente a la costa de San Francisco, sin resultado, y no fue hasta 2012 que lo declararon muerto. Era una figura casi tan importante como Lamport pero para el mundo de las bases de datos: el que más contribuyó al tema de las transacciones.
-
-{: .nota }
-> En clase la desaparición se ubica tentativamente "por el 2000". Fue el 28 de enero de 2007: Gray zarpó solo en su velero de 40 pies rumbo a las islas Farallón, a unas 27 millas del Golden Gate. La Guardia Costera abandonó la búsqueda a los pocos días, pero durante meses científicos de todo el mundo siguieron colaborando en programas para revisar imágenes satelitales. Un tribunal de California lo declaró legalmente muerto el 28 de enero de 2012, cinco años exactos después.
+Tiene además una historia trágica. A Gray le gustaba navegar, y el 28 de enero de 2007 salió solo en su velero desde la bahía de San Francisco, rumbo a las islas Farallón, a esparcir las cenizas de su madre por el mar. Desapareció y nunca lo encontraron. Hubo gente del ambiente que armó sistemas para analizar fotos satelitales del mar frente a la costa de San Francisco, sin resultado, y no fue hasta enero de 2012, cinco años después, que lo declararon legalmente muerto. Era una figura casi tan importante como Lamport pero para el mundo de las bases de datos: el que más contribuyó al tema de las transacciones.
 
 ## Esperar o reintentar
 
