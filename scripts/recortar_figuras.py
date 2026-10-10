@@ -60,7 +60,7 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
 # tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
 # repo, la 5 es la 6 y la 6 es la 7. Lo que falta acá se asume igual a sí mismo.
-FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11}
+FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11, 10: 12}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -72,7 +72,8 @@ FOTOS = {(2, "leslie-lamport")}
 # umbral de peso, así que el criterio automático los mandaría a jpeg y se
 # ensuciarían. Los tres casos de falla de la cadena son una figura alta —tres
 # bloques uno debajo del otro— y por eso pesa: 301 KB en png contra 132 en jpeg.
-TRAZOS = {(3, "fallas-de-la-cadena"), (9, "operaciones-de-cada-plano")}
+TRAZOS = {(3, "fallas-de-la-cadena"), (9, "operaciones-de-cada-plano"),
+          (10, "ordenes-seriales")}
 
 ANCHO_MAX = 1400  # el ancho de la columna del theme es bastante menor
 DPI = 300         # el doble de las coordenadas de las cajas
@@ -392,6 +393,41 @@ FIGURAS_POR_CLASE = {
          [(640, 1033, 940, 1100)]),                                # "DATA PLANE" y la frontera, de la de abajo
         ("create-table",                ("pizarra", 8), (25, 1045, 1095, 1515), True),
     ],
+    # Sale de la grabación 12 (ver FUENTE_POR_CLASE). Son 19 de las 20 figuras;
+    # la otra es la figura 1 del paper de transacciones de DynamoDB, abajo.
+    10: [
+        ("sistema-de-reserva",          ("pizarra", 1), (330, 320, 990, 680),   True),
+        ("implementacion-naive",        ("pizarra", 1), (110, 672, 710, 1040),  True,
+         [(400, 672, 600, 686)]),                                  # el pie de la caja ASIENTOS de arriba
+        ("ordenes-seriales",            ("pizarra", 2), (10, 575, 1040, 1480),  True),
+        ("fases-del-2pl-riguroso",      ("pizarra", 4), (290, 505, 1200, 600),  True),
+        ("donde-viven-los-locks",       ("pizarra", 4), (155, 730, 1010, 1070), True),
+        ("two-phase-commit",            ("pizarra", 5), (60, 75, 1235, 720),    True,
+         [(20, 70, 300, 96)]),                                     # el subrayado del título
+        # Los dos regímenes del participante solo están en las notas: en la
+        # pizarra (pág. 5) quedaron como dos frases sueltas, sin dibujo.
+        ("regimenes-del-participante",  ("notas", 4),   (30, 962, 1640, 1465),  False,
+         [(30, 962, 200, 976)]),                                   # el subrayado de "TODOS"
+        ("coordinador-persiste-estado", ("pizarra", 5), (100, 1005, 500, 1390), True),
+        ("arquitectura-de-dynamodb",    ("pizarra", 6), (140, 0, 1145, 480),    True,
+         [(0, 0, 180, 90)]),                                       # "DYNAMO DB"
+        ("two-phase-commit-dynamodb",   ("pizarra", 6), (340, 795, 1195, 1250), True),
+        ("ledger-y-recovery-manager",   ("pizarra", 7), (290, 60, 1205, 570),   True,
+         [(0, 0, 450, 110)]),                                      # "TRANSACTION COORDINATOR"
+        ("orden-serial-por-timestamps", ("pizarra", 7), (180, 930, 785, 1200),  True),
+        ("validacion-del-timestamp",    ("pizarra", 7), (25, 1250, 615, 1650),  True,
+         [(25, 1250, 180, 1315)]),                                 # "EJEMPLO"
+        ("thomas-write-rule",           ("pizarra", 8), (235, 120, 1110, 480),  True),
+        ("max-delete-timestamp",        ("pizarra", 8), (50, 765, 1150, 1345),  True),
+        ("snapshot-entre-transacciones", ("pizarra", 9), (270, 195, 790, 430),  True),
+        # En la pizarra (pág. 9) la mitad de TX₂ dice y = 1, que contradice el
+        # GET(y) = 2; en las notas están los valores que describe el pie.
+        ("lectura-que-no-es-snapshot",  ("notas", 8),   (100, 805, 680, 1105),  False),
+        ("dos-timestamps-del-item",     ("pizarra", 9), (85, 1195, 960, 1490),  True),
+        # La pizarra (pág. 10) no tiene el rótulo "si no cambiaron, es un
+        # snapshot", que el pie nombra; las notas sí.
+        ("two-phase-read",              ("notas", 9),   (430, 390, 1660, 835),  False),
+    ],
 }
 
 # No todas las figuras salen de la pizarra o de las notas. Las que siguen están
@@ -460,6 +496,13 @@ FIGURAS_POR_CLASE = {
 # 16 px de margen: la línea de tiempo es x 247-2293, y 315-641, reducida a
 # 1400 de ancho; el storage node es x 253-1198, y 301-682, con el bucket de
 # S3 incluido porque es parte de la figura. Las dos en png.
+#
+# `dynamodb-transaction-coordinator.png` de la clase 10 es la figura 1 del
+# paper de transacciones de DynamoDB, *Distributed Transactions at Scale in
+# Amazon DynamoDB* (https://www.usenix.org/system/files/atc23-idziorek.pdf):
+# en las notas solo está el recuadro "VER FIGURA 1". Sale de la página 5 del
+# PDF renderizada a 300 dpi, sin el epígrafe, ceñida con 16 px de margen: la
+# caja es x 593-1958, y 301-944, reducida a 1400 de ancho. En png.
 
 
 def renderizar_pizarra(tmp, apuntes, obligatoria=True):
