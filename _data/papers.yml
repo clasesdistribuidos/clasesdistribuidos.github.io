@@ -139,9 +139,10 @@
       nota: "Sun Microsystems Laboratories, SMLI TR-94-29, 1994. Las cuatro características de la red que no se pueden esconder."
     - titulo: "Remote Procedure Call"
       autor: "Bruce Jay Nelson"
+      url: "https://bitsavers.org/pdf/xerox/parc/techReports/CSL-81-9_Remote_Procedure_Call.pdf"
       clases: [1]
       tipo: tesis
-      nota: "Carnegie Mellon, 1981. La primera taxonomía de semánticas de llamada."
+      nota: "Carnegie Mellon, 1981; publicada también como Xerox PARC CSL-81-9. La primera taxonomía de semánticas de llamada."
     - titulo: "Performing Remote Operations Efficiently on a Local Computer Network"
       autor: "Alfred Z. Spector"
       url: "https://doi.org/10.1145/358468.358478"
@@ -170,6 +171,7 @@
       clases: [2, 5]
     - titulo: "Timestamps in Message-Passing Systems That Preserve the Partial Ordering"
       autor: "Colin J. Fidge"
+      url: "https://web.archive.org/web/20120217185703/http://sky.scitech.qut.edu.au/~fidgec/Publications/fidge88a.pdf"
       clases: [2]
       nota: "1988. Relojes vectoriales, en paralelo con Mattern."
     - titulo: "Virtual Time and Global States of Distributed Systems"
@@ -206,8 +208,9 @@
       clases: [8]
     - titulo: "MapReduce: A Major Step Backwards"
       autor: "David DeWitt y Michael Stonebraker"
+      url: "https://homes.cs.washington.edu/~billhowe/mapreduce_a_major_step_backwards.html"
       clases: [8]
-      nota: "The Database Column, enero de 2008."
+      nota: "The Database Column, enero de 2008. El blog original ya no existe; el link es una copia."
     - titulo: "Managing Update Conflicts in Bayou, a Weakly Connected Replicated Storage System"
       autor: "Douglas B. Terry et al."
       url: "https://doi.org/10.1145/224056.224070"
@@ -225,6 +228,7 @@
       nota: "Two-phase locking."
     - titulo: "Transaction Processing: Concepts and Techniques"
       autor: "Jim Gray y Andreas Reuter"
+      url: "https://shop.elsevier.com/books/transaction-processing/gray/978-1-55860-190-1"
       clases: [10]
       tipo: libro
     - titulo: "A Majority Consensus Approach to Concurrency Control for Multiple Copy Databases"
@@ -243,5 +247,6 @@
       tipo: libro
     - titulo: "Principles of Transaction Processing"
       autor: "Philip A. Bernstein y Eric Newcomer"
+      url: "https://shop.elsevier.com/books/principles-of-transaction-processing/bernstein/978-1-55860-623-4"
       clases: [10]
       tipo: libro
