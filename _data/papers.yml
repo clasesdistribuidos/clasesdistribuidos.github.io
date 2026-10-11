@@ -1,121 +1,252 @@
 # Bibliografía de la materia. Alimenta papers.md.
 #
-# `clase` es el número de clase del cronograma en que se discute; se usa sólo
-# para mostrar el contexto, no para armar links.
+# Los ejes de lectura siguen el calendario de la cátedra
+# (https://fiubata050.github.io/calendario/): lo que no figura ahí no va.
+# El último eje, `mencion: true`, junta lo que las clases citan al pasar o en
+# notas sin que sea lectura asignada.
+#
+# `clases` es la lista de clases del calendario en que se discute (o se
+# menciona). Las que ya tienen página en el sitio salen con link; las que
+# todavía no, como número suelto.
+#
+# `url` es opcional: si no hay un enlace estable, va solo el título.
 
 - eje: Fundamentos y método
   items:
     - titulo: "How to Read a Paper"
       autor: "S. Keshav"
       url: "https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf"
-      clase: 1
+      clases: [1]
       nota: "El método de las tres pasadas. Conviene leerlo antes que cualquier otro."
     - titulo: "Principles of Computer System Design: An Introduction"
       autor: "Jerome H. Saltzer y M. Frans Kaashoek"
       url: "https://ocw.mit.edu/courses/res-6-004-principles-of-computer-system-design-an-introduction-spring-2009/"
-      clase: 1
+      clases: [1]
       tipo: libro
-      nota: "De acá sale el marco de las tres abstracciones —memoria, intérpretes, enlaces— y la organización cliente-servicio."
+      nota: "Caps. 2.1, 4.1 y 4.2. De acá sale el marco de las tres abstracciones —memoria, intérpretes, enlaces— y la organización cliente-servicio."
+    - titulo: "Linearizability: A Correctness Condition for Concurrent Objects"
+      autor: "Maurice Herlihy y Jeannette Wing"
+      url: "https://pdos.csail.mit.edu/6.824/papers/p463-herlihy.pdf"
+      clases: [7]
+    - titulo: "Time, Clocks, and the Ordering of Events in a Distributed System"
+      autor: "Leslie Lamport"
+      url: "https://lamport.azurewebsites.net/pubs/time-clocks.pdf"
+      clases: [8]
+    - titulo: "Designing Data-Intensive Applications"
+      autor: "Martin Kleppmann"
+      url: "https://dataintensive.net/"
+      clases: [3, 13, 14]
+      tipo: libro
+      nota: "Cap. 5, pp. 152–161, sobre replicación; cap. 11, pp. 439–451, sobre mensajería, y pp. 464–479, sobre procesamiento de streams."
+    - titulo: "Distributed Systems: Concepts and Design (5.ª ed.)"
+      autor: "George Coulouris, Jean Dollimore, Tim Kindberg y Gordon Blair"
+      url: "https://www.cdk5.net/"
+      clases: [8, 13]
+      tipo: libro
+      nota: "Caps. 14.1 a 14.4, sobre tiempo y relojes; caps. 6.1, 6.3 y 6.4, sobre comunicación indirecta."
 
 - eje: Compute
   items:
     - titulo: "MapReduce: Simplified Data Processing on Large Clusters"
       autor: "Jeffrey Dean y Sanjay Ghemawat"
       url: "https://static.googleusercontent.com/media/research.google.com/es//archive/mapreduce-osdi04.pdf"
-      clase: 1
-    - titulo: "Resilient Distributed Datasets (Spark)"
-      autor: "Matei Zaharia et al."
-      url: "http://nil.csail.mit.edu/6.5840/2023/papers/zaharia-spark.pdf"
-      clase: 11
+      clases: [2]
 
 - eje: Storage, replicación y consenso
   items:
-    - titulo: "The Log: What every software engineer should know about real-time data's unifying abstraction"
-      autor: "Jay Kreps"
-      url: "https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying"
-      clase: 2
+    - titulo: "Chain Replication for Supporting High Throughput and Availability"
+      autor: "Robbert van Renesse y Fred B. Schneider"
+      url: "https://pdos.csail.mit.edu/6.824/papers/cr-osdi04.pdf"
+      clases: [3]
     - titulo: "The Google File System"
       autor: "Sanjay Ghemawat, Howard Gobioff y Shun-Tak Leung"
       url: "https://static.googleusercontent.com/media/research.google.com/es//archive/gfs-sosp2003.pdf"
-      clase: 3
+      clases: [4]
     - titulo: "In Search of an Understandable Consensus Algorithm (Raft)"
       autor: "Diego Ongaro y John Ousterhout"
       url: "https://pdos.csail.mit.edu/6.824/papers/raft-extended.pdf"
-      clase: 5
+      clases: [5, 6]
       nota: "Se ve en dos clases: elección de líder primero, log y snapshots después."
     - titulo: "ZooKeeper: Wait-free coordination for Internet-scale systems"
       autor: "Patrick Hunt et al."
       url: "https://www.usenix.org/legacy/event/atc10/tech/full_papers/Hunt.pdf"
-      clase: 6
-    - titulo: "DynamoDB: Scaling a Managed Database Service"
-      autor: "Joseph Idziorek et al."
-      url: "https://www.usenix.org/system/files/atc23-idziorek.pdf"
-      clase: 7
-    - titulo: "Scaling Memcache at Facebook"
-      autor: "Rajesh Nishtala et al."
-      url: "https://pdos.csail.mit.edu/6.824/papers/memcache-fb.pdf"
-      clase: 8
+      clases: [7]
     - titulo: "Dynamo: Amazon's Highly Available Key-value Store"
       autor: "Giuseppe DeCandia et al."
       url: "https://www.amazon.science/publications/dynamo-amazons-highly-available-key-value-store"
-      clase: 9
+      clases: [8, 9]
       nota: "SOSP 2007. Recibió el ACM SIGOPS Hall of Fame Award en 2017."
-    - titulo: "Amazon Aurora: Design Considerations for High Throughput Cloud-Native Relational Databases"
-      autor: "Alexandre Verbitski et al."
-      url: "http://nil.csail.mit.edu/6.824/2020/papers/aurora.pdf"
-      clase: 10
+    - titulo: "Amazon DynamoDB: A Scalable, Predictably Performant, and Fully Managed NoSQL Database Service"
+      autor: "Mostafa Elhemali et al."
+      url: "https://www.usenix.org/system/files/atc22-elhemali.pdf"
+      clases: [9]
+    - titulo: "Amazon DynamoDB Under the Hood: How We Built a Hyper-Scale Database"
+      autor: "AWS re:Invent 2018 (DAT321)"
+      url: "https://www.youtube.com/watch?v=yvBR71D0nAQ"
+      clases: [9]
+      tipo: video
+    - titulo: "Distributed Transactions at Scale in Amazon DynamoDB"
+      autor: "Joseph Idziorek et al."
+      url: "https://www.usenix.org/system/files/atc23-idziorek.pdf"
+      clases: [10]
     - titulo: "Spanner: Google's Globally-Distributed Database"
       autor: "James C. Corbett et al."
       url: "http://nil.csail.mit.edu/6.5840/2025/papers/spanner.pdf"
-      clase: 10
+      clases: [11]
+    - titulo: "Scaling Memcache at Facebook"
+      autor: "Rajesh Nishtala et al."
+      url: "https://pdos.csail.mit.edu/6.824/papers/memcache-fb.pdf"
+      clases: [12]
 
 - eje: Stream processing y mensajería
   items:
+    - titulo: "The Log: What every software engineer should know about real-time data's unifying abstraction"
+      autor: "Jay Kreps"
+      url: "https://www.linkedin.com/blog/engineering/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying"
+      clases: [3]
     - titulo: "Kafka: a Distributed Messaging System for Log Processing"
       autor: "Jay Kreps, Neha Narkhede y Jun Rao"
       url: "https://www.microsoft.com/en-us/research/wp-content/uploads/2017/09/Kafka.pdf"
-      clase: 12
+      clases: [13]
+    - titulo: "Intra-cluster Replication in Apache Kafka"
+      autor: "Apache Software Foundation"
+      url: "https://www.youtube.com/watch?v=XcvHmqmh16g"
+      clases: [13]
+      tipo: video
     - titulo: "MillWheel: Fault-Tolerant Stream Processing at Internet Scale"
       autor: "Tyler Akidau et al."
       url: "https://research.google/pubs/millwheel-fault-tolerant-stream-processing-at-internet-scale/"
-      clase: 12
-    - titulo: "The Dataflow Model"
-      autor: "Tyler Akidau et al."
-      url: "https://static.googleusercontent.com/media/research.google.com/es//pubs/archive/43864.pdf"
-      clase: 12
-    - titulo: "Streaming Systems"
-      autor: "Tyler Akidau, Slava Chernyak y Reuven Lax"
-      url: "https://www.oreilly.com/library/view/streaming-systems/9781491983867/"
-      clase: 12
-      tipo: libro
+      clases: [14]
 
-- eje: Cloud computing e infraestructura
-  items:
-    - titulo: "Large-scale cluster management at Google with Borg"
-      autor: "Abhishek Verma et al."
-      url: "http://nil.csail.mit.edu/6.824/2016/papers/borg.pdf"
-      clase: 15
-    - titulo: "On-demand Container Loading in AWS Lambda"
-      autor: "Marc Brooker et al."
-      url: "https://pdos.csail.mit.edu/6.824/papers/atc23-brooker.pdf"
-      clase: 15
-    - titulo: "Firecracker: Lightweight Virtualization for Serverless Applications"
-      autor: "Alexandru Agache et al."
-      url: "https://www.usenix.org/system/files/nsdi20-paper-agache.pdf"
-      clase: 15
-    - titulo: "On Designing and Deploying Internet-Scale Services"
-      autor: "James Hamilton"
-      url: "https://s3.amazonaws.com/systemsandpapers/papers/hamilton.pdf"
-      clase: 16
-    - titulo: "The Datacenter as a Computer"
-      autor: "Luiz André Barroso, Urs Hölzle y Parthasarathy Ranganathan"
-      url: "https://www.morganclaypool.com/doi/10.2200/S00874ED3V01Y201809CAC046"
-      clase: 15
-      tipo: libro
-
-- eje: Otros
+- eje: Consenso descentralizado
   items:
     - titulo: "Bitcoin: A Peer-to-Peer Electronic Cash System"
       autor: "Satoshi Nakamoto"
       url: "https://pdos.csail.mit.edu/6.824/papers/bitcoin.pdf"
-      clase: 14
+      clases: [15]
+
+- eje: Mencionados en clase
+  mencion: true
+  intro: >-
+    No son lectura asignada: son los trabajos que las clases citan al pasar o
+    en las notas, como origen de una idea o para ir más lejos. Están ordenados
+    por la clase en que aparecen por primera vez.
+  items:
+    - titulo: "A Note on Distributed Computing"
+      autor: "Jim Waldo, Geoff Wyant, Ann Wollrath y Sam Kendall"
+      url: "https://doi.org/10.1007/3-540-62852-5_6"
+      clases: [1, 2]
+      nota: "Sun Microsystems Laboratories, SMLI TR-94-29, 1994. Las cuatro características de la red que no se pueden esconder."
+    - titulo: "Remote Procedure Call"
+      autor: "Bruce Jay Nelson"
+      url: "https://bitsavers.org/pdf/xerox/parc/techReports/CSL-81-9_Remote_Procedure_Call.pdf"
+      clases: [1]
+      tipo: tesis
+      nota: "Carnegie Mellon, 1981; publicada también como Xerox PARC CSL-81-9. La primera taxonomía de semánticas de llamada."
+    - titulo: "Performing Remote Operations Efficiently on a Local Computer Network"
+      autor: "Alfred Z. Spector"
+      url: "https://doi.org/10.1145/358468.358478"
+      clases: [1]
+    - titulo: "Implementing Remote Procedure Calls"
+      autor: "Andrew D. Birrell y Bruce Jay Nelson"
+      url: "https://doi.org/10.1145/2080.357392"
+      clases: [1]
+    - titulo: "The Datacenter as a Computer"
+      autor: "Luiz André Barroso y Urs Hölzle"
+      url: "https://doi.org/10.1007/978-3-031-01722-3"
+      clases: [1]
+      tipo: libro
+    - titulo: "The Part-Time Parliament"
+      autor: "Leslie Lamport"
+      url: "https://doi.org/10.1145/279227.279229"
+      clases: [2]
+      nota: "Paxos. Circuló como reporte técnico en 1989 y se publicó en 1998."
+    - titulo: "Paxos Made Live: An Engineering Perspective"
+      autor: "Tushar Chandra, Robert Griesemer y Joshua Redstone"
+      url: "https://doi.org/10.1145/1281100.1281103"
+      clases: [2]
+    - titulo: "Viewstamped Replication: A New Primary Copy Method to Support Highly-Available Distributed Systems"
+      autor: "Brian M. Oki y Barbara Liskov"
+      url: "https://doi.org/10.1145/62546.62549"
+      clases: [2, 5]
+    - titulo: "Timestamps in Message-Passing Systems That Preserve the Partial Ordering"
+      autor: "Colin J. Fidge"
+      url: "https://web.archive.org/web/20120217185703/http://sky.scitech.qut.edu.au/~fidgec/Publications/fidge88a.pdf"
+      clases: [2]
+      nota: "1988. Relojes vectoriales, en paralelo con Mattern."
+    - titulo: "Virtual Time and Global States of Distributed Systems"
+      autor: "Friedemann Mattern"
+      url: "https://www.vs.inf.ethz.ch/publ/papers/VirtTimeGlobStates.pdf"
+      clases: [2]
+    - titulo: "Specifying Systems"
+      autor: "Leslie Lamport"
+      url: "https://lamport.azurewebsites.net/tla/book.html"
+      clases: [2]
+      tipo: libro
+      nota: "TLA+. Disponible gratis."
+    - titulo: "Bigtable: A Distributed Storage System for Structured Data"
+      autor: "Fay Chang et al."
+      url: "https://research.google/pubs/bigtable-a-distributed-storage-system-for-structured-data/"
+      clases: [2, 4, 9]
+    - titulo: "Weighted Voting for Replicated Data"
+      autor: "David K. Gifford"
+      url: "https://doi.org/10.1145/800215.806583"
+      clases: [5, 9]
+      nota: "El origen de los quórums: R + W > N."
+    - titulo: "Session Guarantees for Weakly Consistent Replicated Data"
+      autor: "Douglas B. Terry et al."
+      url: "https://doi.org/10.1109/PDIS.1994.331722"
+      clases: [7]
+      nota: "Bayou. De acá salen read your writes y monotonic reads."
+    - titulo: "The Chubby Lock Service for Loosely-Coupled Distributed Systems"
+      autor: "Mike Burrows"
+      url: "https://research.google/pubs/the-chubby-lock-service-for-loosely-coupled-distributed-systems/"
+      clases: [7, 9]
+    - titulo: "CAP Twelve Years Later: How the \"Rules\" Have Changed"
+      autor: "Eric Brewer"
+      url: "https://doi.org/10.1109/MC.2012.37"
+      clases: [8]
+    - titulo: "MapReduce: A Major Step Backwards"
+      autor: "David DeWitt y Michael Stonebraker"
+      url: "https://homes.cs.washington.edu/~billhowe/mapreduce_a_major_step_backwards.html"
+      clases: [8]
+      nota: "The Database Column, enero de 2008. El blog original ya no existe; el link es una copia."
+    - titulo: "Managing Update Conflicts in Bayou, a Weakly Connected Replicated Storage System"
+      autor: "Douglas B. Terry et al."
+      url: "https://doi.org/10.1145/224056.224070"
+      clases: [9]
+      nota: "Donde se acuña el término consistencia eventual."
+    - titulo: "Epidemic Algorithms for Replicated Database Maintenance"
+      autor: "Alan Demers et al."
+      url: "https://doi.org/10.1145/41840.41841"
+      clases: [9]
+      nota: "Gossip: la convergencia en orden logarítmico."
+    - titulo: "The Notions of Consistency and Predicate Locks in a Database System"
+      autor: "K. P. Eswaran, J. N. Gray, R. A. Lorie e I. L. Traiger"
+      url: "https://doi.org/10.1145/360363.360369"
+      clases: [10]
+      nota: "Two-phase locking."
+    - titulo: "Transaction Processing: Concepts and Techniques"
+      autor: "Jim Gray y Andreas Reuter"
+      url: "https://shop.elsevier.com/books/transaction-processing/gray/978-1-55860-190-1"
+      clases: [10]
+      tipo: libro
+    - titulo: "A Majority Consensus Approach to Concurrency Control for Multiple Copy Databases"
+      autor: "Robert H. Thomas"
+      url: "https://doi.org/10.1145/320071.320076"
+      clases: [10]
+      nota: "La Thomas write rule."
+    - titulo: "Concurrency Control in Distributed Database Systems"
+      autor: "Philip A. Bernstein y Nathan Goodman"
+      url: "https://doi.org/10.1145/356842.356846"
+      clases: [10]
+    - titulo: "Concurrency Control and Recovery in Database Systems"
+      autor: "Philip A. Bernstein, Vassos Hadzilacos y Nathan Goodman"
+      url: "https://www.microsoft.com/en-us/research/people/philbe/book/"
+      clases: [10]
+      tipo: libro
+    - titulo: "Principles of Transaction Processing"
+      autor: "Philip A. Bernstein y Eric Newcomer"
+      url: "https://shop.elsevier.com/books/principles-of-transaction-processing/bernstein/978-1-55860-623-4"
+      clases: [10]
+      tipo: libro
