@@ -1,0 +1,13 @@
+{%- comment -%}
+  "la clase 2", "las clases 5 y 6", "las clases 3, 13 y 14", con link a las
+  que ya tienen página. Recibe `clases`, una lista de números.
+{%- endcomment -%}
+{%- assign total = include.clases | size -%}
+{%- if total == 1 %}la clase {% else %}las clases {% endif -%}
+{%- for c in include.clases -%}
+  {%- if forloop.last and total > 1 %} y {% elsif forloop.index > 1 %}, {% endif -%}
+  {%- if c < 10 %}{% assign nn = c | prepend: "0" %}{% else %}{% assign nn = c | append: "" %}{% endif -%}
+  {%- assign url = "/clase-" | append: nn | append: "/" -%}
+  {%- assign portada = site.clases | where: "url", url | first -%}
+  {%- if portada %}<a href="{{ portada.url | relative_url }}">{{ c }}</a>{% else %}{{ c }}{% endif -%}
+{%- endfor -%}
