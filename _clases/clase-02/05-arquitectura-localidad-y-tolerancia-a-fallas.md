@@ -17,7 +17,7 @@ nav_order: 5
 
 Ya sabemos qué hace un mapper por dentro y qué hace un reducer. ¿Cómo es la arquitectura de todo eso? Quién reparte el trabajo, cómo se entera de que un nodo falló y por dónde viajan los datos.
 
-## El coordinador, los workers y los heartbeats
+## Coordinador, workers y heartbeats
 
 La figura 1 del paper es el esquema de ejecución completo. Tiene detalles que no hacen falta para lo esencial —el fork del programa del usuario, por ejemplo—. Lo importante es que existe un **coordinador**, un proceso que coordina todo; el paper lo llama *master*. Para lanzar un trabajo hay que hablar con él, y es él el que le da trabajo a todo el mundo.
 
@@ -47,7 +47,7 @@ De ahí sale la primera pieza de la tolerancia a fallas. Si el worker al que le 
 {: .nota }
 > El sistema del paper resuelve ambos puntos en la dirección contraria, y la elección de arriba es una decisión de diseño legítima pero distinta. En §3.1 dice que **el master elige workers ociosos y le asigna a cada uno una tarea**: la iniciativa es del master, que por lo tanto sí conoce a sus workers. Y en §3.3 dice que **el master le hace ping a cada worker periódicamente**, y que si no recibe respuesta lo marca como fallado; o sea que el latido va del coordinador al worker. Las dos variantes resuelven lo mismo, y el argumento a favor de la que adoptamos se sostiene: si los workers buscan al coordinador, la lista no hay que mantenerla en ningún lado. Es la diferencia entre *pull* y *push*.
 
-## La red como cuello de botella: co-locación con GFS
+## Localidad de datos: co-locación con GFS
 
 El problema principal de todo este sistema, según el paper, era la red: mover datos.
 
@@ -86,7 +86,7 @@ El shuffle, en cambio, quedó afuera de esta optimización y se hace con comunic
 
 Esta última optimización es una de las combinaciones más interesantes que vamos a ver, y vale volver sobre ella cuando estudiemos el Google File System. Lo que hicieron fue combinar los dos primeros sistemas de la materia —el de cómputo y el de storage— de manera tal que cada uno le resolviera al otro su problema más caro.
 
-## Reintentar y la condición de determinismo
+## Reintentos y determinismo
 
 Y ahora sí, la tolerancia a fallas. La de MapReduce es la más simple de todas las que vamos a ver, y no es un accidente sino la consecuencia de una decisión de diseño que atraviesa el sistema entero.
 
@@ -132,7 +132,7 @@ Si hay dos réplicas del reducer 1 trabajando en lo mismo, las dos escriben en G
 {: .nota }
 > El paper llama a esto **backup tasks** (§3.6), con un disparador algo distinto del que describe la clase. No es que el coordinador vigile a cada tarea y reaccione al verla lenta: espera a que la operación esté **cerca de completarse** y ahí programa ejecuciones de respaldo de todas las tareas en curso, marcando cada una como completada en cuanto termina la primaria o la de respaldo. Está calibrado para que el costo no pase de unos pocos por ciento de recursos, y lo que compra es mucho: el sort que usa como benchmark tarda un **44% más** cuando se desactiva el mecanismo. Los dos ejemplos de straggler que da son buenos: un disco en mal estado cuyos errores corregibles bajaban la velocidad de lectura **de 30 MB/s a 1 MB/s**, y un bug de inicialización que dejaba deshabilitadas las cachés del procesador y hacía a esas máquinas **más de cien veces más lentas**.
 
-## El talón de Aquiles: si falla el coordinador
+## Fallas del coordinador
 
 Queda el caso que el esquema no cubre: ¿qué pasa si falla el coordinador? Ahí falla todo y hay que iniciar el MapReduce nuevamente. Ese era uno de sus puntos débiles.
 

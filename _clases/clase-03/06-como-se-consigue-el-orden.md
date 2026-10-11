@@ -1,10 +1,10 @@
 ---
-title: "6. Cómo se consigue el orden"
+title: "6. Ordenamiento de las operaciones"
 parent: "Clase 3 — Replicación y sharding"
 nav_order: 6
 ---
 
-# 6. Cómo se consigue el orden
+# 6. Ordenamiento de las operaciones
 {: .no_toc }
 
 <details open markdown="block">
@@ -23,7 +23,7 @@ Raft lo resuelve así: siempre hay una máquina que actúa como líder, y las es
 
 Con las lecturas el asunto suele ser más flexible: algunos sistemas permiten la lectura no consistente, o con consistencia eventual, y eso permite leer un dato quizás desactualizado; otros garantizan que siempre esté actualizado. Lo que no es en absoluto evidente es la escritura: a cuál máquina le escribimos y cómo se decide.
 
-## El log externo
+## Log externo
 
 Una forma de resolverlo es delegarle el problema a otro sistema. No se usa tanto, pero es la más fácil de imaginar: mantener el log fuera del sistema. Ese "fuera" es discutible, pero el esquema sería así: tenemos varias instancias del sistema y todas consumen de ese log. Evidentemente el log no está en el aire, tiene que haber un sistema que lo gestione, y un ejemplo es Kafka.
 
@@ -83,7 +83,7 @@ Aparece una pregunta natural: si actualizamos un dato y acto seguido queremos le
 
 En los otros sistemas, donde el primary-backup está más oculto, depende mucho de cada caso. En Raft las lecturas requieren especial atención: si queremos una lectura consistente no basta con leerla de cualquier nodo y esperar que lo sea.
 
-## Las dos formas combinadas: Change Data Capture
+## Change Data Capture
 
 El log externo y el primary-backup no son dos opciones entre las que haya que elegir: la combinación de ambas es la parte interesante, y es la que se encuentra implementada en la práctica. Con toda la ingeniería de datos que existe actualmente, este tipo de arquitectura aparece en todas partes.
 

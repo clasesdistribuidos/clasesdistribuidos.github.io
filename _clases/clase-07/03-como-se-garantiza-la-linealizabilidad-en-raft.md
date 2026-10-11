@@ -1,10 +1,10 @@
 ---
-title: "3. Cómo se garantiza la linealizabilidad en Raft"
+title: "3. Lecturas linealizables en Raft"
 parent: "Clase 7 — Linealizabilidad y Zookeeper"
 nav_order: 3
 ---
 
-# 3. Cómo se garantiza la linealizabilidad en Raft
+# 3. Lecturas linealizables en Raft
 
 Con la definición disponible, volvamos a Raft. El tema no es tan evidente: en principio, para que las lecturas sean linealizables siempre hay que leer del líder, porque leyendo de un follower nunca vamos a obtener esa garantía, como mostramos en la primera sección. Pero hay algo todavía más incómodo: aun leyendo del líder no alcanza.
 

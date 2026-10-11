@@ -1,10 +1,10 @@
 ---
-title: "2. Por qué existe MapReduce"
+title: "2. Origen y modelo de programación de MapReduce"
 parent: "Clase 2 — MapReduce"
 nav_order: 2
 ---
 
-# 2. Por qué existe MapReduce
+# 2. Origen y modelo de programación de MapReduce
 {: .no_toc }
 
 <details open markdown="block">
@@ -17,7 +17,7 @@ nav_order: 2
 
 Con la cronología en la mano podemos preguntar: ¿qué resolvía MapReduce? Varios papers de esa era resuelven el problema de guardar datos; este resuelve el del cómputo. Dicho directamente: dividir un proceso de cómputo entre muchas CPUs.
 
-## El origen: transformación y agregación
+## Origen: transformación y agregación
 
 El origen explica la forma que MapReduce terminó teniendo. Uno de sus dos creadores es Jeff Dean, hoy una figura muy visible y prácticamente una eminencia de la inteligencia artificial, pero que ya en esa época era importante.
 
@@ -55,7 +55,7 @@ El paper lo escribieron ese mismo Jeff Dean y Sanjay Ghemawat. Es una dupla cono
   </figcaption>
 </figure>
 
-## El modelo de programación y la clave intermedia
+## Modelo de programación y clave intermedia
 
 El paper explica el modelo con detalle, así que alcanzan algunas ideas básicas. El objetivo es que el programador se dedique a pensar una función map y una función reduce, y que MapReduce maneje automáticamente la distribución.
 

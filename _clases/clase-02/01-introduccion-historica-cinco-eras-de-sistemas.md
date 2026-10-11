@@ -21,7 +21,7 @@ De todos modos vamos a repasar de manera general el modelo de programación, par
 
 Antes conviene dar un paso más atrás y hacer una cronología general de los sistemas distribuidos, que es lo que explica por qué MapReduce existe y cuándo surgió. Vamos a recorrer cinco eras, y MapReduce va a aparecer en el lugar que le corresponde: como respuesta a una pregunta que alguien se estaba haciendo en ese momento y no antes.
 
-## Era 1: los fundamentos teóricos (70s–80s)
+## Era 1: fundamentos teóricos (70s–80s)
 
 Todo este campo, cuando todavía no se llamaba sistemas distribuidos, surge de problemas teóricos: no de un producto ni de una necesidad comercial, sino de problemas que encontraron los primeros científicos que trabajaban con redes, a fines de los años 70 y durante los 80.
 
@@ -97,7 +97,7 @@ Por eso lo que vamos a estudiar en profundidad es otro algoritmo más moderno: R
 
 Toda esta primera era es la parte más matemática de la materia y, aunque exija esfuerzo, resulta estimulante. Una advertencia: las eras no son independientes ni tienen bordes limpios, se solapan. Paxos es de fines de los 80 y Raft de 2014, así que las respuestas a las preguntas de esta era siguieron llegando cuando las otras ya habían pasado.
 
-## Era 2: los intentos de transparencia (80s–90s)
+## Era 2: intentos de transparencia (80s–90s)
 
 Ya en los 80 se pasó a cuestiones más prácticas, a sistemas que alguien efectivamente quiso construir y poner en funcionamiento. A esa etapa vamos a llamarla la era de los intentos de transparencia, y va de los 80 a los 90.
 
@@ -123,7 +123,7 @@ Y toda esta serie de intentos de esconder la red quedó refutada por un paper fu
 {: .nota }
 > *A Note on Distributed Computing*, de Jim Waldo, Geoff Wyant, Ann Wollrath y Sam Kendall, Sun Microsystems Laboratories, informe técnico SMLI TR-94-29, noviembre de 1994. Las cuatro características de la red que el paper enumera como imposibles de esconder —latencia, acceso a memoria, concurrencia y fallas parciales— son las que vimos en detalle en la clase anterior.
 
-## Era 3: el middleware (90s)
+## Era 3: middleware (90s)
 
 Vamos a los 90, y los problemas ya son de otro tipo. Es la época de la computación corporativa: muchas empresas cuyo funcionamiento se apoyaba fuertemente en tener sistemas, y del otro lado otras —Microsoft, IBM— que se los vendían. El problema principal no era el volumen de datos: big data no aparece aquí, el término ni existía. Lo que había que resolver era cómo se comunica de manera distribuida un sistema con otro. La era del middleware es una bisagra, porque es donde se toma una decisión conceptual que no se deshizo nunca más.
 
@@ -164,7 +164,7 @@ Todo esto lo vamos a estudiar más adelante en un contexto más actual: el de la
 
 Ejemplos actuales hay varios: SQS, el servicio de Amazon; RabbitMQ; Kafka, un poco diferente pero de la misma categoría; y Pub/Sub, el de Google. Todos se siguen usando. gRPC tiene algo de esta semántica asincrónica, pero nosotros vamos a usar más la otra, la de llamar a una función y recibir su respuesta, porque los streams no están en RPC en general: son algo particular de gRPC.
 
-## Era 4: la era web (2000s)
+## Era 4: web (2000s)
 
 Llegamos a la era que más nos importa, la era web, alrededor del año 2000. Lo que aparece aquí es la banda ancha, y con ella la posibilidad de que muchos usuarios generen grandes volúmenes de información muy rápido. Aparece internet, y aparecen las bases de datos gigantescas.
 
@@ -174,7 +174,7 @@ Todas estas empresas fueron las primeras que se encontraron con el problema. Hoy
 
 Y esta época sigue siendo la actual: lo que resuelven hoy los sistemas distribuidos son los problemas de escala: grandes volúmenes de datos y cómo se los administra.
 
-## Era 5: el cloud computing (2006–hoy)
+## Era 5: cloud computing (2006–hoy)
 
 De ahí, casi sin corte, esto evoluciona al cloud computing. La idea es simple: todas esas técnicas que las empresas desarrollaron para sus propios problemas, empezar a venderlas como servicio, igual que la electricidad o el gas.
 

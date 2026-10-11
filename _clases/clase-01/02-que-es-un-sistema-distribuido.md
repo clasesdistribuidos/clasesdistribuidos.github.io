@@ -1,10 +1,10 @@
 ---
-title: "2. Qué es un sistema distribuido"
+title: "2. Sistemas distribuidos: definición y motivaciones"
 parent: "Clase 1 — Introducción, TCP/IP y RPC"
 nav_order: 2
 ---
 
-# 2. Qué es un sistema distribuido
+# 2. Sistemas distribuidos: definición y motivaciones
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 2
 </details>
 
 
-## Multiprocesador contra sistema distribuido
+## Multiprocesador frente a sistema distribuido
 
 Con todo ese preámbulo ya estamos en condiciones de definir qué entendemos por un sistema distribuido. Conviene dar esa definición al revés, empezando por decir qué *no* es, porque configuraciones posibles hay varias y no todas cuentan.
 
@@ -38,7 +38,7 @@ A lo sumo podemos armar un sistema que *simule* una memoria compartida, y va a s
 
 Esos son los sistemas que vamos a armar nosotros. La separación puede ser una ventaja en algunas ocasiones y una desventaja en otras, y lo que sigue es justamente ver cuáles son las ventajas.
 
-## Escalar y tolerar fallas
+## Escalabilidad y tolerancia a fallas
 
 ¿Por qué querríamos complicarnos así? Empecemos por las razones más habituales.
 
@@ -93,7 +93,7 @@ Al final de la materia vamos a ver que en Google publicaron una monografía que 
 {: .nota }
 > *The Datacenter as a Computer: An Introduction to the Design of Warehouse-Scale Machines*, de Luiz André Barroso y Urs Hölzle (2009). Borg es de alrededor de 2003-2004; Kubernetes se liberó en 2014.
 
-## Modularidad forzada: aislar fallas y aislar equipos
+## Modularidad forzada: aislamiento de fallas y de equipos
 
 Introduzcamos ahora el concepto de la *modularidad forzada*. Modularizar es algo que ya sabemos hacer desde que empezamos la carrera. Las funciones son una forma de crear módulos —una unidad de código que se reutiliza y que abstrae algo—; las clases también son módulos; y los lenguajes modernos suelen tener además módulos propiamente dichos. Modularizar en esos casos depende de la voluntad, del conocimiento y de la habilidad que uno tenga para diseñar bien, de manera que un módulo no se meta donde no debe y rompa la abstracción. ¿Y por qué queríamos modularizar en primer lugar? Fundamentalmente, para obtener simplicidad en los diseños. Los módulos los necesitamos nosotros: probablemente un modelo de lenguaje no necesite módulos, porque procesa la información de otra manera, pero nosotros, con nuestras limitaciones cognitivas, tenemos que pensar en abstracciones, en módulos que hacen una sola cosa. El problema es que a veces esos módulos tienen fugas, y a veces uno se puede meter y romper esas abstracciones que con tanto cuidado se habían dibujado.
 
@@ -126,7 +126,7 @@ Una versión más cercana de este tipo de fallas ocurrió el 28 de febrero de 20
 
 Queda una última ventaja: separar responsabilidades administrativas. Es un argumento que se usa mucho a favor de los microservicios, aunque los microservicios no terminan de convencernos —resulta preferible el concepto de servicios, no tan micro— y esa discusión queda pendiente para más adelante. Lo importante es lo siguiente: si una empresa es grande y tiene muchos equipos, y el sistema es un único monolito acoplado con todo, administrar eso resulta muy complejo desde el punto de vista organizativo. Termina siendo mucho más fácil si las cosas se diseñan como un sistema distribuido donde las interfaces están modularizadas forzosamente: los distintos subsistemas están a la fuerza separados, se comunican mediante interfaces claras que los dueños de cada uno se comprometen a respetar, cada uno puede desplegar de manera independiente, y si algo se rompe se sabe a qué equipo hay que ir. Esa distribución, nótese, ya no es tanto de nodos sino de subsistemas dentro del gran sistema, donde el gran sistema bien podría ser la empresa entera.
 
-## La transparencia y sus límites: NFS y Waldo
+## Límites de la transparencia
 
 Hay una propiedad más para sumar a la lista, y tiene un carácter distinto de las anteriores: es deseable, sí, pero deseable más o menos. Se trata de la transparencia en la distribución, un punto polémico de entrada, y lo que sigue es una posición tomada, apoyada en algunos papers. Muchas veces los sistemas distribuidos arrancan con la definición de que un sistema distribuido es uno formado por muchos componentes, pero donde ese hecho está escondido: el sistema se ve como uno solo, y los componentes internos no se ven desde afuera. Es casi la definición de sistema con la que empezamos esta lección, aplicada a los sistemas en general y no a los distribuidos en particular.
 

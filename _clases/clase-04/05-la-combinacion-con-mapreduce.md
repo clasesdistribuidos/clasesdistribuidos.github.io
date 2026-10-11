@@ -1,10 +1,10 @@
 ---
-title: "5. La combinación con MapReduce"
+title: "5. Integración con MapReduce"
 parent: "Clase 4 — Google File System"
 nav_order: 5
 ---
 
-# 5. La combinación con MapReduce
+# 5. Integración con MapReduce
 
 Estos dos sistemas se combinaban de una manera muy inteligente. La idea quedó anunciada al pasar cuando seguimos una lectura de punta a punta: el cliente elige el chunkserver más cercano, ese chunkserver puede estar corriendo incluso en la misma máquina, y eso lo hacen a propósito.
 

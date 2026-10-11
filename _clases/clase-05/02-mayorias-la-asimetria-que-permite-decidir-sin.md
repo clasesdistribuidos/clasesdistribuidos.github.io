@@ -1,10 +1,10 @@
 ---
-title: "2. Mayorías: la asimetría que permite decidir sin hablar"
+title: "2. Mayorías"
 parent: "Clase 5 — Raft I"
 nav_order: 2
 ---
 
-# 2. Mayorías: la asimetría que permite decidir sin hablar
+# 2. Mayorías
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 2
 </details>
 
 
-## La mitad más uno, y por qué los nodos son impares
+## Mayoría y cantidad impar de nodos
 
 El truco para decidir cuál es la mitad que sigue adelante y cuál no es un solo concepto: la mayoría. De ahí sale todo lo demás.
 
@@ -48,7 +48,7 @@ También es común que haya particiones de red entre data centers, porque están
 
 La cantidad impar de data centers que usan Google y estas empresas se relaciona, entonces, con poder implementar estos algoritmos: tener un poco de asimetría artificial para que una parte de la red siga funcionando y la otra no.
 
-## Elección de líder: la primera aproximación
+## Elección de líder: primera aproximación
 
 Esa asimetría se ve mejor con un anticipo de lo que viene: la elección de líder. Tomemos cinco nodos —siempre vamos a usar cinco en los ejemplos, porque es donde queda más claro—, S1 a S5. Supongamos que no hay líder y hay que elegir uno. Esto es también un anticipo de cómo lo va a hacer Raft, aunque Raft tiene después algunas particularidades propias.
 

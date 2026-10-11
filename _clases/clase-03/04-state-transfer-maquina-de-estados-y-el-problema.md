@@ -1,10 +1,10 @@
 ---
-title: "4. State transfer, máquina de estados y el problema del orden"
+title: "4. State transfer, máquina de estados y orden de las operaciones"
 parent: "Clase 3 — Replicación y sharding"
 nav_order: 4
 ---
 
-# 4. State transfer, máquina de estados y el problema del orden
+# 4. State transfer, máquina de estados y orden de las operaciones
 
 Esos mecanismos no son tantos, y son los que después vamos a ver aparecer, de una forma u otra, en los papers.
 

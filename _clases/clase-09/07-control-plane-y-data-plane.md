@@ -15,7 +15,7 @@ nav_order: 7
 </details>
 
 
-## El componente que no estaba en el dibujo
+## Auto-admin y control plane
 
 Queda un componente que no estaba en el dibujo, y es de lo poco del paper que hay que leer con atención: el **auto-admin**, que implementa un **control plane** para DynamoDB.
 
@@ -23,7 +23,7 @@ La intuición es esta. Un sistema con millones de usuarios, además de soportar 
 
 Eso lleva a un criterio de diseño muy aplicado en servicios para muchos clientes, y en particular en los multi-tenant: la separación entre **control plane** y **data plane**.
 
-## Dos categorías de operaciones, dos requisitos distintos
+## Operaciones de control y de datos
 
 Las operaciones de cada lado ya dan una idea. En el data plane están put item, get item, update y delete: poner, leer, modificar y borrar un item. Del otro lado hay operaciones de otra naturaleza, que no tocan ningún item: create table, create index, update table. Y en ambos casos hay muchas más.
 
@@ -53,7 +53,7 @@ Con eso podemos definir los términos. El **data plane** son los requests en tie
 
 Dicho de otro modo: queremos que el control plane pueda caerse y el data plane no. Para eso hay una separación bastante física entre los dos: dos subsistemas que se comunican de forma muy estratégica, sin dependencia fuerte entre ellos. El data plane, en general, no necesita del control plane para funcionar.
 
-## El create table cruzando la frontera
+## Ejemplo: create table
 
 Seguir un create table desde que entra muestra para qué sirve esta separación. El pedido llega al auto-admin. Del otro lado está el clúster de data nodes: miles, distribuidos en distintas ubicaciones. Ante un create table hay que elegir algunos de ellos, crear ahí las particiones y réplicas de la tabla, y configurar los grupos de replicación.
 
@@ -70,7 +70,7 @@ El auto-admin lo hace en dos movimientos. Primero registra en el partition metad
 
 Sobre ese recorrido se traza la división: una curva que parte el dibujo en dos, con el control plane y el auto-admin de un lado, y el data plane con los data nodes del otro. ¿Dónde se ve la ventaja? Si el auto-admin se cae por cualquier razón, el cliente puede seguir usando todo el data plane, que tiene más redundancia, es más potente y es más sincrónico: todos los requests devuelven enseguida. El auto-admin puede permanecer caído un tiempo sin que se note del otro lado. Puede incluso recibir un pedido de tabla, caerse a la mitad, restaurarse y terminarla después. Pero los dos están bien separados.
 
-## Las cuatro tareas del plano de control
+## Tareas del control plane
 
 Queda ver para qué usa DynamoDB el auto-admin, que también resume para qué se usan típicamente los planos de control. Son cuatro cosas.
 

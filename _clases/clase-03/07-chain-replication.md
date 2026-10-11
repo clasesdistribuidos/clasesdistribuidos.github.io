@@ -17,7 +17,7 @@ nav_order: 7
 
 Hay otra forma de replicación que surge de modificar el primary-backup hasta obtener algo distinto. Se llama **chain replication**, y no es tan común: no se habla mucho de ella y no hay demasiados proyectos que la utilicen. Pero la idea es elegante.
 
-## La cadena
+## Estructura de la cadena
 
 Pensémosla con tres nodos replicados conectados uno detrás del otro, formando una fila. Al primero lo vamos a llamar el **head** y al último el **tail**, y los datos se replican siguiendo esa fila, eslabón por eslabón. Se parece a una lista enlazada, con la diferencia de que los eslabones no son celdas de memoria sino máquinas.
 
@@ -52,7 +52,7 @@ Todo esto se puede relajar. Si uno está dispuesto a tolerar esos errores, hay o
 
 Nada de esto es un ejercicio teórico: varias empresas lo usan internamente, en particular para implementar sistemas de logs, que tienen que respetar el orden. La virtud del esquema es esa combinación poco frecuente: es inusual, pero es muy fácil de comprender.
 
-## Las fallas
+## Manejo de fallas
 
 Las fallas de este esquema son varias y todas tienen su interés. Para analizarlas de a una hace falta una suposición provisoria: que hay alguien externo a la cadena que detecta la falla y reconfigura el sistema. Cómo se detectan es un problema en sí mismo y lo vamos a analizar enseguida.
 
@@ -83,7 +83,7 @@ El flujo de información, en realidad, es más rico de lo que veníamos suponien
   </figcaption>
 </figure>
 
-## Agregar un nodo
+## Incorporación de nodos
 
 Queda un caso que no analizamos: cómo se agrega un nodo. Si tenemos dos o tres nodos formando la cadena y queremos sumarle uno más, la forma más simple es agregarlo al final, detrás del tail actual, de manera que la cadena crezca por el extremo y el nodo nuevo sea la nueva cola.
 

@@ -1,10 +1,10 @@
 ---
-title: "1. Por qué necesitamos un algoritmo de consenso"
+title: "1. Motivación de los algoritmos de consenso"
 parent: "Clase 5 — Raft I"
 nav_order: 1
 ---
 
-# 1. Por qué necesitamos un algoritmo de consenso
+# 1. Motivación de los algoritmos de consenso
 {: .no_toc }
 
 <details open markdown="block">
@@ -19,7 +19,7 @@ Lo que viene continúa la línea de las clases anteriores: los sistemas de stora
 
 El nombre engaña un poco. Más allá de que varias máquinas se pongan de acuerdo en un valor, lo que queremos resolver es el problema de la distributed state machine, o state machine replication: que varias máquinas reciban las operaciones en el mismo orden y que el estado quede consistente en todas. Los sistemas reales a veces implementaron Raft directamente y a veces variaciones: Zookeeper usa un protocolo propio y anterior que resuelve el mismo problema de manera muy parecida; DynamoDB internamente también usa un algoritmo de esta familia.
 
-## Las escrituras a medias del Google File System
+## Escrituras parciales en Google File System
 
 El punto de partida es una pregunta que quedó pendiente de la clase pasada, con el Google File System. La idea de Google era muy buena —les sirvió para hacer grande la empresa—, pero el sistema tenía problemas de consistencia serios, y son esos problemas los que justifican la clase de hoy.
 
@@ -57,7 +57,7 @@ Hay una segunda propiedad que el Google File System tampoco provee: la consisten
 
 Existe una versión relajada que Raft inicialmente no provee, la consistencia débil o eventual: escribimos, el sistema responde que está bien, leemos nuevamente y nos devuelve un valor desactualizado, aunque eventualmente se actualice. Raft se puede modificar para eso, pero el paper intenta la versión fuerte, la que garantiza que si nos dio OK, después va a responder lo que corresponde.
 
-## El punto único de falla y el split brain
+## Punto único de falla y split brain
 
 Hay un segundo problema que estos algoritmos vienen a resolver, y estaba en los dos ejemplos anteriores por igual: el famoso punto central de falla, el single point of failure. Los papers de MapReduce y del Google File System llaman master a ese nodo; coordinador es el nombre que le pusieron los labs del MIT, que usamos para los trabajos prácticos, y por eso los dos términos se emplean indistintamente. Nombran lo mismo. La estructura era la misma en ambos sistemas: un nodo privilegiado y muchos nodos subordinados —chunkservers en uno, workers en el otro— que recurrían a él para consultar el estado del sistema.
 
@@ -97,7 +97,7 @@ Este es el lugar exacto donde encaja el famoso teorema CAP, que en el fondo es s
 
 Hay varias maneras de evitar el split brain, y todas tropiezan primero con un problema adicional: S2 no se puede comunicar con S1 para preguntarle si está vivo, por exactamente la misma razón por la que el cliente no pudo escribirle. A lo sumo se da cuenta de que S1 no está disponible, y S1 ve exactamente lo mismo de S2: una ceguera simétrica. Entonces el problema que vamos a resolver hoy, el que se llama elección de líder, es este: cómo hacen esas dos mitades para decidir, cada una unilateralmente y sin poder hablar con la otra, cuál va a seguir recibiendo las escrituras y cuál va a dejar de responder o va a responder información vieja.
 
-## Qué fallas vamos a tolerar
+## Modelo de fallas
 
 Estos algoritmos no toleran cualquier falla. Las que nos interesan son las dos situaciones indistinguibles que acabamos de mirar: la máquina que se murió y la red que se cortó. Se las llama fallas fail-stop. No sabemos cuál ocurrió —no tenemos manera de saberlo—, pero sabemos que el nodo dejó de responder, y con eso tenemos que trabajar. La pregunta, entonces, es cómo tolerar fallas fail-stop. Es una sutileza, y es de la mayor importancia.
 

@@ -1,10 +1,10 @@
 ---
-title: "6. El coordinador en detalle"
+title: "6. Funcionamiento del coordinador"
 parent: "Clase 4 — Google File System"
 nav_order: 6
 ---
 
-# 6. El coordinador en detalle
+# 6. Funcionamiento del coordinador
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 6
 </details>
 
 
-## Qué guarda el coordinador
+## Estado del coordinador
 
 Conviene abrir el coordinador y examinar qué guarda dentro, porque de aquí en adelante vamos a ocuparnos de lo que sucede cuando las cosas fallan: un chunkserver, servicios enteros, el propio coordinador. De qué puede recuperarse y de qué no depende enteramente de qué información maneja.
 
