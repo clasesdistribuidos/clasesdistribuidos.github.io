@@ -1,10 +1,10 @@
 ---
-title: "5. Relojes vectoriales y la reconciliación en Dynamo"
+title: "5. Relojes vectoriales y reconciliación en Dynamo"
 parent: "Clase 8 — Dynamo y relojes lógicos"
 nav_order: 5
 ---
 
-# 5. Relojes vectoriales y la reconciliación en Dynamo
+# 5. Relojes vectoriales y reconciliación en Dynamo
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 5
 </details>
 
 
-## Los relojes vectoriales
+## Relojes vectoriales
 
 Los algoritmos que se arman sobre relojes de Lamport suelen ser complicados, justamente porque la relación de la que disponemos es limitada: una implicancia en un solo sentido. Sería muchísimo mejor que valiera al revés, que de `C(a) < C(b)` pudiéramos concluir que a ocurrió antes que b. Pero funciona exactamente al revés: si sabemos que ese fue el orden de los eventos, entonces los números van a dar bien; pero que los números den bien no garantiza absolutamente nada sobre el orden.
 
@@ -69,7 +69,7 @@ Escrito de forma más matemática, son dos enunciados. El primero es que `V(a) <
 
 Los dos nombres conviene retenerlos, causalidad y concurrencia, porque son exactamente los dos casos que Dynamo necesita distinguir. Toda la clase fue para llegar a este punto: lo que sigue es cómo Dynamo los usa para detectar cuándo hubo causalidad entre dos escrituras y cuándo hubo concurrencia.
 
-## La escritura feliz: un reloj por clave
+## Escritura sin conflictos: un reloj por clave
 
 De vuelta en Dynamo, ya tenemos el anillo con sus nodos, ya sabemos que una clave cae en algún punto de la circunferencia y ya definimos el grupo de replicación que se hace cargo de ella. Para lo que viene dibujemos esos tres nodos aparte: siguen sobre el anillo, pero el anillo ya no importa.
 
@@ -90,7 +90,7 @@ El nodo elegido es lo que el paper llama el coordinador, y lo que hace es increm
 
 Ese es el caso feliz de un ítem nuevo. Y todo lo que sigue también va a ser el caso feliz.
 
-## El update y el contexto opaco
+## Update y contexto opaco
 
 Los updates en Dynamo no se pueden hacer a ciegas. Siempre hay que obtener la clave primero, modificarla y recién entonces volver a ponerla; es parecido a lo que vimos en ZooKeeper con el locking optimista. No podemos dar por sabido que la clave existe y mandar el valor nuevo directamente.
 
@@ -117,7 +117,7 @@ Y después propaga. Le manda el vector nuevo a su vecino, que tenía `(0,1,0)` y
 
 Hasta aquí, el caso es sencillo.
 
-## Dos escrituras concurrentes, el carrito, y los dos tipos de reconciliación
+## Escrituras concurrentes y reconciliación
 
 Falta el caso concurrente, que es el interesante. Volvamos al grupo de replicación de tres nodos, que ahora conviene nombrar: S1, S2 y S3. Y partamos del estado en el que quedaron las cosas después de la escritura anterior, porque seguimos con el mismo ejemplo: la clave valía `(0,1,0)`.
 

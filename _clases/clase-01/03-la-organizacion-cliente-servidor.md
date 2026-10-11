@@ -1,10 +1,10 @@
 ---
-title: "3. La organización cliente-servidor"
+title: "3. Organización cliente-servidor"
 parent: "Clase 1 — Introducción, TCP/IP y RPC"
 nav_order: 3
 ---
 
-# 3. La organización cliente-servidor
+# 3. Organización cliente-servidor
 
 Cambiamos ahora de tema y pasamos a algo mucho más concreto: la organización cliente-servidor. Muchas veces la vamos a llamar cliente-servicio, que es como la nombra el libro del MIT, para diferenciarla un poco de la noción de cliente y servidor a nivel de sockets. 
 

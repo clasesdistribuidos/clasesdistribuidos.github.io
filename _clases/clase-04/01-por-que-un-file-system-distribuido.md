@@ -1,10 +1,10 @@
 ---
-title: "1. Por qué un file system distribuido"
+title: "1. Motivación de un file system distribuido"
 parent: "Clase 4 — Google File System"
 nav_order: 1
 ---
 
-# 1. Por qué un file system distribuido
+# 1. Motivación de un file system distribuido
 
 El Google File System viene inmediatamente después de MapReduce porque los dos están íntimamente relacionados. Los papers salieron con poco más de un año de diferencia —el del GFS en octubre de 2003, el de MapReduce en diciembre de 2004—; en qué orden se construyeron internamente es otra cuestión, sobre la que Google nunca fue demasiado explícito. La relación es de dependencia directa: MapReduce usa el GFS como infraestructura fundamental para compartir archivos.
 

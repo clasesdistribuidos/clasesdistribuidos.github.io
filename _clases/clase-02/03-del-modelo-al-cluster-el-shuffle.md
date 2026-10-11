@@ -1,10 +1,10 @@
 ---
-title: "3. Del modelo al clúster: el shuffle"
+title: "3. Ejecución en el clúster y shuffle"
 parent: "Clase 2 — MapReduce"
 nav_order: 3
 ---
 
-# 3. Del modelo al clúster: el shuffle
+# 3. Ejecución en el clúster y shuffle
 {: .no_toc }
 
 <details open markdown="block">
@@ -51,7 +51,7 @@ Lo que contamos con M y con R, entonces, son jobs lógicos: unidades de trabajo 
 
 Aparece una pregunta natural: si un nodo va lento, ¿puede otro tomar su trabajo? Puede pasar que un mismo job se ejecute en varios nodos a la vez, por redundancia. Si el coordinador —y vamos a ver que existe— nota que un nodo está demasiado lento y no progresa, puede asignarle el mismo job a otro como precaución. Termine primero uno u otro, no hay inconveniente: al final tenemos dos versiones iguales del mismo trabajo. Por qué eso no genera inconvenientes se entiende cuando llegamos a la tolerancia a fallas, que está pensada precisamente para esto.
 
-## El reparto: hash(k) % R
+## Política de particionado
 
 Entre esas dos fases hay una intermedia con nombre propio: el *shuffle*. La traducción que conviene tener a mano es "el reparto", porque es literalmente lo que hace.
 

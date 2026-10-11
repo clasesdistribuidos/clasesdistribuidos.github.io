@@ -1,10 +1,10 @@
 ---
-title: "1. Por qué Amazon abandonó el modelo relacional"
+title: "1. Motivación de Dynamo"
 parent: "Clase 8 — Dynamo y relojes lógicos"
 nav_order: 1
 ---
 
-# 1. Por qué Amazon abandonó el modelo relacional
+# 1. Motivación de Dynamo
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 1
 </details>
 
 
-## El carrito de compras y el writer que se cae
+## Carrito de compras y caída del writer
 
 El sistema que vamos a estudiar es Dynamo: el original, el paper de Amazon de 2007. Conviene aclarar de entrada que en principio no tiene nada que ver con DynamoDB, que es el nombre más conocido. DynamoDB es, sobre todo, un nombre comercial: el paper de Dynamo fue uno de los más famosos de sistemas distribuidos —en esa época salieron varios seguidos, los de Google, el de MapReduce, el de Google File System, y este fue uno de los poquísimos de Amazon— y tuvo tanto éxito que después le pusieron ese nombre a un producto, una base de datos en la nube que no tiene casi nada que ver con el paper. La comparación entre los dos igual sirve, porque son dos maneras bien diferentes de hacer una base de datos.
 
@@ -40,7 +40,7 @@ Y además el writer es difícil de escalar en sí mismo. Si aumenta la cantidad 
 
 Lo importante de todo esto es lo siguiente: si falla el writer, se dejan de aceptar escrituras. Y eso era exactamente lo que querían evitar.
 
-## Siempre aceptar escrituras: CAP y el split brain
+## Disponibilidad de escritura: CAP y split brain
 
 El objetivo de diseño clave conviene anotarlo tal como ellos lo anotaron, porque de ahí se desprende todo lo demás: siempre aceptar escrituras, y aceptarlas por encima de la consistencia. Con esa jerarquía explícita: importa más que la escritura quede registrada que el hecho de que el sistema muestre siempre algo consistente. Hoy eso no resulta tan extraño, pero en 2007 el universo entero eran las relacionales, y las relacionales son consistentes: uno hace una transacción, después la lee, y la transacción está ahí. De ese objetivo surgen los sistemas eventualmente consistentes.
 
@@ -85,7 +85,7 @@ La tercera está muy relacionada: el sistema permite escrituras conflictivas. Si
 
 Después, cuando la red se restaura y las dos mitades vuelven a verse, hay una forma de que se pongan de acuerdo. No hay nada mágico en ello, conviene anticiparlo; pero alcanza para que el sistema siga funcionando de manera coherente.
 
-## Lo que se resigna: SQL y transacciones
+## Renuncia a SQL y transacciones
 
 ¿A costa de qué se consigue todo esto? El primer costo es importante: Dynamo no tiene SQL; literalmente, no ofrece ese lenguaje.
 

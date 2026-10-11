@@ -1,10 +1,10 @@
 ---
-title: "2. La interfaz key-value, el anillo y el orden por clave"
+title: "2. Consistent hashing"
 parent: "Clase 8 — Dynamo y relojes lógicos"
 nav_order: 2
 ---
 
-# 2. La interfaz key-value, el anillo y el orden por clave
+# 2. Consistent hashing
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 2
 </details>
 
 
-## put, get y el orden parcial por clave
+## put, get y orden parcial por clave
 
 Si no hay SQL, la pregunta inmediata es cuál es la interfaz con Dynamo. En una versión simplificada —la real es un poco más complicada— las operaciones son dos: `put(key, value)` y `get(key)`. Se escribe un valor bajo una clave, y se lee el valor de una clave. Eso es todo.
 
@@ -42,7 +42,7 @@ La otra ventaja es la que va a ser el tema grande de esta clase. Si cada clave e
 
 Así el requisito se reduce muchísimo. Raft mantiene un log, que es un orden total; esto lo simplifica a un orden parcial, el orden de las operaciones sobre cada clave individual. Y eso repercute en que no hace falta coordinar tanto entre los distintos shards: no hay que hacer un Raft entre ellos.
 
-## Consistent hashing y los nodos virtuales
+## Consistent hashing y nodos virtuales
 
 El mecanismo con el que Dynamo reparte las claves entre los nodos es consistent hashing, y vale tratarlo como repaso: suele verse en otras materias, en programación concurrente por ejemplo, y lo que importa recordar es sobre todo qué problema resuelve. Para eso hay que empezar por el hashing estándar, el que no es consistent.
 
@@ -91,7 +91,7 @@ Los efectos son tres. El primero es que, al agregar un servidor nuevo, ya no hay
 
 Nada de esto es demasiado profundo: es un detalle de implementación. Pero es la parte que resuelve el particionado, el sharding.
 
-## Replicación sin líder: la preference list y el orden por clave
+## Replicación sin líder: preference list y orden por clave
 
 El consistent hashing resuelve el particionado: dada una clave, ya sabemos qué nodo se hace cargo de ella. Falta cómo se le agrega la replicación. Tomemos el anillo con unos cuantos nodos y una clave que cae en un punto cualquiera: con lo visto hasta ahora esa clave iría al nodo que le sigue, y ahí terminaría la historia, un nodo y una copia.
 

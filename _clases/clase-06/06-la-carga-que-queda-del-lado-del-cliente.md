@@ -1,10 +1,10 @@
 ---
-title: "6. La carga que queda del lado del cliente"
+title: "6. Idempotencia y reintentos del cliente"
 parent: "Clase 6 — Raft II"
 nav_order: 6
 ---
 
-# 6. La carga que queda del lado del cliente
+# 6. Idempotencia y reintentos del cliente
 
 Queda una dificultad que conviene abordar de frente: la comparación que determina quién puede ser líder —el término de la última entrada y, si los términos coinciden, la longitud del log— no verifica en ningún momento si esas entradas estaban comiteadas. El caso que dispara la objeción es el de D en el ejemplo extenso, con sus dos entradas del término 7 al final: si D es elegido líder, esos dos 7 quedan comiteados en todo el cluster sin que ningún nodo haya verificado nada. Es una buena pregunta, y hay que conceder que la condición resulta contraintuitiva.
 

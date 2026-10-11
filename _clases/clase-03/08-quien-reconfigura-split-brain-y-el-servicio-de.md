@@ -1,10 +1,10 @@
 ---
-title: "8. Quién reconfigura: split-brain y el servicio de configuración"
+title: "8. Reconfiguración: split-brain y servicio de configuración"
 parent: "Clase 3 — Replicación y sharding"
 nav_order: 8
 ---
 
-# 8. Quién reconfigura: split-brain y el servicio de configuración
+# 8. Reconfiguración: split-brain y servicio de configuración
 {: .no_toc }
 
 <details open markdown="block">
@@ -17,7 +17,7 @@ nav_order: 8
 
 Toda la sección anterior descansó en una suposición provisoria: que hay alguien, externo a la cadena, que detecta la falla y reconfigura el sistema. Conviene hacerse cargo de esa deuda, y para eso hay que precisar qué queremos decir con configuración. No se trata tanto de archivos de configuración como de la estructura básica del sistema y de cuándo cambia: cuándo se agrega un nodo, cuándo se quita uno, o cuándo decimos que tal nodo es el head y tal otro el tail. A eso se lo llama reconfiguración, y suele ser un problema en sí mismo. La pregunta abierta se enuncia en una línea: quién reconfigura y quién detecta las fallas. Y aquí se complica todo, porque la conclusión va a ser que no es trivial que estos nodos detecten por sí mismos que otro dejó de funcionar.
 
-## El split-brain
+## Split-brain
 
 Si el único problema que tuviéramos fuera que falla un nodo solo, no sería tan complicado: un nodo no puede comunicarse con el que le sigue, se comunica con el que está después de ese y con eso alcanza. El problema son las particiones de red.
 
@@ -42,7 +42,7 @@ Se llama split-brain, y la metáfora es elocuente: lo que antes era un único si
 
 Por rudimentaria que fuera nuestra versión original, la del primary con sus backups, ahí esto no puede ocurrir, y la razón está en la metáfora misma: el cerebro es uno solo. Si ese cerebro deja de funcionar, a lo sumo perderemos datos, pero no aparecen dos estados evolucionando en paralelo. Y si teníamos el log fuera del sistema, Kafka tampoco tiene ese problema, ni lo tienen los nodos que consumen de él. Es decir que el split-brain aparece cuando construimos algo en principio muy simple, pero sin definir quién reconfigura el sistema.
 
-## El servicio de configuración
+## Servicio de configuración
 
 ¿Cuál es el mecanismo para evitarlo? A estos sistemas de chain replication se los combina con un servicio de configuración. Ese servicio va monitoreando el estado de cada nodo y detecta cuando algo falla; la configuración nueva se decide dentro de ese servicio, y es él el que se la comunica a los demás. Nadie se autopromueve por su cuenta.
 

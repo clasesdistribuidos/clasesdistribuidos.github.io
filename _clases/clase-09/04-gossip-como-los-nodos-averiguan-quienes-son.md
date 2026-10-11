@@ -1,10 +1,10 @@
 ---
-title: "4. Gossip: cómo los nodos averiguan quiénes son"
+title: "4. Gossip y membresía"
 parent: "Clase 9 — Dynamo II y DynamoDB"
 nav_order: 4
 ---
 
-# 4. Gossip: cómo los nodos averiguan quiénes son
+# 4. Gossip y membresía
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 4
 </details>
 
 
-## El anillo que todos creen conocer
+## Membresía del anillo
 
 El último tema del paper es uno de los más interesantes, aunque hoy no se use tanto: el gossip. Resuelve algo que veníamos esquivando. Siempre hablamos del anillo con sus virtual nodes, y de cómo se lo recorre para encontrar las réplicas de una clave; pero hasta ahora no explicamos cómo hace cada nodo para conocer a los demás, ni para saber qué posición ocupa cada uno en el anillo.
 
@@ -30,7 +30,7 @@ Y ahí está la clave, porque el mecanismo asume exactamente eso: que todos los 
   </figcaption>
 </figure>
 
-## Alternativa 1: un servicio de configuración
+## Alternativa 1: servicio de configuración
 
 La primera alternativa ya la vimos un par de veces en la materia: aparte del anillo, un servicio de configuración, un *config service*. Todos le mandan sus datos y todos lo consultan. El tráfico va en las dos direcciones, y por eso alcanza con un solo lugar: cada nodo publica ahí lo que sabe de sí mismo y lee lo que necesita de los demás.
 
@@ -47,7 +47,7 @@ ZooKeeper sería la mejor de las tres. O, si fuéramos Google, Chubby, el otro p
   </figcaption>
 </figure>
 
-## Alternativa 2: "sigo vivo, y esta es mi visión de todos"
+## Alternativa 2: gossip
 
 Hay otra forma, más elegante y fácil de entender: la versión completamente distribuida, donde los nodos se comunican entre sí sin ningún servicio intermedio.
 
@@ -79,7 +79,7 @@ El algoritmo tiene tres pasos y se ejecuta cada T segundos. Primero, elegir un p
 
 Lo importante es esto último: la información que me mandó mi peer, cuando yo se la mande a otro, viaja junto con la mía.
 
-## Epidemias: por qué alcanza con diez rondas
+## Propagación epidémica
 
 Hay dos maneras de ver por qué funciona. Una es el rumor que se propaga de boca en boca, de donde sale el nombre (*gossip* significa chisme). La otra, más precisa, es que el algoritmo se inspira en cómo se propagan las epidemias, y es la que nos va a dar el número.
 
@@ -92,7 +92,7 @@ Durante la pandemia de COVID se habló mucho de crecimiento "exponencial" en los
 
 Falta la parte cuantitativa, que es la que convence. El paper original —de 1987— demostró que la convergencia es de orden logarítmico en n, la cantidad de nodos. El logaritmo es en base dos, aunque la base no importa demasiado. Ese orden mide la cantidad de rondas de intercambio: uno le manda a uno, y esa es una ronda; esos dos les mandan a otros dos, y esa es otra. Con 1024 nodos, alcanzan solamente 10 rondas para que el sistema se estabilice y todos conozcan todo. El 10 no es una estimación: es exactamente el logaritmo en base dos de 1024, porque 2¹⁰ es 1024. Y si T es un segundo —el paper de Dynamo usa un segundo—, 1024 nodos conocen el estado del clúster entero en 10 segundos. Lo fuerte es la forma de la curva: duplicar el clúster no duplica el tiempo, le agrega una ronda. Con 2048 nodos son 11 segundos, y para llegar a 20 segundos haría falta un millón de nodos.
 
-## Push, pull y el intercambio de ida y vuelta
+## Push, pull y push-pull
 
 El paso de intercambiar estado con el peer admite variantes. Con un nodo A y su peer, una forma es *push*: A le envía sus datos al otro sin que este los haya pedido. Otra es *pull*: A le pide al peer y el peer le manda su estado. Y lo típico es intercambiar: A manda su estado y el peer responde con el suyo. Es más rápido, porque en una sola ida y vuelta los dos ya intercambiaron toda su información.
 
@@ -107,7 +107,7 @@ El paso de intercambiar estado con el peer admite variantes. Con un nodo A y su 
 
 Gossip es un algoritmo interesante y fácil de entender, y no vamos a profundizar más.
 
-## Qué se gossipea en Dynamo, y el nodo que recién llega
+## Gossip en Dynamo e incorporación de nodos
 
 En Dynamo, concretamente, se gossipean los miembros del clúster y los tokens de cada uno en el anillo; el paper a veces les dice tokens y a veces virtual nodes, pero son lo mismo. Es información que cambia poco: no se agregan y sacan nodos miles de veces por segundo, sino que el conjunto se mantiene estable por largos períodos y de vez en cuando alguno falla.
 

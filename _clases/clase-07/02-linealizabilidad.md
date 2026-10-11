@@ -15,7 +15,7 @@ nav_order: 2
 </details>
 
 
-## La definición: una sola copia, puntos de ejecución y las dos condiciones
+## Definición: una sola copia y puntos de ejecución
 
 La consistencia eventual, tal como quedó planteada, admite casi cualquier comportamiento. Lo contrario tiene nombre —consistencia fuerte—, pero ese nombre significa cosas distintas según con quién se hable. Vamos a adoptar la definición concreta que se usa en los libros de sistemas distribuidos: linealizabilidad.
 
@@ -78,7 +78,7 @@ Vamos a usar la palabra linealizable, que es la formal, con un mapeo mental dire
 
 ---
 
-## Cuatro historias: ¿linealizable o no?
+## Ejemplos: historias linealizables y no linealizables
 
 En los cuatro ejemplos que siguen vamos a ubicar esas marcas rojas en distintos lugares para determinar si es posible que el sistema sea fuertemente consistente. No son originales: figuran en los videos del MIT. Rehacerlos resulta útil igualmente, porque después de recorrerlos el criterio de las marcas rojas deja de ser una definición y se convierte en un procedimiento.
 

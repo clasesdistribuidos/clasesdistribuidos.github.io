@@ -1,10 +1,10 @@
 ---
-title: "1. La restricción de elección"
+title: "1. Restricción de elección"
 parent: "Clase 6 — Raft II"
 nav_order: 1
 ---
 
-# 1. La restricción de elección
+# 1. Restricción de elección
 {: .no_toc }
 
 <details open markdown="block">
@@ -17,7 +17,7 @@ nav_order: 1
 
 La pregunta que quedó abierta en la clase anterior reaparece en la segunda parte del trabajo práctico: cuando un candidato solicita el voto, ¿en qué casos se lo otorgan y en qué casos no? La regla se enuncia en dos líneas, pero enunciada así no permite entender por qué debe ser esa y no otra. Vamos a recorrer el camino inverso: construir un sistema que funcione y después someterlo a fallas. Los ejemplos con los que lo quebramos funcionan como un catálogo de lo que puede ocurrir cuando se eligen líderes nuevos.
 
-## La partición de red y el split brain aparente
+## Partición de red y split brain aparente
 
 Hay dos restricciones al voto, una evidente y una sutil. La evidente ya apareció la clase anterior: si el nodo que recibe el pedido ya votó por alguien en ese término, no vota dos veces.
 
@@ -63,7 +63,7 @@ Por eso, si bien parecería que hay split brain —dos líderes a la vez—, lo 
 
 En síntesis: la mitad menor no puede avanzar porque su líder nunca va a recibir una mayoría cuando intente hacerle `AppendEntries` a los vecinos. Lo interesante es lo que ocurre del otro lado.
 
-## Quién puede ganar la elección del otro lado
+## Elección en la partición mayoritaria
 
 La mitad mayor va a intentar elegir un líder. Alguno de esos tres va a tener un election timeout que expira primero —son randomizados, y por eso siempre hay uno que llega antes—, y ese nodo inicia la elección.
 
@@ -105,7 +105,7 @@ Podría pensarse que fue una casualidad afortunada que en la mitad mayor quedara
 
 Y el contrafáctico cierra el argumento. Si no se hubiera llegado al commit —si el líder le hubiera enviado la entrada a un solo vecino y en ese momento se hubiera particionado la red—, esa mitad se perdía y la entrada desaparecía. Pero en ese caso tampoco se le había podido responder al cliente. El sistema no pierde nada que haya prometido.
 
-## Entradas no comiteadas: los dos finales posibles
+## Entradas no comiteadas
 
 Agreguemos otro escenario, interesante por razones distintas. El mismo cluster de cinco. El líder anterior recibe un request del cliente, lo escribe localmente y alcanza a escribirlo en un solo servidor más. Y ahora se produce otro tipo de falla: en lugar de particionarse la red, el líder cae, lo cual equivale a una partición con el líder solo de un lado y todos los demás del otro.
 

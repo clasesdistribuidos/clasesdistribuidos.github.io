@@ -1,10 +1,10 @@
 ---
-title: "5. Qué es un servicio cloud"
+title: "5. Servicios cloud"
 parent: "Clase 9 — Dynamo II y DynamoDB"
 nav_order: 5
 ---
 
-# 5. Qué es un servicio cloud
+# 5. Servicios cloud
 {: .no_toc }
 
 <details open markdown="block">
@@ -50,7 +50,7 @@ El escalado también lo manejan ellos. La actualización del software depende de
 
 Eso es fully managed. Todos los problemas en los que pusimos tanta cabeza, Amazon cobra por resolverlos: dispone de personal que, cuando algo falla, se levanta en mitad de la noche, se conecta por SSH y lo repara. Es una de las propiedades más seductoras para las empresas, porque la parte más difícil de un sistema distribuido se delega en otra empresa. Y eso facilitó mucho el desarrollo web a gran escala: internet creció de forma explosiva cuando hubo empresas grandes dedicadas a resolver los problemas difíciles y empresas muy pequeñas que simplemente usaban esos servicios.
 
-## Multi-tenant: todos los inquilinos en el mismo edificio
+## Multi-tenant
 
 Para que eso tenga sentido, primero tienen que cerrar los números. No sería viable que por cada cliente nuevo de Amazon alguien tuviera que instalar una máquina física en el rack y ponerla en funcionamiento.
 
@@ -62,7 +62,7 @@ Y la pregunta no desapareció con ellos. Quienes no están familiarizados con lo
 
 Multi-tenant es eso: los clientes comparten el sistema, abstraído de manera que ninguno lo note. En los sistemas cloud es prácticamente un principio fundamental.
 
-## Una API con SLA
+## API con SLA
 
 Después vienen detalles más finos. La API tiene un SLA estricto, y eso es parte de lo que venden: garantía de disponibilidad y de latencia. Cuán laxo sea depende de la empresa. Amazon mide la disponibilidad en cantidad de nueves: el 99,99% del año el sistema tiene que estar levantado, y el 0,01% restante es el margen de caída tolerado. El año tiene 525.600 minutos, así que ese margen son 53 minutos: si el servicio estuvo caído menos que eso en el año, el contrato se cumplió. Si se pasan, devuelven un porcentaje del dinero según el tiempo excedido. Así de estrictos son con el SLA.
 
@@ -76,7 +76,7 @@ Al costado hay un término que se escucha mucho y que en algún momento veremos 
 
 ---
 
-## El modelo de cobro
+## Modelo de cobro
 
 El modelo de cobro es casi un descanso en la teoría dura, y sin embargo es la parte con la que uno más va a tratar: en la práctica profesional uno interactúa con proveedores de cloud mucho más de lo que arma servicios como estos. Cuando algo falla o se comporta de manera anómala, la teoría sirve para intuir qué puede estar mal —problemas de consistencia, por ejemplo—, pero en el día a día lo que preocupa es cómo escalan los servicios y cuánto cobran.
 

@@ -1,10 +1,10 @@
 ---
-title: "4. El web server real: HTTP, load balancers y escalado"
+title: "4. Web servers: HTTP, load balancers y escalado"
 parent: "Clase 1 — Introducción, TCP/IP y RPC"
 nav_order: 4
 ---
 
-# 4. El web server real: HTTP, load balancers y escalado
+# 4. Web servers: HTTP, load balancers y escalado
 {: .no_toc }
 
 <details open markdown="block">
@@ -40,7 +40,7 @@ Todo eso que la herramienta muestra desplegado, los headers, y los parámetros d
 
 HTTP es de los protocolos que más se usan para implementar aplicaciones. Más adelante vamos a hablar de REST, que es cómo usar HTTP para realizar operaciones de proposito general sobre el servidor de destino. Pero por ahora HTTP nos interesa solamente como ejemplo básico de un cliente-servidor.
 
-## Caso de estudio: una aplicación web
+## Caso de estudio: aplicación web
 
 Lo que veníamos describiendo es la versión simplificada. Los sitios comerciales tipicamente están desplegadas de manera distribuida es decir, no conformadas por una unica PC sino por un cluster de las mismas. Es decir, que el servicio de HTTP provisto es un sistema distribuido en sí mismo. Miremos entonces cómo funcionan estas cosas en la vida real, siendo lo que sigue una anticipación de lo que vendrá más adelante en la materia.
 

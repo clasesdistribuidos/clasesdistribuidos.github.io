@@ -1,10 +1,10 @@
 ---
-title: "5. La elección de líder en Raft"
+title: "5. Elección de líder en Raft"
 parent: "Clase 5 — Raft I"
 nav_order: 5
 ---
 
-# 5. La elección de líder en Raft
+# 5. Elección de líder en Raft
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 5
 </details>
 
 
-## Términos y los tres estados de un nodo
+## Términos y estados de un nodo
 
 Queda la otra fase: cómo funciona la elección de líder. La primera cuestión es fácil: cuando el algoritmo inicia no hay ningún líder y se tiene que elegir uno.
 
@@ -40,7 +40,7 @@ Todo esto se ordena mejor como un diagrama de estados, que es como lo presenta e
 
 Y cuando quiere ser líder, lo primero que hace es pedir votos, igual que en el ejemplo rápido que ya vimos: se vota a sí mismo y envía un RequestVote a todos los nodos; está haciendo campaña, si se quiere. Si una mayoría de peers le responde que sí, se transforma en el nuevo líder. Bajo qué condiciones responden una cosa o la otra lo vamos a ver más adelante.
 
-## El ciclo completo en funcionamiento
+## Ciclo completo de una elección
 
 Existe una animación muy buena en `raft.github.io`, donde se ve Raft funcionando con los nodos, los contadores y los mensajes en vuelo. Conviene dedicarle un tiempo: es una de las mejores herramientas de estudio que hay. Lo que sigue es el ciclo completo de principio a fin, con cinco nodos.
 
@@ -77,7 +77,7 @@ Lo que ocurre después es lo que hace que todo encaje. El nodo que tenía entrad
 
 Casos como estos hay miles, y todos funcionan. Eso es lo notable del algoritmo: es matemáticamente consistente en todos sus frentes, y por más combinaciones de fallas, reinicios y particiones que uno construya, el sistema converge a un único líder y a un único log. Uno puede pasar un tiempo considerable tratando de romperlo —matando el líder en el momento más incómodo, dejando entradas a medio replicar, cortando la red justo cuando salían los mensajes— y el resultado es siempre el mismo: aparece un término nuevo, alguien reúne la mayoría, y el log converge. De ahí la recomendación de experimentar con la animación.
 
-## Voto dividido y la randomización del timeout
+## Voto dividido y randomización del timeout
 
 Con el ciclo completo ya visto podemos volver sobre el detalle pendiente: por qué los timeouts son ligeramente distintos entre sí. Lo que se quiere evitar tiene nombre propio: el voto dividido.
 
@@ -122,7 +122,7 @@ El encuadre es lo que induce al error, porque no se trata de una red de internet
 
 El compromiso del parámetro es directo: cuanto más largo el election timeout, más tarda el sistema en restaurarse. Si el timeout fuera de diez segundos, el sistema quedaría diez segundos caído; contra eso, los trescientos a seiscientos milisegundos de la práctica son un factor de más de treinta. Bajo una carga muy alta de requests puede que en los gráficos se vea un pequeño pico, pero enseguida se restaura. Y hay una razón adicional para que todo sea corto: cuanto más divergen los logs, más difícil es después reconciliarlos.
 
-## Cómo responde un follower a un pedido de voto
+## Reglas de votación del follower
 
 Los followers responden a un pedido de voto a veces que sí y a veces que no. En el caso feliz que sí, pero hay dos condiciones que el votante tiene que cumplir antes de conceder el voto.
 

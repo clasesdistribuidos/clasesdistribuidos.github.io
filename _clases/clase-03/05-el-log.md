@@ -1,10 +1,10 @@
 ---
-title: "5. El log"
+title: "5. Log"
 parent: "Clase 3 — Replicación y sharding"
 nav_order: 5
 ---
 
-# 5. El log
+# 5. Log
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 5
 </details>
 
 
-## La abstracción fundamental
+## Log como abstracción fundamental
 
 Justamente ahí aparece una abstracción importante, la que introduce un artículo de la bibliografía. No es un paper sino un artículo, de lectura opcional, pero esclarecedor y muy bien escrito, porque introduce la relación fundamental que buscamos: el log. Y el log importa por una razón directa: si damos con la forma de definir un log de operaciones, resolvimos el problema planteado.
 
@@ -38,7 +38,7 @@ Lo que esto nos resuelve es en qué orden ocurrieron los updates. Y si conseguim
 
 Lo que estamos haciendo es destilar el problema esencial de la replicación, y por ahora llegamos a que si conseguimos —quizás no físicamente, pero sí conceptualmente— un log de operaciones, prácticamente está resuelto. Todavía es abstracto, así que vale la pena un par de ejemplos.
 
-## El log de una base de datos
+## Log de una base de datos
 
 Aparece, para empezar, en la base de datos. Tomemos una base relacional: tenemos ahí un log en versión no distribuida, pero muy parecido en esencia a lo que vamos a terminar viendo.
 
@@ -67,7 +67,7 @@ Y cada entrada del log contenía también el estado inicial y el final que prete
 
 Este log no es distribuido: es una máquina física que está toda junta ahí, con las páginas y el log en su interior. Pero es un ejemplo paradigmático de para qué se usa un log en la práctica, y conviene recordarlo, porque cuando lleguemos a Amazon Aurora vamos a ver que hace cosas muy interesantes con él.
 
-## El log en Raft y el versionado
+## Log en Raft y versionado
 
 El segundo ejemplo es Raft, donde uno termina familiarizándose mucho con un log. Todavía no lo conocemos, pero su esencia se puede adelantar: es básicamente un algoritmo de consenso, pero también resuelve replicación, y las aplicaciones que lo usan tienen dos capas bien diferenciadas.
 

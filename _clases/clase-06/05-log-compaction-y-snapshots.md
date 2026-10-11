@@ -17,7 +17,7 @@ nav_order: 5
 
 Queda un último tema, y conviene examinarlo con atención porque no es exclusivo de Raft: aparece en otros sistemas, con otros nombres, resolviendo el mismo problema. Se denomina *log compaction* y se desprende directamente de la persistencia que acabamos de ver: es la consecuencia incómoda de haber decidido que el log sea lo único que se guarda.
 
-## El log que crece y el snapshot que lo reemplaza
+## Crecimiento del log y snapshots
 
 Si uno lee el paper con esa decisión presente, encuentra algo que a primera vista desconcierta: el log es lo único persistente, y del estado de la capa de aplicación el paper no dice una palabra. Puede resultar extraño, y en los sistemas reales la aplicación suele tener su propia persistencia, pero el paper asume el peor caso: que la aplicación —lo que teníamos dibujado en la parte superior del esquema de capas, con Raft abajo, la aplicación en el medio y una base de datos o lo que corresponda— podría perfectamente residir en memoria. Y para Raft eso es aceptable.
 
@@ -95,7 +95,7 @@ El receptor realiza dos acciones. La primera: en el caso habitual su log ya no l
 
 Además, el propio paper reconoce que el mecanismo de snapshots se aparta del principio de líder fuerte, porque cada follower compacta su log sin intervención del líder; los autores lo justifican señalando que, al compactar, el consenso ya fue alcanzado (sección 7). El flujo queda así: si ya no se puede seguir rebobinando, se envía un snapshot, el otro lo restaura, y después se le aplica el log de la manera habitual. Con eso el follower puede continuar avanzando.
 
-## Cuándo se puede tomar un snapshot
+## Condiciones para tomar un snapshot
 
 Hay otro aspecto interesante: cada máquina puede decidir cuándo toma snapshots, en cualquier momento. En función de los que tenga, gestiona unilateralmente qué longitud desea para su log. Pero con una condición: los datos deben estar comiteados y aplicados.
 

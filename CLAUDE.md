@@ -61,7 +61,7 @@ Sección:
 
 ```yaml
 ---
-title: "3. La organización cliente-servidor"
+title: "3. Organización cliente-servidor"
 parent: "Clase 2 — MapReduce"
 nav_order: 3
 ---
@@ -73,7 +73,7 @@ nav_order: 3
 `{: .no_toc }` para que no se duplique:
 
 ```markdown
-# 3. La organización cliente-servidor
+# 3. Organización cliente-servidor
 {: .no_toc }
 
 <details open markdown="block">

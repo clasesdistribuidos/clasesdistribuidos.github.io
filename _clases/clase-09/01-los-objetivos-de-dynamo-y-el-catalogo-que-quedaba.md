@@ -1,10 +1,10 @@
 ---
-title: "1. Los objetivos de Dynamo y el catálogo que quedaba por cubrir"
+title: "1. Objetivos y técnicas de Dynamo"
 parent: "Clase 9 — Dynamo II y DynamoDB"
 nav_order: 1
 ---
 
-# 1. Los objetivos de Dynamo y el catálogo que quedaba por cubrir
+# 1. Objetivos y técnicas de Dynamo
 
 En el paper de Dynamo hay una tabla, la tabla uno, que resume todas las técnicas de sistemas distribuidos que usa el sistema. Se parece mucho a nuestro propio programa: son casi las mismas técnicas que nos interesan, algunas mucho más que otras.
 
