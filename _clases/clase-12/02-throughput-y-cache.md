@@ -19,7 +19,8 @@ nav_order: 2
 
 Volvamos al sistema web del principio, el del load balancer con los servidores stateless adelante de la base. Con la ley de Little lo podemos mirar de otra manera: igual que descompusimos el hospital, aquí podemos verlo como tres sistemas en serie: la capa de entrada, la capa de servidores web stateless y la base de datos. Para que el conjunto sea estable vale la misma condición que en el hospital: la λ que entra al primero tiene que ser igual a la que entra al del medio y a la que entra a la base.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/web-como-tres-sistemas.png' | relative_url }}" alt="El sistema web como tres sistemas en serie">
   <figcaption>
     <span class="figura-label">Figura</span>
     el sistema web original visto como tres sistemas en serie — load balancer, capa de servidores stateless y base de datos, con el mismo λ atravesando los tres
@@ -31,7 +32,8 @@ Visto así se entiende mejor qué hacíamos al agregar servidores en paralelo: a
 
 Con la base de datos pasa algo parecido, y se ve haciéndole zoom. Dentro suele haber un pool de conexiones, una cantidad máxima de conexiones; el parámetro se llama típicamente `max_connections`. Ese número es el paralelismo de la base.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/pool-de-conexiones.png' | relative_url }}" alt="La base de datos con su pool de conexiones">
   <figcaption>
     <span class="figura-label">Figura</span>
     zoom a la base de datos — un cilindro con su pool de conexiones dentro y la etiqueta max_connections = paralelismo
@@ -59,7 +61,8 @@ Instalamos un sistema aparte. El clásico es memcached, un sistema viejo; hoy la
 
 El caché no desplaza a nadie: la fuente de verdad sigue siendo la base de datos. La técnica típica para combinar las dos piezas se llama look-aside cache, y tiene cuatro pasos. El request llega a la app, que se fija primero si lo que necesita está en memcache. Si está, lo devuelve desde ahí: un hit. Si no, va a la base, hace la query común y corriente, guarda el resultado en el caché y solo entonces devuelve. La próxima vez que venga el mismo request lo va a encontrar en el caché. Es la misma mecánica de los cachés de procesador.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/look-aside-cache.jpg' | relative_url }}" alt="Look-aside cache: la app, memcache, la base y los pasos del algoritmo">
   <figcaption>
     <span class="figura-label">Figura</span>
     el look-aside cache — la app con una flecha hacia memcache y otra hacia la base de datos, con los cuatro pasos del algoritmo (buscar en el caché; hit → return; miss → buscar en la DB, actualizar el caché, return)

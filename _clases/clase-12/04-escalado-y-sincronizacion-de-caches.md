@@ -21,7 +21,8 @@ Al describir la arquitectura dijimos que el cluster de memcache está shardeado 
 
 En su versión más simple cabe en una línea. A la clave se le hace un `MD5`, y a ese hash, módulo 3 si tenemos tres memcaches. Eso da el índice del servidor —cero, uno o dos— donde guardamos el valor. La próxima vez, la misma cuenta nos lleva al mismo lugar.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/sharding-de-memcache.png' | relative_url }}" alt="Un frontend con tres shards de memcache">
   <figcaption>
     <span class="figura-label">Figura</span>
     el sharding de memcache — un frontend con tres flechas hacia MC1, MC2 y MC3, y al costado la regla MD5(k) % 3 = índice del shard
@@ -39,7 +40,8 @@ La cuenta del `MD5` con módulo es, por otra parte, la versión didáctica. La t
 
 Queda una última pieza, también del paper. Dentro de cada región arman muchos clusters. Cada cluster es uno de esos bloques que en el diagrama aparecen uno delante del otro: un conjunto de frontends y un conjunto de shards de memcache, y de esa pieza hay varias copias. Los requests llegan aleatoriamente a los distintos clusters, y así le agregan capacidad al sistema.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/clusters-en-una-region.jpg' | relative_url }}" alt="Dos clusters de frontends y memcaches en una región">
   <figcaption>
     <span class="figura-label">Figura</span>
     los clusters dentro de una región — dos bloques idénticos, cada uno con su conjunto de frontends arriba y su conjunto de shards de memcache abajo, recibiendo requests repartidos
@@ -61,7 +63,8 @@ La solución que adoptaron es muy interesante. La base de datos —MySQL en este
 
 El mecanismo sale de ahí. Cuando mandamos un update en la región primaria —el write se traduce, dentro de la base, en un update—, ese update llega por la replicación al log de la otra región. mcsqueal lo detecta, infiere qué clave tiene que invalidar y hace el `delete` contra el memcache de esa región. La invalidación viaja montada sobre la replicación que ya existía.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/invalidacion-cross-region.png' | relative_url }}" alt="Invalidación cross región con mcsqueal leyendo el WAL">
   <figcaption>
     <span class="figura-label">Figura</span>
     la invalidación cross región — dos regiones; en la primaria el frontend escribe en la base y hace el delete contra su memcache local; la base se replica a la región secundaria, donde mcsqueal está conectado al WAL, detecta el update y dispara el delete contra el memcache remoto
@@ -111,7 +114,8 @@ En el paso tres empieza el problema. Llega un read al segundo frontend, justo so
 
 Ahí ocurre la race condition. La clave es el delay: lo que escribimos en otra región tarda un tiempo en llegar a la actual. El segundo frontend se encuentra con una réplica que todavía no recibió el cambio, lee un valor desactualizado y con él actualiza el memcache local. Quedamos otra vez en un estado inconsistente. Y ese frontend no hizo nada mal: siguió el algoritmo al pie de la letra y fue a la fuente que tenía disponible, solo que esa fuente todavía no se había enterado. Si nada se elimina automáticamente, esa clave queda desactualizada en memcache para siempre.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/replica-atrasada.png' | relative_url }}" alt="Race condition con la réplica atrasada">
   <figcaption>
     <span class="figura-label">Figura</span>
     la race condition de la réplica atrasada — dos regiones; el frontend del secondary escribe cross región contra la base del primary y borra su caché local; un segundo frontend lee, no encuentra nada, lee la réplica todavía atrasada y reinstala el valor viejo; la flecha de replicación rotulada &quot;se retrasa&quot;
@@ -125,7 +129,8 @@ También cambia la lectura, con un paso más. El `get(k)` da miss, y normalmente
 
 Con eso el frontend sabe que no puede tomar el camino local. Tiene que hacer una lectura con consistencia fuerte, y eso significa leer del master. Mientras el marcador esté activo no se puede leer de la réplica local, que está desactualizada. Va al master, lee de ahí, y solo con ese valor puede actualizar el memcache sin que pase nada.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/algoritmo-con-marcador.png' | relative_url }}" alt="Escritura y lectura con el remote marker">
   <figcaption>
     <span class="figura-label">Figura</span>
     el algoritmo con marcador — a la izquierda el frontend que escribe, con set(RK), update_master y delete(k); a la derecha el frontend que lee, con get(k) → miss, get(RK) → hit y la lectura redirigida al primary

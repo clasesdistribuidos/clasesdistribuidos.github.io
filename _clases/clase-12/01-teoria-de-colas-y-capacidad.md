@@ -21,7 +21,8 @@ Hay un recurso que aparece siempre que se quiere escalar una base de datos, y qu
 
 Facebook era inicialmente una aplicación web de las antiguas: dentro tenía un servidor HTTP —Apache o nginx, indistintamente—, el cliente se conectaba ahí, y ese servidor se conectaba internamente con una base de datos relacional, que en esa época bien podía ser MySQL; Postgres todavía no estaba tan difundido. Es la primera iteración que uno haría: una única máquina, con todo dentro.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/servidor-una-maquina.png' | relative_url }}" alt="Un cliente contra una única máquina con Apache y MySQL">
   <figcaption>
     <span class="figura-label">Figura</span>
     servidor web de una sola máquina — un cliente con una flecha HTTP hacia un recuadro que contiene Apache y, debajo, la base relacional
@@ -33,7 +34,8 @@ El primer paso para escalar esto, que vimos en las primeras clases, es escalar e
 
 Ya habíamos dicho que esa base, por ser relacional, es más difícil de escalar que la capa del medio. A la capa del medio se le agregan máquinas y funciona; con la relacional no, porque tiene discos rígidos, y ahí hay que usar las técnicas de las clases anteriores. La versión fácil es seguir con una única base; a lo sumo, con una réplica, un primary y un secondary, de la que se puede leer de uno o del otro. Pero eso ya va más allá de lo básico, así que dejemos una sola base.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/escalado-web.png' | relative_url }}" alt="Load balancer, servidores HTTP stateless y una base relacional">
   <figcaption>
     <span class="figura-label">Figura</span>
     el escalado — cliente, load balancer, tres servidores HTTP stateless y una única base de datos relacional
@@ -49,7 +51,8 @@ Antes conviene ver cómo se modela matemáticamente la capacidad de estos compon
 
 Hay tres parámetros con los que vamos a jugar, y adelantamos adónde queremos llegar: entender qué pasa cuando le ponemos al sistema un caché mucho más rápido, y cómo lo mejora. El primero es λ(t), la tasa de entradas, en requests por segundo; si se quiere, la derivada de los requests. El segundo es δ(t), la tasa de salidas. Y el tercero, la clave de todo porque es el que nos dice cuánta capacidad le queda al sistema para seguir atendiendo gente, es N(t): la cantidad de clientes dentro del sistema.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/sistema-caja-negra.png' | relative_url }}" alt="El sistema como caja negra con λ(t), δ(t) y N(t)">
   <figcaption>
     <span class="figura-label">Figura</span>
     el sistema como caja negra — un círculo rotulado &quot;sistema&quot;, flecha entrante de requests con λ(t), flecha saliente de responses con δ(t), y N(t) dentro
@@ -61,7 +64,8 @@ Hay una sutileza. El sistema es abstracto, y también lo es qué significa estar
 
 Hay una observación intuitiva que resulta muy razonable. Si entran cosas más rápido de lo que salen, se van a acumular dentro. Si el sistema fuera una cola, la veríamos llenarse: cada elemento que llega se apila detrás de todos los que ya estaban. Y eso se traduce en algo muy concreto: esa gente va a tener que esperar cada vez más.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/sistema-que-se-llena.png' | relative_url }}" alt="Un sistema con una cola que se llena">
   <figcaption>
     <span class="figura-label">Figura</span>
     el sistema que se llena — un círculo con una cola dentro y elementos acumulándose a la derecha cuando entran más de los que salen
@@ -81,7 +85,8 @@ Las tres cantidades son promedios en el tiempo. Los requests no entran a un rate
 
 Un ejemplo fácil muestra que funciona. Pensemos en un café, un Starbucks, dibujado como una casa, y queremos calcular cuántas sillas poner dentro. Tenemos dos datos: la tasa de arribo, 45 personas por hora; y el tiempo de permanencia, 25 minutos por persona, contando todo lo que hace entre que llega, hace la cola, pide el café, se sienta y se lo toma. Lo que no sabemos es cuánta gente hay en promedio dentro, que es exactamente la `L`. Esa es la capacidad que tiene que tener el local.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/cafe-ley-de-little.png' | relative_url }}" alt="La ley de Little aplicada a un café">
   <figcaption>
     <span class="figura-label">Figura</span>
     el café — una flecha λ entrando a una casa, con λ = 45 personas/hora, W = 25 min y la incógnita L
@@ -99,7 +104,8 @@ Ahora lo verdaderamente interesante, que ya anticipamos: no importa la estructur
 
 Pero podría ser un sistema completamente distinto: seis consultorios en paralelo, cada uno con su médico, y ninguna cola. Los pacientes llegan y se atienden enseguida. Con diez pacientes por hora y seis personas en el sistema, ahora en paralelo, la ley de Little da exactamente lo mismo: 36 minutos. Lo que cambia por completo es la interpretación. Aquí cada médico dedica 36 minutos a su paciente: una atención muy detenida. En el sistema anterior el médico atendía bastante más rápido, porque esos 36 minutos se repartían entre la fila de espera y la consulta propiamente dicha.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/variantes-del-consultorio.png' | relative_url }}" alt="Consultorio con cola y un médico, y seis consultorios en paralelo">
   <figcaption>
     <span class="figura-label">Figura</span>
     las dos variantes del hospital — a la izquierda una cola de cinco pacientes seguida de un único consultorio; a la derecha seis consultorios en paralelo sin cola; ambas con 36 minutos
@@ -113,7 +119,8 @@ Si en algún momento los médicos se enlentecen, la λ que sale de ellos es más
 
 Con esa descomposición podemos calcular varias cosas. La `L` completa es seis. De esas seis, dos están en los consultorios, porque son dos: `Lm = 2`. En la cola quedan `Lc = 4`. Y la λ vale diez en todo el recorrido: entran diez por hora, salen diez de la cola, entran diez a los médicos y salen diez del hospital. Aplicando la ley a cada subsistema: `Wc = 4/10 = 0,4 horas` de espera en la cola y `Wm = 2/10 = 0,2 horas` siendo atendido.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/subsistemas-en-serie.png' | relative_url }}" alt="Cola y consultorios como dos subsistemas en serie">
   <figcaption>
     <span class="figura-label">Figura</span>
     la descomposición en dos subsistemas en serie — λ = 10 p/h entrando a una cola de cuatro, después dos consultorios, y λ saliendo; con Lc, Wc, Lm y Wm rotulados

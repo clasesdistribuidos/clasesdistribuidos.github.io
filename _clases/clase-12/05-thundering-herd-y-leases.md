@@ -27,7 +27,8 @@ A primera vista no parece grave: tras el delete, el primer frontend que acceda n
 
 Pero cuando se trata de un tweet —o un post de Facebook— al que acceden literalmente miles de veces por segundo, pasa otra cosa. Ese miss no le ocurre a un frontend: les ocurre a miles de servidores a la vez. Todos se encuentran el miss, todos van al mismo tiempo a la base y todos tratan de actualizar al mismo tiempo el memcache.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/thundering-herd.png' | relative_url }}" alt="Muchos frontends contra un memcache al borrarse la clave">
   <figcaption>
     <span class="figura-label">Figura</span>
     la estampida — cuatro frontends con flechas hacia un único memcache, la etiqueta delete() sobre la clave borrada, y las flechas que atraviesan el memcache y van todas juntas contra el cilindro de la base de datos
@@ -57,7 +58,8 @@ Para entender qué hace memcache con ese número hay que mirar su tabla interna:
 
 Eso permite lo siguiente. Si otro cliente hace un `get` de la misma clave, memcache ve en la tabla que alguien ya la pidió. El valor sigue sin estar, así que la respuesta sigue siendo un miss; pero en vez de pasarle un lease, como ya entregó uno, le responde `retry`. El paper lo plantea del lado del servidor y con un número concreto: memcache entrega un lease para una misma clave **una sola vez cada diez segundos**, y todo cliente que pida esa clave dentro de esa ventana tiene que esperar en lugar de salir a buscar el valor.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/mecanismo-de-leases.png' | relative_url }}" alt="Leases: miss con lease, miss con retry y la tabla de memcache">
   <figcaption>
     <span class="figura-label">Figura</span>
     el mecanismo de leases — el cliente 1 hace get(k) y recibe (miss, lease) de 64 bits; el cliente 2 hace get(k) y recibe (miss, retry); al costado, la tabla interna de memcache con las columnas clave, valor y lease, con la clave y el lease ya cargados y el valor todavía vacío
@@ -85,7 +87,8 @@ Lo que tendría que haber pasado es fácil de perder de vista. Después de ese d
 
 Y el resultado es el peor de todos: `V2` en la base y `V1` en el caché. Si la clave no tiene TTL, `V1` queda para siempre, y ningún hit sobre ella va a leer el valor actualizado.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/lease-como-optimistic-locking.png' | relative_url }}" alt="El set con un lease borrado por un delete">
   <figcaption>
     <span class="figura-label">Figura</span>
     la tercera race condition — dos columnas; C1 hace get(k) → (miss, lease) y read de la base → V1; en el medio C2 hace write k=V2 y delete(k), que tacha la fila entera de la tabla clave/valor/lease; el set(k, V1, lease) de C1 falla porque ese lease ya no existe

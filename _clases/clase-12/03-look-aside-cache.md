@@ -23,7 +23,8 @@ El primero es el que venimos usando sin nombrarlo. Se llama look-aside, mirar pa
 
 El segundo se parece al de los procesadores, y quien haya visto cachés de CPU lo va a reconocer. Se llama look-through, mirar a través. La aplicación se conecta solo con el caché, y el caché con la base: siempre se accede a la base a través del caché. Esa caja del medio no se puede rotular memcached, porque memcached no funciona así: va un caché genérico, una pieza que hay que construir para el caso.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/look-aside-y-look-through.png' | relative_url }}" alt="Look-aside y look-through">
   <figcaption>
     <span class="figura-label">Figura</span>
     los dos tipos de caché — look-aside, con la app conectada por separado al caché y a la base; look-through, con la app, el caché y la base encadenados en línea recta
@@ -43,7 +44,8 @@ Esa dispersión no es exclusiva de Facebook. Twitter, por ejemplo, tenía tres d
 
 Dentro de cada región hay tres capas. Arriba, los servidores de frontend, una capa stateless: los mismos Apache o nginx del principio. En el medio, un cluster de memcache shardeado: no se guarda todo en cada memcache, sino que la información se distribuye entre ellos, parecido a como se distribuían los datos en MapReduce. Abajo, la base de datos, con dos propiedades superpuestas. Está particionada: distintos usuarios viven en distintas bases, aunque el paper no especifica el criterio; es razonable imaginar que sea por usuario. Y esas bases están replicadas a la otra región.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/arquitectura-de-facebook.jpg' | relative_url }}" alt="Las regiones primary y secondary de Facebook">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura de Facebook — dos regiones, primary y secondary, cada una con una fila de frontends stateless, una fila de memcaches shardeados y las bases particionadas; la flecha de escritura cross región desde el frontend del secondary hasta la base del primary, y la flecha de replicación primary-backup entre las bases
@@ -61,7 +63,8 @@ Esa primera cuestión ya alcanza para ver que el asunto no es simple: entre regi
 
 Dentro de una región, la pregunta es cómo funciona una lectura. Escribamos el algoritmo del look-aside tal cual, porque de esas pocas líneas salen todos los problemas del resto de la clase. Queremos hacer un `read` de la clave `k`. La clave puede representar cualquier dato: qué se guarda bajo ella lo define la lógica de Facebook —un usuario, la dirección de la foto de perfil, lo que sea—. Solo importa que haya una clave y un valor. Primero tratamos de obtener el valor del caché con un `get(k)` a memcache. Si vuelve nulo, vamos a la base: un fetch que en la práctica será un `select`, o lo que corresponda. Con el valor en la mano lo guardamos en el caché con un `set(k, v)`, y solo entonces lo devolvemos. Es lo mismo que describimos en palabras, un algoritmo que se habrá visto en varias materias.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/algoritmos-read-write.png' | relative_url }}" alt="Los algoritmos read y write del look-aside">
   <figcaption>
     <span class="figura-label">Figura</span>
     los algoritmos read(k) y write(k,v) del look-aside, con la anotación de a qué componente le habla cada línea y el delete marcado como invalidación de caché
@@ -85,7 +88,8 @@ Es una distinción que se pasa por alto con frecuencia notable. Es habitual que 
 
 Alcanza con dos clientes y la versión mal programada del frontend, la que hace `set` en lugar de `delete`. El cliente 1 escribe `X = 1` en la base. El cliente 2, con el mismo algoritmo, escribe `X = 2` en la base y hace su `set(X, 2)` en el caché. Y entonces llega el cliente 1, atrasado con su segundo paso, y lo sobrescribe con `set(X, 1)`. Al final, en la base `X` vale 2, que se escribió segundo, y en memcache vale 1. Una inconsistencia importante: con un TTL, memcache eventualmente se limpia, pero puede tardar media hora en limpiar ese `X = 1`.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-12/race-condition-set.png' | relative_url }}" alt="Race condition entre dos sets al caché">
   <figcaption>
     <span class="figura-label">Figura</span>
     la primera race condition — dos columnas, C1 y C2; C1 escribe X=1 en la base, C2 escribe X=2 y hace set(X,2), y C1 llega tarde con su set(X,1); el resultado es memcache con X=1 y la base con X=2
