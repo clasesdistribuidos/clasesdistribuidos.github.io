@@ -132,7 +132,7 @@ Eso tiene una consecuencia visible desde afuera. Si alguien manda un solo mensaj
 
 La opción tres es sharding más replicación. Imaginemos cinco shards en fila, sin la parte de arriba, que no cambia.
 
-Lo primero que uno piensa es en Raft, el de las clases 6 y 7 y del trabajo práctico. Se podría, pero es complicarnos la vida, porque el problema es mucho más simple: no necesitamos un log replicado, ni orden total, ni una máquina de estados determinista, sino solamente que un mensaje no se pierda si se muere una máquina. Y eso sale más barato.
+Lo primero que uno piensa es en Raft, el de las clases 5 y 6 y del trabajo práctico. Se podría, pero es complicarnos la vida, porque el problema es mucho más simple: no necesitamos un log replicado, ni orden total, ni una máquina de estados determinista, sino solamente que un mensaje no se pierda si se muere una máquina. Y eso sale más barato.
 
 Al escribir, el frontend elige un shard al azar —por ejemplo, el del medio— y le manda el mensaje. Ese shard lo escribe localmente y elige dos shards al azar para las réplicas. En el dibujo elige a sus vecinos, pero podrían ser dos cualesquiera: lo importante es que el mensaje quede copiado en dos lugares más.
 
@@ -168,7 +168,7 @@ El frontend escribe eligiendo un nodo al azar, como antes. Pero en lugar de dos 
 
 Sigamos una lectura completa. Llega un `receive` y el frontend elige un nodo al azar; no tiene el mensaje, no devuelve nada. Elige otro; lo tiene, pero es el secondary, que no está autorizado a responder. Elige un tercero, que lo tiene y es el primary: ese lo devuelve. Cuántos intentos hace el frontend es política suya: uno solo y devolver vacío, tres, cuatro, o todos, quedándose con el primero que responda. La regla, lo único que hay que retener del diseño, es siempre la misma: solamente el primary devuelve el mensaje.
 
-¿Para qué sirven entonces el secondary y el tertiary, si nunca devuelven mensajes? Porque en algunos casos sí van a devolverlos. Los nodos se comunican mediante gossip, el mecanismo que vimos en la clase 11 con Dynamo: se van diciendo quién está vivo y quién no, sin coordinador central. También se podría usar un servicio externo de detección de fallas, un ZooKeeper como el de la clase 8. Con cualquiera de los dos, cuando el primary muere y el secondary se entera, queda habilitado a responder.
+¿Para qué sirven entonces el secondary y el tertiary, si nunca devuelven mensajes? Porque en algunos casos sí van a devolverlos. Los nodos se comunican mediante gossip, el mecanismo que vimos en la clase 9 con Dynamo: se van diciendo quién está vivo y quién no, sin coordinador central. También se podría usar un servicio externo de detección de fallas, un ZooKeeper como el de la clase 7. Con cualquiera de los dos, cuando el primary muere y el secondary se entera, queda habilitado a responder.
 
 Falta el visibility timeout, y ahí el diseño muestra su costo. El timeout se guarda localmente y no se replica: cuando un nodo entrega un mensaje, anota en su propia copia que queda invisible por sesenta segundos, y esa anotación no viaja a las réplicas. Si el primary entrega el mensaje, pone su timeout y se muere, el próximo `receive` llega al secondary, que ahora puede responder y tiene el mensaje sin ninguna marca de invisibilidad: lo entrega de nuevo. El mensaje aparece duplicado, no por error sino por diseño.
 
