@@ -1,0 +1,18 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[peer/.style={circle, draw=tinta, fill=relleno, minimum size=7mm, inner sep=0pt, font=\small}]
+  % cliente - servicio
+  \node[caja, minimum width=12mm, minimum height=14mm] (c) at (0,0) {C};
+  \node[caja, minimum width=12mm, minimum height=14mm] (s) at (4,0) {S};
+  \draw[msg] ($(c.east)+(0,0.3)$) -- node[cod, above, text=acento] {request} ($(s.west)+(0,0.3)$);
+  \draw[msg] ($(s.west)+(0,-0.3)$) -- node[cod, below, text=acento] {response} ($(c.east)+(0,-0.3)$);
+  \node[etiq, font=\small, anchor=north] at (2,-1.35) {cliente–servicio};
+  % peer to peer
+  \node[peer] (p1) at (7.0,0.9) {};
+  \node[peer] (p2) at (8.7,0.0) {};
+  \node[peer] (p3) at (7.0,-0.9) {};
+  \foreach \u/\v in {p1/p2, p2/p3, p3/p1}
+    \draw[<->, shorten <=1pt, shorten >=1pt] (\u) -- (\v);
+  \node[etiq, font=\small, anchor=north, align=center] at (7.6,-1.35) {peer to peer\\[-1pt]\textcolor{suave}{\footnotesize (Raft)}};
+\end{tikzpicture}\end{figura}
+\end{document}

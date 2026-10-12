@@ -1,0 +1,30 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % lifelines
+  \foreach \n/\x/\t in {a/0/A, b/4.2/B, s/8.4/Backing store, c/11.2/C} {
+    \node[caja] (\n) at (\x,0) {\t};
+    \draw[vida] (\n.south) -- (\x,-7.4);
+  }
+  % A genera el ID
+  \draw[msg] (0,-1.0) -- ++(0.6,0) -- ++(0,-0.5) -- (0.05,-1.5);
+  \node[etiq, anchor=west] at (0.7,-1.25) {genera el ID único};
+  % send
+  \draw[msg] (0,-2.1) -- node[cod, above] {send(record, id)} (4.2,-2.1);
+  % check
+  \draw[msg] (4.2,-2.8) -- node[cod, above] {check(id)} (8.4,-2.8);
+  % process
+  \draw[msg] (4.2,-3.5) -- ++(0.6,0) -- ++(0,-0.6) -- (4.25,-4.1);
+  \node[cod, anchor=west] at (4.9,-3.8) {process\_record()};
+  % update
+  \draw[msg] (4.2,-4.8) -- node[cod, above] {update(\dots)} (8.4,-4.8);
+  \draw[decorate, decoration={brace, amplitude=4pt}, draw=suave]
+    (8.6,-4.15) -- (8.6,-5.45);
+  \node[etiq, anchor=west, align=left, text=suave] at (8.75,-4.8)
+    {estado mutable\\producciones\\timers\\ID};
+  % ack
+  \draw[msg] (4.2,-5.9) -- node[cod, above] {ack} (0,-5.9);
+  % send a C
+  \draw[msg] (4.2,-6.7) -- node[cod, above, pos=0.3] {send(producciones)} (11.2,-6.7);
+\end{tikzpicture}\end{figura}
+\end{document}

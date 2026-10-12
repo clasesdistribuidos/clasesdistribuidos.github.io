@@ -1,0 +1,19 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[nodo/.style={circle, draw=tinta, fill=white, inner sep=0pt, minimum size=2.2mm}]
+  \node[caja, minimum width=26mm, minimum height=18mm] (m) at (0,0) {};
+  \begin{scope}[shift={(m.center)}]
+    \node[nodo] (g1) at (-0.6,0.3) {}; \node[nodo] (g2) at (0.1,0.45) {};
+    \node[nodo] (g3) at (0.6,0.0) {};  \node[nodo] (g4) at (-0.5,-0.4) {};
+    \node[nodo] (g5) at (0.25,-0.45) {};
+    \draw[->, >={Stealth[length=1.4mm]}] (g1) -- (g2);
+    \draw[->, >={Stealth[length=1.4mm]}] (g2) -- (g3);
+    \draw[->, >={Stealth[length=1.4mm]}] (g3) -- (g5);
+    \draw[->, >={Stealth[length=1.4mm]}] (g4) -- (g5);
+  \end{scope}
+  \node[etiq, font=\small, below=1mm of m] {master};
+  \foreach \x/\y in {-2.2/-2.6, 0/-2.4, 2.2/-2.6, -1.1/-3.8, 1.1/-3.8}
+    \node[caja, minimum width=9mm] at (\x,\y) {};
+  \node[etiq, text=suave] at (0,-4.55) {nodos de cómputo};
+\end{tikzpicture}\end{figura}
+\end{document}

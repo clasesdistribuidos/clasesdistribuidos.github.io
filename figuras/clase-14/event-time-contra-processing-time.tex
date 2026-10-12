@@ -1,0 +1,23 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[scale=1.0]
+  % ejes
+  \draw[->] (0,0) -- (7,0) node[etiq, below left=2pt and 0pt] {event time};
+  \draw[->] (0,0) -- (0,6) node[etiq, above] {processing time};
+  % timing perfecto
+  \draw[suave, dashed] (0,0) -- (5.8,5.8) node[etiq, text=suave, right, align=left] {timing\\perfecto};
+  % watermark
+  \draw[acento, line width=1.1pt] plot[smooth, tension=0.6] coordinates
+    {(0,0) (0.5,1.4) (1.1,2.2) (1.4,2.9) (2.2,3.7) (3.2,4.2) (4.0,5.0) (5.0,5.6)};
+  \node[etiq, text=acento, anchor=east] at (3.2,5.0) {watermark};
+  % instante de processing time
+  \draw[suave, dashed, line width=0.5pt] (0,2.9) node[etiq, text=suave, left] {\var{t}} -- (3.1,2.9);
+  \fill[acento] (1.4,2.9) circle (1.8pt);
+  \draw[acento, ->, line width=0.7pt] (1.4,3.05) -- ++(0,0.6) node[etiq, text=acento, above] {avanza};
+  \foreach \x in {1.9,2.4,2.9}
+    \node[tinta, font=\small] at (\x,2.9) {×};
+  % eventos
+  \foreach \p in {(1.6,2.2),(1.9,2.0),(2.2,2.3),(2.8,3.4),(3.6,3.9),(4.1,4.5),(4.8,5.1),(5.2,5.4)}
+    \fill[tinta] \p circle (1.5pt);
+\end{tikzpicture}\end{figura}
+\end{document}

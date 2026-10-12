@@ -1,0 +1,20 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[etiq, font=\small\bfseries] at (0,1.0) {A};
+  \node[etiq, font=\small\bfseries] at (4.5,1.0) {B};
+  \node[caja] (a1) at (0,0) {A\textsubscript{1}};
+  \node[caja] (a2) at (0,-1.6) {A\textsubscript{2}};
+  \foreach \i/\y/\r in {1/0.2/{[a, h)}, 2/-0.8/{[h, p)}, 3/-1.8/{[p, z]}} {
+    \node[caja] (b\i) at (4.5,\y) {B\textsubscript{\i}};
+    \node[cod, anchor=west, text=suave] at ($(b\i.east)+(0.15,0)$) {\r};
+  }
+  \foreach \i in {1,2,3} {
+    \draw[msg] (a1.east) -- (b\i.west);
+    \draw[msg, draw=segundo] (a2.east) -- (b\i.west);
+  }
+  \draw[decorate, decoration={brace, amplitude=5pt, mirror}, draw=suave]
+    (0.6,-2.4) -- (3.9,-2.4) node[midway, below=5pt, etiq, text=suave] {RPC};
+  \node[etiq, font=\small] at (2.25,1.0) {shuffle por clave};
+\end{tikzpicture}\end{figura}
+\end{document}

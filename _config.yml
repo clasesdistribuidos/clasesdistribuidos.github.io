@@ -101,4 +101,5 @@ exclude:
   - CLAUDE.md
   - vendor/
   - scripts/
+  - figuras/
   - .bundle/

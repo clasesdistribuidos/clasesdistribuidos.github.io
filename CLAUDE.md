@@ -35,6 +35,7 @@ _clases/clase-NN/
 _practicas/practica-NN/
                       igual que una clase, en su propia collection
 assets/clase-NN/      las figuras recortadas de esa clase
+figuras/              fuentes TikZ de las figuras redibujadas; excluidas del build
 _includes/            navegación secuencial al pie
 _sass/custom/         estilos propios (figuras, nav secuencial)
 _data/papers.yml      la bibliografía que lista papers.md
@@ -171,6 +172,16 @@ El script decide solo, y el criterio es: los trazos de la pizarra se ensucian
 en jpeg, así que van en png; las fotos y los scans pesan mucho menos en jpeg y
 la diferencia no se ve. Ancho máximo 1400 px, bastante más que la columna del
 theme, para que se vean bien en pantallas densas.
+
+### Redibujarlas en TikZ (en prueba)
+
+Hay una alternativa al recorte, todavía no adoptada: redibujar la figura en
+TikZ para que el sitio se vea más de libro, sin letra a mano. Las fuentes van
+en `figuras/clase-NN/*.tex`, comparten `figuras/estilo.tex` (tipografía,
+colores, flechas) y `scripts/render_figuras.py --clase N` las compila a SVG.
+El recorte sigue siendo la referencia de qué dibujar: cada redibujo se compara
+contra él. Por ahora ninguna página usa estos SVG, así que la regla de arriba
+sigue valiendo. El procedimiento está en la skill `redibujar-figuras`.
 
 ## Prácticas
 

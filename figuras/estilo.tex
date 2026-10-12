@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage{tikz}
+\pagestyle{empty}
+\newsavebox\fig
+\newenvironment{figura}{\begin{lrbox}{\fig}}{\end{lrbox}%
+  \paperwidth=\dimexpr\wd\fig+12pt\relax \paperheight=\dimexpr\ht\fig+\dp\fig+12pt\relax
+  \pagewidth=\paperwidth \pageheight=\paperheight \hoffset=-1in \voffset=-1in
+  \shipout\vbox{\kern6pt\hbox{\kern6pt\usebox\fig}}}
+\usepackage{fontspec}
+\setmainfont{Helvetica Neue}[Scale=0.95]
+\setmonofont{Menlo}[Scale=0.85]
+\newcommand\var[1]{\textit{#1}}
+\usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,shapes.misc}
+\definecolor{tinta}{HTML}{2B2F36}
+\definecolor{suave}{HTML}{8A9099}
+\definecolor{acento}{HTML}{C0392B} % rojo de la pizarra: watermark, rechazos
+\definecolor{relleno}{HTML}{EEF1F5}
+\definecolor{segundo}{HTML}{2E7D6B} % verde de la pizarra: segunda serie
+\tikzset{
+  every picture/.style={line width=0.7pt, draw=tinta, text=tinta, >={Stealth[length=2.2mm,width=1.6mm]}},
+  caja/.style={draw=tinta, fill=relleno, rounded corners=1.5pt, minimum width=11mm, minimum height=7mm, font=\small},
+  vida/.style={draw=suave, line width=0.5pt, dashed},
+  msg/.style={->, draw=tinta},
+  etiq/.style={font=\footnotesize, inner sep=1.5pt},
+  cod/.style={font=\ttfamily\footnotesize, inner sep=1.5pt},
+  acentuado/.style={draw=acento, text=acento},
+}
