@@ -44,7 +44,7 @@ Queda una última pieza, también del paper. Dentro de cada región arman muchos
   <img src="{{ '/assets/clase-12/clusters-en-una-region.jpg' | relative_url }}" alt="Dos clusters de frontends y memcaches en una región">
   <figcaption>
     <span class="figura-label">Figura</span>
-    los clusters dentro de una región — dos bloques idénticos, cada uno con su conjunto de frontends arriba y su conjunto de shards de memcache abajo, recibiendo requests repartidos
+    los clusters dentro de una región — dos bloques idénticos, cada uno con su conjunto de frontends arriba y su conjunto de shards de memcache abajo, y debajo la base con mcsqueal, que recibe el update y manda el delete a los dos
     <span class="figura-ref">notas pág. 7</span>
   </figcaption>
 </figure>
