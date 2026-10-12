@@ -91,13 +91,13 @@ Google diseñó dos reglas que generan un delay artificial. Son dos, están en e
 La primera es la start rule. No hay que confundirla con el start de la transacción, algo que confunde bastante al leer el paper: es el start de la fase de commit. Consiste en tomar `TT.now().latest` en el momento en que al coordinador le llega el pedido de commit. Ese valor es el timestamp de la transacción.
 
 {: .nota }
-> En la clase el momento se ubica un poco más tarde, cuando todos los participantes ya respondieron que están listos en el prepare. El paper lo fija antes: la sección 4.2.1 dice que el coordinador toma `TT.now().latest` en el momento en que recibe el mensaje de commit, es decir al arrancar la fase, no al terminar el prepare. Y agrega una condición más que la clase no menciona: el timestamp elegido también tiene que ser mayor que cualquiera que ese líder haya asignado a transacciones anteriores, para preservar la monotonía que hace funcionar el safe time.
+> El paper agrega una condición más sobre ese timestamp, en su sección 4.2.1: también tiene que ser mayor que cualquiera que ese líder haya asignado a transacciones anteriores, para preservar la monotonía que hace funcionar el safe time.
 
 La segunda parte es el delay, que se llama commit wait: esperar a que el timestamp elegido sea `after now`. Dicho así es confuso, así que hay que dibujarlo.
 
-Tenemos lo que hubiera sido la transacción común, y en un momento todos confirman el prepare. Ahí normalmente haríamos el commit en todos lados. Pero primero aplicamos la start rule: obtenemos el TrueTime actual. Digamos que el tiempo real es 10 y TrueTime nos da 9 y 12.
+Tenemos lo que hubiera sido la transacción común. Al coordinador le llega el pedido de commit, y ahí aplicamos la start rule: obtenemos el TrueTime actual. Digamos que el tiempo real es 10 y TrueTime nos da 9 y 12. Después corre el prepare, y en un momento todos lo confirman. Ahí normalmente haríamos el commit en todos lados.
 
-Ahora hay que esperar: eso es el commit wait. Consiste en ir pidiendo el tiempo actual hasta que devuelva, por ejemplo, 13 y 18. El 18 no nos importa para nada. Imaginemos que en tiempo real eso ocurrió en el 15; recordemos que los tiempos reales no son accesibles.
+Pero antes hay que esperar: eso es el commit wait. Consiste en ir pidiendo el tiempo actual hasta que devuelva, por ejemplo, 13 y 18. El 18 no nos importa para nada. Imaginemos que en tiempo real eso ocurrió en el 15; recordemos que los tiempos reales no son accesibles.
 
 Cuando pasa eso, tenemos la garantía que buscábamos. El valor de la transacción es el 12: la escritura queda *at* 12, el mismo 12 que tomamos con la start rule. Esperar —pidiendo `now` varias veces hasta que el nuevo intervalo arranque por delante del 12— garantiza que el 12 ya está en el pasado.
 

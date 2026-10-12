@@ -6,10 +6,7 @@ nav_order: 3
 
 # 3. Transacciones read-only y external consistency
 
-Que el two-phase commit tarde entre 10 y 100 milisegundos sería una mala noticia si todas las transacciones fueran así. Lo bueno es que no: las read-only son casi todas las transacciones del sistema, del orden del 99,9%.
-
-{: .nota }
-> En la clase el porcentaje se atribuye al paper, que no lo enuncia como tal. Sí se lo puede calcular de su tabla VI, la que mide el tráfico real de F1 durante veinticuatro horas: 21.500 millones de lecturas contra 31,2 millones de commits de un solo sitio y 32,1 millones multisitio. Las lecturas son, entonces, el 99,7% de las operaciones. Lo que el paper sí afirma en su sección 2 es algo distinto y también relevante: que la mayoría de las transacciones involucra un único grupo de Paxos, y por eso puede saltearse el transaction manager.
+Que el two-phase commit tarde entre 10 y 100 milisegundos sería una mala noticia si todas las transacciones fueran así. Lo bueno es que no: las read-only son casi todas las transacciones del sistema, del orden del 99,7%.
 
 Si optimizamos las read-only y dejamos donde están las de escritura, con su commit lento, optimizamos la mayor parte del sistema. Este sistema se usa principalmente para leer, y por eso todo el esfuerzo y toda la rareza está en cómo implementaron las read-only.
 

@@ -69,9 +69,6 @@ No resuelve todo, eso sí: para las escrituras se siguen necesitando locks. Pero
 
 Y aquí está la diferencia de Spanner. Postgres guarda la mínima cantidad de versiones necesarias, porque si no se le acumularían muchísimas; Spanner las conserva mucho más allá, bastante atrás en el tiempo. Eso le permite, además del snapshot consistente, algo que el paper llama snapshot read: uno le dice directamente el timestamp en el que quiere leer. Puede rebobinar en el tiempo: en vez del timestamp actual le pone el de ayer, y ve el estado de la base de ayer, lo cual es bastante poderoso. Con suficientes discos para guardar las versiones, funciona directamente.
 
-{: .nota }
-> En la clase se dice que Spanner guarda todas las versiones. El paper aclara en su introducción que las versiones viejas están sujetas a políticas de recolección configurables, así que no se guardan para siempre: la ventana hacia atrás es un parámetro, y lo que se puede rebobinar llega hasta donde esa política lo permita.
-
 ## Réplicas desactualizadas y safe time
 
 El problema de todo esto van a ser los relojes, pero antes hay una cuestión que quizás a alguno ya se le ocurrió, porque lo difícil de este sistema es que combina muchas piezas entre sí.

@@ -95,6 +95,6 @@ Y aquí se ve de dónde salen los 30 segundos, porque los dos números se multip
 Lo del reloj atómico no es esencial para nuestra clase, pero es interesante: está para que la fuente de verdad no vaya estirando su intervalo, sino que se mantenga pequeño y confiable. Todo el drift lo tenemos localmente, y pidiendo cada 30 segundos nos vamos actualizando. Es un detalle técnico curioso; el paper le dedica una porción grande, que a nosotros no nos importa tanto.
 
 {: .nota }
-> En la clase queda pendiente cuánto se atrasa un reloj de cuarzo. Los números de este pasaje —la tasa aplicada de 200 microsegundos por segundo, el intervalo de consulta de 30 segundos y el diente de sierra de 1 a 7 milisegundos— están en la sección 3 del paper.
+> Los números de este pasaje —la tasa aplicada de 200 microsegundos por segundo, el intervalo de consulta de 30 segundos y el diente de sierra de 1 a 7 milisegundos— están en la sección 3 del paper.
 
 ---

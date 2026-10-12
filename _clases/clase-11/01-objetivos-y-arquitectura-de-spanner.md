@@ -54,9 +54,6 @@ Lo interesante es qué hacen con esos shards: los replican en distintos data cen
 
 A esta altura, y sobre todo con el trabajo práctico en marcha, esto debería resultarnos muy familiar: es prácticamente la misma estrategia de DynamoDB. Hay una diferencia: para mantener esos shards replicados, Spanner no usa Raft sino Paxos, el otro algoritmo de consenso, el que no vimos en la materia y que también usa DynamoDB. Los detalles finos de ese Paxos —en realidad multipaxos— no nos van a interesar.
 
-{: .nota }
-> En la clase se menciona que la variación de multipaxos que usa Spanner no es pública. El paper de OSDI 2012 sí la describe en su sección 2.1: la implementación es pipelined para sostener el throughput frente a latencias de WAN, los writes se aplican en orden, y los líderes son de larga vida con leases temporales de diez segundos. Lo que no se publicó es la ingeniería completa.
-
 Podemos imaginar que es símil Raft y asumirlo por el resto de la clase; vamos a entender igual todo lo que sigue.
 
 Toda esta parte es muy similar a DynamoDB. Lo completamente diferente son las transacciones, y eso es lo que nos interesa: si no fuera por ellas, la clase terminaría aquí. Todo el resto es cómo resolvieron las transacciones ACID, que tienen prácticamente las mismas propiedades que en Postgres o MySQL, con la salvedad de que las de escritura quizás sean un poco más lentas.
