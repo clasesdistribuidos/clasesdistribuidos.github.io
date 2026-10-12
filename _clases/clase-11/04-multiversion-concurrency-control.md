@@ -15,7 +15,7 @@ nav_order: 4
 </details>
 
 
-## De timestamp ordering a MVCC
+## Timestamp ordering y MVCC
 
 Para ver cómo lo lograron conviene arrancar por un repaso de una técnica que ya conocemos: timestamp ordering, la que usaba DynamoDB. Esta es, básicamente, la parte interesante del paper.
 
@@ -72,7 +72,7 @@ Y aquí está la diferencia de Spanner. Postgres guarda la mínima cantidad de v
 {: .nota }
 > En la clase se dice que Spanner guarda todas las versiones. El paper aclara en su introducción que las versiones viejas están sujetas a políticas de recolección configurables, así que no se guardan para siempre: la ventana hacia atrás es un parámetro, y lo que se puede rebobinar llega hasta donde esa política lo permita.
 
-## La réplica desactualizada y el safe time
+## Réplicas desactualizadas y safe time
 
 El problema de todo esto van a ser los relojes, pero antes hay una cuestión que quizás a alguno ya se le ocurrió, porque lo difícil de este sistema es que combina muchas piezas entre sí.
 
@@ -99,9 +99,9 @@ Parte de la observación de que los timestamps son siempre ascendentes. Cada ré
 
 En el caso concreto, la réplica tiene safe time 10: tiene todo actualizado hasta el 10. La transacción se queda esperando hasta que llegue algo mayor que 12. Eventualmente ocurren otras escrituras y llega, por ejemplo, un 13, porque se actualizó otra clave: y = 13. La réplica pasa a tener todo hasta el 13, y ya podemos leer, porque cuando llegó eso también tenía que haber llegado el x = 11.
 
-Dicho todo junto suena más a un parche que a un mecanismo cuidadosamente diseñado: agrega una espera hasta que se actualiza la réplica. Si nos llegó una transacción con timestamp mayor que 12, tenemos la garantía de tener todo lo anterior al 12.
+Dicho todo junto, el mecanismo agrega una espera hasta que se actualiza la réplica. Si nos llegó una transacción con timestamp mayor que 12, tenemos la garantía de tener todo lo anterior al 12.
 
-Conviene repetirlo desde otro ángulo, porque puede no quedar claro en una primera lectura. Primero: Paxos garantiza que los timestamps con que se guardan las cosas sean siempre ascendentes. No puede aparecer un y = 9 en una réplica que ya guardó el 10 y el 11: Paxos lo rechazaría, y se tendrá que arreglar de alguna forma —no queda del todo claro cómo—. Los timestamps de lo que se escribe tienen que ser siempre una función monótona ascendente.
+Conviene repetirlo desde otro ángulo, porque puede no quedar claro en una primera lectura. Primero: Paxos garantiza que los timestamps con que se guardan las cosas sean siempre ascendentes. No puede aparecer un y = 9 en una réplica que ya guardó el 10 y el 11, y no porque Paxos lo rechace al llegar: ese write ni siquiera se propone. Los timestamps de los writes los asigna el líder del grupo, y los asigna siempre crecientes, incluso cuando el liderazgo pasa de una réplica a otra. Los timestamps de lo que se escribe tienen que ser siempre una función monótona ascendente.
 
 Segundo, la consecuencia. Si en esta réplica el timestamp más grande es 10, probablemente esté desactualizada y le falten cosas. Pero si encuentro cualquier otra clave con timestamp 20, por ejemplo, quiere decir que Paxos ya mandó el log que contiene el 20 y con él todo lo anterior. Es una garantía que da Paxos a nivel de la replicación.
 

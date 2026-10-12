@@ -1,10 +1,10 @@
 ---
-title: "6. Elegir un timestamp único a partir de un intervalo"
+title: "6. Asignación de timestamps con TrueTime"
 parent: "Clase 11 — Spanner"
 nav_order: 6
 ---
 
-# 6. Elegir un timestamp único a partir de un intervalo
+# 6. Asignación de timestamps con TrueTime
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 6
 </details>
 
 
-## El timestamp de las lecturas
+## Timestamp de las lecturas
 
 Con TrueTime llegamos a la pregunta pendiente desde el principio: cómo se logra linealizabilidad. Tenemos el intervalo y las primitivas; falta ver cómo usarlos.
 
@@ -63,7 +63,7 @@ Prestando suma atención aparecen algunos problemas —interviene también el sa
 
 La regla queda así: para la lectura elegimos siempre `TT.now().latest`. Y para las lecturas eso, básicamente, funciona.
 
-## El timestamp de las escrituras: start rule y commit wait
+## Timestamp de las escrituras: start rule y commit wait
 
 Para las escrituras la cuestión es más difícil, y es el último tema: cómo definir el timestamp de las read-write.
 
@@ -120,7 +120,7 @@ La regla de las lecturas era la fácil: tomar el latest. La lectura ocurre en el
 
 Toda esta parte es confusa, porque no se conoce el tiempo real ni los tiempos que va generando el sistema; pero estudiando las dos reglas, start rule y commit wait, se entiende cómo funciona. Es la parte difícil de la clase.
 
-## El precio y el logro
+## Garantías y costos
 
 ¿Qué logramos? Lecturas muy rápidas, porque no tienen locks. Y fuertemente consistentes: snapshot isolation y linealizables. Muchísima más garantía que la de DynamoDB.
 

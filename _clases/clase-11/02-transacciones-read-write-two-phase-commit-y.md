@@ -1,10 +1,10 @@
 ---
-title: "2. Las transacciones que escriben: 2PC y locking pesimista sobre Paxos"
+title: "2. Transacciones read-write: two-phase commit y locking sobre Paxos"
 parent: "Clase 11 — Spanner"
 nav_order: 2
 ---
 
-# 2. Las transacciones que escriben: 2PC y locking pesimista sobre Paxos
+# 2. Transacciones read-write: two-phase commit y locking sobre Paxos
 
 Vamos primero con las read-write, y esto es en buena medida un repaso de two-phase commit. Imaginemos dos participantes —en un sistema real la lista seguramente sea más larga, pero con dos alcanza para ver la mecánica— y el cliente, que es el que les manda las cosas. El cliente somos nosotros usando el sistema: un frontend, cualquier programa que consulte la base.
 

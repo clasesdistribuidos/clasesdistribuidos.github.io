@@ -1,10 +1,10 @@
 ---
-title: "5. El problema de los relojes, y el tiempo como intervalo"
+title: "5. Relojes desincronizados y TrueTime"
 parent: "Clase 11 — Spanner"
 nav_order: 5
 ---
 
-# 5. El problema de los relojes, y el tiempo como intervalo
+# 5. Relojes desincronizados y TrueTime
 {: .no_toc }
 
 <details open markdown="block">

@@ -1,12 +1,12 @@
 ---
-title: "1. Una base de datos SQL distribuida por todo el mundo"
+title: "1. Objetivos y arquitectura de Spanner"
 parent: "Clase 11 — Spanner"
 nav_order: 1
 ---
 
-# 1. Una base de datos SQL distribuida por todo el mundo
+# 1. Objetivos y arquitectura de Spanner
 
-Con Spanner terminamos la parte de sistemas de storage, y no hay mejor sistema para cerrarla, porque combina prácticamente todo lo que fuimos viendo. En Google construyeron un sistema extraordinariamente complicado, y resulta notable que funcione: usa muchas técnicas apiladas unas sobre otras, y todas tienen que salir bien al mismo tiempo. Es una base de datos distribuida, y lo que la vuelve interesante es que soporta transacciones casi como si fuera SQL común. Quien trabaje con Google Cloud probablemente lo tenga disponible como servicio, así que no es un sistema de laboratorio: se puede contratar y usar.
+Con Spanner terminamos la parte de sistemas de storage, y no hay mejor sistema para cerrarla, porque combina prácticamente todo lo que fuimos viendo. En Google construyeron un sistema extraordinariamente complicado: usa muchas técnicas apiladas unas sobre otras, y todas tienen que salir bien al mismo tiempo. Es una base de datos distribuida, y lo que la vuelve interesante es que soporta transacciones casi como si fuera SQL común. Quien trabaje con Google Cloud probablemente lo tenga disponible como servicio, así que no es un sistema de laboratorio: se puede contratar y usar.
 
 El paper de Spanner es de los más difíciles de la materia, y el sistema probablemente el más complejo del curso. Vamos a ver una versión resumida, pasando por alto varios detalles que el paper explica, simplemente porque el sistema tiene de todo. Dentro de ese todo hay dos temas que nos interesan particularmente, y uno de ellos —multiversion concurrency control— va a ser lo más interesante de hoy. A eso llegamos en la segunda mitad de la clase.
 

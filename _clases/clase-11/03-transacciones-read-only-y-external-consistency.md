@@ -1,10 +1,10 @@
 ---
-title: "3. Qué significa que una lectura sea correcta"
+title: "3. Transacciones read-only y external consistency"
 parent: "Clase 11 — Spanner"
 nav_order: 3
 ---
 
-# 3. Qué significa que una lectura sea correcta
+# 3. Transacciones read-only y external consistency
 
 Que el two-phase commit tarde entre 10 y 100 milisegundos sería una mala noticia si todas las transacciones fueran así. Lo bueno es que no: las read-only son casi todas las transacciones del sistema, del orden del 99,9%.
 
@@ -52,7 +52,7 @@ La clave es ese "antes": es antes en tiempo físico. No hay causalidad ni nada p
 
 Esto debería sonarnos: es prácticamente la definición de linealizabilidad. Las transacciones tienen que respetar el tiempo físico. Y eso es un problema serio.
 
-La external consistency es la combinación de dos cosas: serializabilidad —leer snapshots— más el requerimiento de tiempo físico, que es la linealizabilidad. Son dos términos difíciles de pronunciar y dos requerimientos distintos, porque la serializabilidad no tiene ningún componente de tiempo real: lo que le importa es que las lecturas sean consistentes.
+La external consistency es la combinación de dos cosas: serializabilidad —leer snapshots— más el requerimiento de tiempo físico, que es la linealizabilidad. Son dos requerimientos distintos, porque la serializabilidad no tiene ningún componente de tiempo real: lo que le importa es que las lecturas sean consistentes.
 
 Veámoslo con un ejemplo. La transacción uno setea x = 1, y = 2, y la dos hace x = 3, y = 4. En un momento posterior a las dos hacemos un read de x y de y. Uno de los resultados posibles es x = 1, y = 2.
 
