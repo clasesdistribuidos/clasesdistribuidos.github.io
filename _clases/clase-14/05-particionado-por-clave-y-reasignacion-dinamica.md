@@ -42,7 +42,8 @@ Aquí, sin embargo, el asunto es bastante diferente, porque MapReduce empezaba c
 
 De ahí sale que el truco de MapReduce no sirva. Allí tomábamos el hash de la clave y le hacíamos módulo N —módulo tres, si los reducers eran tres—. Eso funciona si el tres es fijo. En MillWheel no lo es, y el precio se puede poner en números: pasar de tres particiones a cuatro con `hash(clave) mod N` cambia de lugar el 75% de las claves, porque entre los dos módulos hay doce clases de resto posibles y solo en tres la clave se queda donde estaba. Entonces el particionado es diferente: a cada partición se le asigna un intervalo lexicográfico de claves. De la A a la H para una, de la H a la P para otra, de la P a la Z para la tercera, en el reparto más simple; en la realidad es más complicado. Es como las mesas de votación: cada mesa atiende un tramo del abecedario. El paper no aclara si le hace hash a la clave antes de ubicarla o si usa la clave tal cual, y para nuestros fines es indistinto; lo seguro es que asigna el intervalo. Con eso, dividir un nodo por la mitad es fácil: partimos el rango en dos, les informamos a los demás y empiezan a mandar por ahí. Partir así uno de los tres intervalos toca la mitad de un tercio del espacio de claves —un sexto, alrededor del 17%— y nada más: contra el 75% del módulo, esa es la razón concreta de que eligieran rangos y no hash. Esa es la primera complicación resuelta.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/shuffle-por-rangos.png' | relative_url }}" alt="Shuffle entre las particiones de A y las de B por rangos de claves">
   <figcaption>
     <span class="figura-label">Figura</span>
     el shuffle entre dos cómputos: las particiones de A mandando eventos a todas las particiones de B, y los rangos lexicográficos de claves de la A a la H, de la H a la P y de la P a la Z
@@ -63,7 +64,8 @@ El master le asigna a cada máquina qué cómputo hacer y para qué rango. Si lo
 
 Es una especie de master dinámico. Si un nodo muere o se satura, el master puede asignarle ese rango de claves a otro nodo, o partirlo por la mitad y asignárselo a dos nodos diferentes. Es mucho más dinámico que MapReduce, y el motivo es siempre el mismo: esto no termina nunca.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/master-y-nodos.png' | relative_url }}" alt="El master y los nodos de cómputo">
   <figcaption>
     <span class="figura-label">Figura</span>
     el master con el grafo adentro y los nodos de cómputo debajo, y la asignación de cómputo y rango que baja hacia ellos
@@ -92,7 +94,8 @@ El nodo viejo no tiene por qué morirse, y eso hay que precisarlo. Puede seguir 
 
 La clave está en que el set state manda el estado y también el epoch. Cada vez que el master le asigna un rango a un nuevo nodo, incrementa el epoch. Se lo informa al nodo; el nodo, al hacer el reload, se lo informa al store; y el store sabe desde ese momento que para este compute ID y este intervalo el epoch es, por ejemplo, cuatro. Si un nodo zombie, que quedó atrás en la asignación anterior, quiere poner cualquier estado, el store lo rechaza por venir con un epoch viejo.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/reasignacion-con-epoch.png' | relative_url }}" alt="Assign, renew, reload state y el set state del zombie rechazado">
   <figcaption>
     <span class="figura-label">Figura</span>
     la reasignación dinámica de un rango: el assign del master con compute ID, intervalo y epoch, el renew que sube como heartbeat, el reload state contra el backing store, y el set state del nodo zombie rechazado por traer un epoch viejo

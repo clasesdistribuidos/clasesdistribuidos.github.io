@@ -27,7 +27,8 @@ Aquí hicieron exactamente lo mismo. MillWheel nos provee un par de funciones qu
 
 La primera figura del paper tiene la idea fundamental, y no es tan simple como un mapper y un reducer. Lo que hay es un DAG, un grafo dirigido acíclico, donde el dato fluye por distintos cómputos. Cada etapa del grafo es lo que el paper llama cómputo —*computation*—. En Zeitgeist, el stream de búsquedas entra a un cómputo que cuenta las búsquedas por ventana, que alimenta a otro que calcula el modelo y a otro que detecta picos y caídas, y la salida final va al sistema externo que notifica las anomalías.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/grafo-de-computos-zeitgeist.png' | relative_url }}" alt="Grafo de cómputos de Zeitgeist, figura 1 del paper">
   <figcaption>
     <span class="figura-label">Figura</span>
     el grafo dirigido acíclico de cómputos de Zeitgeist: el stream de búsquedas entrando al Window Counter, que alimenta al Model Calculator y al Spike/Dip Detector, y la salida al sistema externo de notificación de anomalías
@@ -113,7 +114,8 @@ class Windower:
 
 Otra figura del paper muestra cómo encaja nuestro código dentro del sistema. Se compilaba un binario que tenía adentro todos los cómputos —y enseguida vamos a ver que cada nodo puede realizar cualquiera—. Nosotros implementábamos el user code, que interactuaba con el sistema de dos maneras: el sistema nos llamaba por `ProcessRecord` y `ProcessTimer`, y había APIs para guardar cosas en el persistent state. Más adelante volvemos sobre qué es exactamente ese persistent state; básicamente usa por debajo Spanner, Bigtable o algo así, pero está abstraído porque tiene particularidades propias.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/arquitectura-de-millwheel.png' | relative_url }}" alt="Arquitectura de MillWheel, figura 8 del paper">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura del sistema: el binario de MillWheel, el user code con ProcessRecord y ProcessTimer, las tres APIs de estado, timers y producciones, y el estado persistente por debajo

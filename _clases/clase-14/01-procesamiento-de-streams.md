@@ -25,7 +25,8 @@ Lo que se quiere es agrupar los eventos en pequeñas ventanas de tiempo —por m
 
 Y aquí aparece la gran dificultad de toda la clase. De vez en cuando nos va a llegar un evento del pasado: un Britney de las 8:01 que no apareció cuando le correspondía, sino más tarde. Si ya hicimos el cálculo para el minuto 8:01 y después llega un evento que correspondería a esa ventana, tenemos que ver cómo arreglarlo. El problema de los eventos desordenados, e inclusive muy atrasados, va a ser central. Si no existiera, todo sería muchísimo más fácil, y enseguida vamos a ver hasta qué punto. Con él, en cambio, hace falta maquinaria, y el paper la construye con mecanismos muy interesantes.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/linea-de-tiempo-zeitgeist.png' | relative_url }}" alt="Línea de tiempo con las búsquedas de Zeitgeist y un evento atrasado">
   <figcaption>
     <span class="figura-label">Figura</span>
     la línea de tiempo de las búsquedas de Zeitgeist, con los data points de Britney y Carly y el evento atrasado que llega fuera de orden
@@ -65,7 +66,8 @@ Ese stream se puede procesar con las herramientas que ya tenemos, aunque solo ha
 
 Hay algo que sí podríamos hacer, y es lo que hizo Spark Streaming: tomar el lote del día entero y dividirlo en fragmentos muy pequeños. A eso se le llama *micro-batching*. Volvamos al dibujo de los data points sobre la línea de tiempo, que podemos poner a distinta altura solo para ilustrar —la dimensión vertical no representa nada—. En vez de procesar el lote del día por la noche, lanzamos muchos jobs pequeños de Spark, uno por segundo, por ejemplo. Cada uno captura data points durante un segundo, los procesa y los emite a donde corresponda, constantemente. Con MapReduce eso sería enormemente ineficiente, y la cuenta lo confirma: lotes de un segundo son 60 × 60 × 24, es decir 86.400 jobs por día, contra el único job del lote nocturno. Levantar un job de MapReduce esa cantidad de veces resulta inviable, y en eso reside la frontera entre los dos: Spark, con muchas estructuras en memoria y un arranque muchísimo más rápido, sí lo puede hacer con una performance aceptable.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/micro-batching.png' | relative_url }}" alt="Micro-batching: lotes de un segundo sobre la línea de tiempo">
   <figcaption>
     <span class="figura-label">Figura</span>
     el micro-batching, con los cortes verticales de un segundo sobre la línea de tiempo y la flecha del evento atrasado que apunta a un lote ya cerrado
@@ -81,7 +83,8 @@ El paper de esta clase está pensado de cero para streams de entrada, no como un
 
 Del lado de la entrada hay un stream, que podría ser Kafka. Más que el stream mandarle cosas al sistema de procesamiento, es el sistema el que lee de ahí. Con lo que lee puede emitir otros eventos hacia otro stream, por ejemplo otro Kafka, o puede llamar por RPC a otro sistema y generar acciones allá: si detecta fraude, puede disparar algo en el momento en que lo detecta. Y sobre la caja del medio, que por ahora está cerrada, caben dos aclaraciones: adentro puede tener muchas particiones, y tiene que tolerar que las fuentes ya vengan particionadas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/sistema-de-streaming.png' | relative_url }}" alt="Sistema de streaming entre un Kafka de entrada y sus salidas">
   <figcaption>
     <span class="figura-label">Figura</span>
     el sistema de streaming en abstracto: el stream particionado de entrada, la caja de procesamiento, la salida a otro stream y la salida por RPC

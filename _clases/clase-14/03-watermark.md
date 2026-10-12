@@ -23,7 +23,8 @@ Queremos definir una línea de corte, un lugar a partir del cual tengamos la gar
 
 A esa línea, por ahora, la llamamos el punto de corte; más adelante veremos que tiene un nombre bastante más metafórico y elegante. Lo que hace es aceptar hasta aquí y cerrar ventana.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/punto-de-corte.png' | relative_url }}" alt="Ventana de 8:00 a 8:05 y el punto de corte en 8:09">
   <figcaption>
     <span class="figura-label">Figura</span>
     el punto de corte: los eventos que van llegando sobre el eje de processing time, la ventana de las 8:00 a las 8:05, los eventos atrasados que le corresponden y la línea vertical del corte en 8:09
@@ -56,7 +57,8 @@ Pero consumimos de tres, y el procesador va por distintos lugares en cada una: l
 
 La regla queda en dos niveles. Por partición: si ya vi el timestamp T₁, todos los siguientes serán mayores, porque cada partición es monótona ascendente; el watermark de la partición es el timestamp del último mensaje visto. Pero para el stream como un todo —las tres particiones juntas— hay que tomar el mínimo: el watermark del stream es el mínimo de los timestamps de cada partición. Siempre la más lenta es la que garantiza el watermark de todo el stream, y ese es el que le importa al que agrega. Con nuestros números: si una partición ya vio el 12 pero otra va por el 9, el watermark del stream es 9, porque la que va por 9 todavía nos puede entregar un 10, y si cerramos por encima de eso estaríamos cerrando una ventana que todavía tiene eventos por llegar.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/watermark-log-particionado.png' | relative_url }}" alt="Tres particiones de Kafka y el mínimo como watermark">
   <figcaption>
     <span class="figura-label">Figura</span>
     el watermark de un log particionado: las tres particiones de Kafka con el último timestamp visto en cada una y el mínimo que resulta ser el watermark del stream
@@ -84,7 +86,8 @@ Si dibujamos la diagonal a 45 grados, los eventos que caen ahí son los de timin
 
 Esa línea nos dice que los eventos llegan a la izquierda de la diagonal. Y en algún momento tenemos la garantía del watermark, que es como un tope: la fuente nos dice que no puede llegar nada con event time anterior al watermark, y ya dijimos que no puede llegar nada del futuro. Los eventos quedan acotados en la franja del medio. El watermark, a medida que el tiempo avanza hacia arriba, se va moviendo, y podemos dibujar su avance como una curva ascendente pero irregular. En teoría los eventos van apareciendo entre la diagonal y la curva del watermark, como puntos entre esas dos líneas. Alguno rezagado puede caer del otro lado, pero deberían ser los menos: si el sistema funciona bien, y sobre todo si el watermark es exacto, la gran mayoría cae entre las dos líneas. Es un gráfico poco habitual y conviene analizarlo con detenimiento, familiarizándose con los dos ejes, con el watermark y con cómo avanza.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/event-time-contra-processing-time.png' | relative_url }}" alt="Event time contra processing time con la curva del watermark">
   <figcaption>
     <span class="figura-label">Figura</span>
     el gráfico de event time contra processing time, con la diagonal del timing perfecto y la curva ascendente e irregular del watermark
@@ -94,7 +97,8 @@ Esa línea nos dice que los eventos llegan a la izquierda de la diagonal. Y en a
 
 Y aquí está la clave de todo: el watermark es lo que usamos para cerrar la ventana. Para atrapar todos los eventos de una ventana, dibujamos nuevamente event time contra processing time, la diagonal de referencia y el watermark que nos van informando. El punto en que el watermark vale lo que el borde de la ventana —cuando vale 8:05, y acaba de ocurrir— es el punto en que el sistema nos dice que ya podemos cerrarla. Todos los eventos atrapados en el medio son los que calculamos y emitimos. Con un poco de reflexión se ve que es exactamente así.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/cerrar-ventana-con-watermark.png' | relative_url }}" alt="El watermark cruzando el borde de la ventana de 8:05">
   <figcaption>
     <span class="figura-label">Figura</span>
     el mismo gráfico usado para cerrar la ventana: el watermark cruzando el borde de las 8:05 y los eventos que quedan atrapados entre la curva y la diagonal

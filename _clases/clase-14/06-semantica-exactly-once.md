@@ -29,7 +29,8 @@ At-least-once es con retry. La promesa es «te lo voy a mandar por lo menos una 
 
 Lo que queríamos era la tercera, exactly-once: lo mandamos una vez, el otro confirma, y el problema queda resuelto. Pero dijimos que eso es imposible, en teoría y en la práctica, y también que se pueden obtener aproximaciones. Este sistema obtiene una tan buena que en la práctica termina siendo exactly-once. Primero vemos cómo lo hace, y después cómo lo llama Kleppmann —autor de *Designing Data-Intensive Applications*—, que le da un nombre interesante. Lo que construyen es un pequeño protocolo, más que de transacciones, de atomicidad.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/semanticas-de-entrega.png' | relative_url }}" alt="Dos máquinas y las tres semánticas de entrega">
   <figcaption>
     <span class="figura-label">Figura</span>
     las dos máquinas conectadas por el envío de un registro, con la anotación de que la diferencia entre las tres semánticas está en hacer retry o no hacerlo
@@ -58,7 +59,8 @@ Aquí está la pieza clave del mecanismo. Todo el estado que `process_record` va
 
 Ese update es donde se materializan todos los cambios que estuvieron en memoria, y lleva varias cosas. El estado mutable que explícitamente modificamos —los contadores del ejemplo—. Las producciones, los registros que este paso tiene que emitir: todavía no salieron, y antes de emitirlos los guardamos en el storage persistente, con lo cual hacemos efectivamente un checkpoint de lo que tenemos que hacer, sin emitir nada aún. Los timers nuevos, si el procesamiento calendarizó cosas. Y por último el ID de idempotencia con el que arrancó todo. Todo eso se guarda de una, atómicamente, en el storage persistente.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/protocolo-exactly-once.png' | relative_url }}" alt="Diagrama de secuencia del protocolo exactly-once">
   <figcaption>
     <span class="figura-label">Figura</span>
     el diagrama de secuencia del protocolo: A genera el ID único y hace el send con el récord, B chequea el ID contra el backing store, ejecuta process_record en memoria, hace el update atómico con el estado mutable, las producciones, los timers y el ID, manda el ACK a A, y solo después le manda las producciones a C

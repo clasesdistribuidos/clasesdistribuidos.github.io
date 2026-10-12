@@ -32,7 +32,8 @@ De esto se desprende una regla intuitiva: el watermark de A es mayor o igual que
 {: .nota }
 > La definición del paper es recursiva y coincide exactamente con la fórmula. Dado un cómputo A, define el *oldest work* de A como el timestamp del récord sin terminar más viejo que tiene A —en vuelo, almacenado o pendiente de entrega—, y define el low watermark de A como el mínimo entre ese oldest work y los low watermarks de todos los cómputos que le mandan datos a A. Vale agregar el caso de borde, que el paper aclara y que ayuda a ver por qué los inyectores son el origen de todo: si un cómputo no tiene streams de entrada, su low watermark y su oldest work son el mismo valor. Akidau et al., VLDB 2013, §4.5.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/pipeline-de-watermarks.png' | relative_url }}" alt="Pipeline de tres etapas con sus watermarks">
   <figcaption>
     <span class="figura-label">Figura</span>
     el pipeline de tres etapas con su watermark: A por las 8:30, B por las 8:20 y C por las 8:10, y la desigualdad entre los tres
@@ -52,7 +53,8 @@ En teoría, ese mínimo lo podría calcular B directamente. Los de MillWheel tom
 
 Internamente, la autoridad mantiene una tabla: el cómputo A tiene dos particiones, de la A a la M y de la M a la Z; una va por el 100 y la otra por el 200; el watermark de A es 100. Ese 100 se lo manda a todos los nodos suscriptos, los que quieren saber por dónde va A. La dificultad viene de que cada uno de esos nodos puede tener un valor distinto.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/autoridad-de-watermarks.png' | relative_url }}" alt="La autoridad de watermarks calculando el mínimo de A">
   <figcaption>
     <span class="figura-label">Figura</span>
     la autoridad de watermarks: los dos nodos del cómputo A con sus rangos de la A a la M y de la M a la Z y sus watermarks 100 y 200, la autoridad que calcula el mínimo, y el watermark de A igual a 100 que le llega a B
@@ -72,7 +74,8 @@ Lo último sobre los watermarks es la figura 15 del paper: un pipeline parecido 
 {: .nota }
 > Esa figura tiene números, y conviene tenerlos porque dan la escala del fenómeno. El experimento corrió un pipeline de tres etapas sobre 200 CPUs, consultando el low watermark de cada cómputo una vez por segundo. El de la primera etapa quedó **1,8 segundos** detrás del tiempo real, y a partir de ahí cada etapa agregó **menos de 200 ms**: los promedios son 1.795, 1.954 y 2.081 milisegundos. Es decir que el grueso del atraso lo aporta la fuente, no la profundidad del pipeline —el salto de la primera etapa es nueve veces mayor que lo que suma cada etapa siguiente—, y el paper aclara que reducir ese lag era un área de desarrollo activa. Akidau et al., VLDB 2013, §8.2.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/low-watermark-lag.png' | relative_url }}" alt="Lag del low watermark en tres etapas, figura 15 del paper">
   <figcaption>
     <span class="figura-label">Figura</span>
     el delay de propagación del watermark medido en un pipeline de tres etapas
@@ -86,7 +89,8 @@ Queda mencionar qué pasó después. MillWheel evolucionó a Windmill, y de ahí
 
 Dataflow agregó dos cosas. El paper de Dataflow agrega un modelo de programación de más alto nivel. El ejemplo que mostramos es interesante, pero —y esto responde la pregunta que quedó pendiente con el modelo de programación— resulta poco natural pensar todo en términos de `process_record` y `process_timer` cuando los casos de uso son tan distintos. Ese modelo de programación evolucionó y se implementó como proyecto open source: Apache Beam, lo más interesante de todo esto para investigar por cuenta propia. Uno programa con Beam, eso se «compila» a las mismas funciones que vimos, se sube a la nube de Google, y lo ejecutan sobre esta versión de Windmill, una especie de MillWheel que no tiene un ejecutable sólido sino ejecutables a los que se les inyecta el código de uno. Esa imagen es bastante fiel a cómo funciona hoy. Windmill está por debajo del Streaming Engine de Dataflow, que saca la ejecución de las máquinas del usuario y la lleva al backend de Google, partida en dos. Nuestro código corre en un worker que no guarda nada propio: aplica las transformaciones y arma ahí las ventanas, y el estado y los timers se los pide a Windmill, que es el que los guarda y garantiza el procesamiento consistente. Las ventanas, otra vez, quedan arriba de la primitiva.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/genealogia-de-millwheel.png' | relative_url }}" alt="De MillWheel a Windmill, Dataflow y Apache Beam">
   <figcaption>
     <span class="figura-label">Figura</span>
     la genealogía del sistema: MillWheel dando lugar a Windmill, a Dataflow y a Apache Beam, con Flink y Spark Streaming al costado como alternativas de ejecución

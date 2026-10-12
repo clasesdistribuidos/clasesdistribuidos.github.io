@@ -29,7 +29,8 @@ Lo único que vuelve fáciles a estas dos cosas es que no hay que agrupar distin
 
 Hay un caso de transformación que se suele llamar enriquecer el stream: combinarlo con información que está en una base de datos. Al sistema le llega un registro que puede ser simplemente un user ID, y lo que queremos emitir por el stream de salida es ese mismo user ID acompañado del nombre, la dirección o cualquier otro dato. Esos datos están en una base de datos, cualquiera sea el motor: Postgres, MySQL, la que haya. El sistema de streaming, por cada registro que llega, accede a la base, lee y emite.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/enriquecer-un-stream.png' | relative_url }}" alt="Stream de user IDs enriquecido con datos de una base">
   <figcaption>
     <span class="figura-label">Figura</span>
     enriquecer un stream: el stream de user IDs entrando a la etapa que consulta la base de datos, y el stream de salida con el nombre y la dirección agregados
@@ -53,7 +54,8 @@ La clave es una distinción que ya asomó: hay dos tiempos distintos. Pongamos u
 
 El processing time es el tiempo de reloj en el que recibimos el evento y lo procesamos: el tiempo inevitable, el que avanza solo. El event time es el momento en que el evento se originó; es más bien una metadata que viene con el mensaje. Generalmente lo define el que genera el evento: le pone el sello de cuándo ocurrió y lo manda por el stream.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/event-time-y-processing-time.png' | relative_url }}" alt="Eventos sobre el eje de processing time, uno con su event time">
   <figcaption>
     <span class="figura-label">Figura</span>
     los eventos dispersos sobre el eje de processing time, con uno de ellos etiquetado con su event time
@@ -82,7 +84,8 @@ El ejemplo: uno de los streams es de push notifications, esos breves mensajes qu
 
 No hay forma fácil de correlacionarlos por afuera: el acceso a la página no trae data de la push notification que lo originó, así que hay que correlacionar por tiempo. En el primer stream tenemos el user ID del destinatario y un push ID, el identificador de la notificación; en el otro, el user ID y el path del sitio al que accede. El join emite el user ID, el push ID y el path.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-14/join-stream-stream.png' | relative_url }}" alt="Join entre el stream de push notifications y el de accesos">
   <figcaption>
     <span class="figura-label">Figura</span>
     el join stream-stream: el stream de push notifications y el de accesos a la app entrando a la misma etapa, y el registro correlacionado que sale
