@@ -1,10 +1,10 @@
 ---
-title: "6. Cómo pueden quedar los logs"
+title: "6. Divergencia de los logs"
 parent: "Clase 5 — Raft I"
 nav_order: 6
 ---
 
-# 6. Cómo pueden quedar los logs
+# 6. Divergencia de los logs
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 6
 </details>
 
 
-## Por qué no cualquiera puede ser líder
+## Restricción de elección
 
 La segunda de esas condiciones —votar solamente candidatos actualizados— parece una precaución menor mientras no se vea qué pasa si no está. Hacen falta, entonces, un par de ejemplos de cómo puede quedar un log después de unas cuantas fallas. El primero es el mismo que usa el curso del MIT, cuyas clases están en YouTube.
 
@@ -54,7 +54,7 @@ Y así es muy fácil saber qué está comiteado, porque comitear en Raft no depe
 {: .nota }
 > Como definición general esto no alcanza, y es justamente lo que muestra la figura 8 del paper: una entrada de un término anterior replicada en una mayoría todavía puede ser sobrescrita. Raft exige que la entrada sea del término del líder actual para considerarla comiteada; las de términos anteriores quedan comiteadas indirectamente, cuando se comitea una entrada posterior del término en curso. Para el caso que estamos analizando el razonamiento vale igual.
 
-## Logs divergentes: un cuatro y un cinco en el mismo índice
+## Logs divergentes
 
 El segundo ejemplo es más complicado, y ahí el log queda en un estado más extraño. Partamos del caso que acabamos de construir y agreguémosle un par de fallas más. El estado al que vamos a llegar es este: S1 tiene una sola entrada del término 3; S2 tiene dos del término 3 y una tercera del término 4; y S3 tiene dos del término 3 y una tercera del término 5. Esas dos últimas filas merecen detenerse: dos servidores tienen, en el mismo casillero, el tercero, términos distintos: uno un cuatro y el otro un cinco. Los logs divergieron.
 

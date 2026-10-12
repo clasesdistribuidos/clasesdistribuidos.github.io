@@ -1,10 +1,10 @@
 ---
-title: "5. Relojes vectoriales y la reconciliación en Dynamo"
+title: "5. Relojes vectoriales y reconciliación en Dynamo"
 parent: "Clase 8 — Dynamo y relojes lógicos"
 nav_order: 5
 ---
 
-# 5. Relojes vectoriales y la reconciliación en Dynamo
+# 5. Relojes vectoriales y reconciliación en Dynamo
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 5
 </details>
 
 
-## Los relojes vectoriales
+## Relojes vectoriales
 
 Los algoritmos que se arman sobre relojes de Lamport suelen ser complicados, justamente porque la relación de la que disponemos es limitada: una implicancia en un solo sentido. Sería muchísimo mejor que valiera al revés, que de `C(a) < C(b)` pudiéramos concluir que a ocurrió antes que b. Pero funciona exactamente al revés: si sabemos que ese fue el orden de los eventos, entonces los números van a dar bien; pero que los números den bien no garantiza absolutamente nada sobre el orden.
 
@@ -69,7 +69,7 @@ Escrito de forma más matemática, son dos enunciados. El primero es que `V(a) <
 
 Los dos nombres conviene retenerlos, causalidad y concurrencia, porque son exactamente los dos casos que Dynamo necesita distinguir. Toda la clase fue para llegar a este punto: lo que sigue es cómo Dynamo los usa para detectar cuándo hubo causalidad entre dos escrituras y cuándo hubo concurrencia.
 
-## La escritura feliz: un reloj por clave
+## Escritura sin conflictos: un reloj por clave
 
 De vuelta en Dynamo, ya tenemos el anillo con sus nodos, ya sabemos que una clave cae en algún punto de la circunferencia y ya definimos el grupo de replicación que se hace cargo de ella. Para lo que viene dibujemos esos tres nodos aparte: siguen sobre el anillo, pero el anillo ya no importa.
 
@@ -90,14 +90,11 @@ El nodo elegido es lo que el paper llama el coordinador, y lo que hace es increm
 
 Ese es el caso feliz de un ítem nuevo. Y todo lo que sigue también va a ser el caso feliz.
 
-## El update y el contexto opaco
+## Update y contexto opaco
 
 Los updates en Dynamo no se pueden hacer a ciegas. Siempre hay que obtener la clave primero, modificarla y recién entonces volver a ponerla; es parecido a lo que vimos en ZooKeeper con el locking optimista. No podemos dar por sabido que la clave existe y mandar el valor nuevo directamente.
 
 La secuencia concreta es así. Primero hacemos un `get(k1)`, y eso nos devuelve dos cosas: el valor y el reloj vectorial que esa clave tiene asociado en ese momento. El reloj no viene suelto, y aquí hay un detalle que el paper se toma el trabajo de explicar: viene dentro de un campo opaco al que llama contexto. Opaco quiere decir que no tenemos por qué interpretarlo ni derecho a depender de su formato: para nosotros es una cadena de bytes sin significado. ¿Para qué nos lo manda, entonces? Para que se lo terminemos devolviendo.
-
-{: .nota }
-> En clase se dice que el contexto viene encriptado. El paper no habla de cifrado: dice que el contexto "codifica metadatos del sistema sobre el objeto, que son opacos para quien llama, e incluye información como la versión del objeto". La consecuencia práctica es la misma —el cliente lo recibe, no lo toca y lo devuelve intacto en el `put`—, pero la razón no es criptográfica sino de contrato: el formato es interno y el sistema se reserva el derecho a cambiarlo.
 
 Después, cuando hacemos el `put(k1, v2)`, tenemos que mandarle el mismo reloj vectorial que nos había dado originalmente: el contexto va y vuelve intacto. Eso sirve, en principio, para saber si hay dos clientes modificando la misma clave concurrentemente: es la misma idea del locking optimista.
 
@@ -120,7 +117,7 @@ Y después propaga. Le manda el vector nuevo a su vecino, que tenía `(0,1,0)` y
 
 Hasta aquí, el caso es sencillo.
 
-## Dos escrituras concurrentes, el carrito, y los dos tipos de reconciliación
+## Escrituras concurrentes y reconciliación
 
 Falta el caso concurrente, que es el interesante. Volvamos al grupo de replicación de tres nodos, que ahora conviene nombrar: S1, S2 y S3. Y partamos del estado en el que quedaron las cosas después de la escritura anterior, porque seguimos con el mismo ejemplo: la clave valía `(0,1,0)`.
 

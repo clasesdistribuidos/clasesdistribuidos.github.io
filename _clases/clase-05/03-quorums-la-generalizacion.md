@@ -1,10 +1,10 @@
 ---
-title: "3. Quórums: la generalización"
+title: "3. Quórums"
 parent: "Clase 5 — Raft I"
 nav_order: 3
 ---
 
-# 3. Quórums: la generalización
+# 3. Quórums
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 3
 </details>
 
 
-## Dos quórums siempre se tocan
+## Intersección de quórums
 
 Todo lo que venimos mirando es casi un caso particular de algo más general: los quórums. La palabra viene del latín, igual que el quórum del Senado: tomamos prestado el nombre y nada más. Los quórums distribuidos son una generalización del concepto de mayoría, y en qué sentido lo son se entiende mejor mirando la propiedad que justifica la palabra.
 
@@ -69,7 +69,7 @@ Esto es también una forma de replicación de la que no habíamos hablado y que 
 
 En el caso de Raft no vamos a usar nada inusual: vamos a usar mayoría. Tenemos el caso particular en que `W = R = M`, con M la mayoría. Y hace falta una consideración adicional para que todo funcione bien: N impar. Con esos tres elementos podemos construir un sistema sólido, que combina dos propiedades.
 
-## El principio de funcionamiento de los algoritmos de consenso
+## Principio de funcionamiento de los algoritmos de consenso
 
 Las dos propiedades valen cada una por separado. La primera: frente a fallas de nodos o a particiones de red —si fallan todos, el sistema no puede operar— siempre queda una partición con mayoría, y eso viene simplemente de que la cantidad de nodos es impar.
 
@@ -100,7 +100,7 @@ De ahí que la mayoría aparezca en dos lugares distintos: cuando se eligen los 
 
 Esa manera de encajar es también la razón por la que los algoritmos distribuidos son difíciles. Son un rompecabezas que se entiende entero cuando todas las piezas encajan, y de ahí surgen todas las propiedades. Uno plantea un escenario problemático, y la respuesta es que el algoritmo prevé otra acción que vuelve ese caso imposible; después plantea otro, y aparece otra parte del algoritmo que también lo evita. Por eso conviene subrayar este paper y leerlo varias veces: es, en ese sentido, el más difícil de todos. Va a haber muchos momentos en que uno piense que el algoritmo está mal, y después entienda por qué sí funciona. El caso feliz, que viene ahora, es muy sencillo; los de falla son los complicados.
 
-## Cuántas fallas se pueden tolerar
+## Cantidad de fallas tolerables
 
 Todo esto es para tolerar fallas, así que corresponde preguntarse cuál es la tolerancia que obtenemos. Pensando en nodos individuales que fallan, lo que vamos a tolerar es que falle a lo sumo una minoría.
 

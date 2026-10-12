@@ -1,10 +1,10 @@
 ---
-title: "3. Por qué el reloj de la computadora no sirve"
+title: "3. Limitaciones de los relojes físicos"
 parent: "Clase 8 — Dynamo y relojes lógicos"
 nav_order: 3
 ---
 
-# 3. Por qué el reloj de la computadora no sirve
+# 3. Limitaciones de los relojes físicos
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 3
 </details>
 
 
-## El paper del 78 y los dos relojes desincronizados
+## Paper de Lamport y relojes desincronizados
 
 El que se puso a pensar este problema fue Leslie Lamport, en un paper que no era el obligatorio de esta clase pero que bien podría haberlo sido. Vale muchísimo la pena leerlo: es el paper más famoso de sistemas distribuidos, y hay quien dice que es el que inició la disciplina. Lo escribió en el 78; un paper fundacional en el sentido fuerte de la palabra.
 
@@ -41,7 +41,7 @@ Y entonces pasa esto: si un tercero recibe esos dos eventos y los ordena por el 
 
 En un ejemplo tan aislado el problema parece menor. Pero vamos a ir llegando a lugares donde el asunto se complica.
 
-## El clock skew que no se puede medir
+## Clock skew
 
 ¿Cómo podríamos resolverlo, y por qué es difícil el problema en general? Lo primero que uno intentaría suena razonable: calcular qué tan desincronizados están los dos relojes. A esa diferencia se la suele llamar *clock skew*, y conviene anotarla como una ε, como si fuera un error. Si la logramos calcular, prácticamente tenemos el problema resuelto: si sabemos que la otra máquina está cinco minutos adelantada, a todo lo que nos responde le restamos cinco minutos.
 
@@ -77,7 +77,7 @@ Dicho eso, hay sistemas distribuidos que usan relojes físicos, y en aquella ép
 
 Obviamente la latencia del `get_time` no es por la velocidad de la luz —es porque los routers están saturados—, pero la idea es la misma. Como los dos procesos están separados y hay que transmitir la información de un reloj al otro, es un problema circular: nunca tenemos un reloj que podamos sincronizar definitivamente con el de la otra máquina.
 
-## El secuenciador centralizado
+## Secuenciador centralizado
 
 Hay una forma de sincronizar cosas que ya vimos antes, aunque no con este nombre, y que llega antes que Lamport: tener un lugar centralizado que nos dé números de secuencia. Olvidarse de los timestamps que vengan de nuestro propio reloj y usar una especie de timestamp entre comillas, números de secuencia que nos da un servidor. A ese servidor le podemos decir servidor de timestamps o, como se lo encuentra a veces en la literatura, secuenciador centralizado.
 

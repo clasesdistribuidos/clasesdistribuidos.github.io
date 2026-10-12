@@ -1,10 +1,10 @@
 ---
-title: "5. El modelo de consistencia de Zookeeper"
+title: "5. Modelo de consistencia de Zookeeper"
 parent: "Clase 7 — Linealizabilidad y Zookeeper"
 nav_order: 5
 ---
 
-# 5. El modelo de consistencia de Zookeeper
+# 5. Modelo de consistencia de Zookeeper
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 5
 </details>
 
 
-## Las dos garantías que quedan
+## Garantías de consistencia
 
 Descartar la linealizabilidad no puede significar quedarse sin ninguna restricción: alguna debe existir. El modelo de Zookeeper es una combinación de consistencia fuerte con consistencia no fuerte, lo cual dificulta el razonamiento y la implementación, pero es exactamente eso lo que proporciona más performance. Resulta mucho más sencillo saber que un sistema es simplemente de consistencia eventual —que a veces leeremos datos desactualizados y a veces no, como DynamoDB—, y muchísimo más sencillo saber que es linealizable. Aquí debemos razonar con más cuidado si lo que construimos va a funcionar.
 
@@ -52,7 +52,7 @@ Y hay algo fácil de pasar por alto: ese valor puede no ser el más actualizado 
 
 ---
 
-## El ZXID que el cliente conserva
+## ZXID del cliente
 
 Cómo se logra todo esto resulta más fácil de comprender desde la implementación, y alcanza con dibujar una sola de las máquinas. En la parte superior tiene su árbol de nodos —lo que hay arriba, por ahora, no es relevante— y abajo el log de operaciones. Al costado un cliente, que nos va a enviar un `Wx1`. Marquemos esa operación con un recuadro de color en el log, para tenerla presente más adelante.
 

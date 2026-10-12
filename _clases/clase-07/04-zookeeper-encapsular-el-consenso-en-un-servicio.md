@@ -1,10 +1,10 @@
 ---
-title: "4. Zookeeper: encapsular el consenso en un servicio"
+title: "4. Zookeeper: consenso como servicio"
 parent: "Clase 7 — Linealizabilidad y Zookeeper"
 nav_order: 4
 ---
 
-# 4. Zookeeper: encapsular el consenso en un servicio
+# 4. Zookeeper: consenso como servicio
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 4
 </details>
 
 
-## Biblioteca o servicio, y qué hizo cada empresa
+## Consenso como biblioteca o como servicio
 
 Ahora sí pasamos a Zookeeper. Todo lo anterior resulta pertinente porque se trata de un sistema muy similar a lo que estamos construyendo, y a lo que vamos a construir en el TP3, y porque no emplea consistencia fuerte: deliberadamente no es linealizable, para obtener más performance.
 
@@ -56,7 +56,7 @@ Y Yahoo, que es el caso que nos ocupa hoy, desarrolló Zookeeper. Internamente u
 
 ---
 
-## Qué resuelve un servicio de coordinación
+## Servicios de coordinación
 
 Lo que todos estos sistemas pretendían resolver con un servicio de coordinación se expone mejor con ejemplos que en abstracto.
 
@@ -90,7 +90,7 @@ La clave del diseño consiste en organizarlo de manera tal que no todos los part
 
 ---
 
-## La arquitectura, la API y el objetivo de diseño
+## Arquitectura, API y objetivo de diseño
 
 Con eso ya sabemos para qué sirve. Su funcionamiento presenta poca novedad —se irá completando a medida que avancemos—: en principio, Zookeeper también opera con un sistema de mayorías y de quórum.
 

@@ -1,10 +1,10 @@
 ---
-title: "3. Anti-entropy: comparar dos réplicas con árboles de hashes"
+title: "3. Anti-entropy y Merkle trees"
 parent: "Clase 9 — Dynamo II y DynamoDB"
 nav_order: 3
 ---
 
-# 3. Anti-entropy: comparar dos réplicas con árboles de hashes
+# 3. Anti-entropy y Merkle trees
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 3
 </details>
 
 
-## Cuando el handoff no alcanza: comparar dos réplicas
+## Comparación de réplicas
 
 Encima del hinted handoff hay otro mecanismo para mantener las réplicas sincronizadas, por si falla el quórum o cualquier otra cosa. Y llamarlo "mecanismo" es casi exagerado: no es un sistema aparte, sino las réplicas mismas comunicándose periódicamente entre sí y dándose cuenta de que tienen que actualizarse. Llamémoslo sincronización directa entre dos réplicas.
 
@@ -36,7 +36,7 @@ La forma obvia de compararlas es un bucle muy ineficiente: uno le pregunta al ot
 
 Además, la mayoría de las veces esa comparación va a ser innecesaria, porque el sistema va a estar funcionando bien. Solo tras una falla rara, o una combinación de fallas, aparecen discrepancias. Estaríamos saturando la red y tardando mucho para atender un caso especial, cuando lo común es que las tablas estén iguales o difieran en un par de valores.
 
-## Del checksum de un archivo al árbol de hashes
+## Checksums y Merkle trees
 
 El algoritmo que se usa es interesante por sí mismo, porque aparece en otros lugares: los árboles de Merkle, *Merkle trees*. Git se basa en esto, aunque no en los detalles —lo que arma Git no es un árbol binario de hashes como el que vamos a construir, sino un grafo dirigido acíclico en el que cada objeto se identifica por el hash de su contenido y cada commit incluye el hash de su padre—, y Bitcoin y Ethereum también los usan, este último con una variación más compleja. Sirven para comparar grandes estructuras de datos, incluso archivos enteros; con una tabla la idea es más fácil de entender.
 
@@ -57,7 +57,7 @@ Los Merkle trees son más astutos: no solo dicen que las tablas difieren, sino e
 
 El hash de la punta no es el mismo que daría calcular el hash de la tabla entera de una vez, pero funciona igual.
 
-## El descenso hasta la fila que difiere
+## Búsqueda de diferencias en el árbol
 
 Si la otra tabla usó el mismo procedimiento, la comparación se vuelve un descenso. Empezamos por arriba: si los dos hashes de la punta son iguales, las dos tablas enteras son iguales. Si difieren, miramos el segundo nivel. Si los dos primeros nodos coinciden, toda esa mitad de la tabla es igual, y descartamos la mitad del problema. Si los otros dos difieren, miramos sus hijos, y los hijos de esos, hasta llegar a los que son diferentes.
 

@@ -1,10 +1,10 @@
 ---
-title: "4. El mapper y el reducer por dentro"
+title: "4. Funcionamiento interno del mapper y del reducer"
 parent: "Clase 2 — MapReduce"
 nav_order: 4
 ---
 
-# 4. El mapper y el reducer por dentro
+# 4. Funcionamiento interno del mapper y del reducer
 {: .no_toc }
 
 <details open markdown="block">
@@ -17,7 +17,7 @@ nav_order: 4
 
 Ya sabemos cómo se parte el universo de claves entre los reducers. Falta abrir los nodos y mirar adentro: qué archivos escribe un mapper, qué archivos lee un reducer, y qué hace cada uno con ellos.
 
-## `M1_R1`, el sort que se vuelve merge
+## Agrupamiento por clave: sort y merge
 
 Miremos un mapper por dentro, con la diferencia marcada desde el principio: no la función map, sino el nodo cuando está funcionando como mapper. Seguimos con el ejemplo donde R vale 2.
 
@@ -58,7 +58,7 @@ Y aquí aparece una optimización, porque todo esto se simplifica notablemente s
 
 Se puede ir un paso más allá. El mapper no está obligado a emitir un único archivo por reducer: puede tener un buffer en memoria donde acumula pares, ordenarlos cuando se le llena y emitir un archivo con eso, generando varios. Todos van al reducer, que hace el merge entre más entradas: el mismo trabajo.
 
-## Reducers abstractos y los M×R archivos
+## Reducers abstractos y M×R archivos
 
 Aquí cabe una objeción, en toda su fuerza. Si cada mapper sabe a qué reducer le va a hablar, ¿no los estamos acoplando demasiado? ¿No debería el mapper ser más agnóstico —le llegan sus datos, escribe su archivo, y ahí se termina su trabajo— y que después otro nodo se encargue del agrupamiento y del sort?
 

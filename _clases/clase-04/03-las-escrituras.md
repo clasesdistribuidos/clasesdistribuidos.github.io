@@ -1,10 +1,10 @@
 ---
-title: "3. Las escrituras"
+title: "3. Escrituras"
 parent: "Clase 4 — Google File System"
 nav_order: 3
 ---
 
-# 3. Las escrituras
+# 3. Escrituras
 {: .no_toc }
 
 <details open markdown="block">
@@ -65,7 +65,7 @@ La granularidad es fácil de pasar por alto. Esta estructura de un primary y n s
 
 La consecuencia es que los chunks de un mismo archivo pueden estar distribuidos en réplicas distintas. Un archivo de 100 o 1000 chunks —6,4 GB en un caso, 64 GB en el otro— no va a estar entero en las mismas tres máquinas, y no sería deseable que lo estuviera: si falla una, se ve afectado el archivo completo y perdemos la propiedad de que las fallas sean parciales. Con mil máquinas, esos chunks van a estar dispersos por todo el sistema, siempre en grupos de tres, y de cada tres una está seleccionada como primary: la que va a coordinar todo el proceso de las escrituras.
 
-## El flujo de escritura
+## Flujo de escritura
 
 Vamos a lo que une todo: la figura 2 del paper, la que dice cómo se realiza una escritura. Ahí el cliente y la aplicación aparecen combinados en la misma caja —lo cual no es relevante— y los números indican el orden de los pasos.
 

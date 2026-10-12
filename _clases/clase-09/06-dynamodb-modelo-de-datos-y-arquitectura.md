@@ -15,7 +15,7 @@ nav_order: 6
 </details>
 
 
-## El nombre de Dynamo sobre otra arquitectura
+## Relación entre Dynamo y DynamoDB
 
 La historia explica buena parte de lo que sigue. Las bases no relacionales se habían puesto de moda, y Amazon quiso hacer una en la nube. No fue la primera: DynamoDB surge de SimpleDB, un sistema que ya no existe. Y ese es el punto importante, antes que ningún otro: DynamoDB no desciende de Dynamo.
 
@@ -64,7 +64,7 @@ Hasta aquí nada raro. Pero lo importante es que no usa consistent hashing, que 
 
 ---
 
-## El request router y el partition metadata system
+## Request router y partition metadata system
 
 La arquitectura de DynamoDB, en la figura cuatro del paper, responde esa pregunta. Tiene bastantes más componentes que Dynamo, pero para lo que nos interesa se reduce a dos piezas. De un lado están el usuario y la red que lo conecta, que no importan demasiado. Lo primero que encuentra el request al llegar es el **request router**.
 
@@ -97,11 +97,11 @@ Esa gran tabla tiene dos columnas: el rango del hash y los storage nodes que le 
 
 Esta es la primera diferencia de fondo con Dynamo. Dónde va cada cosa no se infiere de un anillo ni lo saben los nodos mismos: hay una base de datos aparte con los rangos, y cada rango dice a qué grupo de storage nodes pertenece. Tampoco hay preference list construida avanzando por un anillo: el rango está conectado directamente con sus tres storage nodes, y así se sabe dónde vive cada partición.
 
-## Tres nodos que no son casualidad
+## Grupos de replicación de tres nodos
 
 Que los storage nodes de cada rango sean tres no es casualidad. Forman un grupo de replicación que, según el paper, usa multi-Paxos. Como no vimos multi-Paxos, podemos suponer que corren Raft: para lo que nos importa es bastante equivalente, y todo lo que sabemos de Raft se aplica igual.
 
-## El recorrido de un get y de un put
+## Flujo de un get y de un put
 
 Con las dos piezas presentadas, veamos el recorrido de un request completo. El cliente lo manda y llega al request router. El router, que por sí solo no sabe dónde vive cada clave, le manda al partition metadata system la clave hasheada —con MD5, por ejemplo—, y este le responde en qué tres storage nodes está.
 
@@ -118,7 +118,7 @@ Si es un put, todo es igual hasta que el router se lo manda a un storage node. A
   </figcaption>
 </figure>
 
-## Adentro de un storage node
+## Estructura de un storage node
 
 Por dentro, un storage node tiene dos piezas que ya conocemos de Raft.
 

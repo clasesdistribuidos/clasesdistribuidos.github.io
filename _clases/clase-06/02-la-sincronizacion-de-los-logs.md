@@ -1,10 +1,10 @@
 ---
-title: "2. La sincronización de los logs"
+title: "2. Sincronización de los logs"
 parent: "Clase 6 — Raft II"
 nav_order: 2
 ---
 
-# 2. La sincronización de los logs
+# 2. Sincronización de los logs
 {: .no_toc }
 
 <details open markdown="block">
@@ -17,7 +17,7 @@ nav_order: 2
 
 En los escenarios anteriores apareció varias veces el mismo movimiento: el líder nuevo, apenas el sistema se estabiliza, les envía su log a los demás, agregándoles entradas que no tenían o eliminándoles las que les sobraban. Dijimos que el log del líder es el log, sin explicar cómo se lleva a cabo. Corresponde examinar en detalle esa sincronización, que es la parte más difícil de todo esto. Le vamos a dar un nombre: rollback. El paper no usa ese término; describe el mecanismo como el líder forzando a los followers a replicar su propio log (sección 5.3).
 
-## Los dos campos de AppendEntries y la Log Matching Property
+## Campos de AppendEntries y Log Matching Property
 
 Conviene reducir la escala. Este ejemplo va a ser de tres servidores, S1, S2 y S3, y vamos a observar solamente cuatro posiciones del log: los índices 10, 11, 12 y 13. El estado del que partimos ya lo habíamos visto la clase anterior. En el índice 10 hay una entrada en cada uno de los tres, las tres del término 3. En el 11 hay dos, en S2 y en S3, también del término 3. En el 12 hay dos otra vez, pero no coinciden: en S2 una del término 4 y en S3 una del término 5. Y en el 13 hay una sola, en S3, del término 6.
 
@@ -55,7 +55,7 @@ Dónde se observa esto en el diagrama: en el índice 11. Esas dos entradas está
 
 En el índice 12, en cambio, tenemos misma posición pero términos distintos: un 4 en uno y un 5 en el otro. Allí no vamos a tener el mismo comando: van a ser comandos diferentes, que el cliente envió en dos ocasiones diferentes. Y justamente por eso, lo peor que podríamos hacer es también lo más simple: escribir el 6 en el índice 13 de S2, dar el log por sincronizado y continuar. Sería un error grave, porque nos quedarían dos logs divergentes, uno con 3, 3, 5 y 6, y el otro con 3, 3, 4 y 6, y la máquina de estados que cada uno tiene por encima sería diferente.
 
-## El rebobinado y el aviso de commit
+## Rebobinado del log y aviso de commit
 
 Aprovechando esa propiedad, veamos qué hace efectivamente el follower. S2 recibe el 6 y antes de escribir nada verifica el valor que tenía previamente. El índice anterior que le enviaron es el 12, y el suyo también: coincide. El término anterior que le enviaron es 5, y el que él tiene en esa posición es un 4: no coincide. Entonces rechaza el `AppendEntries`. Qué responde exactamente —un fail, un status incorrecto, alguna otra forma de negativa— es un detalle de implementación; lo que importa es que lo rechaza.
 
@@ -84,7 +84,7 @@ Cabe preguntarse quién le avisa a esa aplicación que algo se comiteó. Es Raft
 
 Si todo esto resulta confuso, la confusión tiene un origen identificable, y es una de las partes que hay que analizar con cuidado al leer el paper: son varias piezas que ocurren en lugares distintos y en momentos distintos. En un momento el líder le sincroniza los logs, y en otro momento posterior le informa que esas entradas que le envió antes están comiteadas.
 
-## El costo de rebobinar entrada por entrada
+## Costo del rebobinado
 
 Queda una pregunta natural sobre el caso extremo: ¿qué ocurre si el índice y el término no coinciden nunca en el primer intento? La regla es esta: siempre se envían el índice y el término de la entrada anterior a la que se quiere escribir, y se los va comparando contra lo que el otro tiene en esa posición. En algún momento el otro va a responder afirmativamente, y a partir de ese punto agrega todo en un solo paso. Si no coincide, el líder sigue rebobinando de a una entrada por vez.
 

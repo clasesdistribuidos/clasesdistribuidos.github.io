@@ -1,10 +1,10 @@
 ---
-title: "6. Programar sobre Zookeeper"
+title: "6. Programación sobre Zookeeper"
 parent: "Clase 7 — Linealizabilidad y Zookeeper"
 nav_order: 6
 ---
 
-# 6. Programar sobre Zookeeper
+# 6. Programación sobre Zookeeper
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 6
 </details>
 
 
-## El nodo `ready` y la configuración que se lee completa
+## Servicio de configuración: nodo `ready`
 
 El primer ejemplo del paper de Zookeeper, y también el primero de la clase del MIT, es un servicio de configuración. Vamos a presentarlo de manera algo distinta a como lo hacen ellos, porque así se comprende mejor de dónde surge el problema.
 
@@ -58,7 +58,7 @@ Conviene pensarlo como un EOF que indica que el escritor terminó, y que el otro
 
 ---
 
-## Watches: detectar que algo cambió
+## Watches
 
 El mecanismo del `ready` resulta suficiente para el caso que acabamos de plantear, pero ese caso es particular. Si se tratara de una única configuración que se escribe una sola vez, la cuestión concluiría allí. El problema aparece cuando hay que actualizarla múltiples veces.
 
@@ -85,7 +85,7 @@ Cómo gestionamos ese aviso depende de lo que estemos intentando hacer. Pero en 
 
 ---
 
-## Optimistic locking y cuándo se verifica la versión
+## Optimistic locking y verificación de versión
 
 Antes del último ejemplo conviene retomar el *optimistic locking*, anunciado anteriormente como una escritura condicional y postergado hasta disponer de las piezas necesarias. Es sencillo, y el problema que resuelve ya apareció en otros contextos: concurrencia, sistemas operativos, prácticamente en todas partes. Vamos a construir un contador, con dos máquinas que pretenden actualizarlo.
 
@@ -135,7 +135,7 @@ Hay que proceder a la inversa: primero agregar al log lo que pretendemos escribi
 
 ---
 
-## Locks distribuidos y su equivalencia con la elección de líder
+## Locks distribuidos y elección de líder
 
 Nos queda el último ejemplo, el más interesante del paper: cómo se implementan los locks. Hay dos tipos y vamos a examinar uno solo, porque el otro es difícil de abordar completo y con uno alcanza para comprender cómo se construye un lock distribuido.
 

@@ -15,7 +15,7 @@ nav_order: 2
 </details>
 
 
-## El quórum estricto y por qué las lecturas se solapan
+## Quórum estricto y solapamiento de lecturas
 
 La idea de los quórums ya nos es familiar desde la clase de Raft. Lo que quizás no sabíamos es que la formulación original es de un paper de Gifford de 1979, y es exactamente la fórmula que conocemos: R + W tiene que ser mayor que N. Las réplicas que consultamos en una lectura, más las réplicas donde asentamos una escritura, tienen que superar el total de réplicas.
 
@@ -23,7 +23,7 @@ Por qué funciona es un argumento de conteo, el principio del palomar: si se cum
 
 En Raft ese quórum era bastante estricto, y quien hizo el trabajo práctico lo vio en detalle. Si una escritura no conseguía quórum, se le devolvía un error a quien escribía, y eventualmente Raft descartaba esas entradas, justamente porque nunca habían llegado al quórum. O podía ocurrir lo contrario: que eventualmente llegaran y el quórum se armara a posteriori. Dynamo es mucho más relajado.
 
-## El coordinador de escritura y el quórum que se conforma
+## Coordinador de escritura y quórum de escritura
 
 Los valores típicos de Dynamo son N = 3 —configurable, pero tres es lo habitual—, W = 2 y R = 2. La fórmula de Gifford se cumple con lo justo: dos más dos supera a tres.
 
@@ -55,7 +55,7 @@ Con nombres queda más claro. Supongamos que el coordinador es S2 —cuál sea n
 
 Esto puede generar inconsistencias, y en un momento vamos a ver un ejemplo. Nada de esto es tan matemáticamente estricto como Raft, que es un algoritmo muy sofisticado: Dynamo es deliberadamente menos riguroso, y esa es precisamente su propuesta.
 
-## El quórum de lecturas y la versión vieja
+## Quórum de lecturas y versiones viejas
 
 Las lecturas también funcionan con un coordinador. No se lee de una sola máquina: el quórum de lectura es dos, igual que el de escritura, así que hay que leer de dos lugares.
 
@@ -76,7 +76,7 @@ Ahora, si responde primero S5, que no tiene la versión más reciente, le devolv
 
 Por este camino pueden darse situaciones inesperadas. Como los dos nodos que se supone que tienen el dato no responden, el coordinador continúa por el anillo y les pregunta a los dos siguientes. Quizás uno lo tenía desactualizado, y eso es lo que responde. Quizás ni siquiera tienen el dato y responden con lo que tengan. Y quizás el desactualizado era justamente S3, el que coordina. El resultado depende de qué réplicas respondan, y de ahí viene la consistencia eventual.
 
-## Sin fallas, casi tan fuerte como un quórum estricto
+## Consistencia en ausencia de fallas
 
 Lo interesante es que, cuando no hay fallas, esto es casi más fuerte que un Raft en el que no se lee siempre del líder. Ahí uno elegía una réplica, que podía estar desactualizada, y devolvía lo que fuera. En ZooKeeper eso era explícito: se leía de cualquier réplica, aunque estuviera atrasada.
 
@@ -86,7 +86,7 @@ La conclusión es que, cuando no hay fallas graves que afecten grandes porciones
 
 ---
 
-## Hinted handoff y la hipótesis de las fallas temporales
+## Hinted handoff y fallas temporales
 
 Dynamo tiene varios métodos para recuperarse de esas situaciones. No son exactamente parches, sino mecanismos que se le fueron incorporando para que el sistema se vaya arreglando solo con el tiempo. El primero atiende justamente el caso que acabamos de ver: la escritura que no completó el quórum donde correspondía.
 

@@ -1,10 +1,10 @@
 ---
-title: "2. La abstracción y la arquitectura"
+title: "2. Abstracción y arquitectura"
 parent: "Clase 4 — Google File System"
 nav_order: 2
 ---
 
-# 2. La abstracción y la arquitectura
+# 2. Abstracción y arquitectura
 {: .no_toc }
 
 <details open markdown="block">
@@ -57,7 +57,7 @@ La primera de esas cuentas aparece enseguida. Cuando queremos leer o escribir so
 
 Que un cliente cargue con esa clase de lógica no es una decisión inocente, y funcionaba porque era Google: internamente se daba por supuesto que sus desarrolladores sabían usar bien estas herramientas, y por eso podían permitirse entregarles un cliente complejo. Más que un cliente, era una biblioteca para acceder a todos estos sistemas.
 
-## Una lectura end-to-end
+## Flujo de lectura
 
 Sigamos una lectura de extremo a extremo, que es la forma más sencilla de entenderla. El cliente llama a `read` con el file name, el offset y quizás un buffer, según cómo esté implementada la biblioteca; con eso calcula el chunk index. Y lo primero que hace es preguntarle al coordinador dónde están los servidores concretos que tienen ese chunk. En el dibujo hay dos chunkservers, pero la escala real son cientos o miles de máquinas, cada una con muchos chunks de muchos archivos distintos.
 

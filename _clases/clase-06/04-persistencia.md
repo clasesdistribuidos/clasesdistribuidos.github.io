@@ -17,7 +17,7 @@ nav_order: 4
 
 Toda la clase se apoyó en un supuesto que utilizamos sin examinarlo: que las máquinas fallan y se recuperan con frecuencia y que, al recuperarse, conservan cierta información. Ese supuesto se denomina persistencia y tiene un costo. Hay que responder cuáles son los datos que deben sobrevivir a que un servidor falle y se recupere, y en qué orden hay que realizar las operaciones para que sobrevivan.
 
-## Qué sobrevive a un crash
+## Estado persistente
 
 Los datos que hay que guardar en disco ya los conocemos: están enumerados en la figura 2 y los fuimos utilizando durante toda la clase. Lo que falta es explicar por qué son importantes, y la respuesta es que hay datos que deben sobrevivir a que los servidores fallen y se recuperen.
 
@@ -29,7 +29,7 @@ Todo lo demás se puede reconstruir a partir de los mensajes que los servidores 
 
 Queda `currentTerm`, el más sutil de los tres. Volvamos al esquema de los tres servidores con los términos 5, 6 y 7 en uno y 5 y 8 en los otros dos. Una forma de intentar inferir el término actual, para un nodo que se recupera, sería observar por dónde va su log: si tiene 5, 6 y 7, inferir que estamos en el término 7. Eso no es correcto, porque para los otros dos servidores, si hubieran caído en ese punto y se hubieran recuperado después, el sistema ya está en el 8. El nodo debe recordarlo, porque en algún momento ocurrió una votación en la que se avanzó el término aunque no se eligió líder, y en la que no se recibió ninguna entrada de log. En algún momento ese nodo supo que se pasó por el 6 y por el 7; y cuando se transforme en candidato, en lugar de indicar 6 o 7 va a tener que indicar 8.
 
-## Primero al disco, después la respuesta
+## Escritura a disco antes de responder
 
 Hay un principio que importa no solo para Raft sino para los sistemas distribuidos en general, y es el orden en el que se realizan las operaciones. Siempre que establecemos que un dato debe ser persistente, el orden es este: primero al disco —o al storage persistente, que puede ser un SSD o cualquier otro dispositivo—, y después la respuesta. Nunca a la inversa.
 

@@ -1,10 +1,10 @@
 ---
-title: "1. La tentación de leer de los followers"
+title: "1. Lecturas desde los followers"
 parent: "Clase 7 — Linealizabilidad y Zookeeper"
 nav_order: 1
 ---
 
-# 1. La tentación de leer de los followers
+# 1. Lecturas desde los followers
 
 Hoy vamos a hablar de consistencia y, en particular, de la conocida consistencia eventual, un término que ganó difusión a partir de la aparición de las bases NoSQL. La razón de traerlo ahora es que no constituye un tema separado de lo que venimos viendo: se manifiesta de manera muy concreta si uno lee de cierta forma en un cluster de Raft, y también en Zookeeper, el tema principal de esta clase.
 

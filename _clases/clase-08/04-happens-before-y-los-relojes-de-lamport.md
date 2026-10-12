@@ -1,10 +1,10 @@
 ---
-title: "4. Happens-before y los relojes de Lamport"
+title: "4. Happens-before y relojes de Lamport"
 parent: "Clase 8 — Dynamo y relojes lógicos"
 nav_order: 4
 ---
 
-# 4. Happens-before y los relojes de Lamport
+# 4. Happens-before y relojes de Lamport
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 4
 </details>
 
 
-## La relación happens-before
+## Relación happens-before
 
 A esa condición —que una cosa ocurra antes que otra— Lamport le puso nombre: la llama *happens-before*. Y la clave para resolver todo este problema está justamente ahí, en definir con precisión qué significa ese "antes", en términos más matemáticos que los que veníamos manejando.
 
@@ -50,7 +50,7 @@ Cuando no se puede armar ninguno de los caminos posibles, hay dos situaciones di
 
 El planteo tiene algo de filosófico. Lo importante va a ser poder definir cuándo una cosa ocurre antes que otra. Pero —y este es el giro que vamos a necesitar cuando volvamos a Dynamo— casi más importante que esa definición es la implicancia contraria: cuándo dos cosas no tienen relación entre sí. Porque si no la tienen y las tenemos que reconciliar, ahí vamos a tener un problema.
 
-## Los relojes lógicos
+## Relojes lógicos
 
 Todo lo anterior no tiene nada de disparatado: es apenas una manera cuidadosa de decir qué significa que una cosa haya ocurrido antes que otra cuando no hay ningún reloj común en el que apoyarse. El invento propiamente dicho fue encontrar una forma de plasmar toda esa relación en números. A esos números los llamó relojes lógicos, y también se los suele llamar relojes de Lamport.
 
@@ -85,7 +85,7 @@ En otro punto del diagrama la cosa viene al revés. Un proceso trae su contador 
 
 Es así de simple. Pero tiene una sutileza.
 
-## Una implicancia, no un si y solo si
+## Alcance de la clock condition
 
 La sutileza tiene una razón precisa: la clock condition es mucho menos útil de lo que uno pensaría, porque se trata de una implicancia y no de un si y solo si. Todo el asunto sería muchísimo más útil si valiera en los dos sentidos. No vale.
 
@@ -106,7 +106,7 @@ De esa limitación se desprende una consecuencia práctica: los algoritmos que s
 
 El paso siguiente en la modernización de los relojes son los vector clocks, los relojes vectoriales, y esos sí permiten el si y solo si. Son los que usa Dynamo, y son un poco más complicados que estos, pero tampoco tanto.
 
-## Un orden total sintético sobre un orden parcial
+## Orden total a partir de un orden parcial
 
 Hay algo más que Lamport define en el paper, y que en rigor viene antes que todo lo anterior: la diferencia entre orden total y orden parcial. Son definiciones matemáticas, y quien haya cursado matemática discreta probablemente se las haya cruzado.
 
@@ -133,7 +133,7 @@ Ahí está el punto. Si bien vamos a tener un orden total en el que pudimos comp
 
 Enunciado así resulta difícil de ver, y por eso hace falta un ejemplo.
 
-## El chat distribuido
+## Ejemplo: chat distribuido
 
 El ejemplo no va a ser el del paper, que no es el más amable para empezar, sino otro mucho más fácil: un chat room distribuido. Algo del estilo de los antiguos canales de IRC, aunque en el IRC había un servidor en el medio; mejor todavía, imaginemos una especie de WhatsApp donde no hay servidor central y cada participante le tiene que mandar sus mensajes a todo el mundo. La implementación trivial es la que a cualquiera se le ocurre primero: mostrar los mensajes en la pantalla a medida que van llegando, uno abajo del otro. Con esa implementación puede ocurrir lo siguiente.
 

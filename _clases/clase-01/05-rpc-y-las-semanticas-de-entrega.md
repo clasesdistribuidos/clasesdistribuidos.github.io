@@ -1,10 +1,10 @@
 ---
-title: "5. RPC y las semánticas de entrega"
+title: "5. RPC y semánticas de entrega"
 parent: "Clase 1 — Introducción, TCP/IP y RPC"
 nav_order: 5
 ---
 
-# 5. RPC y las semánticas de entrega
+# 5. RPC y semánticas de entrega
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 5
 </details>
 
 
-## De la terna repetida al stub
+## Remote procedure call
 
 El pseudocódigo del servidor de tiempo dejó un cabo suelto. En el programa del cliente el mensaje se manda a un canal y la respuesta se recibe de otro: `NameForTimeService` para la ida y `NameForClient` para la vuelta. A primera vista tendría que ser el mismo nombre, y la asimetría desconcierta. La explicación es que el ejemplo asume que el canal no es bidireccional, y por eso abre dos. En TCP, típicamente, los canales sí son bidireccionales, y el segundo nombre no haría falta. Es una particularidad del ejemplo y podemos dejarla de lado.
 
@@ -129,7 +129,7 @@ Mas alla de estas cuestiones con REST vamos a comprobar que se suele poder hacer
 
 Y sin embargo, como en la práctica hay margen para la flexibilidad, muchas veces se usa REST de todos modos, porque es más conveniente: porque ya tenemos un servidor HTTP y no queremos instalarle encima uno de gRPC. En particular se usa mucho cuando la comunicación va a través de internet. En un Chrome no podemos instalarle un stub generado por nosotros apuntando a un servidor remoto; REST es más fácil, porque el browser ya implementa directamente ese protocolo. Ahí está, dicho al revés, la dificultad de gRPC: el cliente tiene que generar la biblioteca, insertarla con los mecanismos del lenguaje y compilarla.
 
-## Por qué RPC no puede ser transparente
+## Límites de la transparencia en RPC
 
 Si bien en los ochenta se pretendía que una llamada remota fuera completamente transparente, no puede serlo, y hay dos razones. Es el mismo fracaso de ambición del Network File System.
 
@@ -154,7 +154,7 @@ Más allá de si la operación funcionó o falló del otro lado, estos son probl
 
 A esta altura uno ya estará pensando formas de solucionarlo. De eso se trata lo que viene.
 
-## Las tres semánticas de entrega
+## Semánticas de entrega
 
 Esa imposibilidad de distinguir un request que se perdió de una respuesta que se perdió es la que da lugar a lo que vamos a llamar **semánticas de entrega**. Hay tres, básicamente, y lo que las distingue es qué podemos afirmar cuando la llamada termina.
 

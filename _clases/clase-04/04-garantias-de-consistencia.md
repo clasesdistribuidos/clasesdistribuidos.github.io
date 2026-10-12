@@ -15,7 +15,7 @@ nav_order: 4
 </details>
 
 
-## Sin atomic write: el append
+## Escrituras no atómicas y append
 
 Ese error merece que nos detengamos, porque es aquí donde el GFS muestra su costado más delicado: los requisitos de consistencia son sumamente relajados. Relajados quiere decir, ante todo, que el sistema no implementa lo que sería un atomic write: justamente la propiedad que uno esperaría de un sistema de storage.
 
@@ -52,7 +52,7 @@ El resultado es incómodo. Las dos primeras réplicas quedaron iguales entre sí
   </figcaption>
 </figure>
 
-## Quién termina pagando el costo
+## Manejo de inconsistencias en el cliente
 
 La pregunta que queda abierta es qué hacer en un caso así, y sobre todo quién resuelve el problema. La respuesta es otra decisión de diseño importante y nada obvia: lo resuelve el cliente. Quien usa el sistema es el que debe hacerse cargo de los duplicados y de los huecos. El problema se traslada a la capa superior.
 

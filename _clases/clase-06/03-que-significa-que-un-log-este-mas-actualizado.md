@@ -1,10 +1,10 @@
 ---
-title: "3. Qué significa que un log esté más actualizado"
+title: "3. Criterio de log más actualizado"
 parent: "Clase 6 — Raft II"
 nav_order: 3
 ---
 
-# 3. Qué significa que un log esté más actualizado
+# 3. Criterio de log más actualizado
 {: .no_toc }
 
 <details open markdown="block">
@@ -17,7 +17,7 @@ nav_order: 3
 
 Quedaron dos deudas explícitas en la primera sección: dijimos que para votar a un candidato hay que verificar que su log esté más actualizado que el propio, y las dos veces aclaramos que la definición precisa vendría después. La noción que veníamos utilizando de manera informal ahora se enuncia con precisión, y después la vamos a aplicar sobre el ejemplo más complejo que trae el paper.
 
-## La election restriction
+## Election restriction
 
 La restricción tiene nombre propio, *election restriction*, y consiste en dos condiciones que se aplican en un orden que resulta significativo.
 
@@ -59,7 +59,7 @@ Allí se advierte por qué el orden de las condiciones es el que es. Si la restr
 
 Queda una duda razonable: qué ocurre cuando hay dos candidatos esencialmente equivalentes, con el mismo término y todo lo demás igual. El paper no establece ninguna prioridad entre ellos: cada nodo vota a lo sumo a un candidato por término, al primero que se lo solicita (sección 5.2). Los autores consideraron un sistema de rankings entre candidatos y lo descartaron porque generaba problemas sutiles de disponibilidad; prefirieron los timeouts aleatorios por ser más fáciles de entender. Lo importante, de todos modos, es que cualquiera puede ser candidato, que muchos son elegibles, que el resultado final del log va a ser diferente según cuál sea elegido, y que Raft va a seguir siendo correcto independientemente de quién gane, siempre que se respete la condición. Y la condición, enunciada desde la perspectiva del votante —que es como más conviene recordarla—, es esta: aquel a quien estoy votando no puede tener un término menor que el mío, y si los términos coinciden, no puedo tener yo el log más largo. Con esa condición todo funciona, y está demostrado.
 
-## El ejemplo extenso del paper
+## Ejemplo extenso del paper
 
 Veamos ahora el ejemplo más extenso y complejo del paper: la figura 7. Un cluster de siete máquinas, lo cual es perfectamente válido. La máquina superior, el líder, cae, y quedamos con la configuración considerablemente enredada que el paper dibuja. Hay que analizarlo un buen rato para convencerse, pero se puede llegar a un desorden como ese.
 
@@ -103,7 +103,7 @@ Para terminar, el resto de los candidatos. B va a perder en todos los casos: A, 
 
 De modo que los posibles líderes son A, C y D, y los tres coinciden en tener por lo menos las entradas comiteadas que marcamos antes. Esa es una propiedad importante del algoritmo, y esa figura merece analizarse con detenimiento.
 
-## Cuándo repara el líder los logs ajenos
+## Reparación de los logs de los followers
 
 Sobre ese mismo ejemplo quedaron algunas preguntas pendientes, y conviene atenderlas porque abordan un caso que la sección anterior no cubrió.
 

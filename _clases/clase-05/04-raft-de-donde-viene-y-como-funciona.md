@@ -1,10 +1,10 @@
 ---
-title: "4. Raft: de dónde viene y cómo funciona"
+title: "4. Raft: origen y funcionamiento"
 parent: "Clase 5 — Raft I"
 nav_order: 4
 ---
 
-# 4. Raft: de dónde viene y cómo funciona
+# 4. Raft: origen y funcionamiento
 {: .no_toc }
 
 <details open markdown="block">
@@ -15,7 +15,7 @@ nav_order: 4
 </details>
 
 
-## Paxos, Viewstamped Replication y la apuesta por la comprensibilidad
+## Paxos, Viewstamped Replication y comprensibilidad
 
 La cronología del problema dice bastante sobre lo difícil que es, así que lo que sigue es un desvío histórico.
 
@@ -41,7 +41,7 @@ La teoría detrás de esa facilidad —y esto ya lo dice el paper— es que Raft
 
 El plan, entonces: primero el algoritmo en general en el caso feliz, después cómo se elige el líder, y por último qué ocurre cuando algo falla. Eso último es lo que más nos interesa a quienes trabajamos en sistemas distribuidos y es principalmente el tema de la clase que viene.
 
-## Dos capas y un log
+## Arquitectura: aplicación, Raft y log
 
 La estructura básica de Raft es la que ya anticipamos hace varias clases, y conviene leerla sabiendo que es una versión simplificada.
 
@@ -80,7 +80,7 @@ Hay detalles importantes que conviene notar. Se aplicó solamente en la máquina
 
 Una vez que Raft tuvo una mayoría, esa entrada se considera comiteada. No es el commit de una base de datos relacional: es simplemente el concepto de una entrada para la cual el líder recibió una mayoría de respuestas, y estar comiteada es lo que implica que se puede aplicar. Después el líder les avisa el commit a los demás, y eso hace que los followers puedan aplicarla ellos también, porque cuando respondieron el ACK esa entrada ya tenía que estar en su log.
 
-## Por qué el líder espera la mayoría
+## Commit por mayoría
 
 Hay un paso fácil de pasar por alto: el momento exacto en que el líder le pasa los bytes a la aplicación. Ocurre cuando recibe una mayoría de ACKs, ahí y no antes, porque no puede pasárselo sin tener nodos que hayan confirmado que disponen de ese dato.
 
@@ -98,7 +98,7 @@ La objeción natural es la que uno haría de inmediato: si esto fuera una RPC, u
 
 Recapitulando: ese es el caso feliz, el que no tiene fallas. Y lo importante es qué garantías tiene el cliente cuando recibe un OK, que son dos. La primera es que la operación está persistida en una mayoría de nodos. La segunda es que está aplicada en el líder.
 
-## Dos mensajes que hacen todo
+## AppendEntries y RequestVote
 
 Hay una observación que aparece naturalmente al mirar ese AppendEntries: es un paquete rutinario, del estilo del heartbeat que tenía el coordinador de los sistemas anteriores. Y efectivamente hay varias cosas que se combinan en este protocolo: el AppendEntries también sirve de heartbeat, para indicarles a las réplicas que el líder sigue vivo.
 

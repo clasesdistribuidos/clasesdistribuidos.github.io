@@ -47,7 +47,36 @@ como texto suelto. Contarlos antes y después.
    grep -cE '^\*\[Nota:' borrador.md
    ```
 
-4. **Dry-run** y leer la salida entera:
+4. **Reescribir los títulos para que suenen a apunte**, sobre la copia del
+   borrador y antes de partirlo. El borrador titula como se da la clase —"Por
+   qué existe MapReduce", "Dos mensajes que hacen todo", "El talón de Aquiles:
+   si falla el coordinador"— y un título de apunte tiene que decir de qué tema
+   es la sección, como cualquier título. Se hace antes del split porque del
+   `## N. Título` sale el nombre del archivo, y con él la URL: después ya no
+   se puede cambiar sin romper links.
+
+   El criterio: que el título nombre el tema como un sustantivo, sin frases
+   narrativas, guiños ni preguntas. Lo que ya es un nombre técnico se deja,
+   solo sacándole el artículo. Los términos técnicos se dejan en inglés si el
+   texto los usa así. Para elegir el nombre hay que leer la sección: el título
+   viejo suele ser una alusión que solo se entiende de corrido.
+
+   | Narrativo | De apunte |
+   | --- | --- |
+   | Por qué existe MapReduce | Origen y modelo de programación de MapReduce |
+   | El log | Log |
+   | Dos mensajes que hacen todo | AppendEntries y RequestVote |
+   | Por qué no cualquiera puede ser líder | Restricción de elección |
+   | Una implicancia, no un si y solo si | Alcance de la clock condition |
+   | El talón de Aquiles: si falla el coordinador | Fallas del coordinador |
+   | La interfaz key-value, el anillo y el orden por clave | Consistent hashing |
+
+   Aplica a los `## N.` (títulos de página) y a los `### N.M` (los `##` de
+   adentro). **Mostrarle al usuario una tabla** —sección | actual |
+   propuesto—, solo con los que cambian, y esperar su OK antes de editar el
+   borrador. Los títulos son lo único del texto que se toca: la prosa no.
+
+5. **Dry-run** y leer la salida entera:
 
    ```sh
    python3 scripts/split_clase.py <borrador> --titulo "Clase N — Tema" --dry-run
@@ -62,9 +91,9 @@ como texto suelto. Contarlos antes y después.
    está bien tirarlas. **Leer ese aviso**: si ahí había contenido real, hay que
    rescatarlo a mano.
 
-5. **Correr sin `--dry-run`.**
+6. **Correr sin `--dry-run`.**
 
-6. **Revisar el resultado** antes de mostrarlo:
+7. **Revisar el resultado** antes de mostrarlo:
    - la portada quedó solo con el título;
    - no quedó ningún `###` ni ningún subtítulo numerado;
    - la cuenta de `<figure class="figura">` coincide con la de `[FIGURA:]` del
@@ -73,7 +102,7 @@ como texto suelto. Contarlos antes y después.
    - `bundle exec jekyll build` no rompe, y el sidebar muestra la clase con sus
      secciones en orden.
 
-7. **Proponer los `Código pendiente` que falten**, con la vara alta. El
+8. **Proponer los `Código pendiente` que falten**, con la vara alta. El
    borrador marca solo algunos. El recuadro —`class="figura figura-codigo"`,
    etiqueta `Código pendiente`— va donde **el profesor mostró código y lo
    recorrió**, y por eso hay algo concreto con qué llenarlo después: los dos
@@ -90,14 +119,14 @@ como texto suelto. Contarlos antes y después.
    Es criterio propio: listarlos en el mensaje final para que el usuario los
    apruebe o los saque.
 
-8. **Commit y push de la branch. La PR todavía no.** Partir el apunte es la
+9. **Commit y push de la branch. La PR todavía no.** Partir el apunte es la
    primera de las dos fases de la clase; la PR se abre cuando están las dos.
    Ver "Después: las figuras".
 
 ## Lo que no hay que hacer
 
 - **No reescribir la prosa.** El apunte ya está escrito y revisado; el trabajo
-  acá es estructural. Si algo parece un error de contenido, señalarlo, no
+  acá es estructural, y lo único que se reescribe son los títulos (paso 4). Si algo parece un error de contenido, señalarlo, no
   corregirlo.
 - **No dibujar figuras.** Ni SVG, ni ASCII, ni mermaid. El placeholder se queda
   hasta que se recorte el dibujo real.
