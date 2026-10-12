@@ -19,7 +19,7 @@ nav_order: 1
 
 Hay un recurso que aparece siempre que se quiere escalar una base de datos, y que se suele combinar con todo lo que fuimos viendo: agregarle cachés. Vamos a ver primero por qué se justifica agregarlos, y después lo más interesante, lo que la gente suele tomar a la ligera y a lo que casi nunca le presta atención: la consistencia de los cachés.
 
-Partimos de un dibujo que ya hicimos la vez pasada, el de Facebook. Facebook era inicialmente una aplicación web de las antiguas: dentro tenía un servidor HTTP —Apache o nginx, indistintamente—, el cliente se conectaba ahí, y ese servidor se conectaba internamente con una base de datos relacional, que en esa época bien podía ser MySQL; Postgres todavía no estaba tan difundido. Es la primera iteración que uno haría: una única máquina, con todo dentro.
+Facebook era inicialmente una aplicación web de las antiguas: dentro tenía un servidor HTTP —Apache o nginx, indistintamente—, el cliente se conectaba ahí, y ese servidor se conectaba internamente con una base de datos relacional, que en esa época bien podía ser MySQL; Postgres todavía no estaba tan difundido. Es la primera iteración que uno haría: una única máquina, con todo dentro.
 
 <figure class="figura">
   <figcaption>

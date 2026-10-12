@@ -101,7 +101,7 @@ La pieza que faltaba está en el delete. En la tabla interna —clave, valor, le
 
 La consecuencia es directa. El `set` del cliente 1 da error, porque manda `V1` con un lease que ya no existe en la tabla. Y con evitar ese set alcanza: después vendrá otro cliente, leerá de la base, obtendrá un lease nuevo y dejará el valor correcto.
 
-Verificar ese lease es prácticamente lo mismo que vimos la clase pasada con Zookeeper. Tratamos de setear un valor y verificamos, de paso, que nada haya cambiado mientras tanto; el lease hace las veces de la versión del optimistic locking. Al no encontrarla, la operación tira un error de concurrencia, que es exactamente lo que queríamos: los threads se combinaron mal, y el sistema se da cuenta.
+Verificar ese lease es prácticamente lo mismo que vimos con Zookeeper en la clase 7. Tratamos de setear un valor y verificamos, de paso, que nada haya cambiado mientras tanto; el lease hace las veces de la versión del optimistic locking. Al no encontrarla, la operación tira un error de concurrencia, que es exactamente lo que queríamos: los threads se combinaron mal, y el sistema se da cuenta.
 
 Hasta donde sabemos, memcached tenía operaciones de este tipo, llamadas CAS, por *check-and-set*, que sirven justamente para optimistic locking: verifican una cierta variable —aquí, el lease— y si está bien setean el valor, y si no dan error. De Redis no tenemos certeza, pero seguramente tenga algo equivalente.
 
