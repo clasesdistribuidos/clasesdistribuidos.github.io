@@ -68,7 +68,7 @@ Es una especie de master dinámico. Si un nodo muere o se satura, el master pued
   <img src="{{ '/assets/clase-14/master-y-nodos.png' | relative_url }}" alt="El master y los nodos de cómputo">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el master con el grafo adentro y los nodos de cómputo debajo, y la asignación de cómputo y rango que baja hacia ellos
+    el master con el grafo adentro y los nodos de cómputo debajo
     <span class="figura-ref">notas pág. 6 / pizarra pág. 10</span>
   </figcaption>
 </figure>
