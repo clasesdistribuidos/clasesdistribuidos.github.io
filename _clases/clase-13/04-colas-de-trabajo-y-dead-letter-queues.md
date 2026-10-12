@@ -21,7 +21,8 @@ Hay un detalle en ese orden que conviene anotar, aunque no lo resolvamos todaví
 
 Falta la otra punta: quiénes consumen esos mensajes. Del lado derecho hay una pequeña flota de workers —así se los suele llamar— transcodificadores, cada uno con FFmpeg, la biblioteca que se usa para esta tarea. Todos compiten por los mensajes de la cola, cada uno tratando de tomar uno para transcodificar el video que indica. Mientras trabajan le mandan heartbeats a SQS, el mecanismo de extensión del visibility timeout que acabamos de ver. Y al terminar guardan en S3 la versión transcodificada, al lado de la original.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/pipeline-de-transcodificacion.png' | relative_url }}" alt="Frontend, S3, SQS y workers transcodificadores">
   <figcaption>
     <span class="figura-label">Figura</span>
     el pipeline de transcodificación — figura de usuario --&quot;UPLOAD VIDEO&quot;--&gt; FRONTEND (rectángulo); del frontend salen dos flechas numeradas: ① &quot;GUARDAR VIDEO&quot; hacia un cilindro grande &quot;STORAGE DE BLOBS (S3)&quot; con dos íconos de video en su interior (uno verde, la versión transcodificada) y ② hacia un cilindro horizontal &quot;SQS&quot;, del que sube una flecha punteada a una nota &quot;TRANSCODIFICAR (PATH_S3)&quot; que es el contenido del mensaje; del SQS una flecha hacia una pila de rectángulos &quot;FFMPEG&quot; rotulada &quot;WORKERS TRANSCODIFICADORES&quot;, y de la pila una flecha punteada verde de vuelta al storage

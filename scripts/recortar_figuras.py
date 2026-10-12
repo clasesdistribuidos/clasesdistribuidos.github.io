@@ -60,7 +60,8 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
 # tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
 # repo, la 5 es la 6 y la 6 es la 7. Lo que falta acá se asume igual a sí mismo.
-FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11, 10: 12, 11: 14}
+FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11, 10: 12, 11: 14,
+                    13: 15}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -73,7 +74,8 @@ FOTOS = {(2, "leslie-lamport")}
 # ensuciarían. Los tres casos de falla de la cadena son una figura alta —tres
 # bloques uno debajo del otro— y por eso pesa: 301 KB en png contra 132 en jpeg.
 TRAZOS = {(3, "fallas-de-la-cadena"), (9, "operaciones-de-cada-plano"),
-          (10, "ordenes-seriales"), (11, "two-phase-commit")}
+          (10, "ordenes-seriales"), (11, "two-phase-commit"),
+          (13, "arquitectura-interna-de-sns")}
 
 ANCHO_MAX = 1400  # el ancho de la columna del theme es bastante menor
 DPI = 300         # el doble de las coordenadas de las cajas
@@ -455,6 +457,59 @@ FIGURAS_POR_CLASE = {
         ("lectura-en-el-latest",        ("pizarra", 7), (165, 730, 1241, 1225), True),
         ("escritura-en-el-latest",      ("pizarra", 8), (240, 82, 990, 455),    True),
         ("commit-wait",                 ("pizarra", 8), (220, 1192, 1241, 1754), True),
+    ],
+    # Sale de la grabación 15 (ver FUENTE_POR_CLASE).
+    13: [
+        ("comunicacion-directa",        ("pizarra", 1),  (315, 160, 745, 335),   True,
+         [(0, 140, 326, 190)]),                                    # "COMUNICACIÓN DIRECTA"
+        # La pizarra (pág. 1) no tiene el rótulo CAMBIOS ni las flechas MSG
+        # hacia BANCO2 y BANCO3, que el pie nombra; las notas sí.
+        ("comunicacion-indirecta",      ("notas", 1),    (430, 780, 1235, 1240), False,
+         [(430, 770, 570, 832),                                    # "COMUNICACIÓN INDIRECTA"
+          (100, 1058, 930, 1152),                                  # la línea del SUBSCRIBE
+          (100, 1152, 990, 1240)]),                                # la línea del PUSH
+        ("tres-desacoples",             ("pizarra", 3),  (130, 100, 1135, 590),  True),
+        ("modelos-de-integracion",      ("pizarra", 3),  (0, 735, 375, 1310),    True,
+         [(300, 740, 375, 1010)]),                                 # la lista de los tres modelos
+        ("producer-consumer",           ("pizarra", 4),  (97, 105, 1234, 662),   True,
+         [(760, 110, 1241, 458),                                   # las propiedades de la cola
+          (0, 600, 420, 680)]),                                    # "MENSAJERÍA DIRECTA"
+        # La pizarra (pág. 4) dibuja el P con los tres C pero no la llave
+        # BIBLIOTECA, que es lo que el pie nombra; las notas la tienen.
+        ("mensajeria-directa",          ("notas", 3),    (125, 205, 655, 520),   False,
+         [(0, 150, 400, 222)]),                                    # el subrayado del título
+        ("message-broker",              ("pizarra", 6),  (125, 122, 570, 440),   True),
+        ("visibility-timeout",          ("pizarra", 7),  (215, 622, 1120, 1100), True,
+         [(755, 795, 1160, 885)]),                                 # "SQS VISIBILITY TIMEOUT"
+        ("pipeline-de-transcodificacion", ("pizarra", 9), (160, 80, 1180, 652),  True,
+         [(0, 0, 300, 112)]),                                      # el subrayado de "EJEMPLO"
+        ("fan-out-de-sns",              ("pizarra", 10), (295, 226, 1030, 670),  True),
+        ("arquitectura-interna-de-sns", ("pizarra", 11), (15, 137, 1150, 778),   True),
+        # Las dos opciones para los suscriptores lentos solo están en las notas:
+        # la pizarra (pág. 11) tiene la cola de lentos dentro de la arquitectura.
+        ("volver-a-encolar",            ("notas", 5),    (430, 958, 640, 1055),  False),
+        ("cola-de-retry",               ("notas", 5),    (340, 1148, 790, 1290), False),
+        ("fan-out-mas-buffer",          ("pizarra", 11), (90, 860, 885, 1225),   True,
+         [(0, 860, 530, 925)]),                                    # "PATRÓN FAN-OUT + BUFFER"
+        ("broker-sobre-postgres",       ("pizarra", 12), (170, 115, 300, 480),   True),
+        # Dibujada sobre la tarjeta de código, así que se lleva su fondo gris; el
+        # borde derecho corta antes del "encolar" de la tarjeta.
+        ("tabla-de-la-cola",            ("pizarra", 14), (620, 160, 1044, 360),  True),
+        ("flujo-cola-como-tabla",       ("pizarra", 14), (325, 700, 1190, 1045), True),
+        ("sharding-aleatorio",          ("pizarra", 15), (90, 140, 400, 455),    True),
+        ("sharding-con-replicacion",    ("pizarra", 15), (130, 660, 630, 1000),  True),
+        ("solo-el-primary-responde",    ("pizarra", 15), (35, 1110, 510, 1460),  True),
+        # La pizarra (pág. 16) anota REPLAY y FANOUT al costado del log; las
+        # anotaciones que nombra el pie están en las notas.
+        ("log-y-consumidores",          ("notas", 7),    (95, 570, 1645, 870),   False),
+        # La pizarra (pág. 16) tiene solo la mitad del log; la comparación con
+        # SNS + SQS está en las notas.
+        ("fan-out-con-colas-y-con-log", ("notas", 7),    (180, 975, 1650, 1510), False),
+        ("figura-11-3-kleppmann",       ("pizarra", 17), (140, 330, 1090, 1205), True,
+         [(150, 767, 1000, 830)]),                                 # el epígrafe del libro
+        ("consumer-group-y-coordinador", ("pizarra", 18), (65, 345, 1000, 805),  True,
+         [(0, 0, 760, 419)]),                                      # el log con dos C de arriba
+        ("replicacion-de-particiones",  ("pizarra", 20), (195, 165, 1085, 480),  True),
     ],
 }
 

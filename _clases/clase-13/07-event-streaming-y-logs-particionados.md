@@ -32,7 +32,8 @@ Uno de los textos que recomendamos en la primera clase es de Jay Kreps, el inven
 
 Si el log es persistente, la segunda propiedad aparece sola: varios consumidores pueden leer el mismo log por lugares distintos, cada uno en su propia posición. Típicamente todos leen del final, buscando lo nuevo, y en ese régimen el sistema se comporta como el fan-out del publisher-subscriber. Pero nada impide otra cosa: como el log es persistente, un consumidor puede empezar a leer desde un mes atrás y reprocesar todo desde entonces. Esa operación se llama replay, y el caso de uso es concreto: se rompió una base de datos y hay que reconstruirla, a veces reprocesando desde el principio todos los mensajes que la fueron construyendo. Los consumidores pueden empezar a leer desde cualquier lado, o rebobinar y hacer replay de lo viejo.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/log-y-consumidores.jpg' | relative_url }}" alt="Un log con tres consumidores en posiciones distintas">
   <figcaption>
     <span class="figura-label">Figura</span>
     el log y los tres consumidores en offsets distintos — una tira de unas diez celdas, el log, con tres flechas que la apuntan desde abajo en posiciones diferentes, rotuladas C₁, C₂ y C₃; al costado, las anotaciones &quot;los mensajes están ordenados&quot; y &quot;los consumidores pueden empezar a leer desde cualquier lado o REBOBINAR y REPLAY&quot;
@@ -44,7 +45,8 @@ La tercera consecuencia resuelve casi sin esfuerzo el problema de la sección an
 
 Comparemos los dos caminos frente al problema del principio: muchos servicios que quieren enterarse de las actualizaciones de otro. Con lo que teníamos, el productor le manda el mensaje a SNS, SNS hace el fan-out hacia una cola de SQS por consumidor, y cada uno consume de la suya. Funciona, pero cada consumidor nuevo obliga a armar y conectar otra cola. Con un log, el productor hace una sola cosa: le dice al mundo que sus eventos están en tal topic —así se llaman estos logs en Kafka—, y ahí termina su responsabilidad. Los interesados vienen, se cuelgan del topic y se van enterando. Como consumir no elimina los mensajes, se pueden colgar muchos y todos obtienen lo que les interesa: bastante más potente que las versiones anteriores.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/fan-out-con-colas-y-con-log.jpg' | relative_url }}" alt="Fan-out con SNS y SQS frente a fan-out con un log">
   <figcaption>
     <span class="figura-label">Figura</span>
     la comparación del fan-out — a la izquierda, con colas: &quot;SERVICIO PRODUCTOR&quot; → óvalo &quot;SNS&quot; → rectángulo &quot;SQS&quot; → &quot;SERVICIO CONSUMIDOR&quot;, con la leyenda &quot;el consumidor quita los mensajes de la cola&quot;; a la derecha, con log: &quot;SERVICIO PRODUCTOR&quot; → una tira de celdas rotulada &quot;TOPIC&quot;, con dos consumidores que apuntan con flechas a celdas distintas del log, y la leyenda &quot;el consumidor empieza a consumir directamente porque no destruye el log&quot;
@@ -80,7 +82,8 @@ La razón se sigue de la propiedad que hace posible todo lo demás: como el cons
 
 De ahí la regla práctica de dimensionamiento: conviene que haya más particiones que consumidores. Con una partición y dos consumidores, uno queda ocioso, sin ninguna partición libre que asignarle. Lo ideal es tener muchas particiones y menos consumidores, cada partición leída por exactamente uno.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/figura-11-3-kleppmann.jpg' | relative_url }}" alt="Figura 11-3 de Kleppmann: topics, particiones y consumer group">
   <figcaption>
     <span class="figura-label">Figura</span>
     la figura 11-3 de Kleppmann — &quot;Topic A&quot; con Partition 0 (celdas 1..10) y Partition 1 (1..8); &quot;Topic B&quot; con Partition 0 (1..4), Partition 1 (1..7) y Partition 2 (1..12); dos &quot;Producer client&quot; con flechas de `append` a la punta de las particiones; y un &quot;Consumer group&quot; con dos &quot;Consumer client&quot;, el primero con &quot;offset for B.0 = 4 / offset for B.1 = 5&quot; y el segundo con &quot;offset for B.2 = 9&quot;; anotado a mano debajo, `SEND(TOPIC, KEY, PL)` → `HASH(KEY) % N` ⇒ &quot;FIFO POR PARTICIÓN&quot;
@@ -103,7 +106,8 @@ La primera versión se armó con piezas que ya estudiamos. La biblioteca de Kafk
 
 Hoy el mecanismo es el mismo —los consumidores le piden particiones a un coordinador y el reparto queda en un storage replicado—, pero ya no se usa ZooKeeper: el coordinador está integrado en el propio servicio de Kafka, y lo que reemplazó a ZooKeeper se llama KRaft. Lo que hay que retener es la asimetría: los logs son mucho más simples de lo que uno esperaría —se producen en paralelo y nada más—, pero consumirlos es muchísimo más complicado, y el rebalanceo cuando se muere un nodo no se resuelve con un truco: requiere un subsistema aparte dedicado a distribuir la carga entre los consumidores.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/consumer-group-y-coordinador.png' | relative_url }}" alt="Tres particiones, dos consumidores, coordinador y ZooKeeper">
   <figcaption>
     <span class="figura-label">Figura</span>
     el consumer group y su coordinador — un rectángulo &quot;COORDINADOR&quot; arriba; tres tiras de celdas apiladas a la izquierda, numeradas 1, 2 y 3, que son las particiones; las tiras 1 y 2 conectan con un consumidor C₁ y la tira 3 con un consumidor C₂; del bloque de consumidores sube una flecha al coordinador y otra hacia un cilindro rotulado &quot;ZOOKEEPER&quot;
@@ -119,7 +123,8 @@ La que tiene hoy es una especie de primary-backup, partición por partición. Pa
 
 Lo que funciona ahí es una especie de Raft simplificado, y la simplificación está en el quórum: no hay quórum. Con N réplicas, el primary no le escribe a una mayoría sino a sus N−1 followers, y solo cuando todos confirmaron hace el commit. Ante una falla, la reconciliación se parece a la de Raft: hay una elección de líder —con ZooKeeper en las versiones viejas, con KRaft en las nuevas— y el nuevo líder les fuerza su log a los demás. Pero hay una diferencia que es la parte elegante del diseño. Raft necesita una condición de elegibilidad del líder: no cualquiera tiene todas las entradas comiteadas, y la votación tiene que descartar a los atrasados. Aquí no hace falta: como el commit exigió la confirmación de todos, todas las réplicas tienen por definición todos los mensajes comiteados, y cualquiera puede ser el nuevo líder. Escribirles a todos en lugar de a un quórum se paga en disponibilidad de escritura y se cobra en simplicidad de la elección.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/replicacion-de-particiones.png' | relative_url }}" alt="Cuatro brokers con particiones leader y follower">
   <figcaption>
     <span class="figura-label">Figura</span>
     la replicación de una partición en Kafka — cuatro rectángulos &quot;broker 1&quot; a &quot;broker 4&quot;, cada uno con una sección &quot;logs&quot; que contiene cajas `topic1-part1` y/o `topic1-part2` etiquetadas &quot;leader&quot; o &quot;follower&quot;: el broker 1 tiene `topic1-part1` como leader y los brokers 2 y 3 la tienen como follower; el broker 4 tiene `topic1-part2` como leader y los brokers 2 y 3 la tienen como follower; dos &quot;producer&quot; a los costados apuntan a los dos leaders y flechas grises van de cada leader a sus followers; anotado a mano, &quot;PRIMARY&quot; sobre el leader del broker 1 y &quot;BACKUPS&quot; sobre el arco que abarca sus dos followers

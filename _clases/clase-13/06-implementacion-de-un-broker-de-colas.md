@@ -23,7 +23,8 @@ La salvedad metodológica pesa aquí todavía más. De SQS por dentro no hay doc
 
 La primera opción es la no distribuida, y es literalmente lo que dice su nombre: un broker que atiende los RPCs de productores y consumidores, y detrás una base de datos cualquiera. Vamos a usar Postgres, la más común.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/broker-sobre-postgres.png' | relative_url }}" alt="Un broker sobre un Postgres">
   <figcaption>
     <span class="figura-label">Figura</span>
     opción 1, la versión no distribuida — una flecha entrante desde arriba hacia un rectángulo &quot;BROKER&quot;, y de ahí una flecha hacia abajo a un cilindro de base de datos rotulado &quot;POSTGRES&quot;
@@ -35,7 +36,8 @@ El dibujo no tiene misterio; lo interesante es la pregunta de atrás: ¿cómo se
 
 La tabla es lo mínimo imaginable: un ID, el mensaje y una columna con el visibility timeout. Tres columnas.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/tabla-de-la-cola.png' | relative_url }}" alt="La tabla de la cola: ID, MSG y VISIBILITY_TO">
   <figcaption>
     <span class="figura-label">Figura</span>
     la tabla de la cola — tres columnas rotuladas &quot;ID | MSG | VISIBILITY_TO&quot; y dos filas vacías
@@ -78,7 +80,8 @@ El truco, que se usa mucho más de lo que su aspecto sugeriría, es no usar una 
 
 El worker cambia poco: en lugar de hacer `receive` contra un servicio de cola, consulta la tabla cada tanto —exactamente el `receive` que escribimos en SQL— y toma el job. Y como esa tabla se escribió transaccionalmente con la metadata, si obtiene el job también va a obtener la metadata. Es atómico, sin construir nada.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/flujo-cola-como-tabla.png' | relative_url }}" alt="Frontend y worker compartiendo la base, con SQS detrás">
   <figcaption>
     <span class="figura-label">Figura</span>
     el flujo del patrón cola-como-tabla — un cuadrado &quot;FE&quot; con una flecha hacia abajo a un cilindro de base de datos; a la derecha un cuadrado &quot;WORKER&quot; con una flecha larga curva rotulada &quot;RECEIVE&quot; que vuelve al cilindro; y del worker una flecha hacia un cilindro &quot;SQS&quot; y de ahí a una pila de rectángulos
@@ -101,7 +104,8 @@ Hecho el elogio, la objeción de fondo: la materia se llama Sistemas distribuido
 
 La opción dos ataca la escalabilidad. En lugar de un broker con una base, tres pares de broker más base, cada uno con su storage propio, y el frontend le manda el mensaje a uno o a otro. Es solamente sharding.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/sharding-aleatorio.png' | relative_url }}" alt="Un frontend sobre tres brokers, cada uno con su base">
   <figcaption>
     <span class="figura-label">Figura</span>
     opción 2, sharding — un cuadrado &quot;FE&quot; arriba con tres flechas en abanico hacia tres rectángulos &quot;BROKER&quot; en fila; cada broker tiene debajo su propio cilindro de base de datos, y el primero tiene un punto verde dentro, que es el mensaje guardado
@@ -138,7 +142,8 @@ Al escribir, el frontend elige un shard al azar —por ejemplo, el del medio— 
 
 Hay un detalle en lo que guarda, que es lo que permite borrarlo después: cada réplica guarda el mensaje y la lista de hosts donde quedó, el uno, el dos y el tres. Para eso el nodo que recibió la escritura elige primero a todos los destinatarios y recién después les manda el mensaje con la lista incluida. Así los tres saben dónde están las otras copias.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/sharding-con-replicacion.png' | relative_url }}" alt="Cinco shards con el mensaje copiado a los dos vecinos">
   <figcaption>
     <span class="figura-label">Figura</span>
     opción 3, sharding con replicación — cinco cilindros en fila, los shards; una flecha entrante desde arriba cae sobre el tercero; puntos verdes dentro del 2.º, 3.º y 4.º unidos por líneas verdes horizontales con puntas de flecha hacia ambos lados, que es la replicación a los vecinos; y una flecha verde que baja del cilindro central hacia el rótulo `MSG, [H₁, H₂, H₃]`
@@ -158,7 +163,8 @@ Lo que sigue no es una solución definitiva sino una forma posible de arreglar e
 
 El frontend escribe eligiendo un nodo al azar, como antes. Pero en lugar de dos réplicas simétricas introducimos una jerarquía: el nodo que recibe la escritura es el primary, y elige dos en orden, un secondary y un tertiary, y les escribe el mensaje. Y agregamos la regla que resuelve los duplicados: solo el primary responde mensajes.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/solo-el-primary-responde.png' | relative_url }}" alt="Nodos con un primary caído y sus réplicas 2 y 3">
   <figcaption>
     <span class="figura-label">Figura</span>
     opción 3.1, solo el primary responde — cinco o seis círculos dispuestos en cruz; una flecha rotulada &quot;RCV&quot; y otra entrante desde la izquierda llegan al círculo central, que está tachado con una X roja y rotulado &quot;VISIBILITY TIMEOUT&quot;; de ahí salen dos flechas verdes hacia los círculos ② arriba a la derecha y ③ abajo a la derecha

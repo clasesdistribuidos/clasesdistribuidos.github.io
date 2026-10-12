@@ -27,7 +27,8 @@ Los publishers hacen lo mismo que antes: le mandan sus mensajes a SNS. La difere
 
 La operación que hace eso es la que hay que retener de esta sección: fan-out. *Fan*, en inglés, es ventilador pero también abanico, y la traducción que sirve es la segunda: el mensaje se abre en abanico hacia muchos consumidores. Es la característica principal del publisher-subscriber y resuelve un problema frecuentísimo: multiplicar un mensaje hacia varios destinos.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/fan-out-de-sns.png' | relative_url }}" alt="SNS repartiendo el mismo mensaje a tres consumidores">
   <figcaption>
     <span class="figura-label">Figura</span>
     el fan-out de SNS — dos cuadrados P a la izquierda con flechas hacia un cuadrado &quot;SNS&quot; (cuadrado y no cilindro, deliberadamente, para que no parezca una cola); del SNS salen tres flechas verdes curvas hacia tres cuadrados C apilados, y cada mensaje viaja como un cuadrado verde pequeño rotulado &quot;m₁&quot;; una llave a la derecha de los tres C dice &quot;HETEROGÉNEO&quot; y debajo una llave verde rotulada &quot;FAN-OUT&quot;
@@ -69,7 +70,8 @@ Del otro lado de esa cola hay una flota. Antes eran workers transcodificadores; 
 
 Falta la pieza que dice a quiénes notificar: una base de datos de suscripciones, que no tiene por qué ser exótica —un Postgres alcanza—. El camino del `subscribe` es el más simple: llega a un frontend —típicamente el mismo— que agrega un registro en esa base. Del lado del publish, cuando un notifier toma un mensaje de la cola interna, hace un fetch de las suscripciones de ese tópico, obtiene la lista de destinatarios y hace el fan-out: al suscriptor uno, al dos, al tres. Hasta ahí llega su trabajo y la frontera del sistema: los suscriptores quedan afuera de la línea.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/arquitectura-interna-de-sns.png' | relative_url }}" alt="Frontend, cola SQS, notifier workers y base de suscripciones">
   <figcaption>
     <span class="figura-label">Figura</span>
     la arquitectura interna de SNS — todo dentro de un recuadro punteado verde que marca la frontera del servicio: &quot;PUBLISH&quot; → FRONTEND → cilindro &quot;SQS&quot; → una pila de rectángulos &quot;NOTIFIER WORKERS&quot; → tres cuadrados S₁ / S₂ / S₃ fuera del recuadro, con &quot;SYNC&quot; sobre las flechas de salida; del frontend baja una flecha punteada a un icono de documento rotulado &quot;TOPIC / MENSAJE&quot;; de los notifier workers sale un lazo hacia un segundo cilindro SQS rotulado &quot;LENTOS / RETRY&quot; que vuelve a entrar a los workers, y baja una flecha rotulada &quot;FETCH SUBSCRIPTIONS&quot; a un cilindro de base de datos &quot;SUBSCRIPCIONES&quot;; abajo a la izquierda, un camino aparte: &quot;SUBSCRIBE&quot; → FRONTEND → el mismo cilindro de SUBSCRIPCIONES
@@ -87,7 +89,8 @@ Quedan dos temas, que son el mismo problema visto desde dos distancias. El prime
 
 La primera opción es volver a encolar. El notifier manda el mensaje de vuelta a la cola interna, anotando que quedó pendiente ese suscriptor; otro notifier lo toma más tarde, y se forma una especie de loop. Podría funcionar y sería un buen diseño. El problema es que si los suscriptores caídos o lentos empiezan a fallar en cantidad, llenan la cola de reintentos: los mensajes lentos quedan mezclados con los rápidos y se ralentiza todo, incluidos aquellos cuyos destinatarios funcionaban perfectamente.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/volver-a-encolar.jpg' | relative_url }}" alt="Una cola con mensajes rápidos y lentos mezclados">
   <figcaption>
     <span class="figura-label">Figura</span>
     opción 1, volver a encolar — un cilindro horizontal con cuatro puntos dentro alternando verde y rojo, los mensajes rápidos y lentos mezclados en la misma cola
@@ -97,7 +100,8 @@ La primera opción es volver a encolar. El notifier manda el mensaje de vuelta a
 
 La segunda opción es más ingeniosa: otra cola al lado, de lentos o de retries. Si hay un problema con un suscriptor, el mensaje va ahí, y de esa cola también se consume —quizás con un subconjunto de los workers— hasta que se resuelve. La cola principal, la rápida, que asume que todo funciona, no se ve perjudicada: son colas de distintas velocidades. Es un diseño posible, y con la misma honestidad hay que decir que podría funcionar o no.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/cola-de-retry.jpg' | relative_url }}" alt="Una cola principal y una cola de retry">
   <figcaption>
     <span class="figura-label">Figura</span>
     opción 2, cola dedicada de retry — dos cilindros horizontales lado a lado, el izquierdo con tres puntos verdes rotulado &quot;COLA PRINCIPAL&quot;, el derecho con tres puntos rojos rotulado &quot;COLA RETRY&quot;
@@ -111,7 +115,8 @@ Para evitarlo hay un patrón —ahora es un patrón y no un sistema— que se su
 
 Y de paso se resuelve otro problema. Si un suscriptor no tiene un solo consumidor sino varios que quieren repartirse la carga —el caso más común—, la cola de SQS en el medio encaja perfectamente, porque para eso está: es un balanceador de carga. Fan-out hacia afuera, balanceo de carga hacia dentro de cada suscriptor: los dos primeros modelos combinados, uno detrás del otro.
 
-<figure class="figura">
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-13/fan-out-mas-buffer.png' | relative_url }}" alt="SNS con una cola SQS delante de cada suscriptor">
   <figcaption>
     <span class="figura-label">Figura</span>
     el patrón fan-out + buffer — P --&quot;PUBLISH&quot;--&gt; SNS (rectángulo) → tres flechas en abanico, cada una a un cilindro &quot;SQS&quot; y de ahí a un cuadrado S₁ / S₂ / S₃
