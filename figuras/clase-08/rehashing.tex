@@ -1,0 +1,16 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \i in {0,1,2}
+    \node[caja] (s\i) at (1.6*\i,0) {\var{S}\textsubscript{\i}};
+  \node[caja, draw=segundo, text=segundo] (s3) at (4.8,0) {\var{S}\textsubscript{3}};
+  \draw[msg] (s0.south) to[bend right=40] (s2.south);
+  \draw[msg] (s1.south) to[bend right=40] (s3.south);
+  \draw[msg] (s2.south east) to[bend right=50] (s3.south west);
+  \node[etiq] at (2.4,-1.6) {rehashing};
+  \node[anchor=west] at (6.2,0.15) {MD5(\var{k}) \% \var{N}};
+  \node (tres) at (7.75,-0.55) {3};
+  \draw[acento, line width=1pt] (tres.south west) -- (tres.north east);
+  \node[anchor=west] at (tres.east) {4};
+\end{tikzpicture}\end{figura}
+\end{document}

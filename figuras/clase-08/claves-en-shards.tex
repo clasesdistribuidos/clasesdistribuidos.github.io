@@ -1,0 +1,11 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[hoja/.style={caja, minimum width=22mm, minimum height=18mm}, k/.style={font=\itshape}]
+  \foreach \x/\c in {0/tinta, 3.2/acento, 6.4/segundo} {
+    \node[hoja] at (\x,0) {};
+    \node[k, text=\c] at (\x-0.5,0.4) {k};
+    \node[k, text=\c] at (\x+0.4,0.15) {k};
+    \node[k, text=\c] at (\x-0.25,-0.45) {k};
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

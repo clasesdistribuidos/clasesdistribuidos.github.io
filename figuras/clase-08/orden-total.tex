@@ -1,0 +1,11 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \i/\t in {0/{}, 1/\var{a}, 2/{}, 3/{}, 4/\var{b}}
+    \node[draw, minimum width=11mm, minimum height=7mm, anchor=west] (c\i) at (1.1*\i,0) {\t};
+  \node[etiq, align=right, anchor=east] at ($(c0.west)+(-0.3,0)$) {orden\\total};
+  \node[etiq] (parcial) at ($(c2.south)!0.5!(c3.south)+(0,-1.2)$) {orden parcial};
+  \draw[->] (parcial.north) -- ($(c1.south)+(0.15,-0.05)$);
+  \draw[->] (parcial.north) -- ($(c4.south)+(-0.15,-0.05)$);
+\end{tikzpicture}\end{figura}
+\end{document}

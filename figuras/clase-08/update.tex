@@ -1,0 +1,19 @@
+\input{estilo}
+\newcommand\flecha{\tikz[baseline=-0.55ex]\draw[->] (0,0) -- (0.5,0);}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[nodo/.style={circle, draw=tinta, fill=relleno, minimum size=10mm, font=\small}]
+  \node[anchor=west, font=\ttfamily\small] (get) at (-1.2,2.6) {1. get(k\textsubscript{1}) \flecha\ (v, (0,1,0))};
+  \node[anchor=west, font=\ttfamily\small] at (-1.2,1.8) {2. put(k\textsubscript{1}, v\textsubscript{2}, (0,1,0))};
+  \draw[suave] ($(get.south east)+(-1.3,0.08)$) -- ($(get.south east)+(-0.2,0.08)$);
+  \foreach \x/\n in {0/1, 3.4/2, 6.8/3}
+    \node[nodo] (s\n) at (\x,0) {\var{S}\textsubscript{\n}};
+  \node[etiq, above left=1pt] at (s1.north west) {\var{k}\textsubscript{1}, \var{v}\textsubscript{2}, (1,1,0)};
+  \draw[msg] ($(s1.south)+(0,-1.6)$) -- node[cod, right, pos=0.3] {put} (s1.south);
+  \node[etiq, left=10pt] at ($(s1.south)+(0,-0.7)$) {(0,1,0)};
+  \draw[msg] (s1.60) to[bend left=35] (s2.120);
+  \draw[segundo, line width=1.4pt] ($(s2.north east)+(0.02,0.02)$) -- ++(0.15,-0.17) -- ++(0.32,0.42);
+  \node[etiq] (antes) at ($(s2.south)+(0,-0.45)$) {(0,1,0)};
+  \node[etiq] (despues) at ($(antes)+(0,-0.85)$) {(1,1,0)};
+  \draw[->] (antes) -- (despues);
+\end{tikzpicture}\end{figura}
+\end{document}
