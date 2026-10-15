@@ -1,0 +1,14 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\t/\n in {0/cliente/c, 6.2/servidor/s} {
+    \draw[marco] (\x,0) rectangle ++(2.4,-4.2);
+    \node[font=\small, above] at (\x+1.2,0) {\t};
+    \node[caja] (a\n) at (\x+1.2,-1.0) {A};
+    \node[caja] (s\n) at (\x+1.2,-2.7) {S};
+  }
+  % los reintentos
+  \foreach \y in {-2.45, -2.75, -3.05} \draw[msg] (sc.east |- 0,\y) -- (ss.west |- 0,\y);
+  \foreach \dx in {-0.2, 0, 0.2} \draw[msg] ($(ss.north)+(\dx,0)$) -- ($(as.south)+(\dx,0)$);
+\end{tikzpicture}\end{figura}
+\end{document}

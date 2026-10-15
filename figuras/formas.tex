@@ -21,6 +21,9 @@
   % \begin{scope}[on background layer]\node[grupo, fit=(a)(b)] {};\end{scope}
   grupo/.style={draw=segundo, fill=segundo!10, rounded corners=4mm, inner sep=2mm},
   % un paso numerado: \node[paso] {1};
+  % el recuadro de una máquina, un cliente o un servidor que contiene cajas;
+  % se dibuja con un rectangle o con fit=(a)(b)
+  marco/.style={draw=tinta, rounded corners=4pt},
   paso/.style={circle, draw=tinta, fill=white, inner sep=0.8pt, minimum size=4mm, font=\scriptsize},
   % --- tiempo ------------------------------------------------------------
   % un evento sobre una línea de tiempo; el color es opcional: evento=acento
@@ -45,7 +48,9 @@
   llave/.default=6pt,
   % --- piezas armadas: \pic at (x,y) {nombre}; ---------------------------
   % un rechazo, un mensaje perdido: la cruz roja
-  rechazo/.pic={\draw[acento, line width=1.4pt] (-0.16,-0.16) -- (0.16,0.16) (-0.16,0.16) -- (0.16,-0.16);},
+  % {rechazo=segundo} cambia el color, para una segunda falla
+  pics/rechazo/.style={code={\draw[draw=#1, line width=1.4pt] (-0.16,-0.16) -- (0.16,0.16) (-0.16,0.16) -- (0.16,-0.16);}},
+  pics/rechazo/.default=acento,
   % aceptado, al día: la marca verde, que arranca en el punto dado
   ok/.pic={\draw[segundo, line width=1.4pt] (0,0) -- ++(0.15,-0.17) -- ++(0.32,0.42);},
   % la partición de red: el rayo rojo, centrado en el punto dado
@@ -54,6 +59,10 @@
   base/.pic={\def\w{0.5}\def\h{1.1}\def\e{0.15}
     \draw[fill=relleno] (-\w,\h) -- (-\w,0) arc[start angle=180, end angle=360, x radius=\w, y radius=\e] -- (\w,\h);
     \draw[fill=relleno!50!white] (0,\h) ellipse[x radius=\w, y radius=\e];},
+  % una persona, el usuario: con los pies en el punto dado; \pic (p) deja (p-cabeza)
+  persona/.pic={\draw (0,1.05) circle (0.2);
+    \draw (0,0.85) -- (0,0.4) (-0.35,0.7) -- (0.35,0.7) (-0.28,0) -- (0,0.4) -- (0.28,0);
+    \coordinate (-cabeza) at (0,1.05);},
 }
 
 % Tacha un nodo ya dibujado: el líder caído, la máquina que falló.

@@ -1,0 +1,14 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\t in {0/measure, 5/time\_service()} {
+    \draw (\x,0) -- (\x,-7.4);
+    \node[cod, font=\ttfamily\small, above] at (\x,0) {\t};
+  }
+  \draw[msg] (0,-0.9) -- node[cod, above, sloped] {get\_time} (5,-1.7);
+  \draw[msg] (5,-1.8) -- node[etiq, below, sloped] {tiempo} (0,-3.0);
+  \node[cod, left=3pt] at (0,-3.7) {func()};
+  \draw[msg] (0,-4.4) -- node[cod, above, sloped] {get\_time} (5,-5.3);
+  \draw[msg] (5,-5.4) -- node[etiq, below, sloped] {tiempo} (0,-6.8);
+\end{tikzpicture}\end{figura}
+\end{document}

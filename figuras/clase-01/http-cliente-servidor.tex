@@ -1,0 +1,11 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=15mm, minimum height=18mm] (c) at (0,0) {};
+  \node[caja, minimum width=15mm, minimum height=18mm] (s) at (5,0) {};
+  \draw[msg] ($(c.east)+(0,0.45)$) -- node[cod, above] {request} ($(s.west)+(0,0.45)$);
+  \draw[msg] ($(s.west)+(0,-0.35)$) -- node[cod, below] {response} ($(c.east)+(0,-0.35)$);
+  \node[anchor=north, align=center, font=\small] at (c.south) {\\[-4pt]cliente\\[-2pt]\rule{14mm}{0.4pt}\\[-2pt]\textcolor{suave}{Chrome}\\\textcolor{suave}{Safari}};
+  \node[anchor=north, align=center, font=\small] at (s.south) {\\[-4pt]servidor\\[-2pt]\rule{14mm}{0.4pt}\\[-2pt]\textcolor{suave}{Apache}\\\textcolor{suave}{Nginx}};
+\end{tikzpicture}\end{figura}
+\end{document}

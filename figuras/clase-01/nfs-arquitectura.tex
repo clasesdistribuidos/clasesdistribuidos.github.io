@@ -1,0 +1,33 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[b/.style={caja, fill=white, font=\footnotesize, minimum width=#1, minimum height=7mm},
+    b/.default=14mm, nfs/.style={fill=segundo!15}]
+  % cliente
+  \draw[marco] (-0.6,0.4) rectangle (5.6,-5.4);
+  \node[b] (p1) at (0.6,-0.3) {Process1};
+  \node[b, nfs] (p2) at (2.25,-0.3) {Process2};
+  \node at (3.45,-0.3) {…};
+  \node[b] (pn) at (4.65,-0.3) {ProcessN};
+  \node[b=55mm, nfs] (vfs) at (2.65,-1.6) {Virtual File System};
+  \node[b=22mm] (ufs) at (0.8,-2.9) {UNIX File System};
+  \node[b=20mm, nfs] (nc) at (4.3,-2.9) {NFS Client};
+  \node[b=20mm] (ld) at (0.8,-4.2) {Local Disk};
+  \node[font=\small] at (2.65,-5.05) {NFS Client};
+  \foreach \p in {p1,p2,pn} \draw[msg] (\p) -- (\p |- vfs.north);
+  \draw[msg] (ufs |- vfs.south) -- (ufs);
+  \draw[msg] (nc |- vfs.south) -- (nc);
+  \draw[msg] (ufs) -- (ld);
+  % servidor
+  \draw[marco] (6.6,0.4) rectangle (12.5,-5.4);
+  \node[b=55mm, nfs] (svfs) at (9.55,-1.6) {Virtual File System};
+  \node[b=20mm, nfs] (ns) at (7.8,-2.9) {NFS Server};
+  \node[b=22mm, nfs] (sufs) at (11.2,-2.9) {UNIX File System};
+  \node[b=20mm, nfs] (sld) at (11.2,-4.2) {Local Disk};
+  \node[font=\small] at (9.55,-5.05) {NFS Server};
+  \draw[msg] (ns) -- (ns |- svfs.south);
+  \draw[msg] (sufs |- svfs.south) -- (sufs);
+  \draw[msg] (sufs) -- (sld);
+  % la red, que el profesor anotó como el enlace
+  \draw[msg] (nc) -- node[below=2pt, etiq, text=suave, align=center] {enlace\\de red} (ns);
+\end{tikzpicture}\end{figura}
+\end{document}

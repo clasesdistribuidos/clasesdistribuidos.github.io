@@ -1,0 +1,27 @@
+\input{estilo}
+% \capa{x}{primera fila, desde arriba}{filas}{texto}
+\newcommand\capa[4]{\draw[fill=relleno] (#1,-#2*0.55) rectangle ++(2.8,-#3*0.55);
+  \node[font=\small, align=center] at (#1+1.4,-#2*0.55-#3*0.275) {#4};}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \t/\x in {OSI/0, {TCP/IP}/4.2, materia/8.4}
+    \node[font=\small\bfseries, anchor=south] at (\x+1.4,0.1) {\t};
+  % OSI, numerada
+  \foreach \nombre [count=\i from 0] in {aplicación, presentación, sesión, transporte, red, enlace, física} {
+    \capa{0}{\i}{1}{\nombre}
+    \pgfmathtruncatemacro\n{7-\i}
+    \node[etiq, text=suave, anchor=east] at (-0.1,-\i*0.55-0.275) {\n};
+  }
+  % TCP/IP
+  \capa{4.2}{0}{3}{aplicación}
+  \capa{4.2}{3}{1}{transporte}
+  \capa{4.2}{4}{1}{red}
+  \capa{4.2}{5}{2}{acceso a la red}
+  \node[cod, text=suave, anchor=west] at (7.05,-3*0.55-0.275) {TCP/UDP};
+  \node[cod, text=suave, anchor=west] at (7.05,-4*0.55-0.275) {IP};
+  % el de la materia
+  \capa{8.4}{0}{4}{end to end}
+  \capa{8.4}{4}{1}{red}
+  \capa{8.4}{5}{2}{enlace}
+\end{tikzpicture}\end{figura}
+\end{document}

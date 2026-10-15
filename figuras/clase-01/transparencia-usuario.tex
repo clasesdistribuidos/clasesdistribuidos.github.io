@@ -1,0 +1,12 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \pic (p) at (0,-0.9) {persona};
+  \draw[fill=relleno] (4.6,0) circle (1.9);
+  % el borde que ve desde afuera
+  \draw[line width=2.2pt] (4.6,0) ++(145:1.9) arc[start angle=145, end angle=215, radius=1.9];
+  \foreach \p/\s in {(4.9,0.9)/4mm, (5.6,0.4)/2.5mm, (4.3,-0.3)/4mm, (5.3,-0.8)/3.5mm}
+    \node[componente, minimum size=\s, draw=suave] at \p {};
+  \draw[respuesta] ($(p-cabeza)+(0.3,0)$) -- ($(4.6,0)+(155:1.95)$);
+\end{tikzpicture}\end{figura}
+\end{document}

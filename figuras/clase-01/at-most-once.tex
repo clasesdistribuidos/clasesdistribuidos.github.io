@@ -1,0 +1,17 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\n in {0/c, 6.2/s} {
+    \draw[marco] (\x,0) rectangle ++(2.4,-4.2);
+    \node[caja] (a\n) at (\x+1.2,-1.0) {A};
+    \node[caja] (s\n) at (\x+1.2,-2.7) {S};
+  }
+  \draw[msg] (ac) -- (sc);
+  \draw[msg] (sc) -- (ss);
+  \draw[msg] (ss) -- (as);
+  \draw[llave, decoration={mirror}] (2.6,-3.4) -- (6.0,-3.4);
+  \node[cod, font=\ttfamily\small] (udp) at (4.3,-4.15) {UDP};
+  \draw[acento, line width=1pt] (udp.south west) -- (udp.north east);
+  \node[cod, font=\ttfamily\small] at (4.3,-4.65) {TCP};
+\end{tikzpicture}\end{figura}
+\end{document}

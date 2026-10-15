@@ -17,6 +17,8 @@
   \begin{scope}[on background layer]\node[grupo, fit=(g1)(g2)] {};\end{scope}
                                                             \node[nombre] at (13.9,-0.75) {grupo, fit=(a)(b)};
   \node[paso] at (16.4,0) {1};                              \node[nombre] at (16.4,-0.7) {paso};
+  \draw[marco] (17.6,-0.5) rectangle (19.2,0.5); \node[caja, minimum width=8mm] at (18.4,0) {A};
+                                                            \node[nombre] at (18.4,-0.7) {marco};
   % --- tiempo
   \fila{-1.9}{tiempo};
   \draw[vida] (0.4,-2.4) -- (0.4,-3.6);                     \node[nombre] at (0.4,-3.7) {vida};
@@ -30,7 +32,8 @@
   \draw[implica] (14.6,-2.6) -- (14.6,-3.4);                \node[nombre] at (14.6,-3.7) {implica};
   % --- marcas
   \fila{-4.7}{marcas};
-  \pic at (0.4,-5.7) {rechazo};                             \node[nombre] at (0.4,-6.3) {rechazo};
+  \pic at (0.1,-5.7) {rechazo}; \pic at (0.7,-5.7) {rechazo=segundo};
+                                                            \node[nombre] at (0.4,-6.3) {rechazo[=color]};
   \pic at (2.15,-5.75) {ok};                                \node[nombre] at (2.4,-6.3) {ok};
   \pic at (4.4,-5.6) {particion};                           \node[nombre] at (4.4,-6.5) {particion};
   \pic at (6.4,-6.1) {base};                                \node[nombre] at (6.4,-6.5) {base};
@@ -38,6 +41,7 @@
   \draw[llave] (9.8,-5.4) -- (11.4,-5.4) node[midway, above=6pt, etiq, text=suave] {anotación};
                                                             \node[nombre] at (10.6,-6.3) {llave[=amplitud]};
   \node at (13.4,-5.6) {\var{a} \flecha\ \var{b}};          \node[nombre] at (13.4,-6.3) {\textbackslash flecha};
+  \pic at (15.6,-6.1) {persona};                            \node[nombre] at (15.6,-6.3) {persona};
   % --- texto
   \fila{-7.2}{texto};
   \node[etiq] at (0.6,-8.0) {rótulo};                       \node[nombre] at (0.6,-8.5) {etiq};
