@@ -1,0 +1,18 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % el tiempo corre hacia arriba
+  \foreach \x/\n in {0/{\var{P}\textsubscript{1}}, 3/\var{T}, 6/{\var{P}\textsubscript{2}}} {
+    \draw[->] (\x,0) -- (\x,6.2);
+    \node[below] at (\x,0) {\n};
+  }
+  \draw[msg] (0,1.4) -- (3,2.7);
+  \draw[msg] (3,2.7) -- node[etiq, above, sloped] {\var{T}\textsubscript{1}} (0,3.9);
+  \node[evento] at (0,4.75) {};
+  \node[etiq, right=3pt] at (0,4.75) {\var{e}\textsubscript{1}, \var{T}\textsubscript{1}};
+  \draw[msg] (6,1.6) -- (3,3.8);
+  \draw[msg] (3,3.8) -- node[etiq, above, sloped] {\var{T}\textsubscript{2}} (6,4.75);
+  \node[evento] at (6,5.6) {};
+  \node[etiq, right=3pt] at (6,5.6) {\var{e}\textsubscript{2}, \var{T}\textsubscript{2}};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,25 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[y=0.95cm]
+  \foreach \x/\p in {0/P, 4/Q, 8/R} {
+    \draw (\x,0) -- (\x,7.6);
+    \node[font=\small, above] at (\x,7.6) {proceso \var{\p}};
+  }
+  % eventos: nombre, x, y, lado del rótulo
+  % eventos: proceso, número, x, y, lado del rótulo
+  \foreach \l/\i/\x/\y/\lado in {p/1/0/0.7/left, p/2/0/2.7/left, p/3/0/4.8/left, p/4/0/6.8/left,
+      q/1/4/0.75/right, q/2/4/1.8/right, q/3/4/2.75/right, q/4/4/3.8/below right,
+      q/5/4/4.8/right, q/6/4/5.8/right, q/7/4/6.75/right,
+      r/1/8/0.7/right, r/2/8/2.75/right, r/3/8/4.7/right, r/4/8/6.75/right} {
+    \node[evento] (\l\i) at (\x,\y) {};
+    \node[etiq, \lado=2pt] at (\l\i) {\var{\l}\textsubscript{\i}};
+  }
+  \draw[onda] (p1) -- (q2);
+  \draw[onda] (q1) -- (p2);
+  \draw[onda] (q1) -- (r4);
+  \draw[onda] (q4) -- (r3);
+  \draw[onda] (q5) -- (p4);
+  \draw[onda] (r2) -- (q7);
+  \draw[->, suave] (-1.2,0.3) -- node[etiq, sloped, above] {tiempo} (-1.2,2.3);
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,19 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % cliente: la aplicación y su capa at-least-once
+  \draw[marco] (0,0) rectangle (3.4,-4.4);
+  \node[caja, minimum width=28mm, minimum height=12mm] (app) at (1.7,-1.0) {};
+  \node[caja, minimum width=24mm, minimum height=12mm] (alo) at (1.7,-3.2) {ALO};
+  \draw[msg] (app) -- node[cod, right] {add} (alo);
+  % servidor
+  \draw[marco] (6.6,0) rectangle (9.6,-4.4);
+  \node[caja, minimum width=18mm, minimum height=10mm] (sapp) at (7.9,-1.0) {app};
+  \pic[scale=0.35] at (9.15,-1.15) {base};
+  \node[caja, minimum width=20mm, minimum height=12mm] (stub) at (7.9,-3.2) {};
+  \foreach \dx in {-0.25, 0, 0.25} \draw[msg] ($(stub.north)+(\dx,0)$) -- ($(sapp.south)+(\dx,0)$);
+  % el mismo pedido, tres veces
+  \foreach \y in {-2.85, -3.2, -3.55} \draw[msg] (alo.east |- 0,\y) -- (stub.west |- 0,\y);
+  \node[cod, font=\ttfamily\small, anchor=north] at (4.8,-4.8) {add\_plata(suma, idempotency\_id)};
+\end{tikzpicture}\end{figura}
+\end{document}

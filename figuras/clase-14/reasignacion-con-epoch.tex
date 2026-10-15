@@ -1,0 +1,16 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=16mm, minimum height=10mm] (m) at (4,3) {master};
+  \node[caja] (n) at (0.5,1) {N};
+  \node[caja, minimum width=24mm, minimum height=12mm] (s) at (0.5,-1.6) {backing store};
+  \node[caja, minimum width=18mm, minimum height=10mm, align=center] (z) at (6.2,-1.6) {N\\[-1pt]\footnotesize\textit{zombie}};
+  \draw[msg] (m.west) to[bend right=25]
+    node[cod, above left, align=right] {assign(compute\_id,\\rango, epoch)} (n.north);
+  \draw[msg] (n.east) to[bend right=25]
+    node[cod, below right] {renew()} (m.south);
+  \draw[msg] (n.south) -- node[cod, left, align=right] {reload\_state(compute\_id,\\intervalo, epoch = 4)} (s.north);
+  \draw[msg] (z.west) -- node[cod, below=4pt, align=center] {set\_state(state,\\epoch = 3)} (s.east);
+  \pic at ($(z.west)!0.5!(s.east)$) {rechazo};
+\end{tikzpicture}\end{figura}
+\end{document}

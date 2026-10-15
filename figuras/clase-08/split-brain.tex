@@ -1,0 +1,11 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \i in {1,...,4}
+    \node[nodo] (n\i) at (1.5*\i,0) {};
+  \draw[msg] (n1.70) to[bend left=30] (n4.110);
+  \draw[msg] (n4.-110) to[bend left=30] (n1.-70);
+  \draw[msg] (-0.2,-1.0) -- node[cod, above, sloped] {put} (n1.west);
+  \draw[msg] (7.7,-1.0) -- node[cod, above, sloped] {put} (n4.east);
+\end{tikzpicture}\end{figura}
+\end{document}

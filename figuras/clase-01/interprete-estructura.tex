@@ -1,0 +1,40 @@
+\input{estilo}
+\usetikzlibrary{shapes.geometric}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[font=\small,
+    etapa/.style={caja, fill=white, minimum width=30mm, minimum height=9mm, align=center},
+    ref/.style={ellipse, draw=tinta, fill=white, align=center, inner sep=1pt, minimum width=24mm},
+    gris/.style={fill=relleno, draw=none},
+    dato/.style={->, dashed}]
+  % el intérprete
+  \draw[dashed] (0,0) rectangle (10.4,-7.2);
+  \node[anchor=north west] at (0.1,-0.05) {Interpreter};
+  \node[ref] (iref) at (1.6,-1.6) {Instruction\\reference};
+  \node[ref] (eref) at (8.9,-1.1) {Environment\\reference};
+  \fill[gris] (0.5,-2.7) rectangle (2.8,-6.1);
+  \node[align=center] (rep) at (1.65,-4.4) {Instruction\\repertoire};
+  \node[etapa] (traer) at (5.8,-1.9) {Retrieve next\\instruction};
+  \node[etapa] (interp) at (5.8,-3.4) {Interpret retrieved\\instruction};
+  \node[etapa, minimum width=24mm] (int) at (5.8,-4.9) {Interrupt\\signal?};
+  \node[etapa, minimum width=34mm] (camb) at (8.3,-6.45) {Change instruction\\and environment\\reference};
+  % la memoria, afuera
+  \fill[gris] (10.7,-2.6) rectangle (12.9,-6.7);
+  \node[anchor=south] at (11.8,-2.6) {Memory};
+  \node (instr) at (11.8,-3.6) {Instructions};
+  \node (data) at (11.8,-5.1) {Data};
+  % el ciclo
+  \draw[->] (int.south) -- node[right, pos=0.3] {No} (5.8,-6.45) -| (3.5,-0.7) -| (traer.north);
+  \draw[->] (traer) -- (interp);
+  \draw[->] (interp) -- (int);
+  \draw[->] (int.east) -- node[above] {Yes} (8.3,-4.9) -- (camb.north);
+  \draw (camb.west) -- (5.8,-6.45);
+  % referencias y datos
+  \draw[dato] (iref) -- (traer.west);
+  \draw[dato] (eref) -- (traer.east);
+  \draw[dato] (eref) -- (interp.east);
+  \draw[dato] (rep) -- (interp.west);
+  \draw[dato] (instr.west) -- (traer.south east);
+  \draw[dato, <->] (data.west) -- (interp.south east);
+  \draw[dato] ($(camb.west)+(0,-0.35)$) to[out=180, in=-90] (3.15,-5.2) to[out=90, in=-60] (iref.south east);
+\end{tikzpicture}\end{figura}
+\end{document}

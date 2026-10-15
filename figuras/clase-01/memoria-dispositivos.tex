@@ -1,0 +1,16 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % la figura 2.1 del Saltzer, tal cual
+  \node[fill=relleno, align=left, font=\small, inner sep=8pt, anchor=north west] at (0,0) {%
+    Hardware memory devices:\\
+    \quad RAM chip\\ \quad Flash memory\\ \quad Magnetic tape\\
+    \quad Magnetic disk\\ \quad CD-R and DVD-R\\[2pt]
+    Higher level memory systems:\\
+    \quad RAID\\ \quad File system\\ \quad Database management system};
+  % la interfaz que anotó el profesor
+  \node[font=\ttfamily\small, anchor=north west, align=left] at (6.8,-0.3) {%
+    write(nombre, valor)\\[8pt]
+    valor \tikz[baseline=-0.55ex]\draw[<-] (0,0) -- (0.5,0); read(nombre)};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,12 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \draw[marco, fill=white] (0,0) rectangle (3.6,-3.0);
+  \node[caja, minimum width=30mm, minimum height=8mm] (app) at (1.8,-0.75) {app};
+  \node[caja, minimum width=30mm, minimum height=10mm] (rpc) at (1.8,-2.15) {RPC};
+  \node[caja, minimum width=36mm, minimum height=8mm] (red) at (1.8,-4.0) {red};
+  \draw[<->, line width=1pt] (rpc.south) -- node[cod, right=2pt] {sockets} (red.north);
+  \draw[llave] (3.85,0) -- (3.85,-3.0) node[midway, right=8pt, etiq, text=tinta, font=\small, align=left] {end\\to end};
+  \draw[llave, decoration={mirror}] (-0.25,-1.6) -- (-0.25,-2.7) node[midway, left=8pt, font=\small] {middleware};
+\end{tikzpicture}\end{figura}
+\end{document}

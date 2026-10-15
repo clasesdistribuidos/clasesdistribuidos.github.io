@@ -1,0 +1,18 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[y=1.3cm]
+  \foreach \y/\n in {2/1, 1/2, 0/3} {
+    \draw[->] (0,\y) -- (9,\y);
+    \node[left] at (0,\y) {\var{p}\textsubscript{\n}};
+  }
+  \node[etiq, right, align=left] at (9,1) {tiempo\\físico};
+  \foreach \e/\x/\y/\v/\lado in {a/0.9/2/{(1,0,0)}/above, b/2.3/2/{(2,0,0)}/above, c/4.4/1/{(2,1,0)}/above right,
+      d/5.8/1/{(2,2,0)}/above, e/1.4/0/{(0,0,1)}/above, f/7.9/0/{(2,2,2)}/above right} {
+    \node[evento] (\e) at (\x,\y) {};
+    \node[etiq, \lado=2pt] at (\e) {\v};
+    \node[etiq, below=2pt] at (\e) {\var{\e}};
+  }
+  \draw[msg] (b) -- node[etiq, above right] {\var{m}\textsubscript{1}} (c);
+  \draw[msg] (d) -- node[etiq, above right] {\var{m}\textsubscript{2}} (f);
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,15 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja] (a) {A};
+  \node[caja, right=14mm of a] (b) {B};
+  \node[caja, right=14mm of b] (c) {C};
+  \draw[msg] (a) -- (b);
+  \draw[msg] (b) -- (c);
+  \foreach \n/\h in {a/8:30, b/8:20, c/8:10}
+    \node[etiq, text=acento, above=1mm of \n] {\var{W} = \h};
+  \node[anchor=north west, align=left, font=\small] at ($(a.south west)+(0,-0.6)$) {%
+    \var{W}(A) ≥ \var{W}(B) ≥ \var{W}(C)\\[4pt]
+    \var{W}(B) = min\,(\var{W}(A),\ trabajo más viejo pendiente en B)};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,22 @@
+% Grilla de referencia para el PDF de revisión (render_figuras.py --revision).
+% Va detrás del dibujo, en cm absolutos y numerada en los bordes, para que las
+% correcciones a mano puedan decir "subilo a la altura 2". Nunca llega al sitio.
+\usetikzlibrary{backgrounds}
+\newcommand\grilla{%
+  \pgfpointanchor{current bounding box}{south west}\pgfgetlastxy\gxa\gya
+  \pgfpointanchor{current bounding box}{north east}\pgfgetlastxy\gxb\gyb
+  \pgfmathtruncatemacro\gxi{floor(\gxa/28.45274)}\pgfmathtruncatemacro\gxf{ceil(\gxb/28.45274)}
+  \pgfmathtruncatemacro\gyi{floor(\gya/28.45274)}\pgfmathtruncatemacro\gyf{ceil(\gyb/28.45274)}
+  \begin{scope}[x=1cm, y=1cm, on background layer]
+    \draw[black!10, line width=0.2pt, step=0.5] (\gxi,\gyi) grid (\gxf,\gyf);
+    \draw[black!22, line width=0.3pt, step=1] (\gxi,\gyi) grid (\gxf,\gyf);
+    \foreach \x in {\gxi,...,\gxf} \node[font=\scriptsize, text=black!45, below] at (\x,\gyi) {\x};
+    \foreach \y in {\gyi,...,\gyf} \node[font=\scriptsize, text=black!45, left] at (\gxi,\y) {\y};
+  \end{scope}}
+% Solo en el dibujo de afuera: un \tikz metido en un texto (como \flecha)
+% también es un picture, y con su propia grilla se inflaba hasta ocupar
+% centímetros enteros.
+\newcount\grillanivel
+\tikzset{every picture/.append style={
+  execute at begin picture={\global\advance\grillanivel by 1\relax},
+  execute at end picture={\ifnum\grillanivel=1 \grilla\fi\global\advance\grillanivel by -1\relax}}}

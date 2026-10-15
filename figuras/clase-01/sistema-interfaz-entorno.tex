@@ -1,0 +1,24 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % el sistema
+  \draw[fill=relleno] (0,0) ellipse (3.0 and 2.3);
+  \node[componente] (n1) at (-1.2,1.1) {};
+  \node[componente] (n2) at (0.6,1.0) {};
+  \node[componente] (n3) at (-0.5,0.0) {};
+  \node[componente] (n4) at (-1.5,-0.9) {};
+  \node[componente] (n5) at (0.9,-1.2) {};
+  \draw[msg] (n2) -- (n1);
+  \draw[msg] (n1) -- (n3);
+  \draw[msg] (n3) -- (n4);
+  \draw[<->] (n3) -- (n5);
+  % la interfaz, sobre la frontera
+  \coordinate (i) at (2.82,0.78);
+  \fill[tinta] ($(i)+(-0.11,-0.11)$) rectangle ++(0.22,0.22);
+  \draw[msg] ($(i)+(0.11,0)$) -- ++(1.4,0)
+    node[etiq, font=\small, right, align=left] {interfaz\\[-1pt]\textcolor{suave}{\footnotesize API, endpoints}};
+  % el entorno
+  \draw[msg] (-4.3,-2.5) -- (-2.45,-1.33);
+  \node[etiq, font=\small, anchor=north west] at (-4.4,-2.6) {entorno};
+\end{tikzpicture}\end{figura}
+\end{document}

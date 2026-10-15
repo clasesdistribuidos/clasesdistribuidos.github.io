@@ -1,0 +1,17 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=17mm, minimum height=17mm] (c) at (0,0) {C};
+  \node[caja, minimum width=17mm, minimum height=17mm] (s) at (4.4,0) {};
+  \node[caja, fill=white, minimum width=5mm, minimum height=4mm] at (s) {};
+  \draw[msg] ($(c.east)+(0,0.35)$) -- ($(s.west)+(0,0.35)$);
+  \draw[msg] ($(s.west)+(0,-0.35)$) -- ($(c.east)+(0,-0.35)$);
+  \pic at (1.9,0.35) {rechazo};
+  \pic at (2.5,-0.35) {rechazo=segundo};
+  % las dos fallas
+  \node[paso, draw=acento, text=acento] (u) at (7.0,0.55) {1};
+  \node[etiq, font=\small, text=acento, anchor=west, right=3pt of u] {no llegó al server};
+  \node[paso, draw=segundo, text=segundo] (d) at (7.0,-0.45) {2};
+  \node[etiq, font=\small, text=segundo, anchor=west, right=3pt of d] {no llegó la respuesta};
+\end{tikzpicture}\end{figura}
+\end{document}

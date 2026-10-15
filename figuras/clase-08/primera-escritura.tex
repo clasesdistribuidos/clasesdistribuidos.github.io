@@ -1,0 +1,11 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\n in {0/1, 3.4/2, 6.8/3}
+    \node[nodo] (s\n) at (\x,0) {\var{S}\textsubscript{\n}};
+  \node[etiq, above=3pt] at (s2.north) {\var{k}\textsubscript{1}, \var{v}\textsubscript{1}, (0,1,0)};
+  \draw[msg] ($(s2.south)+(0,-1.7)$) -- node[cod, right] {put(k\textsubscript{1}, v\textsubscript{1})} (s2.south);
+  \draw[msg] (s2.-150) to[bend left=35] node[etiq, below left] {\var{k}\textsubscript{1}, \var{v}\textsubscript{1}, (0,1,0)} (s1.-30);
+  \draw[msg] (s2.-30) to[bend right=35] (s3.-150);
+\end{tikzpicture}\end{figura}
+\end{document}

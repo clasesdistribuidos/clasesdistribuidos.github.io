@@ -1,0 +1,17 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \anillo
+  % el corte del espacio de claves
+  \node[etiq, anchor=south east] at ($(90:\R+0.15)+(-0.08,0)$) {2\textsuperscript{128}\,−\,1};
+  \node[etiq, anchor=south west] at ($(90:\R+0.15)+(0.08,0)$) {0};
+  % servidores
+  \foreach \ang/\n/\pos in {60/0/south west, -70/1/north east, 180/2/east} {
+    \nodoanillo{\ang}{\var{S}\textsubscript{\n}}{\pos}
+  }
+  % la clave y su avance hasta el primer servidor
+  \claveanillo{35}
+  \node[etiq, segundo, anchor=south west] at (37:\R+0.25) {clave};
+  \draw[->] (31:\R+0.4) arc[start angle=31, end angle=-66, radius=\R+0.4];
+\end{tikzpicture}\end{figura}
+\end{document}

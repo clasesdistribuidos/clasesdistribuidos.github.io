@@ -1,0 +1,32 @@
+\input{estilo}
+\newcommand\mU{\textcolor{tinta}{(1A, \var{M}\textsubscript{1})}}
+\newcommand\mD{\textcolor{acento}{(4B, \var{M}\textsubscript{2})}}
+\newcommand\mT{\textcolor{segundo}{(1C, \var{M}\textsubscript{3})}}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\n in {0/A, 2.6/B, 5.2/C} {
+    \draw (\x,0) -- (\x,-8);
+    \node[above] at (\x,0) {\n};
+  }
+  % eventos: nombre, x, y, valor del reloj, lado
+  \foreach \e/\x/\y/\v/\lado/\c in {a1/0/-0.95/1/left/tinta, a5/0/-3.5/5/left/acento, a6/0/-7.55/6/left/segundo,
+      b2/2.6/-1.45/2/right/tinta, b3/2.6/-2.3/3/left/segundo, b4/2.6/-2.8/4/right/acento,
+      c1/5.2/-1.1/1/right/segundo, c5/5.2/-3.55/5/right/acento, c6/5.2/-6.0/6/right/tinta} {
+    \node[evento=\c] (\e) at (\x,\y) {};
+    \node[etiq, \lado=2pt] at (\e) {\v};
+  }
+  \draw[msg, tinta] (a1) -- node[etiq, above, sloped] {\mU} (b2);
+  \draw[msg, tinta] (a1) -- node[etiq, above, sloped, pos=0.78] {\mU} (c6);
+  \draw[msg, segundo] (c1) -- node[etiq, above, sloped] {\mT} (b3);
+  \draw[msg, segundo] (c1) -- node[etiq, above, sloped, pos=0.8] {\mT} (a6);
+  \draw[msg, acento] (b4) -- node[etiq, above, sloped] {\mD} (a5);
+  \draw[msg, acento] (b4) -- node[etiq, above, sloped] {\mD} (c5);
+  \node[anchor=north west, align=left, font=\small] at (6.4,-0.6) {%
+    colas\\[4pt]
+    A:\enspace\mU\ \mD\ \mT\\[2pt]
+    B:\enspace\mU\ \mT\ \mD\\[2pt]
+    C:\enspace\mT\ \mD\ \mU\\[12pt]
+    orden total\\[4pt]
+    \mU\ \mT\ \mD};
+\end{tikzpicture}\end{figura}
+\end{document}

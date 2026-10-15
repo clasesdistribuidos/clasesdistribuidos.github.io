@@ -1,0 +1,20 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \def\R{2.4} \def\d{0.38}
+  % el lazo que abraza los tres nodos consecutivos (de -50° a -182°, en sentido horario)
+  \draw[segundo, fill=segundo!10]
+    (-50:\R+\d) arc[start angle=-50, end angle=-182, radius=\R+\d]
+    arc[start angle=-182, end angle=-362, radius=\d]
+    arc[start angle=-182, end angle=-50, radius=\R-\d]
+    arc[start angle=130, end angle=-50, radius=\d];
+  \anillo
+  \foreach \ang in {125, 30} \nodoanillo{\ang}{}{center}
+  \foreach \ang in {-60, -110, -172} \nodoanillo[segundo]{\ang}{}{center}
+  % la clave y su avance
+  \claveanillo{-15}
+  \node[etiq, segundo, anchor=west] at (-12:\R+0.25) {\var{k}};
+  \draw[->, segundo] (-19:\R+0.6) arc[start angle=-19, end angle=-52, radius=\R+0.6];
+  \node[etiq, segundo, anchor=north west] at (-75:\R+0.45) {preference list};
+\end{tikzpicture}\end{figura}
+\end{document}

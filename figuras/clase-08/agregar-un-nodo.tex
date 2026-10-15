@@ -1,0 +1,19 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \anillo
+  % los tres servidores de antes
+  \foreach \ang/\n/\pos in {45/0/south west, -95/1/north west, 150/2/south east} {
+    \nodoanillo{\ang}{\var{S}\textsubscript{\n}}{\pos}
+  }
+  % el nuevo, entre S1 y S2
+  \fill[acento] (205:\R) circle (2.8pt);
+  \node[etiq, acento, anchor=west] at (209:\R-0.15) {\var{S}\textsubscript{3}};
+  % el arco viejo de S2, partido en dos
+  \draw[->] (-100:\R+0.4) arc[start angle=-100, end angle=-148, radius=\R+0.4];
+  \draw[->] (196:\R+0.4) arc[start angle=196, end angle=158, radius=\R+0.4];
+  % la transferencia, desde un único vecino
+  \draw[->, acento, dashed] (150:\R-0.35) arc[start angle=150, end angle=200, radius=\R-0.35]
+    node[etiq, midway, right] {claves};
+\end{tikzpicture}\end{figura}
+\end{document}

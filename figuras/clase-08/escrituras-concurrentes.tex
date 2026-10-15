@@ -1,0 +1,13 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\n in {0/1, 3/2, 6/3}
+    \node[nodo] (s\n) at (\x,0) {\var{S}\textsubscript{\n}};
+  \node[left=3mm of s1] {(1,1,0)};
+  \node[right=3mm of s3] {(0,1,1)};
+  \draw[msg, segundo] (s1.60) to[bend left=35] node[above, etiq] {(1,1,0)} (s3.120);
+  \draw[msg, acento] (s3.-120) to[bend left=35] node[below, etiq] {(0,1,1)} (s1.-60);
+  \foreach \n in {1,3}
+    \draw[msg] ($(s\n.south)+(-0.15,-1.6)$) -- node[cod, right] {put} ($(s\n.south)+(-0.15,-0.03)$);
+\end{tikzpicture}\end{figura}
+\end{document}

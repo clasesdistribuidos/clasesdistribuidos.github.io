@@ -1,0 +1,19 @@
+\input{estilo}
+\usetikzlibrary{shapes.symbols}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[srv/.style={caja, minimum width=8mm, minimum height=7mm}]
+  \pic (u) at (0,-0.55) {persona};
+  \node[cloud, cloud puffs=11, aspect=1.8, draw=tinta, fill=white, minimum width=18mm, minimum height=11mm] (net) at (2.2,0) {};
+  \node[etiq, text=suave, below=7pt] at (net.south) {internet};
+  \node[caja, minimum width=8mm] (lb) at (4.6,0) {};
+  \node[etiq, align=center, below=2pt] at (lb.south) {load\\balancer};
+  \foreach \i/\y in {1/1.9, 2/0.95, 3/0, 4/-0.95, 5/-1.9}
+    \node[srv] (s\i) at (6.8,\y) {};
+  \node[etiq, align=center, below=2pt] at (s5.south) {servidores\\HTTP};
+  \pic at (10.4,-0.55) {base};
+  \draw (0.45,0.15) -- (net.west);
+  \draw (net.east) -- (lb.west);
+  \draw (lb.east) -- (s2.west);
+  \draw[respuesta] (s3.east) -- node[cod, above] {SQL} (9.85,0);
+\end{tikzpicture}\end{figura}
+\end{document}
