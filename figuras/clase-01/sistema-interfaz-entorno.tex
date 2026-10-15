@@ -1,13 +1,13 @@
 \input{estilo}
 \begin{document}
-\begin{figura}\begin{tikzpicture}[comp/.style={circle, draw=tinta, fill=white, minimum size=5mm, inner sep=0pt}]
+\begin{figura}\begin{tikzpicture}
   % el sistema
   \draw[fill=relleno] (0,0) ellipse (3.0 and 2.3);
-  \node[comp] (n1) at (-1.2,1.1) {};
-  \node[comp] (n2) at (0.6,1.0) {};
-  \node[comp] (n3) at (-0.5,0.0) {};
-  \node[comp] (n4) at (-1.5,-0.9) {};
-  \node[comp] (n5) at (0.9,-1.2) {};
+  \node[componente] (n1) at (-1.2,1.1) {};
+  \node[componente] (n2) at (0.6,1.0) {};
+  \node[componente] (n3) at (-0.5,0.0) {};
+  \node[componente] (n4) at (-1.5,-0.9) {};
+  \node[componente] (n5) at (0.9,-1.2) {};
   \draw[msg] (n2) -- (n1);
   \draw[msg] (n1) -- (n3);
   \draw[msg] (n3) -- (n4);

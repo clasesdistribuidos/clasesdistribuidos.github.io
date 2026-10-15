@@ -1,6 +1,6 @@
 \input{estilo}
 \begin{document}
-\begin{figura}\begin{tikzpicture}[nodo/.style={circle, draw=tinta, fill=relleno, minimum size=8mm}]
+\begin{figura}\begin{tikzpicture}
   \foreach \i in {1,...,4}
     \node[nodo] (n\i) at (1.5*\i,0) {};
   \draw[msg] (n1.70) to[bend left=30] (n4.110);

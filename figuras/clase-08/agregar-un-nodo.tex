@@ -1,13 +1,10 @@
 \input{estilo}
 \begin{document}
 \begin{figura}\begin{tikzpicture}
-  \def\R{2.4}
-  \draw (0,0) circle (\R);
-  \draw[line width=1.4pt] (90:\R-0.2) -- (90:\R+0.2);
+  \anillo
   % los tres servidores de antes
   \foreach \ang/\n/\pos in {45/0/south west, -95/1/north west, 150/2/south east} {
-    \fill (\ang:\R) circle (2.4pt);
-    \node[etiq, anchor=\pos] at (\ang:\R+0.12) {\var{S}\textsubscript{\n}};
+    \nodoanillo{\ang}{\var{S}\textsubscript{\n}}{\pos}
   }
   % el nuevo, entre S1 y S2
   \fill[acento] (205:\R) circle (2.8pt);

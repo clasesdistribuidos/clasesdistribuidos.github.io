@@ -1,6 +1,6 @@
 \input{estilo}
 \begin{document}
-\begin{figura}\begin{tikzpicture}[nodo/.style={circle, draw=tinta, fill=relleno, minimum size=9mm, font=\small}]
+\begin{figura}\begin{tikzpicture}
   \foreach \x/\n in {0/1, 3/2, 6/3}
     \node[nodo] (s\n) at (\x,0) {\var{S}\textsubscript{\n}};
   \node[left=3mm of s1] {(1,1,0)};

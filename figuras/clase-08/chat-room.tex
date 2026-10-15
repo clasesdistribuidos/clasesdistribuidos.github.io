@@ -3,7 +3,7 @@
 \newcommand\mD{\textcolor{acento}{(4B, \var{M}\textsubscript{2})}}
 \newcommand\mT{\textcolor{segundo}{(1C, \var{M}\textsubscript{3})}}
 \begin{document}
-\begin{figura}\begin{tikzpicture}[evento/.style={circle, fill=#1, inner sep=0pt, minimum size=4.5pt}]
+\begin{figura}\begin{tikzpicture}
   \foreach \x/\n in {0/A, 2.6/B, 5.2/C} {
     \draw (\x,0) -- (\x,-8);
     \node[above] at (\x,0) {\n};

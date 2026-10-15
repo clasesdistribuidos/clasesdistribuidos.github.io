@@ -11,6 +11,6 @@
     node[cod, below right] {renew()} (m.south);
   \draw[msg] (n.south) -- node[cod, left, align=right] {reload\_state(compute\_id,\\intervalo, epoch = 4)} (s.north);
   \draw[msg] (z.west) -- node[cod, below=4pt, align=center] {set\_state(state,\\epoch = 3)} (s.east);
-  \draw[acento, line width=1.4pt] ($(z.west)!0.5!(s.east)$) ++(-0.16,-0.16) -- ++(0.32,0.32) ++(-0.32,0) -- ++(0.32,-0.32);
+  \pic at ($(z.west)!0.5!(s.east)$) {rechazo};
 \end{tikzpicture}\end{figura}
 \end{document}

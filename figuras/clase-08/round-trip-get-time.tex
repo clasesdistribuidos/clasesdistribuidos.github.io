@@ -1,6 +1,6 @@
 \input{estilo}
 \begin{document}
-\begin{figura}\begin{tikzpicture}[marca/.style={line width=1pt}]
+\begin{figura}\begin{tikzpicture}[tic/.style={line width=1pt}]
   \foreach \x/\n in {0/1, 4/2} {
     \draw (\x,0) -- (\x,-6.2);
     \node[above] at (\x,0) {\var{P}\textsubscript{\n}};
@@ -13,11 +13,11 @@
   % marcas de tiempo
   \fill (0,-1.2) circle (2pt);
   \node[etiq, left=3pt] at (0,-1.2) {\var{T}\textsubscript{0}};
-  \draw[marca] (-0.12,-3.4) -- (0.12,-3.4) node[etiq, right=2pt] {\var{T}\textsubscript{1}};
+  \draw[tic] (-0.12,-3.4) -- (0.12,-3.4) node[etiq, right=2pt] {\var{T}\textsubscript{1}};
   \node[etiq, left=3pt] at (0,-5.6) {\var{T}\textsubscript{3}};
-  \draw[marca] (3.88,-3.4) -- (4.12,-3.4);
-  \draw[marca] (3.88,-5.0) -- (4.12,-5.0);
-  \draw[segundo, decorate, decoration={brace, amplitude=6pt}] (4.45,-2.0) -- (4.45,-5.0)
+  \draw[tic] (3.88,-3.4) -- (4.12,-3.4);
+  \draw[tic] (3.88,-5.0) -- (4.12,-5.0);
+  \draw[llave, draw=segundo] (4.45,-2.0) -- (4.45,-5.0)
     node[midway, right=7pt, text=tinta] {\var{T}\textsubscript{2}};
 \end{tikzpicture}\end{figura}
 \end{document}

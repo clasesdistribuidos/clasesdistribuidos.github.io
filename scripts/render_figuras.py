@@ -10,6 +10,7 @@ lado de los PNG de 1400 px que hay hoy en assets/.
     python3 scripts/render_figuras.py --clase 14 --png   # además, PNG para revisar
     python3 scripts/render_figuras.py --clase 14 --salida assets/clase-14
     python3 scripts/render_figuras.py --clase 14 --revision  # PDF para corregir a mano
+    python3 scripts/render_figuras.py --catalogo             # las formas de la biblioteca
 
 --revision arma un solo PDF con una página por figura, en el orden en que
 aparecen en el apunte: el recorte de la pizarra a la izquierda, el redibujo con
@@ -132,11 +133,13 @@ def revision(clase: int, texs: list[Path], salida: Path) -> bool:
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    ap.add_argument("--clase", type=int, required=True)
+    ap.add_argument("--clase", type=int)
     ap.add_argument("--salida", type=Path,
                     help="carpeta destino (por defecto figuras/salida/clase-NN, ignorada por git)")
     ap.add_argument("--escala", type=float, default=1.5)
     ap.add_argument("--png", action="store_true", help="también un PNG por figura, para mirarla")
+    ap.add_argument("--catalogo", action="store_true",
+                    help="compila figuras/catalogo.tex, con todas las formas de la biblioteca")
     ap.add_argument("--revision", action="store_true",
                     help="solo el PDF de revisión: recorte y redibujo lado a lado, con grilla")
     args = ap.parse_args()
@@ -144,6 +147,18 @@ def main():
     for herramienta in ("lualatex", "pdftocairo"):
         if not shutil.which(herramienta):
             sys.exit(f"falta {herramienta} en el PATH")
+
+    if args.catalogo:
+        salida = args.salida or FIGURAS / "salida"
+        salida.mkdir(parents=True, exist_ok=True)
+        ok = compilar(FIGURAS / "catalogo.tex", salida, 1.0, True)
+        with tempfile.TemporaryDirectory() as tmp:  # el PDF, para mirarlo en grande
+            pdf = lualatex(FIGURAS / "catalogo.tex", tmp, str(FIGURAS))
+            if pdf:
+                shutil.copy(pdf, salida / pdf.name)
+        sys.exit(0 if ok else 1)
+    if args.clase is None:
+        ap.error("falta --clase (o --catalogo)")
 
     fuentes = FIGURAS / f"clase-{args.clase:02d}"
     texs = sorted(fuentes.glob("*.tex"))

@@ -1,7 +1,6 @@
 \input{estilo}
 \begin{document}
-\begin{figura}\begin{tikzpicture}[y=1.3cm,
-    evento/.style={circle, fill=tinta, inner sep=0pt, minimum size=5pt}]
+\begin{figura}\begin{tikzpicture}[y=1.3cm]
   \foreach \y/\n in {2/1, 1/2, 0/3} {
     \draw[->] (0,\y) -- (9,\y);
     \node[left] at (0,\y) {\var{p}\textsubscript{\n}};

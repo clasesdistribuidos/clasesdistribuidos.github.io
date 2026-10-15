@@ -1,5 +1,4 @@
 \input{estilo}
-\newcommand\flecha{\tikz[baseline=-0.55ex]\draw[->] (0,0) -- (0.5,0);}
 \begin{document}
 \begin{figura}\begin{tikzpicture}
   \node (c) at (0,0) {\var{C}(\var{a}) < \var{C}(\var{b})};
@@ -7,7 +6,7 @@
   \node[anchor=west] (conc) at (2.6,-0.1) {\var{a} $\parallel$ \var{b}};
   \draw[->] (c.east) -- (antes.west);
   \draw[->] (c.east) -- (conc.west);
-  \draw[suave, decorate, decoration={brace, mirror, amplitude=6pt}] (c.south west) -- (c.south east)
+  \draw[llave, decoration={mirror}] (c.south west) -- (c.south east)
     node[midway, below=8pt, etiq, text=suave] {da información limitada};
 \end{tikzpicture}\end{figura}
 \end{document}

@@ -40,32 +40,45 @@ Un archivo por figura, `figuras/clase-NN/<mismo nombre que el recorte>.tex`:
 \end{document}
 ```
 
-`figuras/estilo.tex` trae todo lo compartido y no se redefine por figura. El
-entorno `figura` recorta la página al dibujo, y estos son los estilos y
-colores que trae:
+Lo compartido está en dos archivos y no se redefine por figura:
 
-- `caja` para procesos, nodos y stores; `msg` para las flechas de mensajes;
-  `vida` para las líneas de vida de un diagrama de secuencia.
-- `etiq` para los rótulos, y `cod` (monoespaciada) para llamadas como
-  `send(record, id)` o `check(id)`.
-- Los colores: `tinta`, el trazo normal; `suave`, para las anotaciones
-  secundarias, que van en gris y con llave cuando agrupan; `acento`, el rojo
-  de la pizarra (watermark, rechazos, los rótulos que el profesor escribió en
-  rojo); `segundo`, el verde de la pizarra, para una segunda serie.
-- Un rechazo se marca con una cruz roja hecha con dos líneas de 1.4pt, no con
-  el carácter ×, que queda chico.
-- Las fórmulas se escriben como texto, con `\var{W}` para las variables y `≥`
-  en unicode. La matemática en Computer Modern no combina con la Helvetica, y
-  con TeX Live basic no hay `unicode-math`.
+- `figuras/estilo.tex` es **cómo se ve**: tipografía, colores, trazo, flechas,
+  y el entorno `figura`, que recorta la página al dibujo. Los colores son
+  `tinta`, el trazo normal; `suave`, para las anotaciones secundarias, que van
+  en gris y con llave cuando agrupan; `acento`, el rojo de la pizarra
+  (watermark, rechazos, los rótulos que el profesor escribió en rojo); y
+  `segundo`, el verde de la pizarra, para una segunda serie o lo aceptado.
+- `figuras/formas.tex` es **el vocabulario**: las piezas que se repiten entre
+  figuras. Nodos (`nodo`, `lider`, `\tachar`, `componente`, `capas`, `grupo`,
+  `paso`), tiempo (`evento`, `onda`, `vida`), flechas (`msg`, `respuesta`,
+  `control`, `datos`, `implica`), marcas (`rechazo`, `ok`, `particion`,
+  `base`, `marca`, `llave`, `\flecha`) y el anillo (`\anillo`,
+  `\nodoanillo`, `\claveanillo`).
 
-Si un estilo hace falta solo en una figura (un círculo para componentes, por
-ejemplo), se define en el `tikzpicture` de esa figura. Si se repite en varias,
-se sube a `estilo.tex`.
+**Antes de dibujar, mirar el catálogo**, que tiene cada forma dibujada con su
+nombre:
+
+```sh
+python3 scripts/render_figuras.py --catalogo   # figuras/salida/catalogo.png
+```
+
+Una figura usa las formas de la biblioteca tal como vienen. Si una pieza hace
+falta en una sola figura, se define en el `tikzpicture` de esa figura. Cuando
+aparece en una segunda, se sube a `formas.tex`, se agrega a `catalogo.tex` y
+se cambia la primera para que la use. Las familias que todavía no existen
+—tira de celdas para logs, historia de ejecución, tabla, árbol— están
+anotadas al final de `formas.tex` y se diseñan con la primera clase que las
+necesite.
+
+Dos reglas de forma: un rechazo es la pieza `rechazo`, nunca el carácter ×,
+que queda chico. Y las fórmulas se escriben como texto, con `\var{W}` para
+las variables y `≥` en unicode: la matemática en Computer Modern no combina
+con la Helvetica, y con TeX Live basic no hay `unicode-math`.
 
 Trampas que ya aparecieron:
 
-- Helvetica Neue no tiene → ni ∥. La flecha dentro de un texto va como
-  `\tikz[baseline=-0.55ex]\draw[->] (0,0) -- (0.5,0);`; ∥, como `$\parallel$`.
+- Helvetica Neue no tiene → ni ∥: la flecha dentro de un texto es `\flecha`;
+  ∥, `$\parallel$`.
 - `\@car` y compañía no andan en un `.tex` común. Para rótulos como p₁,
   iterar con dos variables: `\foreach \l/\i in {p/1, q/2}` y
   `\var{\l}\textsubscript{\i}`.
@@ -75,6 +88,8 @@ Trampas que ya aparecieron:
   `foreach`.
 - En el PNG algunas líneas se ven más gruesas: es redondeo de píxeles, no el
   dibujo. Se confirma con `grep -o 'stroke-width="[^"]*"' x.svg | sort | uniq -c`.
+- `acentuado` es para trazos: sobre un nodo le dibuja un recuadro rojo. Para
+  un texto en rojo, `text=acento`.
 - Una grilla, guía o fondo que cae en coordenadas enteras tapa las líneas del
   dibujo si va encima: `on background layer`.
 

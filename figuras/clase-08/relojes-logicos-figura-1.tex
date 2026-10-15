@@ -1,9 +1,6 @@
 \input{estilo}
-\usetikzlibrary{decorations.pathmorphing}
 \begin{document}
 \begin{figura}\begin{tikzpicture}[y=0.95cm,
-    evento/.style={circle, fill=tinta, inner sep=0pt, minimum size=4.5pt},
-    onda/.style={->, decorate, decoration={snake, amplitude=0.5mm, segment length=3.5mm, pre length=1mm, post length=2.5mm}},
     reloj/.style={font=\small\bfseries, text=segundo, inner sep=1.5pt},
     marcado/.style={reloj, circle, draw=segundo, line width=0.8pt, inner sep=1pt}]
   \foreach \x/\p in {0/P, 4/Q, 8/R} {
