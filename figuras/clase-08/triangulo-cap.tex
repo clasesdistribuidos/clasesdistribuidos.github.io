@@ -1,0 +1,13 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[letra/.style={circle, draw=tinta, fill=relleno, minimum size=11mm, font=\Large}]
+  \node[letra] (C) at (0,2.3) {C};
+  \node[letra] (A) at (-1.5,0) {A};
+  \node[letra] (P) at (1.5,0) {P};
+  \draw (C) -- (A) -- (P) -- (C);
+  \node[right=2mm of C, font=\small] {Consistencia};
+  \node[below=2mm of A, font=\small] {Availability};
+  \node[right=2mm of P, font=\small] {Partition tolerance};
+  \draw[->, line width=1pt] ($(P)+(-50:1.7)$) -- (P.-50);
+\end{tikzpicture}\end{figura}
+\end{document}

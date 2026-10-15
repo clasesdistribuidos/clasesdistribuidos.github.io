@@ -1,0 +1,20 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \def\R{2.4}
+  \draw (0,0) circle (\R);
+  % el corte del espacio de claves
+  \draw[line width=1.4pt] (90:\R-0.2) -- (90:\R+0.2);
+  \node[etiq, anchor=south east] at ($(90:\R+0.15)+(-0.08,0)$) {2\textsuperscript{128}\,−\,1};
+  \node[etiq, anchor=south west] at ($(90:\R+0.15)+(0.08,0)$) {0};
+  % servidores
+  \foreach \ang/\n/\pos in {60/0/south west, -70/1/north east, 180/2/east} {
+    \fill (\ang:\R) circle (2.4pt);
+    \node[etiq, anchor=\pos] at (\ang:\R+0.12) {\var{S}\textsubscript{\n}};
+  }
+  % la clave y su avance hasta el primer servidor
+  \draw[segundo, line width=1.4pt] (35:\R-0.22) -- (35:\R+0.22);
+  \node[etiq, segundo, anchor=south west] at (37:\R+0.25) {clave};
+  \draw[->] (31:\R+0.4) arc[start angle=31, end angle=-66, radius=\R+0.4];
+\end{tikzpicture}\end{figura}
+\end{document}
