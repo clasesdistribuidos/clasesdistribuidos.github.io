@@ -13,4 +13,10 @@
     \foreach \x in {\gxi,...,\gxf} \node[font=\scriptsize, text=black!45, below] at (\x,\gyi) {\x};
     \foreach \y in {\gyi,...,\gyf} \node[font=\scriptsize, text=black!45, left] at (\gxi,\y) {\y};
   \end{scope}}
-\tikzset{every picture/.append style={execute at end picture={\grilla}}}
+% Solo en el dibujo de afuera: un \tikz metido en un texto (como \flecha)
+% también es un picture, y con su propia grilla se inflaba hasta ocupar
+% centímetros enteros.
+\newcount\grillanivel
+\tikzset{every picture/.append style={
+  execute at begin picture={\global\advance\grillanivel by 1\relax},
+  execute at end picture={\ifnum\grillanivel=1 \grilla\fi\global\advance\grillanivel by -1\relax}}}

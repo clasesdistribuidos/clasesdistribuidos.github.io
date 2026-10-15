@@ -88,6 +88,9 @@ Trampas que ya aparecieron:
   `foreach`.
 - En el PNG algunas líneas se ven más gruesas: es redondeo de píxeles, no el
   dibujo. Se confirma con `grep -o 'stroke-width="[^"]*"' x.svg | sort | uniq -c`.
+- Un `\tikz` metido en un texto (`\flecha`) también es un picture: todo lo
+  que se engancha a `every picture` le llega. La grilla de revisión lo inflaba
+  hasta un cuadrado de 2 cm; por eso `grilla.tex` cuenta el anidamiento.
 - `acentuado` es para trazos: sobre un nodo le dibuja un recuadro rojo. Para
   un texto en rojo, `text=acento`.
 - Una grilla, guía o fondo que cae en coordenadas enteras tapa las líneas del
