@@ -180,8 +180,9 @@ TikZ para que el sitio se vea más de libro, sin letra a mano. Las fuentes van
 en `figuras/clase-NN/*.tex`, comparten `figuras/estilo.tex` (tipografía,
 colores, flechas) y `scripts/render_figuras.py --clase N` las compila a SVG.
 El recorte sigue siendo la referencia de qué dibujar: cada redibujo se compara
-contra él. Por ahora ninguna página usa estos SVG, así que la regla de arriba
-sigue valiendo. El procedimiento está en la skill `redibujar-figuras`.
+contra él, y con `--revision` el script arma un PDF con los dos lado a lado
+para corregirlos a mano. Por ahora ninguna página usa estos SVG, así que la
+regla de arriba sigue valiendo. El procedimiento está en la skill `redibujar-figuras`.
 
 ## Prácticas
 
