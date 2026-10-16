@@ -51,7 +51,7 @@ Cada uno de esos componentes puede ser, a su vez, otro subsistema. Vamos a ver q
   <img src="{{ '/assets/clase-01/componentes-y-maquinas.svg' | relative_url }}" alt="Un sistema con recuadros de máquinas que no coinciden con sus componentes">
   <figcaption>
     <span class="figura-label">Figura</span>
-    los recuadros de las máquinas no coinciden con los componentes del sistema: una máquina corre dos componentes, y un componente está repartido en dos máquinas
+    los recuadros de las máquinas no coinciden con los componentes del sistema: una máquina corre dos componentes, y otro componente es a su vez un sistema, con una parte en cada una de dos máquinas
     <span class="figura-ref">agregada al apunte; no está en la pizarra</span>
   </figcaption>
 </figure>

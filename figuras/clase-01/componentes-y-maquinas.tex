@@ -1,4 +1,5 @@
 \input{estilo}
+\usetikzlibrary{shapes.geometric}
 % No está en la pizarra: los componentes no se corresponden con las máquinas.
 \begin{document}
 \begin{figura}\begin{tikzpicture}
@@ -16,7 +17,12 @@
   \node[componente] (n2) at (-1.45,-0.45) {};
   \node[componente] (n3) at (0.35,0.65) {};
   \node[componente] (n4) at (0.35,-0.75) {};
-  \node[draw=tinta, fill=white, rounded corners=2.5mm, minimum width=5mm, minimum height=22mm] (big) at (1.95,-0.05) {};
+  % el componente que es otro sistema: una parte en cada máquina; sin relleno,
+  % para que se vea el borde entre las dos máquinas
+  \node[draw=tinta, ellipse, minimum width=12mm, minimum height=27mm] (big) at (1.95,-0.075) {};
+  \node[componente] (b1) at (1.95,0.75) {};
+  \node[componente] (b2) at (1.95,-0.9) {};
+  \draw (b1) -- (b2);
   \draw (n1) -- (n2) (n1) -- (n3) (n2) -- (n4) (n3) -- (big) (n4) -- (big) (n3) -- (n4);
   % la interfaz
   \fill[tinta] ($(180:3.8 and 2.35)+(-0.11,-0.11)$) rectangle ++(0.22,0.22) coordinate[pos=0.5] (pa);
@@ -25,7 +31,7 @@
   % anotaciones
   \node[etiq, align=right, anchor=east, text=suave] (t1) at (-3.6,2.0) {dos componentes\\[-1pt]en una máquina};
   \draw[suave] (t1.east) -- (-2.6,1.15);
-  \node[etiq, align=left, anchor=west, text=suave] (t2) at (4.1,-0.5) {un componente\\[-1pt]en dos máquinas};
+  \node[etiq, align=left, anchor=west, text=suave] (t2) at (4.1,-0.5) {un componente que es\\[-1pt]otro sistema, repartido\\[-1pt]en dos máquinas};
   \draw[suave] (t2.west) -- (big.east);
 \end{tikzpicture}\end{figura}
 \end{document}
