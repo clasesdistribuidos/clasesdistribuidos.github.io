@@ -8,3 +8,6 @@ vendor/
 
 # Python
 __pycache__/
+
+# Figuras TikZ compiladas por scripts/render_figuras.py
+figuras/salida/

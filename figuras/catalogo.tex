@@ -1,0 +1,67 @@
+% El catálogo de formas: cada pieza de estilo.tex y formas.tex dibujada con su
+% nombre. Se compila con render_figuras.py --catalogo. Si se agrega una forma
+% a la biblioteca, se agrega acá.
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[nombre/.style={cod, text=suave, anchor=north}]
+  \def\fila#1{\node[font=\small\bfseries, anchor=west] at (-0.6,#1) }
+  % --- nodos
+  \fila{0.9}{nodos};
+  \node[nodo] (a) at (0.4,0) {\var{S}\textsubscript{1}};   \node[nombre] at (0.4,-0.7) {nodo};
+  \node[lider] at (2.4,0) {\var{L}};                        \node[nombre] at (2.4,-0.7) {lider};
+  \node[nodo] (c) at (4.4,0) {}; \tachar{c}                 \node[nombre] at (4.4,-0.7) {\textbackslash tachar\{n\}};
+  \node[componente] at (6.4,0) {};                          \node[nombre] at (6.4,-0.7) {componente};
+  \node[caja] at (8.4,0) {master};                          \node[nombre] at (8.4,-0.7) {caja};
+  \node[capas=2] at (11,0) {aplicación \nodepart{two} stub};\node[nombre] at (11,-0.85) {capas=2};
+  \node[nodo] (g1) at (13.4,0) {}; \node[nodo] (g2) at (14.4,0) {};
+  \begin{scope}[on background layer]\node[grupo, fit=(g1)(g2)] {};\end{scope}
+                                                            \node[nombre] at (13.9,-0.75) {grupo, fit=(a)(b)};
+  \node[paso] at (16.4,0) {1};                              \node[nombre] at (16.4,-0.7) {paso};
+  \draw[marco] (17.6,-0.5) rectangle (19.2,0.5); \node[caja, minimum width=8mm] at (18.4,0) {A};
+                                                            \node[nombre] at (18.4,-0.7) {marco};
+  % --- tiempo
+  \fila{-1.9}{tiempo};
+  \draw[vida] (0.4,-2.4) -- (0.4,-3.6);                     \node[nombre] at (0.4,-3.7) {vida};
+  \draw (2.4,-2.4) -- (2.4,-3.6); \node[evento] at (2.4,-2.8) {}; \node[evento=acento] at (2.4,-3.2) {};
+                                                            \node[nombre] at (2.4,-3.7) {evento[=color]};
+  \draw[onda] (4.0,-3.4) -- (5.6,-2.6);                     \node[nombre] at (4.8,-3.7) {onda};
+  \draw[msg] (6.6,-3.0) -- (8.2,-3.0);                      \node[nombre] at (7.4,-3.7) {msg};
+  \draw[respuesta] (9.0,-3.0) -- (10.6,-3.0);               \node[nombre] at (9.8,-3.7) {respuesta};
+  \draw[control] (11.4,-2.8) -- (13.0,-2.8); \draw[datos] (11.4,-3.25) -- (13.0,-3.25);
+                                                            \node[nombre] at (12.2,-3.7) {control / datos};
+  \draw[implica] (14.6,-2.6) -- (14.6,-3.4);                \node[nombre] at (14.6,-3.7) {implica};
+  % --- marcas
+  \fila{-4.7}{marcas};
+  \pic at (0.1,-5.7) {rechazo}; \pic at (0.7,-5.7) {rechazo=segundo};
+                                                            \node[nombre] at (0.4,-6.3) {rechazo[=color]};
+  \pic at (2.15,-5.75) {ok};                                \node[nombre] at (2.4,-6.3) {ok};
+  \pic at (4.4,-5.6) {particion};                           \node[nombre] at (4.4,-6.5) {particion};
+  \pic at (6.4,-6.1) {base};                                \node[nombre] at (6.4,-6.5) {base};
+  \draw[marca] (8.4,-5.3) -- (8.4,-5.9);                    \node[nombre] at (8.4,-6.3) {marca};
+  \draw[llave] (9.8,-5.4) -- (11.4,-5.4) node[midway, above=6pt, etiq, text=suave] {anotación};
+                                                            \node[nombre] at (10.6,-6.3) {llave[=amplitud]};
+  \node at (13.4,-5.6) {\var{a} \flecha\ \var{b}};          \node[nombre] at (13.4,-6.3) {\textbackslash flecha};
+  \pic at (15.6,-6.1) {persona};                            \node[nombre] at (15.6,-6.3) {persona};
+  % --- texto
+  \fila{-7.2}{texto};
+  \node[etiq] at (0.6,-8.0) {rótulo};                       \node[nombre] at (0.6,-8.5) {etiq};
+  \node[cod] at (2.8,-8.0) {send(id)};                      \node[nombre] at (2.8,-8.5) {cod};
+  \draw[acentuado] (4.2,-8.0) -- (4.9,-8.0) node[etiq, right] {watermark}; \node[nombre] at (5,-8.5) {acentuado};
+  \node at (7.2,-8.0) {\var{W} ≥ \var{T}};                  \node[nombre] at (7.2,-8.5) {\textbackslash var\{W\}};
+  \foreach \c/\x in {tinta/9.4, suave/10.6, acento/11.8, segundo/13.0, relleno/14.2} {
+    \fill[\c] (\x-0.3,-8.25) rectangle (\x+0.3,-7.75);
+    \node[nombre] at (\x,-8.5) {\c};
+  }
+  % --- anillo
+  \fila{-9.4}{anillo};
+  \begin{scope}[shift={(2.2,-11.6)}]
+    \anillo[1.5]
+    \nodoanillo{40}{\var{S}\textsubscript{0}}{south west}
+    \nodoanillo{-60}{\var{S}\textsubscript{1}}{north west}
+    \nodoanillo[acento]{200}{\var{S}\textsubscript{2}}{east}
+    \claveanillo{10}
+  \end{scope}
+  \node[nombre, anchor=north west, align=left] at (4.6,-10.4)
+    {\textbackslash anillo[radio]\\\textbackslash nodoanillo[color]\{ángulo\}\{rótulo\}\{anchor\}\\\textbackslash claveanillo\{ángulo\}};
+\end{tikzpicture}\end{figura}
+\end{document}

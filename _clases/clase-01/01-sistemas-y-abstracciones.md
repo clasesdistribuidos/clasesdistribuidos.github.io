@@ -24,19 +24,37 @@ Al escuchar "sistema distribuido", lo primero que uno piensa es en la red: cable
 La versión que vamos a usar es esta: un sistema es un conjunto de componentes interconectados que interactúan entre sí para producir un comportamiento observable en su interfaz con el entorno. Vale la pena desarmarla despacio. Lo primero que dice es que hay muchos componentes y que están interconectados: todas esas piezas hablan unas con otras. Lo segundo, y lo verdaderamente importante de cualquier sistema, es el concepto de abstracción. Si bien cada componente hace lo suyo, uno los termina viendo desde afuera como una gran unidad. Esa unidad es la interfaz que tiene el sistema distribuido, o cualquier otro sistema.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/sistema-interfaz-entorno.png' | relative_url }}" alt="Un óvalo con componentes unidos por flechas y la interfaz sobre la frontera">
+  <img src="{{ '/assets/clase-01/sistema-interfaz-entorno.svg' | relative_url }}" alt="Un óvalo con componentes interconectados, puertos sobre la frontera y el entorno alrededor">
   <figcaption>
     <span class="figura-label">Figura</span>
-    óvalo con componentes interconectados por flechas; la frontera rotulada como interfaz/APIs, el adentro como lo que está en discusión y el afuera como el entorno
+    óvalo con componentes interconectados, que es lo que estudiamos; sobre la frontera, los puertos de la interfaz (API, endpoints); afuera, el entorno, desde donde un cliente le hace un pedido y recibe la respuesta, y donde hay otro sistema con el que se comunica
     <span class="figura-ref">notas pág. 1 / pizarra pág. 1</span>
   </figcaption>
 </figure>
 
 Lo que estamos dibujando es un diagrama genérico sobre diagramas, y lo venimos viendo desde que empezamos la facultad. La caja que representa al kernel contiene adentro el componente del file system y el de tantas otras cosas: un sistema que contiene otros subsistemas. Es algo a lo que ya estamos acostumbrados. La clave está en preguntarse para qué hacemos estos diagramas, y la respuesta es que sirven para definir la granularidad con la que vamos a estudiar las cosas —que va a resultar importante— y el nivel de abstracción en el que decidimos pararnos.
 
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/subsistema-ampliado.svg' | relative_url }}" alt="Un componente de un sistema, ampliado, que resulta ser otro sistema">
+  <figcaption>
+    <span class="figura-label">Figura</span>
+    uno de los componentes del sistema, ampliado, resulta ser a su vez un sistema, con sus propios componentes y su interfaz: el kernel y, adentro, el file system
+    <span class="figura-ref">agregada al apunte; no está en la pizarra</span>
+  </figcaption>
+</figure>
+
 Esa interfaz que rodea al sistema recibe distintos nombres; en un sistema distribuido se la suele llamar API endpoints, o simplemente interfaz. Y lo que ese contorno nos está diciendo es cuál es el recorte que hicimos: lo de adentro es lo que estamos estudiando, lo de afuera es el entorno, que no nos interesa. Son perspectivas distintas según dónde nos coloquemos.
 
 Cada uno de esos componentes puede ser, a su vez, otro subsistema. Vamos a ver que en un sistema distribuido es muy frecuente que no haya un mapeo directo entre estos círculos del diagrama y las computadoras que lo componen: muchas veces un sistema interactúa internamente con otro sistema entero, que ya es una complejidad en sí mismo.
+
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-01/componentes-y-maquinas.svg' | relative_url }}" alt="Un sistema con recuadros de máquinas que no coinciden con sus componentes">
+  <figcaption>
+    <span class="figura-label">Figura</span>
+    los recuadros de las máquinas no coinciden con los componentes del sistema: una máquina corre dos componentes, y otro componente es a su vez un sistema, con una parte en cada una de dos máquinas
+    <span class="figura-ref">agregada al apunte; no está en la pizarra</span>
+  </figcaption>
+</figure>
 
 ## Metodología de estudio del curso
 

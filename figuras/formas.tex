@@ -1,0 +1,88 @@
+% El vocabulario de piezas de las figuras, para que todas dibujen igual lo
+% mismo. Lo carga estilo.tex. Regla: lo que aparece en dos figuras o más vive
+% acá, y lo que aparece en una sola se define en esa figura. Cada forma está
+% dibujada con su nombre en catalogo.tex (render_figuras.py --catalogo).
+\usetikzlibrary{decorations.pathmorphing, shapes.multipart, fit, backgrounds}
+
+\tikzset{
+  % --- nodos -------------------------------------------------------------
+  % una réplica, un servidor o un proceso; se agranda solo si el rótulo no entra
+  nodo/.style={circle, draw=tinta, fill=relleno, minimum size=9mm, inner sep=1pt, font=\small},
+  % el líder de Raft: doble círculo
+  lider/.style={nodo, double=relleno, double distance=1.2pt},
+  % un componente chico adentro de otra cosa (los nodos dentro del sistema)
+  componente/.style={circle, draw=tinta, fill=white, minimum size=5mm, inner sep=0pt},
+  % varias máquinas apiladas en pisos: app / stub, app / Raft, árbol / log;
+  % \node[capas=2] {aplicación \nodepart{two} stub};
+  capas/.style={rectangle split, rectangle split parts=#1, draw=tinta, fill=relleno,
+    rounded corners=1.5pt, minimum width=22mm, font=\small, align=center},
+  capas/.default=2,
+  % un grupo de nodos encerrado (quórum, preference list), detrás de ellos:
+  % \begin{scope}[on background layer]\node[grupo, fit=(a)(b)] {};\end{scope}
+  grupo/.style={draw=segundo, fill=segundo!10, rounded corners=4mm, inner sep=2mm},
+  % un paso numerado: \node[paso] {1};
+  % el recuadro de una máquina, un cliente o un servidor que contiene cajas;
+  % se dibuja con un rectangle o con fit=(a)(b)
+  marco/.style={draw=tinta, rounded corners=4pt},
+  paso/.style={circle, draw=tinta, fill=white, inner sep=0.8pt, minimum size=4mm, font=\scriptsize},
+  % --- tiempo ------------------------------------------------------------
+  % un evento sobre una línea de tiempo; el color es opcional: evento=acento
+  evento/.style={circle, fill=#1, inner sep=0pt, minimum size=5pt},
+  evento/.default=tinta,
+  % el mensaje ondulado de Lamport
+  onda/.style={->, decorate, decoration={snake, amplitude=0.5mm, segment length=3.5mm,
+    pre length=1mm, post length=2.5mm}},
+  % --- flechas -----------------------------------------------------------
+  % control y datos, como en las figuras de GFS: fina y gruesa
+  control/.style={->, line width=0.5pt},
+  datos/.style={->, line width=1.6pt},
+  % la respuesta o el camino alternativo
+  respuesta/.style={msg, dashed},
+  % "de esto se pasa a esto", entre dos dibujos
+  implica/.style={-{Implies}, double, double distance=2pt},
+  % --- marcas ------------------------------------------------------------
+  % el corte de un anillo, una clave sobre él, una marca gruesa sobre una línea
+  marca/.style={line width=1.4pt},
+  % la llave de una anotación; el argumento es la amplitud
+  llave/.style={decorate, decoration={brace, amplitude=#1}, draw=suave},
+  llave/.default=6pt,
+  % --- piezas armadas: \pic at (x,y) {nombre}; ---------------------------
+  % un rechazo, un mensaje perdido: la cruz roja
+  % {rechazo=segundo} cambia el color, para una segunda falla
+  pics/rechazo/.style={code={\draw[draw=#1, line width=1.4pt] (-0.16,-0.16) -- (0.16,0.16) (-0.16,0.16) -- (0.16,-0.16);}},
+  pics/rechazo/.default=acento,
+  % aceptado, al día: la marca verde, que arranca en el punto dado
+  ok/.pic={\draw[segundo, line width=1.4pt] (0,0) -- ++(0.15,-0.17) -- ++(0.32,0.42);},
+  % la partición de red: el rayo rojo, centrado en el punto dado
+  particion/.pic={\draw[acento, line width=1pt] (0.15,0.75) -- (-0.08,0.1) -- (0.08,0.05) -- (-0.15,-0.75);},
+  % una base de datos, un disco, un ledger: el cilindro con la base en el punto dado
+  base/.pic={\def\w{0.5}\def\h{1.1}\def\e{0.15}
+    \draw[fill=relleno] (-\w,\h) -- (-\w,0) arc[start angle=180, end angle=360, x radius=\w, y radius=\e] -- (\w,\h);
+    \draw[fill=relleno!50!white] (0,\h) ellipse[x radius=\w, y radius=\e];},
+  % una persona, el usuario: con los pies en el punto dado; \pic (p) deja (p-cabeza)
+  persona/.pic={\draw (0,1.05) circle (0.2);
+    \draw (0,0.85) -- (0,0.4) (-0.35,0.7) -- (0.35,0.7) (-0.28,0) -- (0,0.4) -- (0.28,0);
+    \coordinate (-cabeza) at (0,1.05);},
+}
+
+% Tacha un nodo ya dibujado: el líder caído, la máquina que falló.
+\newcommand\tachar[1]{\draw[acento, line width=1.4pt]
+  (#1.north west) -- (#1.south east) (#1.north east) -- (#1.south west);}
+
+% La flecha dentro de un texto: Helvetica Neue no tiene →.
+\newcommand\flecha{\tikz[baseline=-0.55ex]\draw[->] (0,0) -- (0.5,0);}
+
+% El anillo de consistent hashing, centrado en el origen, con el corte en 0
+% arriba; deja el radio en \R. Sus puntos van en sentido horario.
+%   \anillo[radio]   \nodoanillo[color]{ángulo}{rótulo}{anchor}   \claveanillo{ángulo}
+\newcommand\anillo[1][2.4]{\def\R{#1}\draw (0,0) circle (\R);
+  \draw[marca] (90:\R-0.2) -- (90:\R+0.2);}
+\newcommand\nodoanillo[4][tinta]{\fill[#1] (#2:\R) circle (2.4pt);
+  \node[etiq, text=#1, anchor=#4] at (#2:\R+0.12) {#3};}
+\newcommand\claveanillo[1]{\draw[segundo, marca] (#1:\R-0.22) -- (#1:\R+0.22);}
+
+% Reservadas, se diseñan con la primera clase que las use:
+%   tira de celdas (logs de Raft, WAL, ZAB, barras de timestamps) — clase 3
+%   historia de ejecución (operaciones de linealizabilidad, TrueTime) — clase 7
+%   tabla (k | v | TS, host | IP) — clase 5
+%   árbol (Zookeeper, Merkle) — clase 3
