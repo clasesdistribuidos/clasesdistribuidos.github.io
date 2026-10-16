@@ -34,7 +34,8 @@ _clases/clase-NN/
   NN-slug.md          una página por sección (parent: <título de la clase>)
 _practicas/practica-NN/
                       igual que una clase, en su propia collection
-assets/clase-NN/      las figuras recortadas de esa clase
+assets/clase-NN/      las figuras de esa clase: recortes (png, jpg) y redibujos (svg)
+figuras/              fuentes TikZ de las figuras redibujadas; excluidas del build
 _includes/            navegación secuencial al pie
 _sass/custom/         estilos propios (figuras, nav secuencial)
 _data/papers.yml      la bibliografía que lista papers.md
@@ -132,8 +133,9 @@ la etiqueta `Código pendiente`.
 
 ## Figuras: de la pizarra al sitio
 
-Las figuras no se dibujan de nuevo: se recortan de lo que el profesor usó en
-clase. Hay dos fuentes, y las dos viven en el repo de trabajo `clases-apuntes`
+Las figuras se recortan de lo que el profesor usó en clase. Algunas, además,
+se redibujan en TikZ (ver "Redibujarlas en TikZ", más abajo), pero el recorte
+se hace igual: es la referencia de qué hay que dibujar. Hay dos fuentes, y las dos viven en el repo de trabajo `clases-apuntes`
 (`raw/claseN/`). Dónde está clonado es cosa de cada máquina, así que no se
 escribe acá: el script lo busca al lado de este repo y si no está se le pasa
 con `--apuntes`.
@@ -171,6 +173,26 @@ El script decide solo, y el criterio es: los trazos de la pizarra se ensucian
 en jpeg, así que van en png; las fotos y los scans pesan mucho menos en jpeg y
 la diferencia no se ve. Ancho máximo 1400 px, bastante más que la columna del
 theme, para que se vean bien en pantallas densas.
+
+### Redibujarlas en TikZ
+
+Una figura se puede redibujar en TikZ para que el sitio se vea más de libro,
+sin letra a mano. Las fuentes van en `figuras/clase-NN/*.tex`, comparten
+`figuras/estilo.tex` (tipografía, colores, flechas) y la biblioteca de formas
+`figuras/formas.tex` (nodos, eventos, cilindros, particiones…, con su catálogo
+en `--catalogo`), y `scripts/render_figuras.py --clase N --salida
+assets/clase-NN` las compila a SVG al lado de los recortes. En la página, el
+`src` del `<img>` pasa de `.png` a `.svg`; el pie y la `figura-ref` se quedan.
+
+Se adopta figura por figura, cuando el usuario elige el redibujo. Hoy solo la
+sección 1 de la clase 1 usa SVG. El resto sigue con el recorte, aunque su
+`.tex` exista.
+
+El recorte no se borra al redibujar: queda en `assets/` como referencia, y
+`--revision` arma un PDF con los dos lado a lado para corregir el redibujo a
+mano. Una figura que no viene de la pizarra, agregada para ilustrar el texto,
+no tiene recorte, y su `figura-ref` lo dice: `agregada al apunte; no está en
+la pizarra`. El procedimiento está en la skill `redibujar-figuras`.
 
 ## Prácticas
 
