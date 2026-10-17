@@ -240,6 +240,15 @@
       autor: "Philip A. Bernstein y Nathan Goodman"
       url: "https://doi.org/10.1145/356842.356846"
       clases: [10]
+    - titulo: "Timestamp-Based Algorithms for Concurrency Control in Distributed Database Systems"
+      autor: "Philip A. Bernstein y Nathan Goodman"
+      clases: [10]
+      nota: "VLDB, 1980. Es la versión que cita el paper de DynamoDB para el timestamp ordering."
+    - titulo: "Implementing Atomic Actions on Decentralized Data"
+      autor: "David P. Reed"
+      url: "https://doi.org/10.1145/357353.357355"
+      clases: [10]
+      nota: "ACM TOCS, 1983. Junto con Bernstein y Goodman, el origen del timestamp ordering; el paper de DynamoDB cita el resumen extendido de SOSP '79."
     - titulo: "Concurrency Control and Recovery in Database Systems"
       autor: "Philip A. Bernstein, Vassos Hadzilacos y Nathan Goodman"
       url: "https://www.microsoft.com/en-us/research/people/philbe/book/"
@@ -250,3 +259,8 @@
       url: "https://shop.elsevier.com/books/principles-of-transaction-processing/bernstein/978-1-55860-623-4"
       clases: [10]
       tipo: libro
+    - titulo: "Amazon DynamoDB Distributed Transactions at Scale"
+      autor: "Akshat Vig (QCon London 2023)"
+      url: "https://www.infoq.com/presentations/dynamodb-transactions/"
+      clases: [10]
+      tipo: video
