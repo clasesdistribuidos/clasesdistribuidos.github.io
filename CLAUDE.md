@@ -184,6 +184,10 @@ en `--catalogo`), y `scripts/render_figuras.py --clase N --salida
 assets/clase-NN` las compila a SVG al lado de los recortes. En la página, el
 `src` del `<img>` pasa de `.png` a `.svg`; el pie y la `figura-ref` se quedan.
 
+La letra imita la de las figuras de las *Feynman Lectures*: Computer Modern
+Bright, con los rótulos en mayúsculas y las variables en oblicua minúscula.
+Las fuentes están en `figuras/fuentes/`, así que compila sin instalar nada.
+
 Se adopta figura por figura, cuando el usuario elige el redibujo. Hoy solo la
 sección 1 de la clase 1 usa SVG. El resto sigue con el recorte, aunque su
 `.tex` exista.

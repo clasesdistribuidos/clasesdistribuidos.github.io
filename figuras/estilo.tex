@@ -7,9 +7,20 @@
   \pagewidth=\paperwidth \pageheight=\paperheight \hoffset=-1in \voffset=-1in
   \shipout\vbox{\kern6pt\hbox{\kern6pt\usebox\fig}}}
 \usepackage{fontspec}
-\setmainfont{Helvetica Neue}[Scale=0.95]
+% CM Bright, la letra de las figuras de las Feynman Lectures, en su versión
+% OpenType (CMU Bright, de cm-unicode). Las OTF están en figuras/fuentes/ y
+% render_figuras.py las pone en OPENTYPEFONTS. Los rótulos salen en mayúsculas
+% (Letters=Uppercase); las variables van con \var, en otra familia, y quedan
+% en minúscula. \textit también pasa a mayúsculas: no usarlo para variables.
+\setmainfont{cmunbmr.otf}[ItalicFont=cmunbmo.otf, BoldFont=cmunbsr.otf,
+  BoldItalicFont=cmunbso.otf, Letters=Uppercase, Scale=0.88]
+\newfontfamily\varfont{cmunbmo.otf}[Scale=0.88]
 \setmonofont{Menlo}[Scale=0.85]
-\newcommand\var[1]{\textit{#1}}
+\newcommand\var[1]{{\varfont #1}}
+% CMU Bright no tiene ≥, ≤ ni ≠: salen del modo matemático
+\catcode`≥=\active \protected\def≥{\ensuremath{\geq}}
+\catcode`≤=\active \protected\def≤{\ensuremath{\leq}}
+\catcode`≠=\active \protected\def≠{\ensuremath{\neq}}
 \usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,shapes.misc}
 \definecolor{tinta}{HTML}{2B2F36}
 \definecolor{suave}{HTML}{8A9099}
