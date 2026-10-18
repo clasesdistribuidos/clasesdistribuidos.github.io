@@ -1,6 +1,6 @@
 ---
 title: "2. Throughput y caché"
-parent: "Clase 12 — Memcache en Facebook"
+parent: "Clase 12 — Consistencia en cachés"
 nav_order: 2
 ---
 
