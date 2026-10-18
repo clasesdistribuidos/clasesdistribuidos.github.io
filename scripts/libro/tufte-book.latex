@@ -15,6 +15,10 @@
 \usepackage{xcolor}
 \usepackage{booktabs}
 \usepackage{xurl}
+% Castellano: los cortes de palabras y los nombres (Índice, Figura, Parte…).
+% es-minimal deja todo lo demás como lo pone la clase: sangría, títulos,
+% listas, comillas y fórmulas.
+\usepackage[spanish,es-minimal,es-tabla]{babel}
 \usepackage{amssymb}
 
 % Lo que pandoc asume que existe
@@ -45,10 +49,6 @@
 \DeclareUnicodeCharacter{2713}{\ensuremath{\checkmark}}
 \DeclareUnicodeCharacter{2717}{\ensuremath{\times}}
 
-% Castellano sin babel
-\renewcommand{\figurename}{Figura}
-\renewcommand{\contentsname}{Índice}
-\renewcommand{\partname}{Parte}
 
 \hypersetup{colorlinks=true,allcolors=black!70!blue,pdfauthor={},pdftitle={$title$}}
 \graphicspath{{$repo$/}{$svgdir$/}}
