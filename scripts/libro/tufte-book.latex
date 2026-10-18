@@ -1,7 +1,12 @@
 \documentclass[a4paper,justified,openany,nobib]{tufte-book}
-% Template pandoc mínimo para tufte-book. Pandoc NO trae uno: con el
-% template por defecto + documentclass=tufte-book choca con hyperref,
-% geometry y la redefinición de captions. Este es lo justo.
+% La clase va intacta: las únicas decisiones de diseño propias son estas
+% cuatro opciones. a4paper en vez de carta; justified, porque Tufte usa por
+% defecto bandera a la izquierda; openany, para que un capítulo pueda empezar
+% en página par; y nobib, sin el sistema de bibliografía de Tufte.
+%
+% Template pandoc mínimo para tufte-book: pandoc no trae uno. No se probó si
+% alcanza con el template por defecto y -V documentclass=tufte-book; se
+% escribió este por si chocaba con hyperref, geometry o los captions.
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}

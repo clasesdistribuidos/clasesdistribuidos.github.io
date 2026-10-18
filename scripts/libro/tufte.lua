@@ -5,6 +5,14 @@ Filtro pandoc -> tufte-latex.
       (se cuelga del párrafo anterior; si no hay, del siguiente)
   Figure                                  -> figure de tufte (caption al margen)
   CodeBlock                               -> Verbatim a ancho completo (fullwidth)
+
+Decisión propia: las notas van al margen sin número (\marginnote). Tufte
+suele usar sidenotes numeradas, ancladas a una palabra, pero los apuntes
+usan bloques {: .nota } y no footnotes, así que no hay dónde poner el número.
+Una footnote ([^1]) en el markdown sí saldría como sidenote numerada, sin
+filtro: tufte-book redefine \footnote. Las figuras ocupan el ancho de la
+columna con un tope del 42 % del alto de página, y el código va sin
+resaltado de sintaxis.
 ]]
 
 local function latex(blocks)
