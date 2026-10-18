@@ -1,0 +1,64 @@
+\documentclass[a4paper,justified,openany,nobib]{tufte-book}
+% Template pandoc mínimo para tufte-book. Pandoc NO trae uno: con el
+% template por defecto + documentclass=tufte-book choca con hyperref,
+% geometry y la redefinición de captions. Este es lo justo.
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{fancyvrb}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{xurl}
+\usepackage{amssymb}
+
+% Lo que pandoc asume que existe
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\makeatletter
+\providecommand{\pandocbounded}[1]{%
+  \settowidth{\@tempdima}{#1}%
+  \ifdim\@tempdima>\linewidth\resizebox{\linewidth}{!}{#1}\else#1\fi}
+\makeatother
+
+% Caracteres Unicode que aparecen en los apuntes (pdflatex no los trae)
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}
+\DeclareUnicodeCharacter{2190}{\ensuremath{\leftarrow}}
+\DeclareUnicodeCharacter{2225}{\ensuremath{\parallel}}
+\DeclareUnicodeCharacter{03B5}{\ensuremath{\varepsilon}}
+\DeclareUnicodeCharacter{2080}{\ensuremath{_0}}
+\DeclareUnicodeCharacter{2081}{\ensuremath{_1}}
+\DeclareUnicodeCharacter{2082}{\ensuremath{_2}}
+\DeclareUnicodeCharacter{2083}{\ensuremath{_3}}
+\DeclareUnicodeCharacter{2084}{\ensuremath{_4}}
+\DeclareUnicodeCharacter{2085}{\ensuremath{_5}}
+\DeclareUnicodeCharacter{2099}{\ensuremath{_n}}
+\DeclareUnicodeCharacter{2070}{\ensuremath{^0}}
+\DeclareUnicodeCharacter{2078}{\ensuremath{^8}}
+\DeclareUnicodeCharacter{2460}{\textcircled{\scriptsize 1}}
+\DeclareUnicodeCharacter{2461}{\textcircled{\scriptsize 2}}
+\DeclareUnicodeCharacter{2713}{\ensuremath{\checkmark}}
+\DeclareUnicodeCharacter{2717}{\ensuremath{\times}}
+
+% Castellano sin babel
+\renewcommand{\figurename}{Figura}
+\renewcommand{\contentsname}{Índice}
+\renewcommand{\partname}{Parte}
+
+\hypersetup{colorlinks=true,allcolors=black!70!blue,pdfauthor={},pdftitle={$title$}}
+\graphicspath{{$repo$/}{$svgdir$/}}
+\setcounter{tocdepth}{1}
+
+\title{$title$}
+\author{$if(subtitle)$$subtitle$$else$$author$$endif$}
+\publisher{clasesdistribuidos.github.io}
+
+\begin{document}
+\frontmatter
+\maketitle
+\tableofcontents
+\mainmatter
+
+$body$
+
+\end{document}
