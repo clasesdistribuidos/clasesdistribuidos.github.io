@@ -15,9 +15,9 @@ nav_order: 5
 </details>
 
 
-El segundo ejemplo tiene dos capas: cómo funciona SNS, el servicio de publisher-subscriber de Amazon, y cómo funciona por dentro. Y lo que hay por dentro, en el fondo, es SQS: un sistema de Amazon implementado sobre otro.
+El segundo ejemplo tiene dos capas: cómo funciona SNS, el servicio de publisher-subscriber de Amazon, y cómo podría funcionar por dentro. Para lo segundo vamos a usar una pieza que ya conocemos: el propio SQS.
 
-Antes, una advertencia que cambia el estatuto de lo que sigue: Amazon nunca publicó papers ni documentación sobre cómo funcionan SNS ni SQS. Lo que hay es lo que se sabe de cómo funcionaban en algún momento, así que la implementación que vamos a reconstruir es una hipótesis plausible y no documentación; quizás hoy el diseño sea completamente distinto. Eso distingue este tramo del resto de la materia, donde estudiamos papers. El valor del ejercicio no está en su fidelidad al original sino en que todas las piezas que van a aparecer ya las conocemos.
+Antes, una advertencia que cambia el estatuto de lo que sigue: Amazon nunca publicó papers ni documentación sobre cómo funcionan SNS ni SQS. Lo que sigue es una hipótesis armada con lo que se puede inferir desde afuera: una implementación plausible y no documentación, y quizás el diseño real sea completamente distinto. Eso distingue este tramo del resto de la materia, donde estudiamos papers. El valor del ejercicio no está en su fidelidad al original sino en que todas las piezas que van a aparecer ya las conocemos.
 
 ## SNS y fan-out
 
@@ -60,11 +60,11 @@ Queda un detalle que organiza la última parte de la clase. Si nos suscribimos a
 
 ## Arquitectura interna de SNS
 
-Ahora examinemos el sistema por dentro: si estuviéramos en Amazon y hubiera que implementar SNS de cero, ¿cómo se haría con lo que ya sabemos? Lo notable es que la respuesta no está lejos de la implementación real.
+Ahora examinemos el sistema por dentro: si estuviéramos en Amazon y hubiera que implementar SNS de cero, ¿cómo se haría con lo que ya sabemos?
 
 Sigamos un publish. Lo primero es un frontend, como en casi cualquiera de estos sistemas. Y alrededor de todo lo que viene hay que dibujar una línea grande: la frontera de SNS. De afuera SNS es una caja abstracta; vamos a abrirla.
 
-Adentro hay, primero, una cola interna de mensajes, y esa cola es de SQS. Es lo más llamativo del diseño: Amazon usa uno de sus sistemas como primitiva para construir el otro. El mensaje que el frontend deposita ahí lleva un tópico y el mensaje propiamente dicho.
+Adentro hay, primero, una cola interna de mensajes, y esa cola podría ser perfectamente de SQS. Es lo más llamativo del diseño: usar uno de los servicios como primitiva para construir el otro. El mensaje que el frontend deposita ahí lleva un tópico y el mensaje propiamente dicho.
 
 Del otro lado de esa cola hay una flota. Antes eran workers transcodificadores; aquí son notifiers. El patrón es el mismo —una cola con consumidores homogéneos compitiendo, como balanceador de carga—, y lo interesante es que ahora lo usamos para implementar un fan-out. La pieza es la misma; el efecto que construimos con ella es el opuesto.
 
@@ -81,7 +81,7 @@ Falta la pieza que dice a quiénes notificar: una base de datos de suscripciones
 
 Hay una suposición en ese diseño que lo hace funcionar: que un notifier tiene capacidad para mandarle el mensaje a todos los suscriptores. Si la cantidad fuera enorme habría que pensar otra cosa; aquí pensamos en del orden de cien suscriptores como máximo, y para eso un único worker alcanza.
 
-El ejercicio, más allá de si acertamos en los detalles, sirve para desmitificar: dentro de la caja negra de SNS hay un sistema distribuido armado con piezas que ya estudiamos —un frontend, una cola, una flota de workers y una base de datos—. El mismo ejercicio nos queda pendiente con SQS, y al abrir esa caja va a aparecer la explicación del `ReceiptHandle`.
+El ejercicio no pretende adivinar la implementación real; sirve para desmitificar: un sistema como SNS se puede armar con piezas que ya estudiamos —un frontend, una cola, una flota de workers y una base de datos—. El mismo ejercicio nos queda pendiente con SQS, y al reconstruirlo va a aparecer una explicación posible del `ReceiptHandle`.
 
 ## Suscriptores lentos y fan-out + buffer
 
