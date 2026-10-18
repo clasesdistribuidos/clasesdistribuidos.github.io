@@ -60,8 +60,10 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # clase 3 del sitio se grabó como la 4: `raw/clase3/` es otra cosa y ni siquiera
 # tiene `notas/`. Desde ahí el desfasaje se arrastra: la 4 del sitio es la 5 del
 # repo, la 5 es la 6 y la 6 es la 7. Lo que falta acá se asume igual a sí mismo.
+# La 12 del sitio, la de cachés, rompe el orden: se grabó como la 9, antes de
+# Dynamo, y en el sitio se publicó después de Spanner.
 FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11, 10: 12, 11: 14,
-                    13: 15}
+                    12: 9, 13: 15}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -75,6 +77,7 @@ FOTOS = {(2, "leslie-lamport")}
 # bloques uno debajo del otro— y por eso pesa: 301 KB en png contra 132 en jpeg.
 TRAZOS = {(3, "fallas-de-la-cadena"), (9, "operaciones-de-cada-plano"),
           (10, "ordenes-seriales"), (11, "two-phase-commit"),
+          (12, "invalidacion-cross-region"),
           (13, "arquitectura-interna-de-sns")}
 
 ANCHO_MAX = 1400  # el ancho de la columna del theme es bastante menor
@@ -457,6 +460,47 @@ FIGURAS_POR_CLASE = {
         ("lectura-en-el-latest",        ("pizarra", 7), (165, 730, 1241, 1225), True),
         ("escritura-en-el-latest",      ("pizarra", 8), (240, 82, 990, 455),    True),
         ("commit-wait",                 ("pizarra", 8), (220, 1192, 1241, 1754), True),
+    ],
+    12: [
+        ("servidor-una-maquina",        ("pizarra", 1), (150, 30, 770, 345),   True,
+         [(0, 0, 200, 115)]),                                      # la cola de "CACHES"
+        ("escalado-web",                ("pizarra", 1), (120, 380, 730, 815),  True),
+        ("sistema-caja-negra",          ("pizarra", 1), (230, 972, 960, 1450), True),
+        ("sistema-que-se-llena",        ("pizarra", 2), (580, 40, 870, 320),   True),
+        ("cafe-ley-de-little",          ("pizarra", 2), (20, 905, 1215, 1170), True),
+        ("variantes-del-consultorio",   ("pizarra", 3), (0, 430, 1060, 935),   True,
+         [(100, 920, 300, 940)]),                                  # la punta del λ de la figura de abajo
+        ("subsistemas-en-serie",        ("pizarra", 3), (140, 930, 840, 1380), True,
+         [(700, 900, 860, 950)]),                                  # el "6 P" de la figura de arriba
+        ("web-como-tres-sistemas",      ("pizarra", 4), (0, 15, 450, 425),     True),
+        ("pool-de-conexiones",          ("pizarra", 4), (590, 20, 1010, 355),  True,
+         [(780, 0, 1241, 300)]),                                   # λ = L/W en verde, que va aparte
+        # La pizarra (pág. 4) tiene el diagrama sin los cuatro pasos del
+        # algoritmo, que el pie nombra; en las notas están al lado.
+        # Arranca en el APP: el rótulo "LOOK ASIDE CACHE" tiene encima un "LOOK"
+        # tachado, y taparlo deja un parche blanco sobre el gris del papel.
+        ("look-aside-cache",            ("notas", 4),   (480, 965, 1660, 1295), False),
+        ("look-aside-y-look-through",   ("pizarra", 5), (90, 100, 760, 445),   True),
+        # La pizarra no tiene la arquitectura: el profesor mostró la figura 2
+        # del paper. Las dos regiones dibujadas están solo en las notas. El
+        # título "CACHES EN FACEBOOK" se queda: comparte altura con PRIMARY y
+        # SECONDARY, y taparlo deja un parche blanco sobre el gris del papel.
+        ("arquitectura-de-facebook",    ("notas", 5),   (10, 670, 1444, 1350), False),
+        ("algoritmos-read-write",       ("pizarra", 9), (35, 40, 850, 695),    True),
+        ("race-condition-set",          ("pizarra", 9), (160, 830, 850, 1220), True),
+        ("sharding-de-memcache",        ("pizarra", 5), (240, 595, 1140, 870), True),
+        # Los clusters no se dibujaron en la pizarra.
+        ("clusters-en-una-region",      ("notas", 7),   (470, 1565, 955, 1970), False),
+        ("invalidacion-cross-region",   ("pizarra", 5), (150, 1040, 1000, 1545), True,
+         [(945, 1340, 1241, 1480)]),                               # "CDC" y "DEBEZIUM", que el apunte dice aparte
+        ("replica-atrasada",            ("pizarra", 6), (228, 0, 790, 385),    True,
+         [(228, 0, 250, 100)]),                                    # la punta del subrayado de "OTRO RACE"
+        ("algoritmo-con-marcador",      ("pizarra", 6), (30, 430, 1100, 740),  True),
+        ("thundering-herd",             ("pizarra", 7), (30, 110, 700, 540),   True,
+         [(590, 400, 700, 540)]),                                  # el "C1: GET" de la figura siguiente
+        ("mecanismo-de-leases",         ("pizarra", 7), (20, 415, 1200, 965),  True,
+         [(0, 400, 560, 545)]),                                    # el último FE y su llave, de la figura anterior
+        ("lease-como-optimistic-locking", ("pizarra", 8), (70, 105, 1090, 810), True),
     ],
     # Sale de la grabación 15 (ver FUENTE_POR_CLASE).
     13: [

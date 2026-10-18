@@ -1,0 +1,36 @@
+\input{estilo}
+% Redibujo de la pizarra pág. 1. Agrega lo que el dibujo no tenía: el entorno
+% como zona, varios puertos, un cliente que pide y recibe, y otro sistema.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % el entorno: todo lo de afuera
+  \fill[suave!14] (-6.4,-3.1) rectangle (6.6,3.1);
+  \node[etiq, font=\small, anchor=north west] at (-6.3,3.0) {entorno};
+  % el sistema
+  \draw[fill=white] (0,0) ellipse (3.0 and 2.3);
+  \node[etiq, text=suave] at (0,1.85) {lo que estudiamos};
+  \node[componente] (n1) at (-1.2,0.9) {};
+  \node[componente] (n2) at (0.6,1.0) {};
+  \node[componente] (n3) at (-0.4,-0.1) {};
+  \node[componente] (n4) at (-1.5,-1.0) {};
+  \node[componente] (n5) at (0.9,-1.2) {};
+  \node[componente] (n6) at (1.7,0.2) {};
+  \draw (n1) -- (n2) (n1) -- (n3) (n3) -- (n4) (n3) -- (n5) (n2) -- (n6) (n5) -- (n6);
+  % puertos sobre la frontera
+  \foreach \t/\n in {180/pa, 20/pb, -40/pc}
+    \fill[tinta] ($(\t:3.0 and 2.3)+(-0.11,-0.11)$) rectangle ++(0.22,0.22)
+      coordinate[pos=0.5] (\n);
+  \draw[suave] (pa) -- (n4);  \draw[suave] (pb) -- (n6);  \draw[suave] (pc) -- (n5);
+  % un cliente pide y recibe
+  \pic at (-5.4,-0.6) {persona};
+  \draw[msg] (-4.9,0.55) -- node[etiq, above=1pt, pos=0.4, sloped] {pedido} ($(pa)+(-0.13,0.06)$);
+  \draw[respuesta] ($(pa)+(-0.13,-0.06)$) -- node[etiq, below=1pt, pos=0.6, sloped] {respuesta} (-4.9,-0.55);
+  % otro sistema del entorno
+  \node[caja] (otro) at (5.3,1.3) {otro sistema};
+  \draw[<->] ($(pb)+(0.13,0)$) -- (otro);
+  % el rótulo de la interfaz
+  \node[etiq, font=\small, align=left, anchor=west] (ri) at (3.9,-1.9)
+    {interfaz\\[-1pt]\textcolor{suave}{\footnotesize API, endpoints}};
+  \draw[suave] (ri.west) -- ($(pc)+(0.13,-0.05)$);
+\end{tikzpicture}\end{figura}
+\end{document}
