@@ -21,7 +21,7 @@ El problema que viene tiene un nombre muy gráfico: *thundering herd*, en castel
 
 Una hot key parece, de entrada, el caso fácil. Se consulta en el caché como cualquier otra clave, y el hit ratio es muy alto, porque todo el mundo accede al mismo tweet. Un tweet muy popular está siempre haciendo hit y casi nunca se termina accediendo a la base. Desde el punto de vista de la capacidad, es exactamente el escenario que queríamos.
 
-Ahora imaginemos que ese tweet se actualiza. Hoy los tweets se pueden editar; antes no, y en parte era justamente para optimizar los cachés. Al editarlo hay que modificar la base y después hacer un `delete` para borrar la versión vieja del caché, sea memcache, Redis o lo que haya.
+Ahora imaginemos que ese tweet se actualiza, por ejemplo porque se edita. Al editarlo hay que modificar la base y después hacer un `delete` para borrar la versión vieja del caché, sea memcache, Redis o lo que haya.
 
 A primera vista no parece grave: tras el delete, el primer frontend que acceda no lo encuentra, va a la base y lo deja actualizado en el caché. Eso es lo obvio, y es lo que pasa la mayor parte del tiempo.
 

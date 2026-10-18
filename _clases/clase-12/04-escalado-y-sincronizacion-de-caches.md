@@ -36,7 +36,7 @@ Con eso el diagrama se lee distinto: esos memcaches alineados no son réplicas, 
 
 Hay un detalle contraintuitivo del paper. Para armar un response, el frontend típicamente necesita muchísimas claves: la información del usuario, el timeline, el texto de cada elemento del timeline, y así siguiendo. El resultado es que, por cada request, termina accediendo a todos los memcaches. Así que si bien el sharding sirve para escalar en memoria, el frontend accede a todos y los carga a todos.
 
-La cuenta del `MD5` con módulo es, por otra parte, la versión didáctica. La técnica que se usa de verdad es consistent hashing, con algunos refinamientos: el anillo con máquinas distribuidas sobre él, que ya apareció en Concurrencia y que también usa DynamoDB.
+La cuenta del `MD5` con módulo es, por otra parte, la versión didáctica. La técnica que se usa de verdad es consistent hashing, con algunos refinamientos: el anillo con máquinas distribuidas sobre él, que vimos en la clase 8 con Dynamo y que también usa DynamoDB.
 
 Queda una última pieza, también del paper. Dentro de cada región arman muchos clusters. Cada cluster es uno de esos bloques que en el diagrama aparecen uno delante del otro: un conjunto de frontends y un conjunto de shards de memcache, y de esa pieza hay varias copias. Los requests llegan aleatoriamente a los distintos clusters, y así le agregan capacidad al sistema.
 
@@ -86,7 +86,7 @@ mcsqueal vale más allá de este caso: es una forma alternativa de actualizar ca
 
 ## Invalidación local y remota
 
-Planteado así, queda una objeción pendiente, la que cualquiera se haría: no se termina de ver cómo esto resuelve que la máquina esté del otro lado del mundo. ¿El objetivo era evitar que corra la query entera y usar el registro que corresponde, mucho más rápido que ejecutar la query completa? Porque mirado así, el problema distribuido no parece resuelto por ningún lado.
+Planteado así, queda una objeción pendiente, la que cualquiera se haría: si el caché estaba para que las lecturas fueran más rápidas, ¿qué aporta mcsqueal en ese sentido? Mirado así, no parece resolver nada del problema de que la otra región esté del otro lado del mundo.
 
 Para contestarla hay que volver al escenario. Tenemos el primary de un lado y el secondary del otro. En el primary todo cierra. El secondary funciona de manera independiente en todo lo que hace a las lecturas: cuando su frontend quiere leer, va al caché de su región, no encuentra el dato, accede a la réplica local y con eso actualiza el memcache. El problema es que, si actualizamos el primary, el frontend de la región primaria solo invalida el memcache de su propia región.
 
@@ -140,7 +140,7 @@ Con eso el frontend sabe que no puede tomar el camino local. Tiene que hacer una
 
 ¿Quién borra el marcador? El encargado es mcsqueal: además de invalidar la clave, se fija si hay marcas puestas por el frontend y las borra. El mismo sistema de las invalidaciones baja la bandera cuando ya no hace falta.
 
-Es una forma ingeniosa de resolverlo, y dice algo sobre el paper entero. No tiene algoritmos tan sofisticados como los de Raft: son soluciones prácticas a problemas que los ingenieros de Facebook seguramente se fueron encontrando sobre la marcha. No sabemos si pensaron en esta race condition desde el principio; lo más probable es que, al encontrársela, hayan decidido que durante la transición —mientras las cosas llegan de una región a la otra y mcsqueal las actualiza— corresponde marcar la clave como inválida. Que es, básicamente, deshabilitar localmente el memcache para esa clave.
+Es una forma ingeniosa de resolverlo, y dice algo sobre el paper entero: no propone algoritmos de consenso como Raft, sino soluciones prácticas a problemas concretos de operación. El marcador hace que, durante la transición —mientras las cosas llegan de una región a la otra y mcsqueal las actualiza—, la clave quede marcada como inválida. Que es, básicamente, deshabilitar localmente el memcache para esa clave.
 
 El paper es explícito en este punto: si encuentra `rk`, el frontend dirige la consulta a la región master; si no, a la réplica local.
 
