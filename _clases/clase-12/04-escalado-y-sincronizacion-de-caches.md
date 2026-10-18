@@ -96,7 +96,7 @@ La forma más obvia —obvia de imaginar, difícil de armar— sería que el fro
 
 Detrás de la objeción hay un sesgo que tenemos todos: pensamos que los cachés siempre tienen un tiempo de expiración y que las cosas se van solas. Es más fácil pensar el problema al revés: ¿cómo sería este sistema si nada expirara? De hecho, en sistemas como Twitter o Facebook tratan de que las cosas no expiren nunca, porque cuando expiran la carga es tan grande que todos acceden a la base, y eso puede ser problemático. Hay una solución para eso también, pero en general se trata de que, en lo posible, no expire nunca.
 
-El paper deja una duda que no pudimos saldar: no queda claro si dice que las cosas expiran automáticamente de los cachés, si al cabo de media hora se van solas cuando no se las borró a mano. La impresión es que quedan indefinidamente y uno está obligado a borrarlas.
+El paper no confía la consistencia a la expiración: las invalidaciones son explícitas, con `delete`. memcached admite un tiempo de expiración por clave, y el paper lo menciona al hablar de claves de vida corta, pero el diseño no depende de él: un valor que nadie borra puede quedar en el caché indefinidamente, y por eso hay que borrarlo.
 
 El dibujo esconde una redundancia. mcsqueal no está solo en la región remota: la región local también lo tiene, leyendo su propio log y haciendo el mismo análisis. Así que el `delete` que el frontend mandó directo a su memcache eventualmente le llega también por mcsqueal. Eso nos salva de un caso problemático: si el frontend pudo escribir en la base pero justo el request del `delete` falló y nunca se mandó, como hay otro sistema leyendo la base, el delete termina llegando por el otro lado. Un segundo mecanismo que hace lo mismo y le da más seguridad al asunto.
 
@@ -142,6 +142,6 @@ Con eso el frontend sabe que no puede tomar el camino local. Tiene que hacer una
 
 Es una forma ingeniosa de resolverlo, y dice algo sobre el paper entero. No tiene algoritmos tan sofisticados como los de Raft: son soluciones prácticas a problemas que los ingenieros de Facebook seguramente se fueron encontrando sobre la marcha. No sabemos si pensaron en esta race condition desde el principio; lo más probable es que, al encontrársela, hayan decidido que durante la transición —mientras las cosas llegan de una región a la otra y mcsqueal las actualiza— corresponde marcar la clave como inválida. Que es, básicamente, deshabilitar localmente el memcache para esa clave.
 
-Queda una incertidumbre que el paper no despeja: cuando el frontend busca el valor en la otra región, no está claro si va directo a la base del primary o si podría pedirle al frontend de esa región que le optimice algo.
+El paper es explícito en este punto: si encuentra `rk`, el frontend dirige la consulta a la región master; si no, a la réplica local.
 
 ---

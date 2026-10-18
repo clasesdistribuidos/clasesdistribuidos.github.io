@@ -96,7 +96,7 @@ Y el resultado es el peor de todos: `V2` en la base y `V1` en el caché. Si la c
   </figcaption>
 </figure>
 
-Esto no es privativo de este diseño: puede pasar con cualquier caché, o en cualquier situación con el mismo dato guardado en dos lugares. Cuál es la solución estándar en otros cachés no está del todo claro, y habría que averiguarlo; Redis quizás tenga algo parecido a un optimistic locking, pero no pasa de ser una conjetura.
+Esto no es privativo de este diseño: puede pasar con cualquier caché, o en cualquier situación con el mismo dato guardado en dos lugares. Otros cachés ofrecen herramientas para este caso. Redis, por ejemplo, implementa optimistic locking con `WATCH`: si la clave observada cambia antes del `EXEC`, la transacción se aborta.
 
 Lo que sí sabemos es lo que hizo Facebook, y aquí está el giro: termina siendo una especie de optimistic locking, y no hubo que construir nada, porque el mecanismo ya estaba. El miss devuelve un lease, como acabamos de ver; estaba pensado para el thundering herd, pero el hecho es que lo devuelve.
 
@@ -106,7 +106,7 @@ La consecuencia es directa. El `set` del cliente 1 da error, porque manda `V1` c
 
 Verificar ese lease es prácticamente lo mismo que vimos con Zookeeper en la clase 7. Tratamos de setear un valor y verificamos, de paso, que nada haya cambiado mientras tanto; el lease hace las veces de la versión del optimistic locking. Al no encontrarla, la operación tira un error de concurrencia, que es exactamente lo que queríamos: los threads se combinaron mal, y el sistema se da cuenta.
 
-Hasta donde sabemos, memcached tenía operaciones de este tipo, llamadas CAS, por *check-and-set*, que sirven justamente para optimistic locking: verifican una cierta variable —aquí, el lease— y si está bien setean el valor, y si no dan error. De Redis no tenemos certeza, pero seguramente tenga algo equivalente.
+memcached ofrece operaciones de este tipo, llamadas CAS, por *check-and-set*: `gets` devuelve el valor junto con un identificador de versión, y `cas` solo escribe si ese identificador no cambió; si cambió, da error. El lease de Facebook cumple el mismo papel que ese identificador.
 
 Esta race condition se ve poco, y el TTL explica por qué. Es una variación de un problema que puede ocurrir con cualquier caché, y normalmente pasa inadvertido: el caché suele tener un TTL, y no suele ser crítico que el valor se actualice al instante. El TTL borra la entrada y el problema se arregla solo. Pero si no se tiene cuidado, puede ocurrir de todos modos.
 
