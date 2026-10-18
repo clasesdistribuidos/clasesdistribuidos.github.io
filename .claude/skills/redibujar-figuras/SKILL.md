@@ -88,15 +88,35 @@ se cambia la primera para que la use. Las familias que todavía no existen
 anotadas al final de `formas.tex` y se diseñan con la primera clase que las
 necesite.
 
+La letra es la de las figuras de *The Feynman Lectures on Physics*: Computer
+Modern Bright, sin serifa, en su versión OpenType (CMU Bright, del paquete
+cm-unicode). Las cuatro OTF y su licencia (OFL) están en `figuras/fuentes/`,
+y el script las pone en `OPENTYPEFONTS`: no hay que instalar nada. Como en
+el libro, **los rótulos van en mayúsculas**, y no se escriben así en el
+`.tex`: los pone la fuente (`Letters=Uppercase`), con tildes y ñ. Lo que se
+lee como fórmula queda en su caja, como en el libro ("SPIN IN +*x* DIR.",
+"16 MeV"):
+
+- las variables van con `\var{W}`, en oblicua y en minúscula. `\textit`
+  también se pasa a mayúsculas: nunca usarlo para una variable;
+- el código va con `cod`, en Menlo, tal cual (`send(record, id)`);
+- una función o una unidad dentro de un rótulo (min, ms) todavía no tiene
+  una forma propia: hoy sale en mayúsculas.
+
+En mayúsculas el texto ocupa más: un rótulo que entraba justo puede pisar
+una caja, y se achica con `font=\scriptsize` (el libro también tiene
+rótulos más chicos).
+
 Dos reglas de forma: un rechazo es la pieza `rechazo`, nunca el carácter ×,
 que queda chico. Y las fórmulas se escriben como texto, con `\var{W}` para
-las variables y `≥` en unicode: la matemática en Computer Modern no combina
-con la Helvetica, y con TeX Live basic no hay `unicode-math`.
+las variables y `≥` en unicode: con TeX Live basic no hay `unicode-math`.
+CMU Bright no tiene `≥`, `≤` ni `≠`; `estilo.tex` los saca del modo
+matemático.
 
 Trampas que ya aparecieron:
 
-- Helvetica Neue no tiene → ni ∥: la flecha dentro de un texto es `\flecha`;
-  ∥, `$\parallel$`.
+- CMU Bright no tiene ∥, ↔, ⇒, ∞ ni ≈ (la → sí): usar `$\parallel$` y
+  compañía, o `\flecha` para una flecha dibujada.
 - `\@car` y compañía no andan en un `.tex` común. Para rótulos como p₁,
   iterar con dos variables: `\foreach \l/\i in {p/1, q/2}` y
   `\var{\l}\textsubscript{\i}`.
@@ -176,9 +196,10 @@ El circuito:
 
 ## En otra máquina
 
-`estilo.tex` pide **Helvetica Neue** y **Menlo** por nombre, con `fontspec`:
-vienen con macOS. En Linux o Windows hay que instalarlas o cambiarlas ahí
-(TeX Gyre Heros y DejaVu Sans Mono andan), y avisar que el resultado cambia.
+La letra de las figuras viaja con el repo, en `figuras/fuentes/`. La del
+código, **Menlo**, se pide por nombre y viene con macOS: en Linux o Windows
+hay que instalarla o cambiarla ahí (DejaVu Sans Mono anda), y avisar que el
+resultado cambia.
 
 ## Llevarlas al sitio
 
