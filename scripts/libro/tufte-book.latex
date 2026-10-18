@@ -19,6 +19,10 @@
 % es-minimal deja todo lo demás como lo pone la clase: sangría, títulos,
 % listas, comillas y fórmulas.
 \usepackage[spanish,es-minimal,es-tabla]{babel}
+% microtype estira o encoge las letras hasta un 2 % y deja sobresalir apenas
+% guiones y puntos del borde: llena el renglón justificado sin cortar tantas
+% palabras. La clase ya usa su parte letterspace y lo sugiere en su ejemplo.
+\usepackage{microtype}
 \usepackage{amssymb}
 
 % Lo que pandoc asume que existe
