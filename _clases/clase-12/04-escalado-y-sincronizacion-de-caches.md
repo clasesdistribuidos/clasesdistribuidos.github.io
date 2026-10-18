@@ -72,13 +72,13 @@ El mecanismo sale de ahí. Cuando mandamos un update en la región primaria —e
   </figcaption>
 </figure>
 
-Falta lo más delicado: cómo se infiere la clave a partir del update. El paper, hasta donde pudimos revisar, no lo especifica. Una forma posible sería esta. El frontend manda una query cualquiera, por ejemplo `UPDATE users SET name = 'foo' WHERE id = 123`. MySQL, como SQL en general, admite comentarios: con dos guiones lo que sigue queda ignorado por el motor. Se le puede agregar al final la clave a invalidar:
+Falta lo más delicado: cómo se infiere la clave a partir del update. El paper resuelve esto sin inferir nada: las sentencias SQL que modifican datos llevan agregadas las claves de memcache que hay que invalidar una vez que la transacción se confirma. Una forma de hacerlo es la siguiente. El frontend manda una query cualquiera, por ejemplo `UPDATE users SET name = 'foo' WHERE id = 123`. MySQL, como SQL en general, admite comentarios: con dos guiones lo que sigue queda ignorado por el motor. Se le agrega al final la clave a invalidar:
 
 ```sql
 UPDATE users SET name = 'foo' WHERE id = 123 -- KEYS ['users:123']
 ```
 
-Así se embebe en la query misma la información que después le llega indirectamente a mcsqueal. mcsqueal parsea la query, extrae el comentario e infiere que —además de lo que la query haga dentro de la base, que no se va a poner a analizar— tiene que invalidar la clave `users:123` en todos los cachés que tenga.
+Así se embebe en la query misma la información que después le llega indirectamente a mcsqueal. mcsqueal parsea la query, extrae el comentario y sabe que —además de lo que la query haga dentro de la base, que no se va a poner a analizar— tiene que invalidar la clave `users:123` en todos los cachés que tenga.
 
 Esto no se queda en lo teórico. mcsqueal es de Facebook y muy específico, pero hay versiones de la misma idea que se pueden usar. A la técnica de inspeccionar el log se la llama change data capture, CDC. La herramienta concreta que se puede descargar es Debezium, que se usa mucho: está escrita en Java, uno la instala, le pasa los datos de la base y se conecta a su write-ahead log. Debezium puede mandar los eventos a Kafka, y después uno consume esa cola y hace lo que quiera. Con herramientas open source actuales esto se podría armar; es una arquitectura complicada, pero se podría. Siempre considerando que hay que hacer deletes: con updates pueden aparecer race conditions, y con deletes todo cierra más fácil.
 
