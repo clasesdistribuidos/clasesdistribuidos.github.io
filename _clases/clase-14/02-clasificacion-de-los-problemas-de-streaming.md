@@ -93,6 +93,6 @@ No hay forma fácil de correlacionarlos por afuera: el acceso a la página no tr
   </figcaption>
 </figure>
 
-La correlación es por tiempo: hay que armar ventanas y ver, por ejemplo, si dentro de los cinco minutos de recibir la notificación el usuario accedió a la página. El ejemplo es de fabricación propia y algo inventado —quizás en la realidad haya forma de correlacionar las dos puntas directamente—, pero muestra la forma del problema. Y eso no es nada fácil. Por lotes es manejable; en tiempo real, hace falta un mecanismo nuevo para hacer el join entre streams.
+La correlación es por tiempo: hay que armar ventanas y ver, por ejemplo, si dentro de los cinco minutos de recibir la notificación el usuario accedió a la página. Y eso no es nada fácil. Por lotes es manejable; en tiempo real, hace falta un mecanismo nuevo para hacer el join entre streams.
 
 ---

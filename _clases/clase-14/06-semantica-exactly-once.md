@@ -15,7 +15,7 @@ nav_order: 6
 </details>
 
 
-Lo que viene es la semántica exactly-once, otra garantía que el sistema nos da y que no habíamos mencionado: cada registro se ejecuta una sola vez. De todo el paper, esta es la parte más interesante; los watermarks también lo son, sin duda, pero este mecanismo es de lo mejor.
+Lo que viene es la semántica exactly-once, otra garantía que el sistema nos da y que no habíamos mencionado: cada registro se ejecuta una sola vez.
 
 Sirve justamente para hacer la cuenta, contar cuántas Britneys buscó la gente: el problema que arrastramos desde el principio y que nos llevó a construir la maquinaria de las ventanas. Si vienen registros duplicados, o se duplican internamente por los retries —y va a haber retries—, el sistema garantiza que se cuentan y se procesan una única vez.
 
@@ -87,9 +87,9 @@ Y si este nodo a su vez hace retries —si C no está disponible y se le manda e
 
 Este procedimiento tiene un costo, y el paper lo mide (Akidau et al., VLDB 2013, §8.1). Con el checkpoint de producciones y el exactly-once deshabilitados, la latencia mediana de entrega de un récord es de 3,6 milisegundos y el percentil 95 de 30; con las dos garantías habilitadas, la mediana salta a 33,7 milisegundos y el percentil 95 a 93,8. La mediana se multiplica por más de nueve: el check contra el store, el buffer y el update atómico se pagan en un orden de magnitud de latencia, y ese número hay que tenerlo a mano cuando el conteo no necesita ser exacto al récord.
 
-Hay otra optimización en el paper que no vamos a desarrollar porque se va del tema: las *weak productions*. Parece consistir en que no hace falta guardar el estado si el cómputo ya era idempotente desde antes. Por ahora la dejamos de lado.
+Hay otra optimización en el paper que no vamos a desarrollar porque se va del tema: las *weak productions*, pensadas para los cómputos que ya eran idempotentes desde antes: como no necesitan el exactly-once, emiten sus producciones sin guardarlas primero. Por ahora la dejamos de lado.
 
 {: .nota }
-> Son la contracara de las strong productions que ya nombramos: en las weak productions las entregas hacia abajo se transmiten de manera optimista, antes de persistir el estado. El paper explica el costo de esa relajación, que no es gratis: los tiempos de finalización de etapas consecutivas quedan acoplados esperando los ACK de aguas abajo, y con eso la latencia de punta a punta empeora con la profundidad del pipeline. Con un 1% de probabilidad de que una máquina falle en un minuto dado, un pipeline de profundidad 5 tiene casi un 5% de chance de estar esperando al menos una falla por minuto; MillWheel lo compensa haciendo checkpoint de un porcentaje chico de las producciones rezagadas. Akidau et al., VLDB 2013, §6.1.2 y §6.1.3, y figura 11.
+> Son la contracara de las strong productions que ya nombramos: las entregas hacia abajo se transmiten de manera optimista, antes de persistir el estado, y el paper explica que esa relajación no es gratis: los tiempos de finalización de etapas consecutivas quedan acoplados esperando los ACK de aguas abajo, y con eso la latencia de punta a punta empeora con la profundidad del pipeline. Con un 1% de probabilidad de que una máquina falle en un minuto dado, un pipeline de profundidad 5 tiene casi un 5% de chance de estar esperando al menos una falla por minuto; MillWheel lo compensa haciendo checkpoint de un porcentaje chico de las producciones rezagadas. Akidau et al., VLDB 2013, §6.1.2 y §6.1.3, y figura 11.
 
 ---

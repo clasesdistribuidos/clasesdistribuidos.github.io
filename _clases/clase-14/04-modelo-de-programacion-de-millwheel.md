@@ -57,7 +57,7 @@ class Computation {
 
 Al principio importan las dos primeras, porque son las que implementamos nosotros. El parecido con map y reduce se agota en que son dos. `ProcessRecord` es la principal: se ejecuta una vez por cada récord —cada evento, que en este paper se llama récord— que recibimos. Al procesarlo podemos llamar a otro sistema, emitir otros récords y setear timers, que es lo que vamos a ver en el ejemplo: al procesar récords podemos decidir iniciar una ventana nueva donde acumular. `ProcessTimer` es la que el sistema llama para avisarnos que se disparó una ventana: ocurrió eso que dibujamos antes, el watermark cruzó el timer que habíamos programado, y tenemos que hacer algo.
 
-El paper trae el ejemplo en C++, un lenguaje que se usaba muchísimo hace unas décadas, después perdió terreno y últimamente vuelve un poco, aunque hoy no es de los más familiares; aquí aparece traducido a Python. Lo vemos en dos pasos: primero una versión con variables globales, que no está en el paper y sirve para ver la forma, y después la del paper, que resuelve el problema que la primera deja abierto. Del ejemplo vemos la primera mitad, la que cuenta búsquedas y las asigna a ventanas.
+El paper trae el ejemplo en C++; aquí aparece traducido a Python. Lo vemos en dos pasos: primero una versión con variables globales, que no está en el paper y sirve para ver la forma, y después la del paper, que resuelve el problema que la primera deja abierto. Del ejemplo vemos la primera mitad, la que cuenta búsquedas y las asigna a ventanas.
 
 ```python
 class Windower:
@@ -92,7 +92,7 @@ Esta segunda función es incluso más fácil de leer que la primera. En las dos 
 
 De las funciones que nos da el sistema ya vimos `SetTimer` y `ProduceRecord`; falta una, justamente la que resuelve el problema que quedó planteado. Como esto está distribuido, no podemos usar variables globales como `window_counts`. El sistema nos provee una especie de variable global que en realidad no lo es: `MutablePersistentState`.
 
-`MutablePersistentState` es un array de bytes que podemos escribir y volver a leer. El paper no es muy claro sobre cómo se hace exactamente; supuestamente nos devuelve un objeto, y cuando lo modificamos se escribe automáticamente. Lo que sí propone es envolver esos bytes en una clase propia. `WindowState`, por ejemplo, deserializa los bytes y permite interpretarlos como un objeto en vez de un array crudo. `WindowState` es nuestra, no de MillWheel, y adentro tiene lo necesario para actualizar la cuenta de los buckets. El ejemplo queda así:
+`MutablePersistentState` es un array de bytes que podemos escribir y volver a leer: nos devuelve un objeto, y cuando lo modificamos se escribe automáticamente. Lo que propone el paper es envolver esos bytes en una clase propia. `WindowState`, por ejemplo, deserializa los bytes y permite interpretarlos como un objeto en vez de un array crudo. `WindowState` es nuestra, no de MillWheel, y adentro tiene lo necesario para actualizar la cuenta de los buckets. El ejemplo queda así:
 
 ```python
 class Windower:
@@ -110,7 +110,7 @@ class Windower:
 ```
 
 {: .nota }
-> Quien vaya al paper a buscar las dos versiones va a encontrar solo una. En la figura 9 —que es de donde sale este ejemplo, y está en C++— el `Windower` ya viene escrito con `WindowState state(MutablePersistentState())`; la versión con el diccionario global no está ahí, es un paso intermedio para mostrar por qué el estado persistente hace falta. Sobre la duda de cómo se escribe y se vuelve a leer ese estado, el paper da la respuesta en otro lado y confirma la intuición: la serialización por clave la maneja el framework, el usuario solo provee las rutinas de serialización y deserialización —con Protocol Buffers, por ejemplo—, y todas las modificaciones por clave se envuelven en una única operación atómica que se materializa al cerrar el hook. Akidau et al., VLDB 2013, §4.4, §5.1, §6.2 y figura 9.
+> Quien vaya al paper a buscar las dos versiones va a encontrar solo una. En la figura 9 —que es de donde sale este ejemplo, y está en C++— el `Windower` ya viene escrito con `WindowState state(MutablePersistentState())`; la versión con el diccionario global no está ahí, es un paso intermedio para mostrar por qué el estado persistente hace falta. Sobre cómo se escribe y se vuelve a leer ese estado, el paper da la respuesta en otro lado: la serialización por clave la maneja el framework, el usuario solo provee las rutinas de serialización y deserialización —con Protocol Buffers, por ejemplo—, y todas las modificaciones por clave se envuelven en una única operación atómica que se materializa al cerrar el hook. Akidau et al., VLDB 2013, §4.4, §5.1, §6.2 y figura 9.
 
 Otra figura del paper muestra cómo encaja nuestro código dentro del sistema. Se compilaba un binario que tenía adentro todos los cómputos —y enseguida vamos a ver que cada nodo puede realizar cualquiera—. Nosotros implementábamos el user code, que interactuaba con el sistema de dos maneras: el sistema nos llamaba por `ProcessRecord` y `ProcessTimer`, y había APIs para guardar cosas en el persistent state. Más adelante volvemos sobre qué es exactamente ese persistent state; básicamente usa por debajo Spanner, Bigtable o algo así, pero está abstraído porque tiene particularidades propias.
 

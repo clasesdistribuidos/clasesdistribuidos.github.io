@@ -28,7 +28,7 @@ Con eso arrancamos la implementación por la pregunta de cómo se escala. En el 
 
 ## Particionado por clave y shuffle
 
-Pensemos en un stream de enorme volumen; el mejor ejemplo es el de los tweets. Es un ejemplo de primera mano: quien dictó esta clase trabajó en Twitter, donde tenían exactamente eso: un Kafka enorme con miles de particiones que contenía todos los tweets del mundo. Una única máquina procesando todo eso se cae: no hay máquina que aguante ese flujo.
+Pensemos en un stream de enorme volumen; el mejor ejemplo es el de los tweets: un Kafka enorme, con miles de particiones, que contiene todos los tweets del mundo. Una única máquina procesando todo eso se cae: no hay máquina que aguante ese flujo.
 
 ¿Cómo se soporta un stream tan grande? Particionando por clave. Otra vez lo mismo: la única forma que sabemos de resolver las cosas es particionando.
 
@@ -55,10 +55,10 @@ Queda una pregunta sobre las flechas: ¿cómo se mandan los registros de un nodo
 
 ## Master y asignación de cómputo y rango
 
-¿Quién controla todo esto? Aquí el paper no es muy claro y remite a otro paper. Hay un master, sí, muy parecido al de MapReduce, y debajo los nodos que ejecutan el cómputo. Ese master podría ser una máquina sola, como en MapReduce; el paper aclara que es un subsistema replicado actuando como master, y podemos imaginar un Paxos adentro, una especie de Raft.
+¿Quién controla todo esto? Hay un master, muy parecido al de MapReduce, y debajo los nodos que ejecutan el cómputo. Ese master podría ser una máquina sola, como en MapReduce; el paper aclara que es un subsistema replicado actuando como master, y podemos imaginar un Paxos adentro, una especie de Raft.
 
 {: .nota }
-> El paper dice literalmente que el balanceo de carga lo maneja un *replicated master*, y no llega a nombrar con qué protocolo está replicado, así que el Paxos es una inferencia razonable y no una cita. Lo que sí especifica, y con estas palabras, es qué hace: divide cada cómputo en un conjunto de intervalos lexicográficos de claves que cubren todo el espacio posible, se los asigna a un conjunto de máquinas, y ante un aumento de carga de CPU o de presión de memoria —que le reporta un monitor por proceso— puede mover esos intervalos, partirlos o fusionarlos. Akidau et al., VLDB 2013, §7.1.
+> El paper dice literalmente que el balanceo de carga lo maneja un *replicated master*, y no nombra con qué protocolo está replicado: el Paxos es una suposición nuestra, no algo que diga el paper. Lo que sí especifica, y con estas palabras, es qué hace: divide cada cómputo en un conjunto de intervalos lexicográficos de claves que cubren todo el espacio posible, se los asigna a un conjunto de máquinas, y ante un aumento de carga de CPU o de presión de memoria —que le reporta un monitor por proceso— puede mover esos intervalos, partirlos o fusionarlos. Akidau et al., VLDB 2013, §7.1.
 
 El master le asigna a cada máquina qué cómputo hacer y para qué rango. Si los cómputos son el Window Counter, el Spike Detector y los demás, a cada nodo que pida trabajo le indica: «serás Window Counter para este rango de claves». Todos los demás se enteran de que ese nodo físico hace ese rango y le mandan las cosas de ese rango para esa computación.
 
@@ -73,7 +73,7 @@ Es una especie de master dinámico. Si un nodo muere o se satura, el master pued
   </figcaption>
 </figure>
 
-Falta ver cómo asigna, que es interesante en sí mismo. El paper tampoco lo detalla: lo menciona al pasar y remite a Centrifuge, de Microsoft. Se suele decir que lo usaban para otra cosa, pero no era tan otra cosa: lo que Centrifuge integra son justamente las dos piezas que aquí hacen falta juntas, el manejo de leases y el particionado por rangos. De ahí tomó MillWheel la idea de reasignar cómputo basado en rangos de manera dinámica.
+Falta ver cómo asigna, que es interesante en sí mismo. El paper tampoco lo detalla: lo menciona al pasar y remite a Centrifuge, de Microsoft, que integra justamente las dos piezas que aquí hacen falta juntas, el manejo de leases y el particionado por rangos. De ahí tomó MillWheel la idea de reasignar cómputo basado en rangos de manera dinámica.
 
 {: .nota }
 > La referencia es Adya, Dunagan y Wolman, «Centrifuge: Integrated Lease Management and Partitioning for Cloud Services», NSDI 2010 (Microsoft Research). Conviene tener presente qué se toma prestado exactamente: lo que MillWheel dice haber tomado de Centrifuge es el mecanismo de imposición de leases, y su nombre para lo que en la clase llamamos epoch es *sequencer* —un token que viaja con cada escritura y que el mediador del backing store valida antes de dejarla commitear—. Cada intervalo tiene su sequencer único, y se invalida cada vez que el intervalo se mueve, se parte o se fusiona; un worker nuevo invalida los sequencers existentes antes de empezar a trabajar. Akidau et al., VLDB 2013, §6.2 y §7.1.
@@ -107,6 +107,6 @@ Así resuelven, con una especie de elección de líder —una variación más de
 
 Falta una pieza para la visión global: cómo se entera el resto del sistema. Los demás nodos saben que ese nodo está a cargo de ese cómputo porque el master se lo informa. Y si alguno se entera tarde y le sigue mandando cosas al zombie, no pasa nada: el zombie las procesará, pero no va a poder guardar el estado. Con eso queda cerrada la visión global de cómo cada parte se entera de lo que hacen las otras.
 
-Con el escalado resuelto, viene lo más interesante del paper.
+Con el escalado resuelto, queda la garantía de que cada récord se procese una sola vez.
 
 ---
