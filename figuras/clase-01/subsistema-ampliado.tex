@@ -1,0 +1,33 @@
+\input{estilo}
+% No está en la pizarra: ilustra que un componente es, a su vez, un sistema.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % el sistema
+  \draw[fill=relleno] (-2.6,0) ellipse (2.4 and 1.9);
+  \node[etiq, font=\small] at (-2.6,2.25) {un sistema};
+  \node[componente] (n1) at (-3.6,0.8) {};
+  \node[componente] (n2) at (-2.3,1.1) {};
+  \node[componente, minimum size=7mm, fill=white, line width=1.1pt] (z) at (-1.6,-0.2) {};
+  \node[componente] (n4) at (-3.5,-0.6) {};
+  \node[componente] (n5) at (-2.5,-1.2) {};
+  \draw (n1) -- (n2) (n1) -- (n4) (n4) -- (n5) (n2) -- (z) (n4) -- (z) (n5) -- (z);
+  % el zoom
+  \draw[suave, dashed] (z.north) -- (3.2,1.85);
+  \draw[suave, dashed] (z.south) -- (3.2,-1.85);
+  \draw[fill=white, line width=1.1pt] (3.2,0) ellipse (2.3 and 1.85);
+  \node[etiq, font=\small] at (3.2,2.2) {uno de sus componentes, abierto};
+  \foreach \t/\n in {170/p1, 200/p2, 150/p3}
+    \fill[tinta] ($(3.2,0)+(\t:2.3 and 1.85)+(-0.09,-0.09)$) rectangle ++(0.18,0.18) coordinate[pos=0.5] (\n);
+  \node[componente] (m1) at (2.4,0.9) {};
+  \node[componente] (m2) at (3.6,1.0) {};
+  \node[componente] (m3) at (2.9,-0.1) {};
+  \node[componente] (m4) at (4.4,0.0) {};
+  \node[componente] (m5) at (2.5,-1.1) {};
+  \node[componente] (m6) at (3.8,-1.1) {};
+  \draw (m1) -- (m2) (m1) -- (m3) (m3) -- (m4) (m2) -- (m4) (m3) -- (m5) (m5) -- (m6) (m4) -- (m6);
+  \draw[suave] (p1) -- (m3) (p2) -- (m5) (p3) -- (m1);
+  % el ejemplo
+  \node[etiq, text=suave] at (-2.6,-2.25) {p.\,ej. el kernel};
+  \node[etiq, text=suave] at (3.2,-2.2) {p.\,ej. el file system};
+\end{tikzpicture}\end{figura}
+\end{document}
