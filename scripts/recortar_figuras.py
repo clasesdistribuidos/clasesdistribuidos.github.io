@@ -63,7 +63,7 @@ APUNTES_DEFAULT = os.path.join(os.path.dirname(REPO), "clases-apuntes")
 # La 12 del sitio, la de cachés, rompe el orden: se grabó como la 9, antes de
 # Dynamo, y en el sitio se publicó después de Spanner.
 FUENTE_POR_CLASE = {3: 4, 4: 5, 5: 6, 6: 7, 7: 8, 8: 10, 9: 11, 10: 12, 11: 14,
-                    12: 9, 13: 15}
+                    12: 9, 13: 15, 14: 16}
 
 # Recortes que son fotos aunque salgan de la pizarra, y por lo tanto van en
 # jpeg. El peso no alcanza para distinguirlos: la foto de Lamport pesa 234 KB en
@@ -555,6 +555,34 @@ FIGURAS_POR_CLASE = {
          [(0, 0, 760, 419)]),                                      # el log con dos C de arriba
         ("replicacion-de-particiones",  ("pizarra", 20), (195, 165, 1085, 480),  True),
     ],
+    # Sale de la grabación 16 (ver FUENTE_POR_CLASE). Son 18 de las 21 figuras;
+    # las otras tres son del paper y están anotadas abajo.
+    14: [
+        ("linea-de-tiempo-zeitgeist",   ("pizarra", 1),  (150, 185, 840, 480),   True),
+        ("micro-batching",              ("pizarra", 2),  (165, 245, 640, 535),   True),
+        ("sistema-de-streaming",        ("pizarra", 2),  (125, 695, 670, 950),   True),
+        ("enriquecer-un-stream",        ("pizarra", 3),  (70, 470, 720, 775),    True),
+        ("event-time-y-processing-time", ("pizarra", 3), (310, 1015, 1165, 1310), True,
+         [(300, 1010, 450, 1045)]),                                # el subrayado de "GROUP BY WINDOW"
+        ("join-stream-stream",          ("pizarra", 4),  (5, 95, 900, 420),     True,
+         [(0, 40, 480, 104)]),                                     # "Eg JOIN STREAM-STREAM"
+        ("punto-de-corte",              ("pizarra", 4),  (310, 563, 1110, 895),  True),
+        ("watermark-log-particionado",  ("pizarra", 4),  (40, 1340, 1180, 1690), True),
+        ("event-time-contra-processing-time", ("pizarra", 5), (220, 405, 790, 862), True,
+         [(560, 800, 694, 870)]),                                  # la punta del watermark del gráfico de abajo
+        ("cerrar-ventana-con-watermark", ("pizarra", 5), (285, 815, 780, 1240),  True,
+         [(697, 780, 800, 860)]),                                  # "EVENT TIME", que es del gráfico de arriba
+        ("shuffle-por-rangos",          ("pizarra", 10), (330, 250, 745, 675),   True),
+        ("master-y-nodos",              ("pizarra", 10), (60, 750, 310, 1045),   True),
+        ("reasignacion-con-epoch",      ("pizarra", 10), (5, 1225, 670, 1754),   True),
+        ("semanticas-de-entrega",       ("pizarra", 11), (55, 85, 1080, 310),    True,
+         [(0, 0, 480, 120)]),                                      # el subrayado de "SEMÁNTICA EXACTLY-ONCE"
+        ("protocolo-exactly-once",      ("pizarra", 11), (10, 345, 1000, 1050),  True),
+        ("pipeline-de-watermarks",      ("pizarra", 11), (125, 1270, 1160, 1525), True,
+         [(0, 1250, 230, 1284)]),                                  # la cola del subrayado de "WATERMARKS"
+        ("autoridad-de-watermarks",     ("pizarra", 12), (40, 0, 1000, 430),     True),
+        ("genealogia-de-millwheel",     ("pizarra", 12), (85, 590, 1065, 830),   True),
+    ],
 }
 
 # No todas las figuras salen de la pizarra o de las notas. Las que siguen están
@@ -630,6 +658,17 @@ FIGURAS_POR_CLASE = {
 # en las notas solo está el recuadro "VER FIGURA 1". Sale de la página 5 del
 # PDF renderizada a 300 dpi, sin el epígrafe, ceñida con 16 px de margen: la
 # caja es x 593-1958, y 301-944, reducida a 1400 de ancho. En png.
+#
+# `grafo-de-computos-zeitgeist.png`, `arquitectura-de-millwheel.png` y
+# `low-watermark-lag.png` de la clase 14 son las figuras 1, 8 y 15 del paper
+# de MillWheel, *MillWheel: Fault-Tolerant Stream Processing at Internet Scale*
+# (https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/41378.pdf):
+# en las notas solo están los recuadros azules que remiten al paper, y la
+# pizarra no las tiene. Salen de las páginas 2, 5 y 9 del PDF renderizadas a
+# 300 dpi, sin el epígrafe, ceñidas con 16 px de margen: el grafo es
+# x 400-2140, y 2200-2850, reducido a 1400 de ancho; la arquitectura es
+# x 1370-2245, y 240-870; el lag es x 1315-2320, y 380-1065, por dentro del
+# marco del gráfico. Las tres en png.
 
 
 def renderizar_pizarra(tmp, apuntes, obligatoria=True):
