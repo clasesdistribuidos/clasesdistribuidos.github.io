@@ -56,7 +56,9 @@ def escalar(svg: str, factor: float) -> str:
 
 
 def lualatex(tex: Path, tmp: str, texinputs: str) -> Path | None:
-    env = dict(os.environ, TEXINPUTS=f"{texinputs}{os.pathsep}")
+    # la fuente de las figuras viaja con el repo: no hace falta instalarla
+    env = dict(os.environ, TEXINPUTS=f"{texinputs}{os.pathsep}",
+               OPENTYPEFONTS=f"{FIGURAS / 'fuentes'}{os.pathsep}")
     r = subprocess.run(
         ["lualatex", "-interaction=nonstopmode", "-halt-on-error",
          f"-output-directory={tmp}", str(tex)],
@@ -66,7 +68,7 @@ def lualatex(tex: Path, tmp: str, texinputs: str) -> Path | None:
         errores = [l for l in r.stdout.splitlines() if l.startswith("!")]
         print(f"  FALLA {tex.name}: {errores[0] if errores else 'ver el log'}", file=sys.stderr)
         return None
-    # Helvetica Neue no tiene, por ejemplo, → ni ∥: lualatex no falla, deja el hueco
+    # a la fuente le faltan algunos signos (∥, ⇒, ∞…): lualatex no falla, deja el hueco
     log = (Path(tmp) / f"{tex.stem}.log").read_text(errors="replace")
     for faltante in sorted(set(re.findall(r"Missing character: There is no (\S+)", log))):
         print(f"  AVISO {tex.name}: la fuente no tiene {faltante}", file=sys.stderr)
