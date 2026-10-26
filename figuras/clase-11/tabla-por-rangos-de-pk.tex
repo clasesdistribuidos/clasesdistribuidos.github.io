@@ -1,0 +1,27 @@
+\input{estilo}
+% Redibujo elegido entre tres alternativas: la tabla de la pizarra con claves
+% de ejemplo, los límites de cada rango y el shard al que va cada uno.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \def\h{0.46}
+  % la tabla, con la columna de la PK marcada
+  \fill[relleno] (0,0) rectangle (1.2,-9*\h);
+  \draw (0,0.55) rectangle (4.0,-9*\h);
+  \draw (0,0) -- (4.0,0) (1.2,0.55) -- (1.2,-9*\h) (2.6,0.55) -- (2.6,-9*\h);
+  \node[font=\small] at (0.6,0.275) {PK};
+  \foreach \k [count=\i] in {3, 8, 12, 17, 21, 26, 30, 34, 41} {
+    \node[font=\small] at (0.6,-\i*\h+\h/2) {\k};
+    \node[text=suave] at (1.9,-\i*\h+\h/2) {…};
+    \node[text=suave] at (3.3,-\i*\h+\h/2) {…};
+  }
+  \foreach \i in {1,2,4,5,7,8} \draw[suave, line width=0.3pt] (0,-\i*\h) -- (4.0,-\i*\h);
+  \draw (0,-3*\h) -- (4.0,-3*\h) (0,-6*\h) -- (4.0,-6*\h);
+  % cada rango, a su shard
+  \foreach \r/\rot in {1/\var{pk} < 15, 2/15 ≤ \var{pk} < 30, 3/\var{pk} ≥ 30} {
+    \pgfmathsetmacro\a{-(\r-1)*3*\h} \pgfmathsetmacro\b{-\r*3*\h}
+    \draw[llave=5pt] (4.2,\a-0.04) -- (4.2,\b+0.04);
+    \node[caja, minimum width=17mm] (s\r) at (8.0,{(\a+\b)/2}) {shard \r};
+    \draw[msg] (4.55,{(\a+\b)/2}) -- node[etiq, above] {\rot} (s\r.west);
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

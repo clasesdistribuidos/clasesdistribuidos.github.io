@@ -1,0 +1,19 @@
+\input{estilo}
+% Escala de la sección 6: 0,6 por unidad, el 10 en x = 5. El texto no da los
+% tiempos reales; el commit cae en 10,3 y la lectura empieza en 10,8.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \tx{1.2}{1}  \tx{0}{2}
+  \transaccion{1.2}{1.4}{5.2}{\op{W}{x}}
+  \ts{(5.2,1.2)}{12}
+  \draw[pedido] (5.2,1.45) -- (5.2,2.05);
+  \intervalott[above]{2.3}{4.4}{6.2}{9}{\elegido{12}}
+  \transaccion{0}{5.5}{9.2}{\op{R}{x}}
+  \ts[above]{(5.5,0)}{11}
+  \draw[pedido] (5.5,-0.25) -- (5.5,-0.85);
+  \intervalott{-1.1}{5.0}{5.6}{10}{\elegido{11}}
+  \draw[->, acento] (5.6,-2.4) -- (5.6,-1.9);
+  \node[text=acento, align=center, anchor=north] at (5.6,-2.45) {oculta\\\var{T}\textsubscript{1}: 11 < 12};
+  \tiempo{1.4}{9.8}{-3.6}
+\end{tikzpicture}\end{figura}
+\end{document}

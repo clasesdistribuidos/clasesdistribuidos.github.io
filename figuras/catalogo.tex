@@ -63,5 +63,24 @@
   \end{scope}
   \node[nombre, anchor=north west, align=left] at (4.6,-10.4)
     {\textbackslash anillo[radio]\\\textbackslash nodoanillo[color]\{ángulo\}\{rótulo\}\{anchor\}\\\textbackslash claveanillo\{ángulo\}};
+  % --- intervalos, tiras y tablas
+  \fila{-14.2}{intervalos, tiras y tablas};
+  \draw[intervalo] (-0.2,-15.2) -- (1.6,-15.2); \draw[intervalo, segundo] (0.2,-15.8) -- (1.2,-15.8);
+  \muesca[segundo]{(0.7,-15.8)}
+                                                            \node[nombre] at (0.7,-16.2) {intervalo, \textbackslash muesca};
+  \node at (3.4,-15.4) {\op{W}{x} @ 10};                    \node[nombre] at (3.4,-16.2) {\textbackslash op\{W\}\{x\}};
+  \tira[1.1]{c}{(5.0,-15.9)}{\var{T}\textsubscript{1}, \var{T}\textsubscript{2}, {\var{x} = 1\\\var{y} = 2}}
+                                                            \node[nombre] at (6.65,-16.2) {\textbackslash tira[ancho]\{n\}\{(origen)\}\{a, b\}};
+  \matrix[tabla] (t) at (11.6,-15.3) {K & V & TS\\ \var{x} & \var{v}\textsubscript{1} & 10\\};
+  \filete{t}{3}                                             \node[nombre] at (11.6,-16.2) {tabla, \textbackslash filete\{t\}\{3\}};
+  % --- historias de transacciones en el tiempo
+  \fila{-17.2}{historias de transacciones};
+  \tx[-0.6]{-18.4}{1}
+  \transaccion{-18.4}{0.2}{2.4}{\op{W}{x}}  \ts{(2.4,-18.4)}{10}
+                                                            \node[nombre, align=center] at (1.0,-19.4) {\textbackslash tx, \textbackslash ts\\\textbackslash transaccion};
+  \draw[pedido] (5.4,-17.9) -- (5.4,-18.35);
+  \intervalott{-18.6}{4.2}{6.0}{9}{\elegido{12}}  \hora{(5.4,-18.6)}{11}
+                                                            \node[nombre, align=center] at (5.1,-19.4) {pedido, \textbackslash intervalott\\\textbackslash elegido, \textbackslash hora};
+  \tiempo{8.6}{12.4}{-18.6}                                 \node[nombre] at (10.5,-19.4) {\textbackslash tiempo[rótulo]};
 \end{tikzpicture}\end{figura}
 \end{document}

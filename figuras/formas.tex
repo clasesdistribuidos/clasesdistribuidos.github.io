@@ -2,7 +2,7 @@
 % mismo. Lo carga estilo.tex. Regla: lo que aparece en dos figuras o más vive
 % acá, y lo que aparece en una sola se define en esa figura. Cada forma está
 % dibujada con su nombre en catalogo.tex (render_figuras.py --catalogo).
-\usetikzlibrary{decorations.pathmorphing, shapes.multipart, fit, backgrounds}
+\usetikzlibrary{decorations.pathmorphing, shapes.multipart, fit, backgrounds, matrix}
 
 \tikzset{
   % --- nodos -------------------------------------------------------------
@@ -32,6 +32,18 @@
   % el mensaje ondulado de Lamport
   onda/.style={->, decorate, decoration={snake, amplitude=0.5mm, segment length=3.5mm,
     pre length=1mm, post length=2.5mm}},
+  % una transacción o un intervalo de TrueTime: el segmento con topes;
+  % \draw[intervalo] (0,0) -- (3,0);  \draw[intervalo, segundo] ...
+  intervalo/.style={{Bar[width=2.6mm]}-{Bar[width=2.6mm]}},
+  % --- tiras y tablas ----------------------------------------------------
+  % una celda de una tira: el log, los snapshots (ver \tira)
+  % outer sep=0: si no, los bordes de dos celdas vecinas quedan corridos y se ven dobles
+  celda/.style={draw=tinta, fill=white, minimum height=9mm, inner sep=2pt, outer sep=0pt,
+    font=\small, align=center, anchor=south west},
+  % una tabla de la pizarra, sin bordes: \matrix[tabla] (t) {K & V\\ \var{x} & 10\\};
+  % el filete bajo el encabezado va con \filete{t}{columnas}
+  tabla/.style={matrix of nodes, nodes={font=\small, minimum height=6.5mm, inner sep=2pt},
+    column sep=5mm},
   % --- flechas -----------------------------------------------------------
   % control y datos, como en las figuras de GFS: fina y gruesa
   control/.style={->, line width=0.5pt},
@@ -69,8 +81,8 @@
 \newcommand\tachar[1]{\draw[acento, line width=1.4pt]
   (#1.north west) -- (#1.south east) (#1.north east) -- (#1.south west);}
 
-% La flecha dentro de un texto, dibujada.
-\newcommand\flecha{\tikz[baseline=-0.55ex]\draw[->] (0,0) -- (0.5,0);}
+% La flecha dentro de un texto, dibujada, del color del texto.
+\newcommand\flecha{\colorlet{colorflecha}{.}\tikz[baseline=-0.55ex]\draw[->, draw=colorflecha] (0,0) -- (0.5,0);}
 
 % El anillo de consistent hashing, centrado en el origen, con el corte en 0
 % arriba; deja el radio en \R. Sus puntos van en sentido horario.
@@ -81,8 +93,51 @@
   \node[etiq, text=#1, anchor=#4] at (#2:\R+0.12) {#3};}
 \newcommand\claveanillo[1]{\draw[segundo, marca] (#1:\R-0.22) -- (#1:\R+0.22);}
 
+% Una muesca sobre un intervalo o una línea de tiempo: \muesca[segundo]{(2,0)}
+\newcommand\muesca[2][]{\draw[#1] #2 ++(0,-1.3mm) -- ++(0,2.6mm);}
+
+% Una operación de una transacción: \op{W}{x} es W con x de subíndice.
+\newcommand\op[2]{\var{#1}\textsubscript{\var{#2}}}
+
+% Historias de transacciones en el tiempo (clase 11). El eje x es el tiempo
+% real; una fila por transacción, la primera arriba, cada 1,2 de alto:
+%   \tx[x]{y}{1}                          el nombre T₁ a la izquierda, en x = 0
+%   \transaccion[nodo]{y}{x0}{x1}{\op{W}{x} = 1}
+%                                         el intervalo, con la operación arriba
+%   \ts[below]{(x,y)}{10}                 el timestamp, en verde, en el instante
+%                                         en que se asigna: commit o start
+%   \intervalott[below]{y}{x0}{x1}{9}{\elegido{12}}
+%                                         el intervalo de TrueTime pedido en ese
+%                                         instante, con el valor elegido en caja
+%   \draw[pedido] (x,y) -- (x,y');        la flecha que baja a buscarlo
+%   \tiempo[tiempo real]{x0}{x1}{y}       el eje, en gris, al pie
+%   \hora[below]{(x,y)}{10}               un tiempo real, en gris, donde ocurre
+% Verde es lo que el sistema conoce (timestamps, TrueTime); gris, el tiempo
+% real, que nadie conoce y que solo dibujamos para razonar.
+\tikzset{
+  pedido/.style={->, dashed, draw=segundo, line width=0.5pt},
+  ts/.style={text=segundo, inner sep=1pt},
+}
+\newcommand\tx[3][0]{\node[anchor=west] at (#1,#2) {\var{T}\textsubscript{#3}};}
+\newcommand\transaccion[5][op]{\draw[intervalo] (#3,#2) -- (#4,#2) node[midway, above] (#1) {#5};}
+\newcommand\ts[3][below]{\draw[marca, draw=segundo] #2 ++(0,-1.5mm) -- ++(0,3mm);
+  \node[ts, #1=5pt] at #2 {@\,#3};}
+\newcommand\elegido[1]{\tikz[baseline=(e.base)]\node[draw=segundo, inner sep=1.5pt] (e) {#1};}
+\newcommand\intervalott[6][below]{\draw[intervalo, draw=segundo] (#3,#2) -- (#4,#2);
+  \node[ts, #1=4pt] at (#3,#2) {#5};
+  \node[ts, #1=4pt] at (#4,#2) {#6};}
+\newcommand\tiempo[4][tiempo real]{\draw[->, draw=suave, line width=0.5pt] (#2,#4) -- (#3,#4)
+  node[etiq, text=suave, below left, yshift=-3pt] {#1};}
+\newcommand\hora[3][below]{\draw[draw=suave, line width=0.6pt] #2 ++(0,-1.3mm) -- ++(0,2.6mm);
+  \node[etiq, text=suave, #1=3pt] at #2 {#3};}
+
+% Una tira de celdas, como el log: \tira[ancho]{nombre}{(origen)}{a, b, {x\\y}}.
+% El origen es la esquina de abajo a la izquierda; deja los nodos nombre-1, …
+\newcommand\tira[4][1.4]{\foreach \c [count=\i] in {#4}
+  \node[celda, minimum width=#1cm] (#2-\i) at ($#3+({(\i-1)*#1},0)$) {\c};}
+
+% El filete bajo el encabezado de una \matrix[tabla]: \filete{t}{columnas}
+\newcommand\filete[2]{\draw ($(#1-1-1.south west)+(-2mm,0)$) -- ($(#1-1-#2.south east)+(2mm,0)$);}
+
 % Reservadas, se diseñan con la primera clase que las use:
-%   tira de celdas (logs de Raft, WAL, ZAB, barras de timestamps) — clase 3
-%   historia de ejecución (operaciones de linealizabilidad, TrueTime) — clase 7
-%   tabla (k | v | TS, host | IP) — clase 5
 %   árbol (Zookeeper, Merkle) — clase 3

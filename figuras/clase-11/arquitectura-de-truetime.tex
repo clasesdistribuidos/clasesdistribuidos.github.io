@@ -1,0 +1,15 @@
+\input{estilo}
+% La arquitectura del texto: servidor, time master y GPS o reloj atómico, con
+% la consulta cada 30 s y el intervalo que vuelve. La pizarra tenía debajo dos
+% intervalos sin números; el ensanchamiento queda para diente-de-sierra.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=16mm, minimum height=13mm, align=center] (s) at (0,0) {servidor\\\var{S}\textsubscript{1}};
+  \node[caja, minimum width=22mm, minimum height=13mm, align=center] (tm) at (5.0,0) {time\\master};
+  \node[caja, minimum width=26mm, minimum height=13mm, align=center] (gps) at (9.4,0) {GPS o\\reloj atómico};
+  \node[etiq, text=suave, anchor=north] at (gps.south) {drift mínimo};
+  \draw[msg] ($(s.east)+(0,0.3)$) -- node[etiq, above] {get time, cada 30 \unid{s}} ($(tm.west)+(0,0.3)$);
+  \draw[respuesta] ($(tm.west)+(0,-0.3)$) -- node[etiq, below] {[\var{earliest}, \var{latest}]} ($(s.east)+(0,-0.3)$);
+  \draw (tm.east) -- (gps.west);
+\end{tikzpicture}\end{figura}
+\end{document}

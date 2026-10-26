@@ -1,0 +1,19 @@
+\input{estilo}
+% La pizarra dice Tx1, Tx2 y algo como "Rw=1" sobre Tx1; el texto dice T1, T2
+% y que escribe x = 1. Escala de la sección 6: 0,6 por unidad, el 10 en x = 5.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \tx{1.2}{1}  \tx{0}{2}
+  \transaccion{1.2}{1.4}{5.0}{\op{W}{x} = 1}
+  \transaccion{0}{5.6}{9.2}{\op{R}{x}}
+  \ts{(5.0,1.2)}{10}
+  \ts[above]{(5.6,0)}{11}
+  \begin{scope}[segundo, every node/.style={text=segundo}]
+    \node[etiq, anchor=south west] (c) at (5.6,2.1) {commit \flecha\ TS escritura};
+    \draw[->] (c.south west) -- (5.08,1.45);
+    \node[etiq, anchor=north west] (s) at (4.8,-0.9) {start = TS lectura};
+    \draw[->] (s.north west) -- (5.52,-0.25);
+  \end{scope}
+  \tiempo{1.4}{9.8}{-1.8}
+\end{tikzpicture}\end{figura}
+\end{document}
