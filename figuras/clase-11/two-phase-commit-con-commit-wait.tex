@@ -18,7 +18,7 @@
   \tikzset{lock/.style={etiq, text=acento, anchor=west}, nota/.style={etiq, align=left, anchor=west},
     izq/.style={etiq, text=segundo, align=right, anchor=east}}
   % el cliente manda el commit, con los writes, a cada participante
-  \draw[msg] (\C,-0.4) -- node[etiq, above, sloped, pos=0.6] {commit + writes} (\Pb,-0.8);
+  \draw[msg] (\C,-0.4) -- node[etiq, above, sloped, pos=0.75] {commit + writes} (\Pb,-0.8);
   \draw[msg] (\C,-0.4) -- node[etiq, below, sloped] {commit + writes} (\Pa,-0.75);
   \node[lock] at (\Pb+0.1,-0.8) {write lock};
   \node[lock] at (\Pa+0.1,-1.05) {write lock};

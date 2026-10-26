@@ -13,7 +13,9 @@
   \fill[acento, opacity=0.12] (2.4,1.05) rectangle (3.4,1.35);
   \fill[acento, opacity=0.12] (2.4,-0.15) rectangle (3.4,0.15);
   \draw[densely dotted, draw=acento, line width=0.5pt] (2.4,1.35) -- (2.4,0.15);
-  \draw[densely dotted, draw=acento, line width=0.5pt] (3.4,1.35) -- (3.4,0.15);
+  % la guía del latest del evento 1 se corta donde está la palabra
+  \node[cod, below=4pt] (l1) at (3.4,1.2) {\phantom{latest}};
+  \draw[densely dotted, draw=acento, line width=0.5pt] (3.4,1.35) -- (l1.north) (l1.south) -- (3.4,0.15);
   \pic[scale=0.75] at (2.35,-1.15) {rechazo};
   \node[text=acento, anchor=west, align=left] at (2.6,-1.1)
     {se solapan: no hay seguridad de cuál fue primero\\[1pt]

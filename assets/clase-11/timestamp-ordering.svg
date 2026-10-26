@@ -183,12 +183,12 @@
 <path fill="none" stroke-width="0.69739" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(75.292969%, 22.3526%, 16.862488%)" stroke-opacity="1" stroke-miterlimit="10" d="M 76.533965 -7.0856 L 95.580582 -7.0856 " transform="matrix(0.995912, 0, 0, -0.995912, 16.47033, 89.41993)"/>
 <path fill-rule="nonzero" fill="rgb(75.292969%, 22.3526%, 16.862488%)" fill-opacity="1" stroke-width="0.69739" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(75.292969%, 22.3526%, 16.862488%)" stroke-opacity="1" stroke-miterlimit="10" d="M 5.215029 0.00108952 L 1.147619 1.491558 L 2.492963 0.00108952 L 1.147619 -1.489379 Z M 5.215029 0.00108952 " transform="matrix(0.995912, 0, 0, -0.995912, 109.34926, 96.477648)"/>
 <g fill="rgb(75.292969%, 22.3526%, 16.862488%)" fill-opacity="1">
-<use xlink:href="#glyph-4-0" x="89.600131" y="107.248742"/>
-<use xlink:href="#glyph-4-1" x="93.76323" y="107.248742"/>
-<use xlink:href="#glyph-4-2" x="98.596896" y="107.248742"/>
-<use xlink:href="#glyph-4-1" x="103.661069" y="107.248742"/>
-<use xlink:href="#glyph-4-3" x="108.494735" y="107.248742"/>
-<use xlink:href="#glyph-4-4" x="113.181714" y="107.248742"/>
+<use xlink:href="#glyph-4-0" x="95.520826" y="107.248742"/>
+<use xlink:href="#glyph-4-1" x="99.683926" y="107.248742"/>
+<use xlink:href="#glyph-4-2" x="104.517591" y="107.248742"/>
+<use xlink:href="#glyph-4-1" x="109.581764" y="107.248742"/>
+<use xlink:href="#glyph-4-3" x="114.41543" y="107.248742"/>
+<use xlink:href="#glyph-4-4" x="119.10241" y="107.248742"/>
 </g>
 <path fill="none" stroke-width="1.39478" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(75.292969%, 22.3526%, 16.862488%)" stroke-opacity="1" stroke-miterlimit="10" d="M 63.472756 -3.175082 L 69.187525 3.175098 M 63.472756 3.175098 L 69.187525 -3.175082 " transform="matrix(0.995912, 0, 0, -0.995912, 16.47033, 89.41993)"/>
 <path fill="none" stroke-width="0.69739" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(18.03894%, 49.01886%, 41.96167%)" stroke-opacity="1" stroke-dasharray="2.98883 1.99255" stroke-miterlimit="10" d="M 255.119534 -14.17317 L 255.119534 51.023055 " transform="matrix(0.995912, 0, 0, -0.995912, 16.47033, 89.41993)"/>

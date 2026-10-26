@@ -23,7 +23,7 @@
   \node[etiq, text=segundo, anchor=south] at (13,0.5) {todos OK};
   % el commit wait, hasta que el 12 queda en el pasado (tiempo real 15)
   \draw[intervalo, draw=segundo] (13,0) -- (16,0);
-  \node[etiq, text=segundo, below=15pt] at (14.5,0) {commit wait};
+  \node[etiq, text=segundo, below=15pt, xshift=-10pt] at (14.5,0) {commit wait};
   \draw[pedido] (16,0.6) -- (16,1.9);
   \intervalott[above]{2.1}{14}{19}{13}{18}
   \draw[->, segundo] (16,-0.2) -- (16,-1.35);
