@@ -257,3 +257,36 @@ bundle exec jekyll serve --livereload    # http://127.0.0.1:4000
 ```
 
 `.github/workflows/pages.yml` buildea y publica en cada push a `main`.
+
+## El libro en PDF
+
+`scripts/libro/build.sh` arma los apuntes como un libro estilo Tufte, con la
+clase `tufte-book` de Tufte-LaTeX: notas y pies de figura al margen, Palatino,
+el código a ancho completo. Cada clase es un capítulo y cada página, una
+sección. Las clases y las prácticas van en dos partes. El PDF queda en
+`scripts/libro/build/`, que no se versiona.
+
+Son cuatro piezas. `prep.py` junta todas las páginas en un solo markdown limpio:
+saca el Liquid, el TOC y las IAL de kramdown, y pasa las figuras y las notas a
+una sintaxis que pandoc entiende. Pandoc lo convierte a LaTeX con un template
+propio, `tufte-book.latex`, que no toca la clase y solo la invoca, y con un
+filtro Lua, `tufte.lua`, que manda las notas al margen, arma las figuras y
+pone el código a ancho completo. `build.sh` corre todo y compila con
+`latexmk`. Como `pdflatex` no lee SVG, antes convierte cada `assets/**/*.svg`
+a PDF con `rsvg-convert`.
+
+Necesita pandoc 3 o más nuevo, `rsvg-convert` y PyYAML. Con TeX Live basic,
+además, estos paquetes, con `sudo` y desde una terminal en la que se pueda
+escribir la contraseña:
+
+```sh
+sudo tlmgr update --self
+sudo tlmgr install latexmk tufte-latex xurl changepage paralist placeins \
+  titlesec xifthen ifmtarg soul sauerj hardwrap bera bidi catchfile \
+  palatino mathpazo helvetic
+```
+
+Conviene correrlo sobre un checkout limpio de `main`, no sobre una branch con
+cambios a medias. Si la compilación se corta por un carácter Unicode que
+`pdflatex` no conoce (`✓`, `→`, `₁`…), se agrega con `\DeclareUnicodeCharacter`
+en el template, junto a los otros.
