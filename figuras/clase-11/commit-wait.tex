@@ -1,0 +1,40 @@
+\input{estilo}
+% Escala: 0,5 cm por unidad de tiempo, con el tiempo real t en x = t + 1.
+% Los intervalos de TrueTime van sobre los tiempos reales que cubren.
+% La pizarra junta la start rule y el "todos OK" en el mismo instante; acá van
+% separados, como en el paper (§4.1.2 y §4.2.1) y en two-phase-commit-con-
+% commit-wait: el latest se toma al llegar el commit (tiempo real 10), corre el
+% prepare, con todos OK se elige s = 12 (tiempo real 12, que el texto no da) y
+% recién ahí empieza la espera, hasta que TrueTime da [13, 18] (tiempo real 15).
+\begin{document}
+\begin{figura}\begin{tikzpicture}[x=0.5cm]
+  \tx[0.5]{0}{1}  \tx[0.5]{-4.0}{2}
+  % la escritura, hasta que le llega el commit al coordinador (tiempo real 10)
+  \hora[above]{(11,0)}{10}  \hora[above]{(16,0)}{15}
+  \transaccion{0}{3}{11}{\op{W}{x}}
+  % la start rule: el latest de ese momento, 12, es la cota para s
+  \draw[pedido] (11,0.6) -- (11,1.1);
+  \intervalott[above]{1.3}{10}{13}{9}{\elegido{12}}
+  \node[etiq, text=segundo, anchor=east] at (10.8,0.85) {start rule};
+  % el prepare, hasta que todos dicen OK; ahí se elige s = 12
+  \draw[intervalo, draw=suave] (11,0) -- (13,0);
+  \node[etiq, text=suave, below=4pt] at (12,0) {prepare};
+  \ts[above]{(13,0)}{12}
+  \node[etiq, text=segundo, anchor=south] at (13,0.5) {todos OK};
+  % el commit wait, hasta que el 12 queda en el pasado (tiempo real 15)
+  \draw[intervalo, draw=segundo] (13,0) -- (16,0);
+  \node[etiq, text=segundo, below=15pt] at (14.5,0) {commit wait};
+  \draw[pedido] (16,0.6) -- (16,1.9);
+  \intervalott[above]{2.1}{14}{19}{13}{18}
+  \draw[->, segundo] (16,-0.2) -- (16,-1.35);
+  \node[text=segundo, anchor=north west, align=left] at (14.2,-1.4) {garantía: el TS ya está en el pasado\\[2pt]
+    \hspace{4mm}\flecha\ commit a todos\\[1pt]
+    \hspace{4mm}\flecha\ respuesta al cliente};
+  % la lectura que viene después, con su intervalo
+  \transaccion{-4.0}{16.3}{23.5}{\op{R}{x}}
+  \ts[above]{(16.3,-4.0)}{17}
+  \draw[pedido] (16.3,-4.25) -- (16.3,-4.85);
+  \intervalott{-5.1}{15}{18}{14}{\elegido{17}}
+  \tiempo{3}{24.5}{-6.4}
+\end{tikzpicture}\end{figura}
+\end{document}

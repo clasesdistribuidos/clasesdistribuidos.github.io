@@ -19,13 +19,13 @@ nav_order: 4
 
 Para ver cómo lo lograron conviene arrancar por un repaso de una técnica que ya conocemos: timestamp ordering, la que usaba DynamoDB. Esta es, básicamente, la parte interesante del paper.
 
-Imaginemos la tabla. Tiene claves, valores, y además, en cada fila, el time: el momento en que se escribió ese valor. Llamemos a los valores valor uno y valor dos. Tenemos la clave x, con el valor uno, escrito en el 10; y la clave y, con el valor dos, escrito en el 12.
+Imaginemos la tabla. Tiene claves, valores, y además, en cada fila, el time: el momento en que se escribió ese valor. Tenemos la clave x, con el valor V<sub>x</sub>, escrito en el 10; y la clave y, con el valor V<sub>y</sub>′, escrito en el 12. Antes, en el 9, y valía V<sub>y</sub>, pero la tabla guarda solo el último valor: cuando llegó V<sub>y</sub>′, V<sub>y</sub> desapareció.
 
 Nos llega una lectura: transacción read-only *at* 13. Esa notación con el *at* la vamos a usar de aquí en adelante, e indica el timestamp de la lectura. Eso es lo propio de timestamp ordering: cuando mandamos una lectura, le ponemos su timestamp.
 
-El mecanismo es leer lo que queremos —un read de x, después un read de y— y, en cada caso, fijarnos si esos valores están en el pasado respecto del timestamp de la lectura. Leemos en el 13, y las escrituras ocurrieron en el 10 y el 12, así que está todo bien: el read de x da el valor uno y el de y el valor dos.
+El mecanismo es leer lo que queremos —un read de x, después un read de y— y, en cada caso, fijarnos si esos valores están en el pasado respecto del timestamp de la lectura. Leemos en el 13, y las escrituras ocurrieron en el 10 y el 12, así que está todo bien: el read de x da V<sub>x</sub> y el de y, V<sub>y</sub>′.
 
-El problema, en timestamp ordering, aparecía cuando la lectura caía en el medio. Pongamos una read-only *at* 11, entre las dos escrituras. Leemos x: el 10 está en el pasado, así que nos da el valor uno. Pero después leemos y, y ese valor está en el futuro: no lo podemos leer. Y no falla solo esa lectura: falla la transacción entera. Hay que abortarla y hacer un retry más en el futuro, quizás ya en el timestamp 18, porque el tiempo sigue avanzando, y ahí sí se puede leer correctamente.
+El problema, en timestamp ordering, aparecía cuando la lectura caía en el medio. Pongamos una read-only *at* 11, entre las dos escrituras. Leemos x: el 10 está en el pasado, así que nos da V<sub>x</sub>. Pero después leemos y, y ese valor está en el futuro: no lo podemos leer. Y no falla solo esa lectura: falla la transacción entera. Hay que abortarla y hacer un retry más en el futuro, quizás ya en el timestamp 18, porque el tiempo sigue avanzando, y ahí sí se puede leer correctamente.
 
 Una pregunta natural: ¿cómo sabe el retry qué timestamp pedir? No hay misterio: el cliente manda la nueva transacción con el timestamp actual, y por eso el retry ocurre en el 18, porque su reloj sigue funcionando. La única forma de no conseguirlo es que estén constantemente escribiendo esos mismos valores, metiéndose siempre en el medio; pero eventualmente vamos a estar lo suficientemente en el futuro como para que esas escrituras queden viejas.
 
@@ -34,10 +34,10 @@ Y se cuela una segunda pregunta, que de entrada suena sospechosa: ¿leer cosas a
 ¿Por qué no se pudo leer el segundo valor? Por la comparación de los números, y la aritmética merece quedar escrita, porque es toda la regla. En el primer caso, 10 es menor que 13, y 12 es menor que 13, y por eso funcionó. En el segundo, 10 es menor que 11, pero 12 no es menor que 11, y ahí viene el problema.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-11/timestamp-ordering.png' | relative_url }}" alt="Tabla de timestamp ordering y dos lecturas read-only, en 13 y en 11">
+  <img src="{{ '/assets/clase-11/timestamp-ordering.svg' | relative_url }}" alt="Escrituras de x e y sobre una línea de timestamps y dos lecturas read-only, en 13 y en 11">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la tabla del timestamp ordering — clave | valor | timestamp, con x/valor uno/10 e y/valor dos/12, y al costado los dos casos: la read-only at 13 con las dos comparaciones en verde, y la read-only at 11 con la segunda comparación fallando en rojo, &quot;falla → retry&quot;
+    Timestamp ordering: cada clave guarda solo su último valor, y una lectura solo puede leer lo que le queda a la izquierda en la línea de timestamps; la lectura en el 13 lee todo, y la del 11 encuentra a y en el futuro, falla entera y se reintenta en el 18
     <span class="figura-ref">notas pág. 3 / pizarra pág. 4</span>
   </figcaption>
 </figure>
@@ -46,16 +46,25 @@ En ese caso trasladamos el problema al cliente: lo obligamos a reintentar. Pero 
 
 La idea clave es esta. Antes teníamos clave, valor y timestamp. Ahora vamos a poner la clave *y* el timestamp juntos, como índice, y el valor aparte. Y ahí vamos a guardar todas las versiones —no necesariamente todas, pero imaginemos por ahora que sí.
 
-Imaginemos que x, en el time 10, tenía un cierto valor; que y, en el 9, valía el valor dos; y que y, en el 12, valía otra cosa. Multiversion, justamente, porque guardamos varias versiones del row.
+Tomemos el mismo ejemplo de antes: x, en el time 10, con V<sub>x</sub>, e y, en el 12, con V<sub>y</sub>′. Pero ahora el valor que y tenía en el 9, V<sub>y</sub>, no desaparece: lo guardamos también. Multiversion, justamente, porque guardamos varias versiones del row.
+
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/tabla-del-mvcc.svg' | relative_url }}" alt="Tabla del MVCC indexada por clave y timestamp, con dos versiones de y">
+  <figcaption>
+    <span class="figura-label">Figura</span>
+    La tabla del MVCC: la clave y el timestamp juntos forman el índice, así que y puede tener dos versiones, la del 9 y la del 12
+    <span class="figura-ref">notas pág. 4 / pizarra pág. 4</span>
+  </figcaption>
+</figure>
 
 Nos llega una read-only en el tiempo 11, que lee x y lee y. Lo interesante es y, porque tenemos dos versiones: una está en el futuro respecto del timestamp de la lectura, y la otra en el pasado. La que queremos leer es la del pasado.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-11/tabla-del-mvcc.png' | relative_url }}" alt="Tabla del MVCC indexada por clave y timestamp, con la lectura en 11">
+  <img src="{{ '/assets/clase-11/lectura-en-el-mvcc.svg' | relative_url }}" alt="Lectura en 11 sobre las versiones de x e y en una línea de timestamps">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la tabla del MVCC — el par (clave, timestamp) como índice y el valor aparte, con (x,10), (y,9) y (y,12), la lectura en el 11 y las dos flechas hacia los valores que le corresponden
-    <span class="figura-ref">notas pág. 4 / pizarra pág. 4</span>
+    Con MVCC la lectura en el 11 ya no falla: en cada clave toma la última versión anterior a su timestamp —V<sub>x</sub> y V<sub>y</sub>— e ignora V<sub>y</sub>′, que está en el futuro
+    <span class="figura-ref">agregada al apunte; no está en la pizarra</span>
   </figcaption>
 </figure>
 
@@ -80,10 +89,10 @@ Bajemos al nivel de las réplicas. Tenemos las tres réplicas del grupo, una es 
 Hagamos el ejemplo con una read-only en el timestamp 12. Si leemos de la réplica atrasada, vamos a leer el valor viejo cuando tendríamos que leer el otro, simplemente porque Paxos no lo mandó todavía. Vamos a hacer, sin querer, una lectura del pasado, violando la linealizabilidad en un sistema en el que buscábamos la consistencia más fuerte posible.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-11/replica-desactualizada.png' | relative_url }}" alt="Tres réplicas con su safe time y una lectura en 12 que va a la atrasada">
+  <img src="{{ '/assets/clase-11/replica-desactualizada.svg' | relative_url }}" alt="Tres réplicas con el último timestamp que les llegó y una lectura en 12 que va a la atrasada">
   <figcaption>
     <span class="figura-label">Figura</span>
-    las tres réplicas con su safe time y su contenido —11, el líder en 11, y la tercera en 10—, y la lectura en el timestamp 12 apuntando a la atrasada → &quot;lee un valor viejo, a pesar de MVCC&quot;
+    Una réplica atrasada: el (x, 11) todavía no le llegó por Paxos, así que una lectura en el 12 que va a esa réplica lee el valor viejo, (x, 10), aunque haya MVCC
     <span class="figura-ref">notas pág. 4 / pizarra pág. 4</span>
   </figcaption>
 </figure>
@@ -94,11 +103,11 @@ Para eso Google agregó un concepto llamado safe time, un mecanismo que se parec
 
 Parte de la observación de que los timestamps son siempre ascendentes. Cada réplica puede guardar el valor más reciente de lo que le llegó: 11 una, 11 otra, 10 la tercera. Y el safe time consiste en esperar: si queremos leer en el 12, esperamos a que llegue algo más grande que 12, porque eso garantiza que no nos va a llegar ninguna información del pasado.
 
-En el caso concreto, la réplica tiene safe time 10: tiene todo actualizado hasta el 10. La transacción se queda esperando hasta que llegue algo mayor que 12. Eventualmente ocurren otras escrituras y llega, por ejemplo, un 13, porque se actualizó otra clave: y = 13. La réplica pasa a tener todo hasta el 13, y ya podemos leer, porque cuando llegó eso también tenía que haber llegado el x = 11.
+En el caso concreto, la réplica tiene safe time 10: tiene todo actualizado hasta el 10. La transacción se queda esperando hasta que llegue algo mayor que 12. Eventualmente ocurren otras escrituras y llega, por ejemplo, un 13, porque se actualizó otra clave: (y, 13). La réplica pasa a tener todo hasta el 13, y ya podemos leer, porque cuando llegó eso también tenía que haber llegado el (x, 11).
 
 Dicho todo junto, el mecanismo agrega una espera hasta que se actualiza la réplica. Si nos llegó una transacción con timestamp mayor que 12, tenemos la garantía de tener todo lo anterior al 12.
 
-Conviene repetirlo desde otro ángulo, porque puede no quedar claro en una primera lectura. Primero: Paxos garantiza que los timestamps con que se guardan las cosas sean siempre ascendentes. No puede aparecer un y = 9 en una réplica que ya guardó el 10 y el 11, y no porque Paxos lo rechace al llegar: ese write ni siquiera se propone. Los timestamps de los writes los asigna el líder del grupo, y los asigna siempre crecientes, incluso cuando el liderazgo pasa de una réplica a otra. Los timestamps de lo que se escribe tienen que ser siempre una función monótona ascendente.
+Conviene repetirlo desde otro ángulo, porque puede no quedar claro en una primera lectura. Primero: Paxos garantiza que los timestamps con que se guardan las cosas sean siempre ascendentes. No puede aparecer un (y, 9) en una réplica que ya guardó el 10 y el 11, y no porque Paxos lo rechace al llegar: ese write ni siquiera se propone. Los timestamps de los writes los asigna el líder del grupo, y los asigna siempre crecientes, incluso cuando el liderazgo pasa de una réplica a otra. Los timestamps de lo que se escribe tienen que ser siempre una función monótona ascendente.
 
 Segundo, la consecuencia. Si en esta réplica el timestamp más grande es 10, probablemente esté desactualizada y le falten cosas. Pero si encuentro cualquier otra clave con timestamp 20, por ejemplo, quiere decir que Paxos ya mandó el log que contiene el 20 y con él todo lo anterior. Es una garantía que da Paxos a nivel de la replicación.
 

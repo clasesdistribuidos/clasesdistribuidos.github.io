@@ -1,0 +1,12 @@
+\input{estilo}
+% Sale de las notas, no de la pizarra. La quinta celda dice "Tx4" en las
+% notas; se lee como Tx5.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \tira[1.3]{t}{(0,0)}{Tx\textsubscript{1}, Tx\textsubscript{2}, Tx\textsubscript{3}, Tx\textsubscript{4}, Tx\textsubscript{5}}
+  \draw[->] (5.2,-1.3) node[below, etiq] {read \var{x}} -- (5.2,-0.05);
+  \draw[->] (6.5,-1.3) node[below, etiq] {read \var{y}} -- (6.5,-0.05);
+  \pic at (8.0,0.45) {rechazo};
+  \node[text=acento, anchor=west, align=left] at (8.3,0.45) {mezcla\\transacciones};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,54 @@
+\input{estilo}
+% No está en la pizarra. Una versión simplificada de two-phase-commit (sección
+% 2), sin las lecturas ni las réplicas, para la sección 6: dónde caen la start
+% rule y el commit wait dentro del commit, según el paper (§4.1.2 y §4.2.1).
+% Al llegar el commit, el coordinador toma TT.now().latest, pero s se elige
+% recién después de oír a todos los participantes: s ≥ ese latest y ≥ los
+% prepare timestamps. Después registra el commit en Paxos y, antes de dejar
+% aplicarlo, espera hasta TT.after(s); esa espera se solapa con el Paxos.
+% Los números son los de commit-wait: [9, 12] al llegar el commit, s = 12, y la
+% espera termina cuando TrueTime da [13, 18].
+\begin{document}
+\begin{figura}\begin{tikzpicture}[y=1.35cm]
+  \def\C{0} \def\Pa{5.2} \def\Pb{10.0}
+  \node at (\C,0.35) {\var{C}};
+  \node at (\Pa,0.35) {\var{P}\textsubscript{1} = TC};
+  \node at (\Pb,0.35) {\var{P}\textsubscript{2}};
+  \foreach \x in {\C,\Pa,\Pb} \draw[vida] (\x,0) -- (\x,-6.0);
+  \tikzset{lock/.style={etiq, text=acento, anchor=west}, nota/.style={etiq, align=left, anchor=west},
+    izq/.style={etiq, text=segundo, align=right, anchor=east}}
+  % el cliente manda el commit, con los writes, a cada participante
+  \draw[msg] (\C,-0.4) -- node[etiq, above, sloped, pos=0.6] {commit + writes} (\Pb,-0.8);
+  \draw[msg] (\C,-0.4) -- node[etiq, below, sloped] {commit + writes} (\Pa,-0.75);
+  \node[lock] at (\Pb+0.1,-0.8) {write lock};
+  \node[lock] at (\Pa+0.1,-1.05) {write lock};
+  % la start rule: al llegar el commit, el latest de ese momento es una cota para s
+  \node[evento=segundo] at (\Pa,-0.75) {};
+  \node[izq] at (\Pa-0.3,-1.35) {start rule: \texttt{TT.now()} = [9, 12]\\\var{s} tiene que ser ≥ 12};
+  % el participante se prepara
+  \node[evento] at (\Pb,-1.3) {};
+  \node[nota] at (\Pb+0.1,-1.45) {prepare: elige su prepare\\timestamp y lo registra en Paxos};
+  \draw[respuesta] (\Pb,-1.95) -- node[etiq, above, sloped] {preparado, con su TS} (\Pa,-2.4);
+  % con todos preparados, el coordinador elige s y registra el commit
+  \node[evento=segundo] at (\Pa,-2.4) {};
+  \node[izq] at (\Pa-0.7,-2.4) {elige \var{s} = \elegido{12}:\\≥ 12 y ≥ los prepare TS};
+  \node[evento] at (\Pa,-3.0) {};
+  \node[nota] at (\Pa+0.1,-3.0) {registra el commit en Paxos};
+  % el commit wait, desde que hay s hasta TT.after(s)
+  \draw[intervalo, draw=segundo, line width=1.4pt] (\Pa-0.15,-2.4) -- (\Pa-0.15,-4.1);
+  \node[etiq, text=segundo, rotate=90, anchor=south] at (\Pa-0.25,-3.35) {commit wait};
+  \node[evento=segundo] at (\Pa,-4.1) {};
+  \node[izq] at (\Pa-0.7,-4.0) {\texttt{TT.now()} = [13, 18]: \texttt{TT.after(12)}\\el 12 ya está en el pasado};
+  % recién ahí, el commit a todos y la respuesta al cliente
+  \begin{scope}[every node/.style={etiq, text=segundo}]
+    \draw[msg, segundo] (\Pa,-4.4) -- node[below, sloped] {commit @ 12} (\C,-4.8);
+    \draw[msg, segundo] (\Pa,-4.4) -- node[above, sloped] {commit @ 12} (\Pb,-4.8);
+  \end{scope}
+  \node[nota] at (\C+0.1,-5.15) {respuesta al cliente};
+  \node[evento] at (\Pb,-5.0) {};
+  \node[nota] at (\Pb+0.1,-5.0) {registra el commit en Paxos};
+  \node[evento] at (\Pa,-5.5) {}; \node[evento] at (\Pb,-5.5) {};
+  \node[nota] at (\Pa+0.1,-5.5) {aplica @ 12 y libera locks};
+  \node[nota] at (\Pb+0.1,-5.5) {aplica @ 12 y libera locks};
+\end{tikzpicture}\end{figura}
+\end{document}

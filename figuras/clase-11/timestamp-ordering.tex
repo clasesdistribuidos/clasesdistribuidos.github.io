@@ -1,0 +1,29 @@
+\input{estilo}
+% La pizarra dibuja la tabla y las comparaciones al costado; acá va una línea
+% por clave sobre el eje de timestamps (x = t − 8). Cada clave guarda solo el
+% último valor: el Vy del 9, en gris, desapareció cuando llegó el Vy' del 12.
+% Todavía no hablamos de versiones, así que no se nombran. Cada lectura es una
+% vertical en su timestamp. "Pasado" y "futuro" respecto de la
+% lectura pasan a ser izquierda y derecha, y la @ 11 cae en el medio.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[x=0.9cm]
+  \newcommand\val[2][]{\var{V}\textsubscript{\var{#2}}\ensuremath{#1}}
+  \node[anchor=west] at (-0.4,1.2) {\var{x}};  \node[anchor=west] at (-0.4,0) {\var{y}};
+  \draw[suave, line width=0.5pt] (0.2,1.2) -- (11.2,1.2);  \draw[suave, line width=0.5pt] (0.2,0) -- (11.2,0);
+  \node[evento] (x) at (2,1.2) {};  \node[above left=1pt] at (x) {\val{x}};
+  \node[evento=suave] (y0) at (1,0) {};  \node[above left=1pt, text=suave] at (y0) {\val{y}};
+  \node[evento] (y) at (4,0) {};    \node[above left=1pt] at (y) {\val[']{y}};
+  % la lectura en el 13: todo a la izquierda
+  \draw[segundo, densely dashed] (5,-0.5) -- (5,1.8) node[above, text=segundo] {R/O @ 13};
+  \pic[scale=0.7] at (5.2,0.75) {ok};
+  % la lectura en el 11: y queda a la derecha
+  \draw[acento, densely dashed] (3,-0.5) -- (3,1.8) node[above, text=acento] {R/O @ 11};
+  \draw[->, acento] (3,-0.25) -- (3.9,-0.25) node[etiq, text=acento, below=4pt, pos=0.5] {futuro};
+  \pic[scale=0.7] at (2.6,0) {rechazo};
+  % el retry, más adelante
+  \draw[segundo, densely dashed] (10,-0.5) -- (10,1.8) node[above, text=segundo] {retry @ 18};
+  \draw[->, acento, bend left=15] (3.3,2.25) to node[etiq, above, text=acento] {falla: aborta y reintenta} (9.3,2.25);
+  \tiempo[timestamp]{0.2}{13.4}{-1.0}
+  \foreach \t in {9,10,11,12,13,18} {\hora{(\t-8,-1.0)}{\t}}
+\end{tikzpicture}\end{figura}
+\end{document}

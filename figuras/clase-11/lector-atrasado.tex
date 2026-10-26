@@ -1,0 +1,24 @@
+\input{estilo}
+% Como la pizarra: el timestamp es de toda la transacción y va con el nombre.
+% Las operaciones son puntos en el tiempo real, sin principio ni fin: en esta
+% sección todavía no dijimos en qué momento se asigna el timestamp, así que no
+% va en un extremo, como sí va en las historias de la sección 6.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \tx{2.4}{1}  \tx{1.2}{2}  \tx{0}{3}
+  \node[ts, anchor=west] at (0.55,2.4) {@\,0};
+  \node[ts, anchor=west] at (0.55,1.2) {@\,10};
+  \node[ts, text=acento, anchor=west] (t3) at (0.55,0) {@\,5};
+  \node[etiq, text=acento, anchor=north west] at (0.05,-0.3) {reloj atrasado};
+  \node[evento] (w1) at (2.6,2.4) {};  \node[above=2pt] at (w1) {\op{W}{x} = 1};
+  \node[evento] (w2) at (4.6,1.2) {};  \node[above=2pt] at (w2) {\op{W}{x} = 2};
+  \node[evento] (r)  at (7.6,0) {};    \node[right=3pt] at (r) {\op{R}{x}};
+  \draw[->, acento] (r) .. controls (4.6,0.2) and (2.4,0.4) .. (w1)
+    node[pos=0.45, below=9pt, etiq, text=acento] (mal) {lee \op{R}{x} = 1};
+  \pic[scale=0.7] at ($(mal.west)+(-0.2,0)$) {rechazo};
+  \draw[->, segundo] (r) .. controls +(-0.3,0.9) and +(0.8,-0.2) .. (w2)
+    node[pos=0.3, right=24pt, etiq, text=segundo] (bien) {debería leer \op{R}{x} = 2};
+  \pic[scale=0.7] at ($(bien.west)+(-0.38,0)$) {ok};
+  \tiempo{2.0}{9.4}{-1.0}
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,25 @@
+\input{estilo}
+% El número de arriba dice qué es (el último timestamp que le llegó
+% a cada réplica); el líder va rotulado abajo y no con una L junto al número, como
+% en la pizarra; y
+% a la réplica atrasada se le ve el hueco de (x, 11), que viaja por la flecha de Paxos.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \tikzset{replica/.style={draw=tinta, fill=relleno, rounded corners=1.5pt, minimum width=20mm,
+    minimum height=17mm, align=center, anchor=north}}
+  \node[replica] (a) at (0,0) {(\var{x}, 10)\\[2pt](\var{x}, 11)};
+  \node[replica, double=relleno, double distance=1.2pt] (l) at (3.2,0) {(\var{x}, 10)\\[2pt](\var{x}, 11)};
+  \node[replica] (c) at (6.4,0) {};
+  \node at ($(c.center)+(0,0.22)$) {(\var{x}, 10)};
+  \node[draw=suave, densely dashed, text=suave, inner sep=1.5pt] at ($(c.center)+(0,-0.26)$) {(\var{x}, 11)};
+  \foreach \n/\t in {a/11, l/11, c/10} \node[anchor=south] at (\n.north) {\t};
+  \node[etiq, text=suave, anchor=east, align=right] at ($(a.north west)+(-0.15,0.25)$) {último\\timestamp};
+  \node[etiq, anchor=north] at ($(l.south)+(0,-0.08)$) {líder};
+  \node[etiq, text=suave, anchor=north] at ($(c.south)+(0,-0.08)$) {todavía no llegó};
+  \draw[msg] (l.west) -- (a.east);
+  \draw[msg] (l.east) -- (c.west) node[midway, above, etiq] {(\var{x}, 11)};
+  \node[anchor=west] (tx) at (8.2,-0.15) {Tx R/O @ \underline{12}};
+  \draw[->] (8.3,-1.05) -- ($(c.east)+(0,-0.25)$);
+  \node[text=acento, anchor=west, align=left] at (8.4,-1.25) {lee valor viejo\\(\var{x}, 10)};
+\end{tikzpicture}\end{figura}
+\end{document}

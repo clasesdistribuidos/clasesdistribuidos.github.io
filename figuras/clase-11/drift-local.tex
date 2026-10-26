@@ -1,0 +1,39 @@
+\input{estilo}
+% No está en la pizarra. Entre dos get time el servidor adelanta el intervalo
+% con su reloj de cuarzo, que puede correr adelantado o atrasado hasta 200 µs/s:
+% el intervalo se abre hacia los dos lados. ε es la mitad del ancho (paper, §3):
+% ≈ 1 ms recién pedido, 1 + 30 × 0,2 = 7 ms treinta segundos después.
+% El eje vertical es la diferencia con lo que marca el reloj local: arriba,
+% más tarde; abajo, más temprano. A escala: x = 0,2 cm por segundo, y = 0,32 cm
+% por milisegundo.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[x=0.2cm, y=0.32cm]
+  % el intervalo [earliest, latest], que se abre
+  \fill[segundo!10] (0,1) -- (30,7) -- (30,-7) -- (0,-1) -- cycle;
+  \draw[segundo, line width=1pt] (0,1) -- (30,7);
+  \draw[segundo, line width=1pt] (0,-1) -- (30,-7);
+  \node[cod, text=segundo, above left=1pt] at (30,7) {latest};
+  \node[cod, text=segundo, below left=1pt] at (30,-7) {earliest};
+  % el reloj local, al medio
+  \draw[line width=0.6pt] (0,0) -- (30,0);
+  \node[etiq, anchor=south west] at (2,0.05) {reloj local (cuarzo)};
+  % el get time siguiente: vuelve a ser angosto
+  \draw[segundo, densely dotted, line width=0.6pt] (30,7) -- (30,1.4) (30,-7) -- (30,-1.4);
+  \draw[intervalo, draw=segundo, line width=1pt] (30,-1) -- (30,1);
+  \node[etiq, text=segundo, anchor=west, align=left] at (31.2,-1.0) {el nuevo,\\otra vez angosto};
+  % la cuenta
+  \draw[llave=4pt] (32.2,7) -- (32.2,0);
+  \node[etiq, align=left, text=suave, anchor=west] at (34.2,3.5)
+    {\var{ε} = 1 \unid{ms}\\\phantom{\var{ε}} + 30 \unid{s × 200 µs/s}\\\phantom{\var{ε}} = 7 \unid{ms}};
+  % el eje vertical: cuánto más tarde o más temprano que el reloj local
+  \draw[->] (-2,-9) -- (-2,9.2) node[etiq, above, align=center] {diferencia con el reloj local (\unid{ms})};
+  \foreach \e/\r in {7/+7, 1/+1, 0/0, -1/{\ensuremath{-}1}, -7/{\ensuremath{-}7}} \draw (-2,\e) -- (-2.6,\e) node[etiq, left] {\r};
+  \node[etiq, text=suave, anchor=east] at (-5.2,5) {más tarde};
+  \node[etiq, text=suave, anchor=east] at (-5.2,-5) {más temprano};
+  % el eje
+  \draw[->] (-2,-9) -- (38,-9) node[etiq, right] {tiempo (\unid{s})};
+  \foreach \t in {0,30}
+    \draw (\t,-9) -- (\t,-9.4) node[etiq, below, align=center] {\t\\[1pt]{\color{segundo}get time}};
+  \foreach \t in {10,20} \draw (\t,-9) -- (\t,-9.4) node[etiq, below] {\t};
+\end{tikzpicture}\end{figura}
+\end{document}

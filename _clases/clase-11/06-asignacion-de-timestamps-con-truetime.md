@@ -26,10 +26,10 @@ Empecemos por un caso hipotético con tiempo absoluto. Es justamente lo que no v
 Pongámosle números. La escritura tiene timestamp 10, definido en el commit; la lectura, que ocurrió después, tiene 11. Simplemente se le pide al reloj local, y funciona: la lectura ve los valores guardados con timestamp 10. Coincide el timestamp de la versión guardada con el de la lectura, y está todo bien.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-11/caso-con-tiempo-absoluto.png' | relative_url }}" alt="Escritura con timestamp 10 y lectura con timestamp 11, con tiempo absoluto">
+  <img src="{{ '/assets/clase-11/caso-con-tiempo-absoluto.svg' | relative_url }}" alt="Escritura con timestamp 10 y lectura con timestamp 11, con tiempo absoluto">
   <figcaption>
     <span class="figura-label">Figura</span>
-    las dos líneas del caso hipotético con tiempo absoluto — T1 escribiendo x=1 con su timestamp definido al commit, y T2 leyendo x con su timestamp definido al inicio, con el 10 y el 11
+    El caso ideal, con un reloj exacto: la escritura toma su timestamp al hacer commit, el 10, y la lectura al empezar, el 11, así que la ve
     <span class="figura-ref">notas pág. 6 / pizarra pág. 7</span>
   </figcaption>
 </figure>
@@ -51,10 +51,10 @@ El caso fácil es el primero. Si eligiéramos el earliest, si pusiéramos que la
 La solución es la que uno adivina siguiendo el razonamiento: elegir el latest, siempre un valor garantizado en el futuro. Con un timestamp de lectura garantizado del futuro, vamos a poder ver las cosas anteriores.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-11/lectura-en-el-latest.png' | relative_url }}" alt="La lectura toma el latest de su intervalo de TrueTime">
+  <img src="{{ '/assets/clase-11/lectura-en-el-latest.svg' | relative_url }}" alt="La lectura toma el latest de su intervalo de TrueTime">
   <figcaption>
     <span class="figura-label">Figura</span>
-    T1 con la escritura en el 10 y T2 con la lectura, y debajo de la lectura el intervalo de TrueTime con earliest 9, tiempo real 11 y latest 12, con las dos flechas: el 9 oculta la escritura, el 12 garantiza verla
+    Con TrueTime la lectura no recibe el 11 real sino un intervalo, [9, 12]: con el 9 no vería la escritura del 10, así que toma siempre el latest, el 12
     <span class="figura-ref">notas pág. 6 / pizarra pág. 7</span>
   </figcaption>
 </figure>
@@ -72,10 +72,10 @@ Hagamos el mismo dibujo: T1 escribe X y una posterior T2 lee X. Supongamos que a
 ¿Cuál es el problema? La lectura hizo lo mismo: obtuvo 10 y 11, y toma el 11. Tenemos el mismo problema de antes, pero al revés: si elegimos el latest para la escritura, que ocurrió antes, le pusimos un time del futuro —el 12— y la ocultamos. La lectura no la puede ver.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-11/escritura-en-el-latest.png' | relative_url }}" alt="La escritura toma el latest 12 y la lectura en 11 no la ve">
+  <img src="{{ '/assets/clase-11/escritura-en-el-latest.svg' | relative_url }}" alt="La escritura toma el latest 12 y la lectura en 11 no la ve">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el caso que falla al revés — T1 con la escritura tomando el latest 12 y su intervalo [9, 12], y T2 con la lectura en el 11 y su intervalo [10, 11]; el latest de la escritura la esconde de la lectura
+    Si la escritura también tomara el latest, quedaría en el 12, en el futuro, y la lectura posterior, en el 11, no la vería
     <span class="figura-ref">notas pág. 7 / pizarra pág. 8</span>
   </figcaption>
 </figure>
@@ -103,6 +103,15 @@ Cuando pasa eso, tenemos la garantía que buscábamos. El valor de la transacci�
 
 ¿Y qué hacemos cuando tenemos esa garantía, la de que el timestamp de la transacción está en el pasado? Dos cosas en simultáneo. Por un lado mandamos el commit a todos los participantes, para que hagan visible el valor. Por el otro, algo que veníamos postergando: la respuesta al cliente, a quien nunca le habíamos respondido. Oficialmente el commit ocurrió solo en ese punto: el cliente lo vio en ese momento y no antes.
 
+<figure class="figura figura-con-imagen">
+  <img src="{{ '/assets/clase-11/two-phase-commit-con-commit-wait.svg' | relative_url }}" alt="Two-phase commit con la start rule y el commit wait en el coordinador">
+  <figcaption>
+    <span class="figura-label">Figura</span>
+    Las dos reglas dentro del two-phase commit: al llegar el commit, la start rule fija que s sea al menos 12; con todos preparados, el coordinador elige s = 12 y espera, mientras registra el commit en Paxos, hasta que el 12 queda en el pasado; recién ahí avisa a todos y responde al cliente
+    <span class="figura-ref">agregada al apunte; no está en la pizarra</span>
+  </figcaption>
+</figure>
+
 Si el cliente mandaba un read antes de eso, puede pasar cualquier cosa: puede verlo o no, porque los intervalos se superponen.
 
 Lo interesante es el read posterior. Supongamos que el cliente manda la lectura después de recibir la respuesta. Obtiene un intervalo algo más pequeño —lo hacemos así a propósito, para enfatizar que el 18 de antes no servía para nada—: 14 y 17.
@@ -110,10 +119,10 @@ Lo interesante es el read posterior. Supongamos que el cliente manda la lectura 
 La regla de las lecturas era la fácil: tomar el latest. La lectura ocurre en el 17, que es mayor que el 12, así que ve la escritura. Y el commit no quedó respondido ni en el futuro ni en el pasado.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-11/commit-wait.png' | relative_url }}" alt="Commit wait: la escritura espera hasta que su timestamp quede en el pasado">
+  <img src="{{ '/assets/clase-11/commit-wait.svg' | relative_url }}" alt="Commit wait: la escritura espera hasta que su timestamp quede en el pasado">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el diagrama completo del commit wait — la escritura con su intervalo [9, 10, 12, 15, 18], la barra de espera entre &quot;todos OK para commit&quot; y &quot;el timestamp está garantizado en el pasado&quot;, las dos acciones que salen de ahí (commit a todos los participantes y respuesta al cliente), y abajo la lectura en el 17 con su intervalo [14, 17]
+    El commit wait en tiempo real: en el 10 la start rule fija que el timestamp sea al menos 12; con todos OK se elige el 12 y se espera hasta el 15, cuando TrueTime da [13, 18] y el 12 ya pasó; recién ahí se hace el commit y se responde, y una lectura posterior, en el 17, ve la escritura
     <span class="figura-ref">notas pág. 7 / pizarra pág. 8</span>
   </figcaption>
 </figure>
@@ -129,7 +138,7 @@ Del paper hay cosas que no vimos y que ponen números sobre esto. Las tablas tre
 Esto viene con dos costos, y los dos son esperas: a veces hay que esperar el safe time, del lado de las read-only, y a veces el commit wait, del lado de las escrituras. Es el costo de usar relojes para sincronizar: esas esperas no se pueden evitar, pero TrueTime las minimiza.
 
 {: .nota }
-> El paper permite ponerle número a este costo. La espera esperada del commit wait es de al menos dos veces la incertidumbre del intervalo, y como esa incertidumbre ronda los 4 milisegundos, la espera medida da unos 4 milisegundos —el paper aclara que se solapa casi siempre con la comunicación de Paxos, así que buena parte se paga de todos modos—. La tabla tres lo muestra en una sola línea: con una réplica y el commit wait deshabilitado, una escritura tarda 10,1 milisegundos; con el commit wait puesto, 14,1. Los 4 milisegundos de diferencia son exactamente lo que cuesta la regla.
+> El paper permite ponerle número a este costo. La espera esperada del commit wait es de al menos dos veces la incertidumbre del intervalo, y como esa incertidumbre ronda los 4 milisegundos, la espera medida da unos 5 milisegundos —el paper aclara que se solapa casi siempre con la comunicación de Paxos, así que buena parte se paga de todos modos—. La tabla tres lo muestra en una sola línea: con una réplica y el commit wait deshabilitado, una escritura tarda 9,4 milisegundos; con el commit wait puesto, 14,4. Los 5 milisegundos de diferencia son exactamente lo que cuesta la regla.
 
 Solo ahora se puede cerrar el argumento de los relojes atómicos, porque solo ahora se ve por qué hacían falta. Usando relojes de pared comunes se podría lograr lo mismo. Habría que usar intervalos, sí, pero más grandes, con una incertidumbre más grande, y eso retrasaría mucho más la espera. Cuanto más grande el intervalo —en el dibujo del commit wait se ve muy bien—, más hay que esperar, y más latencia tiene toda la escritura. Por eso se usaron relojes de varianza muy pequeña que además se actualizan cada 30 segundos.
 

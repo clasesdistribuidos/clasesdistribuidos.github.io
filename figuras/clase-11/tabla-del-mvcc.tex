@@ -1,0 +1,26 @@
+\input{estilo}
+% Solo lo que guarda el sistema: el par (clave, timestamp) como índice y el
+% valor aparte, con las dos versiones de y. La lectura en el 11, que en la
+% pizarra va al costado, está dibujada aparte en lectura-en-el-mvcc. Son los
+% mismos valores de timestamp-ordering, donde el Vy del 9 desaparecía al llegar
+% el Vy' del 12; acá se quedan los dos. La pizarra los llama v1, v2 y v3.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \newcommand\val[2][]{\var{V}\textsubscript{\var{#2}}\ensuremath{#1}}
+  \matrix[tabla, column sep=8mm] (t) at (0,0) {(K, TS) & V\\ (\var{x}, 10) & \val{x}\\ (\var{y}, 9) & \val{y}\\ (\var{y}, 12) & \val[']{y}\\};
+  \filete{t}{2}
+  % el filete vertical, en el medio del column sep: las celdas de V tienen anchos
+  % distintos, así que se toma la x de la más ancha, V_y'
+  \coordinate (s) at ($(t-4-2.west)+(-0.4,0)$);
+  \draw (s |- t-1-2.north) -- (s |- t-4-2.south);
+  % qué es cada columna
+  \node[etiq, text=suave, anchor=south] at ($(t-1-1.north)+(0,0.05)$) {índice};
+  \node[etiq, text=suave, anchor=south] at ($(t-1-2.north)+(0,0.05)$) {valor};
+  % las versiones de y
+  % igual que el filete: (y, 12) es más ancha que (y, 9), así que la llave toma
+  % una sola x, la de la más ancha
+  \coordinate (b) at ($(t-4-1.west)+(-0.1,0)$);
+  \draw[llave=5pt, draw=tinta] ($(b |- t-4-1.south)+(0,0.05)$) -- ($(b |- t-3-1.north)+(0,-0.05)$);
+  \node[etiq, anchor=east, align=right] at ($(b |- t-3-1.south)+(-0.35,0)$) {guardamos\\varias versiones\\del row};
+\end{tikzpicture}\end{figura}
+\end{document}

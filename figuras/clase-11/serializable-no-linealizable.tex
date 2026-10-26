@@ -1,0 +1,19 @@
+\input{estilo}
+% La pizarra dibuja la cinta de snapshots; acá va como historia en tiempo
+% físico, igual que external-consistency y lector-atrasado: la lectura es
+% posterior a las dos escrituras. Las dos flechas son resultados posibles, no
+% uno bueno y uno malo: leer lo de T1 es serializable pero no linealizable;
+% leer lo de T2, las dos cosas. Por eso van en tinta y no en rojo y verde.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \tx{2.4}{1}  \tx{1.2}{2}  \tx{0}{3}
+  \node[evento] (w1) at (1.6,2.4) {};  \node[above=2pt] at (w1) {\var{x} = 1, \var{y} = 2};
+  \node[evento] (w2) at (4.0,1.2) {};  \node[above=2pt] at (w2) {\var{x} = 3, \var{y} = 4};
+  \node[evento] (r)  at (7.6,0) {};    \node[right=3pt] at (r) {read \var{x}, \var{y}};
+  \draw[->] (r) .. controls (4.6,0.2) and (1.8,0.6) .. (w1)
+    node[pos=0.5, below=10pt, etiq, align=left] {lee \var{x} = 1, \var{y} = 2:\\serializable, no linealizable};
+  \draw[->] (r) .. controls +(-0.3,0.9) and +(0.8,-0.2) .. (w2)
+    node[pos=0.3, right=12pt, etiq, align=left] {lee \var{x} = 3, \var{y} = 4:\\serializable y linealizable};
+  \tiempo[tiempo físico]{1.0}{10.0}{-1.0}
+\end{tikzpicture}\end{figura}
+\end{document}

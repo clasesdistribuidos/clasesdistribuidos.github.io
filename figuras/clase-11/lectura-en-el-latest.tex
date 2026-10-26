@@ -1,0 +1,20 @@
+\input{estilo}
+% Escala de la sección 6: 0,6 por unidad, el 10 en x = 5.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \tx{1.2}{1}  \tx{0}{2}
+  \transaccion{1.2}{1.4}{5.0}{\op{W}{x}}
+  \ts{(5.0,1.2)}{10}
+  \transaccion{0}{5.6}{9.2}{\op{R}{x}}
+  \ts[above]{(5.6,0)}{12}
+  % el intervalo de TrueTime al empezar T2; el tiempo real es 11
+  \draw[pedido] (5.6,-0.25) -- (5.6,-0.85);
+  \intervalott{-1.1}{4.4}{6.2}{9}{\elegido{12}}
+  \hora{(5.6,-1.1)}{11}
+  \node[etiq, text=segundo, anchor=west, align=left] (n) at (7.0,-1.5) {elegimos siempre\\[1pt]\texttt{\normalsize TT.now().latest}};
+  \draw[->, segundo] (n.west) -- (6.5,-1.5);
+  \draw[->, acento] (4.4,-2.4) -- (4.4,-1.85);
+  \node[text=acento, align=center, anchor=north] at (4.4,-2.45) {oculta\\\var{T}\textsubscript{1}: 9 < 10};
+  \tiempo{1.4}{9.8}{-3.6}
+\end{tikzpicture}\end{figura}
+\end{document}

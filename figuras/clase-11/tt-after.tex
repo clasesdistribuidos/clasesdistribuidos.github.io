@@ -1,0 +1,24 @@
+\input{estilo}
+% La idea del párrafo: si los intervalos de TrueTime de dos eventos no se
+% solapan, el segundo ocurrió seguro después. TT.after es cómo lo pregunta la API.
+% La pizarra rotulaba earliest, TT.latest y t.earliest; acá cada intervalo es el
+% TT.now() de un evento. El caso que se solapa va aparte, en tt-after-solapado.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \newcommand\intervalo[6][0.5]{% [pos], y, x0, x1, rótulo, nombre
+    \draw[intervalo, draw=segundo] (#3,#2) -- (#4,#2) node[pos=#1, above=3pt, etiq, text=segundo] (#6) {#5};
+    \node[cod, text=segundo, below=4pt] at (#3,#2) {earliest};
+    \node[cod, text=segundo, below=4pt] at (#4,#2) {latest};}
+  % no se solapan
+  \intervalo{1.2}{0}{3.4}{\texttt{TT.now()} del evento 1}{e1}
+  \intervalo{0}{4.6}{8.0}{\texttt{TT.now()} del evento 2}{e2}
+  \draw[densely dotted, draw=suave, line width=0.5pt] (3.4,0.75) -- (3.4,-0.75);
+  \draw[densely dotted, draw=suave, line width=0.5pt] (4.6,-0.45) -- (4.6,-0.75);
+  \draw[llave=4pt, draw=segundo] (4.6,-0.8) -- (3.4,-0.8);
+  \pic[scale=0.75] at (2.0,-1.6) {ok};
+  \node[text=segundo, anchor=west, align=left] at (2.5,-1.55)
+    {no se solapan: el evento 2 ocurrió seguro después\\[1pt]
+     {\footnotesize en la API: \texttt{TT.after(latest\textsubscript{1})} es verdadero}};
+  \tiempo{-0.6}{9.0}{-2.5}
+\end{tikzpicture}\end{figura}
+\end{document}
