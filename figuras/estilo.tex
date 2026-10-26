@@ -17,10 +17,14 @@
 \newfontfamily\varfont{cmunbmo.otf}[Scale=0.88]
 \setmonofont{Menlo}[Scale=0.85]
 \newcommand\var[1]{{\varfont #1}}
-% CMU Bright no tiene ≥, ≤ ni ≠: salen del modo matemático
+% Las unidades (ms, µs/s) se leen como fórmula y quedan en su caja, sin mayúsculas.
+\newfontfamily\unidfont{cmunbmr.otf}[Scale=0.88]
+\newcommand\unid[1]{{\unidfont #1}}
+% CMU Bright no tiene ≥, ≤, ≠ ni ≈: salen del modo matemático
 \catcode`≥=\active \protected\def≥{\ensuremath{\geq}}
 \catcode`≤=\active \protected\def≤{\ensuremath{\leq}}
 \catcode`≠=\active \protected\def≠{\ensuremath{\neq}}
+\catcode`≈=\active \protected\def≈{\ensuremath{\approx}}
 \usetikzlibrary{arrows.meta,positioning,calc,decorations.pathreplacing,shapes.misc}
 \definecolor{tinta}{HTML}{2B2F36}
 \definecolor{suave}{HTML}{8A9099}
