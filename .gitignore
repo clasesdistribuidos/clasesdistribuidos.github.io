@@ -11,3 +11,6 @@ __pycache__/
 
 # Figuras TikZ compiladas por scripts/render_figuras.py
 figuras/salida/
+
+# El libro en PDF que arma scripts/libro/build.sh
+scripts/libro/build/
