@@ -1,0 +1,29 @@
+\input{estilo}
+% Event time contra processing time. Debajo de la diagonal estaría el futuro,
+% que no llega; los eventos caen entre la diagonal y el watermark (la franja
+% gris). En un instante (la línea punteada, "ahora") el watermark está en el
+% punto rojo: de ahí para la izquierda ya no llega nada; las cruces son event
+% times que todavía pueden llegar. El watermark solo avanza.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cruz/.style={draw=tinta, line width=0.9pt}]
+  \fill[relleno] plot[smooth, tension=0.6] coordinates
+    {(0,0) (0.5,1.4) (1.1,2.2) (1.4,2.9) (2.2,3.7) (3.2,4.2) (4.0,5.0) (5.0,5.9)}
+    -- (5.9,5.9) -- cycle;
+  \draw[->] (0,0) -- (7,0) node[etiq, below left=5pt and 0pt] {event time};
+  \draw[->] (0,0) -- (0,6.3) node[etiq, above] {processing time};
+  \draw[dashed] (0,0) -- (6.2,6.2) node[etiq, above right=0pt and -4pt] {tiempo perfecto};
+  \draw[acento, line width=1.1pt] plot[smooth, tension=0.6] coordinates
+    {(0,0) (0.5,1.4) (1.1,2.2) (1.4,2.9) (2.2,3.7) (3.2,4.2) (4.0,5.0) (5.0,5.9)};
+  \node[etiq, text=acento, anchor=east] at (2.2,4.3) {watermark};
+  \node[etiq, text=suave, align=center] at (0.9,5.2) {ya no\\llega nada};
+  \node[etiq, text=suave, align=center] at (4.6,1.5) {el futuro:\\no llega};
+  \draw[dashed, line width=0.5pt] (0,2.9) node[etiq, text=suave, left] {ahora} -- (2.9,2.9);
+  \node[evento=acento] at (1.4,2.9) {};
+  \draw[acento, ->] (1.4,3.1) -- ++(0,0.6);
+  \foreach \x in {1.95,2.4,2.8}
+    \draw[cruz] (\x-0.1,2.8) -- (\x+0.1,3.0) (\x-0.1,3.0) -- (\x+0.1,2.8);
+  \node[etiq, text=suave, anchor=west] at (3.0,2.9) {pueden llegar};
+  \foreach \p in {(2.6,3.6),(3.3,3.8),(3.9,4.5),(4.3,5.0),(4.9,5.4)}
+    \node[evento] at \p {};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,27 @@
+\input{estilo}
+% El master, que adentro es un grupo con Paxos, tiene el grafo de cómputos y le
+% asigna a cada nodo un cómputo y un rango de claves. Los nodos, en una fila,
+% a la misma distancia; las asignaciones son un ejemplo con los cómputos de
+% Zeitgeist.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[punto/.style={componente, minimum size=2.4mm},
+    asig/.style={etiq, font=\scriptsize, align=center, below=3pt}]
+  \node[caja, minimum width=34mm, minimum height=18mm] (m) at (0,2.8) {};
+  \begin{scope}[shift={(m.center)}, >={Stealth[length=1.4mm]}]
+    \node[punto] (g1) at (-0.9,0) {};
+    \node[punto] (g2) at (0.3,0.45) {};
+    \node[punto] (g3) at (0.3,-0.45) {};
+    \node[punto] (g4) at (1.1,0) {};
+    \draw[->] (g1) -- (g2); \draw[->] (g1) -- (g3); \draw[->] (g2) -- (g3); \draw[->] (g3) -- (g4);
+  \end{scope}
+  \node[etiq, above=2pt of m] {master};
+  \node[etiq, text=suave, right=4pt of m] {(Paxos adentro)};
+  \foreach \x/\asg [count=\i] in {-4.5/{window counter\\{[a–m)}}, -1.5/{window counter\\{[m–z]}},
+                                 1.5/{model calculator\\{[a–z]}}, 4.5/{spike/dip detector\\{[a–z]}}} {
+    \node[caja, minimum width=12mm] (n\i) at (\x,0) {};
+    \node[asig] at (n\i.south) {\asg};
+    \draw[respuesta, draw=suave] (m.south) -- (n\i.north);
+  }
+  \node[etiq, text=suave, anchor=west] at (2.0,1.55) {asigna cómputo y rango};
+\end{tikzpicture}\end{figura}
+\end{document}

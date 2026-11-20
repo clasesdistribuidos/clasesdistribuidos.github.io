@@ -1,0 +1,28 @@
+\input{estilo}
+% La flecha gorda entre dos cómputos, en abstracto, es un shuffle: cada
+% partición de A le puede mandar eventos a todas las de B, que se reparten las
+% claves por rangos. A₂ en verde, como en la pizarra. Todo simétrico respecto
+% del eje horizontal.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja] (A) at (0,0) {A};
+  \node[caja] (B) at (2.4,0) {B};
+  \draw[datos] (A) -- (B);
+  \node[etiq, text=suave, below=16pt] at ($(A)!0.5!(B)$) {en abstracto};
+  \draw[implica] (3.3,0) -- (4.3,0);
+  \node[etiq, font=\small] at (5.6,2.3) {A};
+  \node[etiq, font=\small] at (9.4,2.3) {B};
+  \node[caja] (a1) at (5.6,0.8) {A\textsubscript{1}};
+  \node[caja, draw=segundo] (a2) at (5.6,-0.8) {A\textsubscript{2}};
+  \foreach \i/\y/\r in {1/1.5/a–h, 2/0/h–p, 3/-1.5/p–z} {
+    \node[caja] (b\i) at (9.4,\y) {B\textsubscript{\i}};
+    \node[etiq, anchor=west] at ($(b\i.east)+(0.15,0)$) {[\r]};
+  }
+  \foreach \i in {1,2,3} {
+    \draw[msg] (a1.east) -- (b\i.west);
+    \draw[msg, draw=segundo] (a2.east) -- (b\i.west);
+  }
+  \draw[llave=5pt, decoration={mirror}] (6.2,-2.2) -- (8.8,-2.2)
+    node[midway, below=6pt, etiq, text=suave] {shuffle continuo, por RPC};
+\end{tikzpicture}\end{figura}
+\end{document}

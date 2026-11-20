@@ -1,0 +1,30 @@
+\input{estilo}
+% El join stream-stream: dos streams de data points (los accesos en verde,
+% como en la pizarra) entran simétricos a la misma etapa, que arma ventanas de
+% los dos, los junta y emite el registro correlacionado a otro stream.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    reg/.style={etiq, align=left, anchor=north}]
+  \newcommand\registro[3]{\node[reg] (#1) at #2 {#3};
+    \draw[decorate, decoration={brace, amplitude=4pt, mirror}] ($(#1.north west)+(-0.05,0)$) -- ($(#1.south west)+(-0.05,0)$);
+    \draw[decorate, decoration={brace, amplitude=4pt}] ($(#1.north east)+(0.05,0)$) -- ($(#1.south east)+(0.05,0)$);}
+  \stream{pn}{(3.2,1.4)}{3.2}{1}
+  \foreach \x/\y in {0.4/0.1, 1.1/-0.15, 1.7/0.15, 2.5/-0.05}
+    \node[evento, minimum size=3.5pt] at (\x,1.4+\y) {};
+  \node[etiq, align=right, anchor=east] at (-0.15,1.4) {push\\notifications};
+  \begin{scope}[draw=segundo]
+    \stream{ac}{(3.2,-1.4)}{3.2}{1}
+  \end{scope}
+  \foreach \x/\y in {0.6/-0.1, 1.3/0.15, 2.0/-0.1, 2.7/0.1}
+    \node[evento=segundo, minimum size=3.5pt] at (\x,-1.4+\y) {};
+  \node[etiq, align=right, anchor=east, text=segundo] at (-0.15,-1.4) {accesos\\a la app};
+  \node[caja, minimum width=18mm, minimum height=14mm, align=center] (p) at (5.4,0) {join por\\ventana};
+  \draw[msg] (pn-boca) to[out=0, in=150] (p.west);
+  \draw[msg, draw=segundo] (ac-boca) to[out=0, in=210] (p.west);
+  \node[etiq, align=left, anchor=south west] at ($(pn-boca)+(0.1,0.3)$) {user ID\\mensaje push};
+  \node[etiq, align=left, anchor=north west, text=segundo] at ($(ac-boca)+(0.1,-0.3)$) {user ID\\path};
+  \stream{out}{(7.3,0)}{2.8}{-1}
+  \draw[msg] (p.east) -- (out-boca);
+  \registro{r}{($(out-abajo)+(0,-0.3)$)}{user ID\\push ID\\path}
+\end{tikzpicture}\end{figura}
+\end{document}

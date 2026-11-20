@@ -1,0 +1,23 @@
+\input{estilo}
+% Enriquecer un stream: por cada user ID que entra, la etapa consulta la base y
+% emite el registro completo. Las dos puntas simétricas, con el registro de
+% cada stream debajo en la misma forma; arriba, el nombre del texto.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    reg/.style={etiq, align=left, anchor=north}]
+  \newcommand\registro[3]{\node[reg] (#1) at #2 {#3};
+    \draw[decorate, decoration={brace, amplitude=4pt, mirror}] ($(#1.north west)+(-0.05,0)$) -- ($(#1.south west)+(-0.05,0)$);
+    \draw[decorate, decoration={brace, amplitude=4pt}] ($(#1.north east)+(0.05,0)$) -- ($(#1.south east)+(0.05,0)$);}
+  \stream{in}{(2.8,0)}{2.8}{1}
+  \node[caja, minimum width=16mm, minimum height=13mm] (p) at (4.6,0) {};
+  \node[etiq, text=suave, above=3pt of p] {join stream–tabla};
+  \stream{out}{(6.4,0)}{2.8}{-1}
+  \draw[msg] (in-boca) -- (p.west);
+  \draw[msg] (p.east) -- (out-boca);
+  \registro{r1}{($(in-abajo)+(0,-0.3)$)}{user ID}
+  \registro{r2}{($(out-abajo)+(0,-0.3)$)}{user ID\\nombre\\dirección\\etc.}
+  \pic at (4.6,-3.0) {base};
+  \node[etiq] at (4.6,-2.45) {DB};
+  \draw[msg] (p.south) -- (4.6,-1.73);
+\end{tikzpicture}\end{figura}
+\end{document}

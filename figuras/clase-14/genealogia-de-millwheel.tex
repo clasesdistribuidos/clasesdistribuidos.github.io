@@ -1,0 +1,20 @@
+\input{estilo}
+% Lo que vino después de MillWheel: Windmill, su sucesor, es sobre lo que
+% corre Dataflow, el servicio de Google. Apache Beam es el modelo de
+% programación, y se ejecuta sobre Dataflow o sobre otros: Flink o Spark
+% Streaming. Los tres motores, alineados y del mismo ancho.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[sis/.style={caja, minimum width=30mm}]
+  \node[caja, minimum width=96mm, minimum height=8mm] (ab) at (3.6,2.2) {Apache Beam};
+  \node[etiq, text=suave, above=2pt of ab] {el modelo de programación};
+  \foreach \n/\x/\t in {df/0/Dataflow, fl/3.6/Flink, sp/7.2/Spark Streaming} {
+    \node[sis] (\n) at (\x,0) {\t};
+    \draw[msg] (ab.south -| \n) -- (\n);
+  }
+  \node[etiq, text=suave, anchor=west] at (7.4,1.1) {se ejecuta sobre};
+  \node[sis] (wm) at (0,-1.8) {Windmill};
+  \draw (df) -- node[etiq, text=suave, right] {corre sobre} (wm);
+  \node[sis] (mw) at (-4.6,-1.8) {MillWheel};
+  \draw[msg] (mw) -- node[etiq, text=suave, above] {sucesor} (wm);
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,21 @@
+\input{estilo}
+% El join stream-stream: las push notifications y los accesos a la app (en
+% verde, como en la pizarra) entran a la misma etapa y sale el registro
+% correlacionado.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \stream{pn}{(3.2,1.5)}{3.2}{1}
+  \node[etiq, align=right, anchor=east] at (-0.15,1.5) {push\\notifications};
+  \begin{scope}[draw=segundo]
+    \stream{ac}{(3.2,-1.5)}{3.2}{1}
+  \end{scope}
+  \node[etiq, align=right, anchor=east, text=segundo] at (-0.15,-1.5) {accesos\\a la app};
+  \node[caja, minimum width=14mm, minimum height=13mm] (p) at (6.4,0) {};
+  \draw[msg] (pn-boca) to[out=0, in=160] node[etiq, above right, align=left] {user ID\\mensaje push} (p.west);
+  \draw[msg, draw=segundo] (ac-boca) to[out=0, in=200] node[etiq, below right, align=left, text=segundo] {user ID\\path} (p.west);
+  \draw[msg] (p.east) -- ++(1.4,0) coordinate (o);
+  \node[etiq, align=left, anchor=west] (r) at ($(o)+(0.45,0)$) {user ID\\push ID\\path};
+  \draw[decorate, decoration={brace, amplitude=5pt, mirror}] (r.north west) -- (r.south west);
+  \draw[decorate, decoration={brace, amplitude=5pt}] (r.north east) -- (r.south east);
+\end{tikzpicture}\end{figura}
+\end{document}

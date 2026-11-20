@@ -1,0 +1,41 @@
+\input{estilo}
+% El protocolo de exactly-once, con los pasos numerados y a la misma distancia:
+% A genera el ID y manda; B chequea el ID, procesa en memoria, guarda todo en
+% una sola escritura atómica, recién entonces le da el ack a A, y después manda
+% las producciones a C.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[n/.style={paso, anchor=east}]
+  \foreach \n/\x/\t in {a/0/A, b/4.2/B, s/8.4/backing store, c/11.6/C} {
+    \node[caja] (\n) at (\x,0) {\t};
+    \draw[vida] (\n.south) -- (\x,-7.6);
+  }
+  \def\d{0.9}
+  % 1 A genera el ID
+  \node[n] at (-0.45,-1.0) {1};
+  \draw[msg] (0,-0.85) -- ++(0.5,0) -- ++(0,-0.3) -- (0.05,-1.15);
+  \node[etiq, anchor=west] at (0.6,-1.0) {genera el ID único};
+  % 2 send
+  \node[n] at (-0.45,-1.9) {2};
+  \draw[msg] (0,-1.9) -- node[cod, above] {send(record, id)} (4.2,-1.9);
+  % 3 check
+  \node[n] at (-0.45,-2.8) {3};
+  \draw[msg] (4.2,-2.8) -- node[cod, above] {check(id)} (8.4,-2.8);
+  % 4 process
+  \node[n] at (-0.45,-3.7) {4};
+  \draw[msg] (4.2,-3.55) -- ++(0.5,0) -- ++(0,-0.3) -- (4.25,-3.85);
+  \node[cod, anchor=west] at (4.8,-3.7) {process\_record()};
+  % 5 update atómico
+  \node[n] at (-0.45,-4.6) {5};
+  \draw[msg] (4.2,-4.6) -- node[cod, above] {update(\dots)} (8.4,-4.6);
+  \draw[fill=relleno] (8.3,-4.3) rectangle (8.5,-4.9);
+  \draw[llave=4pt] (8.75,-3.95) -- (8.75,-5.25);
+  \node[etiq, anchor=west, align=left, text=suave] at (8.9,-4.6)
+    {una escritura atómica:\\estado mutable, producciones,\\timers e ID};
+  % 6 ack
+  \node[n] at (-0.45,-5.5) {6};
+  \draw[msg] (4.2,-5.5) -- node[cod, above] {ack} (0,-5.5);
+  % 7 send a C
+  \node[n] at (-0.45,-6.4) {7};
+  \draw[msg] (4.2,-6.4) -- node[cod, above, pos=0.25] {send(producciones)} (11.6,-6.4);
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,19 @@
+\input{estilo}
+% El stream de user IDs entra a la etapa, que consulta la base, y sale el
+% registro enriquecido.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \stream{in}{(2.8,0)}{2.8}{1}
+  \node[etiq, below=4pt] at (in-abajo) {\{user ID\}};
+  \node[caja, minimum width=16mm, minimum height=13mm] (p) at (4.9,0) {};
+  \draw[msg] (in-boca) -- (p.west);
+  \pic at (4.9,-3.0) {base};
+  \node[etiq] at (4.9,-2.45) {DB};
+  \draw[msg] (p.south) -- (4.9,-1.73);
+  \stream{out}{(7.0,0)}{2.8}{-1}
+  \draw[msg] (p.east) -- (out-boca);
+  \node[etiq, align=left, anchor=north west] (r) at ($(out-abajo)+(-0.6,-0.35)$) {user ID\\nombre\\dirección\\etc.};
+  \draw[decorate, decoration={brace, amplitude=5pt, mirror}] (r.north west) -- (r.south west);
+  \draw[decorate, decoration={brace, amplitude=5pt}] (r.north east) -- (r.south east);
+\end{tikzpicture}\end{figura}
+\end{document}

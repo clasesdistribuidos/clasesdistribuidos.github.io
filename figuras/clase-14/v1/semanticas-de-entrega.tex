@@ -1,0 +1,17 @@
+\input{estilo}
+% Dos máquinas, el envío y el ack; la diferencia entre las tres semánticas
+% está en hacer retry o no.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=9mm, minimum height=9mm] (a) at (0,0) {};
+  \node[caja, minimum width=9mm, minimum height=9mm] (b) at (3,0) {};
+  \draw[msg] ($(a.east)+(0,0.2)$) -- ($(b.west)+(0,0.2)$);
+  \draw[respuesta] ($(b.west)+(0,-0.2)$) -- ($(a.east)+(0,-0.2)$);
+  \node[etiq, below=2pt] at ($(a.south)!0.5!(b.south)$) {ack};
+  \matrix[matrix of nodes, nodes={font=\small, anchor=west, inner sep=2pt}, column sep=2mm, row sep=1mm] (m) at (8.0,0) {
+    at-most-once & \flecha & sin retry\\
+    at-least-once & \flecha & con retry\\
+    exactly-once & \flecha & imposible en la práctica\\};
+  \draw[decorate, decoration={brace, amplitude=6pt, mirror}] ($(m.north west)+(-0.1,0)$) -- ($(m.south west)+(-0.1,0)$);
+\end{tikzpicture}\end{figura}
+\end{document}
