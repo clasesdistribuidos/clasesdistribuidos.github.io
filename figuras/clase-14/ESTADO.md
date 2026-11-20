@@ -51,8 +51,19 @@ Agregado o inventado por nosotros, no está ni en la pizarra ni en el texto:
 - `event-time-y-processing-time`: el processing time de ejemplo, 8:00:07 (lo
   pidió el usuario).
 - `master-y-nodos`: las asignaciones de cada nodo (window counter [a–m), …)
-  son un ejemplo con los cómputos de Zeitgeist.
+  son un ejemplo con los cómputos de Zeitgeist. Adentro del master, en vez
+  del grafo de la pizarra, un pentágono regular de réplicas: Multi-Paxos
+  (lo pidió el usuario, 2026-11-20).
 - `watermark-log-particionado`: los números de las celdas, salvo 10, 8 y 12.
+- `genealogia-de-millwheel`: repensada a partir del último párrafo del
+  apunte (el modelo de programación se desprendió del motor). El interior de
+  Dataflow (worker y Windmill) y las primitivas debajo de MillWheel salen del
+  texto, no de la pizarra.
+- `protocolo-exactly-once`: el final (ack de C y `delete(producciones)`) sale
+  del paper, §6.1 (strong productions), no de la pizarra. Lo pidió el usuario
+  desde la sesión de las diapositivas, que la usa en la diapositiva 37 del
+  deck de la clase 14. Después pidió sacarle los textos en gris: lo que se
+  guarda quedó en la llamada, `update(estado, producciones, timers, id)`.
 - `sistema-de-streaming`: el destino del RPC era un trazo sin rótulo; ahora
   dice "otro sistema".
 

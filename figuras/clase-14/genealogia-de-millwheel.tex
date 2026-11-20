@@ -1,20 +1,35 @@
 \input{estilo}
-% Lo que vino después de MillWheel: Windmill, su sucesor, es sobre lo que
-% corre Dataflow, el servicio de Google. Apache Beam es el modelo de
-% programación, y se ejecuta sobre Dataflow o sobre otros: Flink o Spark
-% Streaming. Los tres motores, alineados y del mismo ancho.
+% Lo que hay que retener del final de la clase: el modelo de programación se
+% desprendió del motor que lo ejecuta. Arriba de la línea, Beam; abajo, los
+% motores, todos a la misma altura y del mismo ancho. Dataflow, abierto: el
+% worker aplica las transformaciones y arma las ventanas, y Windmill, el
+% sucesor de MillWheel, guarda el estado y los timers. A la izquierda,
+% MillWheel con las primitivas que hoy quedaron del lado de la infraestructura.
 \begin{document}
-\begin{figura}\begin{tikzpicture}[sis/.style={caja, minimum width=30mm}]
-  \node[caja, minimum width=96mm, minimum height=8mm] (ab) at (3.6,2.2) {Apache Beam};
-  \node[etiq, text=suave, above=2pt of ab] {el modelo de programación};
-  \foreach \n/\x/\t in {df/0/Dataflow, fl/3.6/Flink, sp/7.2/Spark Streaming} {
-    \node[sis] (\n) at (\x,0) {\t};
-    \draw[msg] (ab.south -| \n) -- (\n);
-  }
-  \node[etiq, text=suave, anchor=west] at (7.4,1.1) {se ejecuta sobre};
-  \node[sis] (wm) at (0,-1.8) {Windmill};
-  \draw (df) -- node[etiq, text=suave, right] {corre sobre} (wm);
-  \node[sis] (mw) at (-4.6,-1.8) {MillWheel};
-  \draw[msg] (mw) -- node[etiq, text=suave, above] {sucesor} (wm);
+\begin{figura}\begin{tikzpicture}[
+    motor/.style={caja, minimum width=28mm, minimum height=8mm, align=center},
+    pieza/.style={caja, fill=white, minimum width=38mm, minimum height=8mm, align=center, font=\footnotesize}]
+  % la línea que separa programa y motor
+  \draw[dashed, draw=suave, line width=0.5pt] (-5.0,1.65) -- (11.0,1.65);
+  \node[etiq, text=suave, anchor=south west] at (-5.0,1.7) {modelo de programación};
+  \node[etiq, text=suave, anchor=north west] at (-5.0,1.6) {motor};
+  % arriba
+  \node[caja, minimum width=110mm, minimum height=8mm] (ab) at (5.4,2.6) {Apache Beam};
+  % los motores
+  \draw[marco, fill=relleno] (0,1.25) rectangle (4.4,-1.65);
+  \node[etiq, font=\small, anchor=north west] at (0.1,1.2) {Dataflow};
+  \node[pieza] (w) at (2.2,0.25) {worker: transformaciones\\y ventanas};
+  \node[pieza] (wm) at (2.2,-0.95) {Windmill: estado y timers};
+  \draw (w) -- (wm);
+  \node[motor] (fl) at (6.4,0.25) {Flink};
+  \node[motor] (sp) at (9.6,0.25) {Spark Streaming};
+  \draw[msg] (ab.south -| 2.2,0) -- (2.2,1.25);
+  \draw[msg] (ab.south -| fl) -- (fl);
+  \draw[msg] (ab.south -| sp) -- (sp);
+  \node[etiq, text=suave, anchor=west] at (6.5,1.25) {se ejecuta sobre};
+  % de dónde viene Windmill
+  \node[motor] (mw) at (-3.4,-0.95) {MillWheel};
+  \node[cod, text=suave, below=3pt of mw, align=center] {process\_record()\\process\_timer()};
+  \draw[msg] (mw) -- node[etiq, text=suave, above] {evolucionó} (wm);
 \end{tikzpicture}\end{figura}
 \end{document}
