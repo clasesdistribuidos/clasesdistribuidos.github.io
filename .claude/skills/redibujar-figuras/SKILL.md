@@ -147,6 +147,16 @@ Trampas que ya aparecieron:
   `foreach`.
 - En el PNG algunas líneas se ven más gruesas: es redondeo de píxeles, no el
   dibujo. Se confirma con `grep -o 'stroke-width="[^"]*"' x.svg | sort | uniq -c`.
+  El PNG de `pdftoppm` lo exagera: a 130 dpi un trazo de 1,26 px sale de 1 o
+  de 2 px según dónde caiga, con cualquier modo de líneas finas. El grosor
+  que importa es el del SVG en el navegador, y se mira ahí.
+- Las celdas de `\tira` dibujan cada una su borde, así que el borde que
+  comparten dos celdas se traza dos veces y, medido en el navegador, sale
+  hasta un 15 % más oscuro que el contorno. Si se nota, dibujar las celdas
+  con `draw=none` y trazar una sola vez el contorno y los separadores: la
+  diferencia baja al 7 %, que ya es antialias. En la clase 13 se resolvió así
+  adentro de `fan-out-con-log` y `replicacion-de-particiones`, sin tocar
+  `formas.tex`.
 - Un `\tikz` metido en un texto (`\flecha`) también es un picture: todo lo
   que se engancha a `every picture` le llega. La grilla de revisión lo inflaba
   hasta un cuadrado de 2 cm; por eso `grilla.tex` cuenta el anidamiento.
@@ -290,13 +300,28 @@ El circuito:
 
 Con una clase entera, el usuario prefiere que se dibujen todas de una, no de
 a una por vez, pero con la estimación de costo antes de arrancar (ver "Antes
-de dibujar") para poder elegir. Después vienen rondas de aprobación por chat,
-figura por figura: el usuario dice con cuál de las tres se queda (recorte,
-fiel o mejorada), cuáles hay que corregir y cuáles no lo convencen. Para estas últimas se le dibujan alternativas aparte,
-como en el caso de las figuras que no explican bien el texto, y él elige. Las
-correcciones finas de dibujo siguen yendo por el PDF anotado; el chat es para
-lo que se dice con palabras: aprobar, descartar, traducir un rótulo, sacar
-algo que sobra.
+de dibujar") para poder elegir. La aprobación va en dos tiempos, y es el
+circuito que en la clase 13 el usuario dijo que funcionó mejor.
+
+Primero el PDF con las tres opciones de todas las figuras pendientes. Con
+eso el usuario contesta en una sola línea las que tiene claras ("ok" a la
+mejorada, o el número de la que elige) y marca qué hay que corregir en las
+otras.
+
+Después, las que quedan se repasan de a una por chat, con una
+`AskUserQuestion` por figura. Las opciones son la mejorada, primera y
+recomendada, la versión fiel, el recorte y "necesita cambios". La pregunta
+nombra la página del PDF y dice en dos líneas qué muestra la mejorada y qué
+se pierde respecto de la pizarra. Si el usuario pide un cambio, se corrige,
+se recompila, se le manda solo el PNG de esa figura con `SendUserFile` y se
+vuelve a preguntar "¿Queda así?" antes de pasar a la siguiente. Así las
+correcciones salen chicas y concretas, y no hace falta mandar otro PDF ni
+anotar en Xournal++. El PDF anotado de la sección anterior queda para lo que
+cuesta decir con palabras, como mover una pieza a una altura de la grilla.
+
+Si una figura no convence en ninguna de sus versiones, se le dibujan
+alternativas aparte, como en el caso de las figuras que no explican bien el
+texto, y el usuario elige.
 
 ## Si queda a medias
 
