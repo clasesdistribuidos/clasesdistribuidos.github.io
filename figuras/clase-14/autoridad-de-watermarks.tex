@@ -1,0 +1,44 @@
+\input{estilo}
+% El cómputo A, un recuadro con dos nodos (A₁ y A₂), simétricos, cada uno con
+% su rango y su watermark. Los dos le mandan datos a B; sus watermarks van a
+% la autoridad, que guarda la tabla, toma el mínimo y le informa a B el
+% watermark de A.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja] (a1) at (0,1.05) {A\textsubscript{1}};
+  \node[caja] (a2) at (0,-1.15) {A\textsubscript{2}};
+  \foreach \n/\r/\w in {a1/a–m/100, a2/m–z/200} {
+    \node[etiq, anchor=east] at ($(\n.west)+(-0.1,0)$) {[\r]};
+    \node[etiq, text=acento, above=2pt of \n] {\var{W} = \w};
+  }
+  \draw[marco] (-2.2,-2.0) rectangle (1.6,2.0);
+  \node[etiq, text=suave] at (-0.3,2.25) {cómputo A};
+  \node[caja] (b) at (4.6,0) {B};
+  \draw[msg] (a1.east) -- (b.west);
+  \draw[msg] (a2.east) -- (b.west);
+  \node[caja, minimum width=30mm, minimum height=10mm, align=center] (au) at (4.6,-3.4) {autoridad de\\watermarks};
+  \draw[msg, draw=suave] (-0.3,-2.0) |- node[etiq, text=suave, below=2pt, pos=0.72] {cada nodo informa su \var{W}} (au.west);
+  \draw[msg, draw=acento] (au.north) -- node[etiq, text=acento, right] {\var{W}(A) = 100} (b.south);
+  % la tabla de la autoridad, con todas sus líneas: las celdas no llevan borde
+  % (dos bordes vecinos se ven dobles); las líneas se dibujan aparte, sobre los
+  % bordes de las celdas
+  \matrix[matrix of nodes, anchor=west, column sep=0pt, row sep=0pt, inner sep=0pt,
+    nodes={outer sep=0pt, font=\footnotesize, minimum height=5.5mm,
+      text height=1.6ex, text depth=0.5ex, inner sep=2pt},
+    column 1/.style={nodes={minimum width=17mm}},
+    column 2/.style={nodes={minimum width=14mm}},
+    column 3/.style={nodes={minimum width=10mm}}] (t) at ($(au.east)+(0.5,0.275)$) {
+    proceso & rango & \var{W}\\
+    A\textsubscript{1} & {[a–m]} & 100\\
+    A\textsubscript{2} & {[m–z]} & 200\\};
+  \coordinate (pie) at ($(t-3-1.south west)+(0,-5.5mm)$);
+  \begin{scope}[on background layer]
+    \fill[relleno] (t-1-1.north west) rectangle (t-1-3.south east);
+  \end{scope}
+  \draw (t-1-1.north west) rectangle (pie -| t-3-3.south east);
+  \foreach \c in {1,2} \draw (t-1-\c.north east) -- (t-3-\c.south east);
+  \foreach \f in {1,2,3} \draw (t-\f-1.south west) -- (t-\f-3.south east);
+  \node[etiq, text=acento] at ($(t-3-1.south west)!0.5!(pie -| t-3-3.south east)$)
+    {\var{W}(A) = min = 100};
+\end{tikzpicture}\end{figura}
+\end{document}

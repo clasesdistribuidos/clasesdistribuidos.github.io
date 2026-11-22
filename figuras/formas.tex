@@ -139,5 +139,20 @@
 % El filete bajo el encabezado de una \matrix[tabla]: \filete{t}{columnas}
 \newcommand\filete[2]{\draw ($(#1-1-1.south west)+(-2mm,0)$) -- ($(#1-1-#2.south east)+(2mm,0)$);}
 
+% Un stream (un tópico de Kafka, una partición): el tubo acostado, abierto en
+% el fondo, con la boca hacia el que lo consume o lo produce (clase 14).
+%   \stream[diámetro]{nombre}{(boca)}{largo}{lado}
+% lado = 1 si el fondo queda a la izquierda (un stream de entrada: sale por la
+% derecha) y -1 si queda a la derecha (uno de salida). Deja nombre-boca, para
+% la flecha, y nombre-medio y nombre-abajo, para los rótulos.
+\newcommand\stream[5][0.8]{\begin{scope}[shift={#3}]
+  \fill[relleno] (0,{#1/2}) rectangle ({-(#5)*(#4)},{-#1/2});
+  \draw (0,{#1/2}) -- ({-(#5)*(#4)},{#1/2}) (0,{-#1/2}) -- ({-(#5)*(#4)},{-#1/2});
+  \draw[fill=relleno!50!white] (0,0) ellipse[x radius=0.15, y radius={#1/2}];
+  \coordinate (#2-boca) at ({(#5)*0.15},0);
+  \coordinate (#2-medio) at ({-(#5)*(#4)/2},0);
+  \coordinate (#2-abajo) at ({-(#5)*(#4)/2},{-#1/2});
+\end{scope}}
+
 % Reservadas, se diseñan con la primera clase que las use:
 %   árbol (Zookeeper, Merkle) — clase 3

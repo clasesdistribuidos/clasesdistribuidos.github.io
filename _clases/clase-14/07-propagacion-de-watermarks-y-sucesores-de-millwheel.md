@@ -33,10 +33,10 @@ De esto se desprende una regla intuitiva: el watermark de A es mayor o igual que
 > La definición del paper es recursiva y coincide exactamente con la fórmula. Dado un cómputo A, define el *oldest work* de A como el timestamp del récord sin terminar más viejo que tiene A —en vuelo, almacenado o pendiente de entrega—, y define el low watermark de A como el mínimo entre ese oldest work y los low watermarks de todos los cómputos que le mandan datos a A. Vale agregar el caso de borde, que el paper aclara y que ayuda a ver por qué los inyectores son el origen de todo: si un cómputo no tiene streams de entrada, su low watermark y su oldest work son el mismo valor. Akidau et al., VLDB 2013, §4.5.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/pipeline-de-watermarks.png' | relative_url }}" alt="Pipeline de tres etapas con sus watermarks">
+  <img src="{{ '/assets/clase-14/pipeline-de-watermarks.svg' | relative_url }}" alt="Pipeline de tres etapas con sus watermarks">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el pipeline de tres etapas con su watermark: A por las 8:30, B por las 8:20 y C por las 8:10, y la desigualdad entre los tres
+    el pipeline de tres etapas desde la fuente, con su watermark: A por las 8:30, B por las 8:20 y C por las 8:10, diez minutos menos en cada salto, y la desigualdad entre los tres
     <span class="figura-ref">notas pág. 8 / pizarra pág. 11</span>
   </figcaption>
 </figure>
@@ -54,7 +54,7 @@ En teoría, ese mínimo lo podría calcular B directamente. Los de MillWheel tom
 Internamente, la autoridad mantiene una tabla: el cómputo A tiene dos particiones, de la A a la M y de la M a la Z; una va por el 100 y la otra por el 200; el watermark de A es 100. Ese 100 se lo manda a todos los nodos suscriptos, los que quieren saber por dónde va A. La dificultad viene de que cada uno de esos nodos puede tener un valor distinto.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/autoridad-de-watermarks.png' | relative_url }}" alt="La autoridad de watermarks calculando el mínimo de A">
+  <img src="{{ '/assets/clase-14/autoridad-de-watermarks.svg' | relative_url }}" alt="La autoridad de watermarks calculando el mínimo de A">
   <figcaption>
     <span class="figura-label">Figura</span>
     la autoridad de watermarks: los dos nodos del cómputo A con sus rangos de la A a la M y de la M a la Z y sus watermarks 100 y 200, la autoridad que calcula el mínimo, y el watermark de A igual a 100 que le llega a B
@@ -66,6 +66,9 @@ Es cuestionable si una autoridad central es la mejor forma, o si los nodos podr�
 
 {: .nota }
 > Dos detalles más del mecanismo, para completarlo. Lo que la autoridad arma con lo que le reportan los procesos es un mapa de intervalos de claves por cómputo, y si algún intervalo falta conserva para él el último valor conocido en vez de dejar un hueco. Y lleva un *sequencer* en cada actualización de low watermark —el mismo recurso que el epoch de la sección anterior—, de modo que solo el dueño actual de un intervalo de claves pueda actualizarlo. La autoridad puede además shardearse entre varias máquinas: empíricamente escala a 500.000 intervalos de claves sin pérdida de performance. Akidau et al., VLDB 2013, §7.2.
+
+{: .nota }
+> MillWheel descartó mandar el watermark junto con los datos; Flink eligió justamente eso, y un paper firmado por gente de los dos proyectos compara ambos diseños: Akidau, Begoli, Chernyak, Hueske, Knight, Knowles, Mills y Sotolongo, [«Watermarks in Stream Processing Systems: Semantics and Comparative Analysis of Apache Flink and Google Cloud Dataflow»](https://vldb.org/pvldb/vol14/p3135-begoli.pdf), PVLDB 14(12): 3135–3147, 2021. En Flink el watermark viaja *in-band*, como un mensaje más por los canales de datos, y no se persiste: ante una falla, todo el pipeline vuelve al último checkpoint. Dataflow, heredero de MillWheel, lo persiste y lo agrega afuera. Flink gana en latencia —unos 100 ms por etapa de shuffle, contra 500 a 1000 ms—; Dataflow, en recuperación: se reemplaza un solo nodo, que lee su estado y sigue. Eso es lo que pide Borg, donde desalojar tareas por prioridad es lo normal, y es la otra mitad del porqué de la autoridad central. Akidau et al., PVLDB 2021, §5.2 y §6.
 
 ## Watermark como métrica, Dataflow y Apache Beam
 
@@ -90,10 +93,10 @@ Queda mencionar qué pasó después. MillWheel evolucionó a Windmill, y de ahí
 Dataflow agregó dos cosas. El paper de Dataflow agrega un modelo de programación de más alto nivel. El ejemplo que mostramos es interesante, pero —y esto responde la pregunta que quedó pendiente con el modelo de programación— resulta poco natural pensar todo en términos de `process_record` y `process_timer` cuando los casos de uso son tan distintos. Ese modelo de programación evolucionó y se implementó como proyecto open source: Apache Beam. Uno programa con Beam, eso se «compila» a las mismas funciones que vimos, se sube a la nube de Google, y lo ejecutan sobre esta versión de Windmill, una especie de MillWheel que no tiene un ejecutable sólido sino ejecutables a los que se les inyecta el código de uno. Esa imagen es bastante fiel a cómo funciona hoy. Windmill está por debajo del Streaming Engine de Dataflow, que saca la ejecución de las máquinas del usuario y la lleva al backend de Google, partida en dos. Nuestro código corre en un worker que no guarda nada propio: aplica las transformaciones y arma ahí las ventanas, y el estado y los timers se los pide a Windmill, que es el que los guarda y garantiza el procesamiento consistente. Las ventanas, otra vez, quedan arriba de la primitiva.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/genealogia-de-millwheel.png' | relative_url }}" alt="De MillWheel a Windmill, Dataflow y Apache Beam">
+  <img src="{{ '/assets/clase-14/genealogia-de-millwheel.svg' | relative_url }}" alt="Apache Beam sobre Dataflow, Flink y Spark Streaming">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la genealogía del sistema: MillWheel dando lugar a Windmill, a Dataflow y a Apache Beam, con Flink y Spark Streaming al costado como alternativas de ejecución
+    lo que vino después de MillWheel: Apache Beam, el modelo de programación, arriba de los motores sobre los que se ejecuta —Dataflow, Flink y Spark Streaming—, y Dataflow por dentro, con el worker y Windmill, el sucesor de MillWheel
     <span class="figura-ref">pizarra pág. 12</span>
   </figcaption>
 </figure>

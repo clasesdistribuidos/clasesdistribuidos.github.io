@@ -194,6 +194,29 @@ El circuito:
    ambigua, preguntar.
 5. Corregir, mirar el PNG de nuevo, y volver a armar el PDF con lo que quede.
 
+## Mejorar una tanda ya redibujada
+
+Cuando el usuario pide mejorar figuras que ya están en TikZ (simetría,
+alineamiento, que muestren mejor el concepto, con el transcript de la clase
+como contexto), la versión anterior se guarda en `figuras/clase-NN/v1/` y la
+nueva pisa la de `figuras/clase-NN/`. Qué cambió en cada una va en
+`figuras/clase-NN/cambios.json` (`{"nombre": "texto LaTeX"}`), y
+
+```sh
+python3 scripts/comparar_figuras.py --clase N
+```
+
+arma `figuras/salida/clase-NN/revision-clase-NN-mejoradas.pdf`: por figura,
+la pizarra y la v1 arriba, la nueva con grilla abajo y la nota al pie. El
+usuario elige figura por figura; después `v1/` y `cambios.json` se borran.
+El transcript está en `clases-apuntes`, `raw/claseM/clase.es.txt` (M sale de
+`FUENTE_POR_CLASE`): leerlo por tramos con `grep -n`, no entero.
+
+Si el trabajo queda a medias, dejar un `figuras/clase-NN/ESTADO.md` con lo
+hecho, lo pendiente y lo que se aparta de la pizarra, para retomarlo desde
+otra máquina (la memoria de Claude no viaja con el repo). Se borra, junto con
+`v1/` y `cambios.json`, antes de abrir la PR: así se hizo con la clase 14.
+
 ## En otra máquina
 
 La letra de las figuras viaja con el repo, en `figuras/fuentes/`. La del

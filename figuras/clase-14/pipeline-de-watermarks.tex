@@ -1,0 +1,20 @@
+\input{estilo}
+% El pipeline desde la fuente, con el watermark de cada etapa en rojo y las
+% etapas a la misma distancia. Cada etapa atrasa el watermark lo que tarda en
+% procesar lo que tiene pendiente (los 10 minutos del ejemplo): por eso
+% W(A) ≥ W(B) ≥ W(C).
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, draw=suave, fill=white, text=suave] (f) at (0,0) {fuente};
+  \foreach \n/\x/\h in {a/2.8/8:30, b/5.6/8:20, c/8.4/8:10} {
+    \node[caja] (\n) at (\x,0) {\MakeUppercase{\n}};
+    \node[etiq, text=acento, above=2pt of \n] {\var{W} = \h};
+  }
+  \draw[msg] (f) -- (a);
+  \draw[msg] (a) -- node[etiq, text=suave, below=3pt] {−10 min} (b);
+  \draw[msg] (b) -- node[etiq, text=suave, below=3pt] {−10 min} (c);
+  \node[anchor=north west, align=left, font=\small] at (-0.55,-1.2) {%
+    \var{W}(A) ≥ \var{W}(B) ≥ \var{W}(C)\\[4pt]
+    \var{W}(B) = min (\var{W}(A), trabajo más viejo pendiente en B)};
+\end{tikzpicture}\end{figura}
+\end{document}

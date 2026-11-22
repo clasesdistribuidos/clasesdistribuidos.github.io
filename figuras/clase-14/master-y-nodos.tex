@@ -1,0 +1,27 @@
+\input{estilo}
+% El master no es una máquina sola: adentro son cinco réplicas con Multi-Paxos,
+% el pentágono regular. Le asigna a cada nodo un cómputo y un rango de claves. Los nodos, en una fila,
+% a la misma distancia; las asignaciones son un ejemplo con los cómputos de
+% Zeitgeist.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[punto/.style={componente, fill=relleno, minimum size=3.2mm},
+    asig/.style={etiq, font=\scriptsize, align=center, below=3pt}]
+  \node[caja, minimum width=26mm, minimum height=19mm] (m) at (0,2.8) {};
+  \begin{scope}[shift={($(m.center)+(0,-0.06)$)}]
+    \foreach \k in {0,...,4}
+      \coordinate (r\k) at (90+72*\k:0.62);
+    \draw (r0) -- (r1) -- (r2) -- (r3) -- (r4) -- cycle;
+    \foreach \k in {0,...,4}
+      \node[punto] at (r\k) {};
+  \end{scope}
+  \node[etiq, above=2pt of m] {master};
+  \node[etiq, text=suave, right=4pt of m] {Multi-Paxos};
+  \foreach \x/\asg [count=\i] in {-4.5/{window counter\\{[a–m)}}, -1.5/{window counter\\{[m–z]}},
+                                 1.5/{model calculator\\{[a–z]}}, 4.5/{spike/dip detector\\{[a–z]}}} {
+    \node[caja, minimum width=12mm] (n\i) at (\x,0) {};
+    \node[asig] at (n\i.south) {\asg};
+    \draw[respuesta, draw=suave] (m.south) -- (n\i.north);
+  }
+  \node[etiq, text=suave, anchor=west] at (2.0,1.55) {asigna cómputo y rango};
+\end{tikzpicture}\end{figura}
+\end{document}

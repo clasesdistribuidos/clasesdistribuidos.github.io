@@ -1,0 +1,31 @@
+\input{estilo}
+% El mismo gráfico para cerrar la ventana de 8:00 a 8:05: cuando el watermark
+% llega a las 8:05 (el punto rojo; en la pizarra, una cruz) se cierra. Los
+% eventos de la ventana (verdes) quedan atrapados en la franja entre la curva
+% y la diagonal, dentro de la columna de la ventana.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \begin{scope}
+    \clip (2.2,0) rectangle (3.4,4.1);
+    \fill[relleno] plot[smooth, tension=0.6] coordinates
+      {(0,0) (0.6,1.5) (1.6,2.1) (2.2,2.4) (2.9,3.4) (3.4,4.1) (4.4,4.4) (5.4,5.0) (6.2,5.9)}
+      -- (6.7,5.9) -- cycle;
+  \end{scope}
+  \draw[->] (0,0) -- (7.2,0) node[etiq, below left=5pt and 0pt] {event time};
+  \draw[->] (0,0) -- (0,6.2) node[etiq, above] {processing time};
+  \draw[dashed] (0,0) -- (6.7,5.9);
+  \draw[acento, line width=1.1pt] plot[smooth, tension=0.6] coordinates
+    {(0,0) (0.6,1.5) (1.6,2.1) (2.2,2.4) (2.9,3.4) (3.4,4.1) (4.4,4.4) (5.4,5.0) (6.2,5.9)};
+  \node[etiq, text=acento, anchor=east] at (1.0,2.6) {watermark};
+  \foreach \x/\t in {2.2/8:00, 3.4/8:05} {
+    \draw[dashed, line width=0.5pt] (\x,0) -- (\x,4.9);
+    \draw (\x,-0.12) -- (\x,0.12) node[etiq, below=6pt] {\t};
+  }
+  \draw[llave=5pt] (2.2,5.05) -- (3.4,5.05) node[midway, above=6pt, etiq, text=suave] {ventana};
+  \draw[dashed, draw=acento, line width=0.5pt] (0,4.1) node[etiq, text=acento, left] {se cierra} -- (2.2,4.1);
+  \draw[acento, line width=1.1pt] (2.2,4.1) -- (3.4,4.1);
+  \node[evento=acento, minimum size=6pt] at (3.4,4.1) {};
+  \foreach \p in {(2.4,2.5),(2.65,2.95),(2.85,2.7),(3.05,3.4),(3.3,3.7)}
+    \node[evento=segundo] at \p {};
+\end{tikzpicture}\end{figura}
+\end{document}

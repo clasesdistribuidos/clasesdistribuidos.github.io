@@ -1,0 +1,23 @@
+\input{estilo}
+% La reasignación de un rango, simétrica alrededor del backing store: el
+% master primero (1) le asigna el rango a N con el epoch 4, N renueva con heartbeats (punteado) y
+% después (2) recarga el estado con ese epoch, que el store acepta; el nodo viejo, el
+% zombie, todavía trae el 3 y el store lo rechaza.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=20mm, minimum height=10mm] (m) at (0,3.0) {master};
+  \node[caja, minimum width=14mm, minimum height=10mm] (n) at (-2.6,0) {N};
+  \node[caja, minimum width=14mm, minimum height=10mm, draw=suave, fill=white] (z) at (2.6,0) {N};
+  \node[etiq, text=suave, below=2pt of z] {zombie};
+  \node[caja, minimum width=30mm, minimum height=10mm] (s) at (0,-2.8) {backing store};
+  \node[etiq, text=suave, below=2pt of s] {epoch = 4};
+  \draw[msg] ($(m.south west)+(0.2,0)$) -- node[cod, above left, align=right] (as) {assign(compute\_id,\\rango, epoch = 4)} ($(n.north)+(-0.2,0)$);
+  \draw[respuesta] ($(n.north)+(0.3,0)$) -- node[cod, below right] {heartbeat/renew()} ($(m.south west)+(0.7,0)$);
+  \draw[msg] (n.south) -- node[cod, left=4pt, align=right] (rl) {reload\_state(compute\_id,\\intervalo, epoch = 4)} ($(s.north)+(-0.8,0)$);
+  \draw[msg, draw=suave] (z.south) -- node[cod, right=4pt, align=left] {set\_state(estado,\\epoch = 3)} ($(s.north)+(0.8,0)$);
+  \node[paso, anchor=east] at ($(as.north west)+(-0.1,-0.22)$) {1};
+  \node[paso, anchor=east] at ($(rl.north west)+(-0.1,-0.22)$) {2};
+  \pic at ($(z.south)!0.55!($(s.north)+(0.8,0)$)$) {rechazo};
+  \pic at ($(n.south)!0.55!($(s.north)+(-0.8,0)$)+(-0.25,-0.05)$) {ok};
+\end{tikzpicture}\end{figura}
+\end{document}

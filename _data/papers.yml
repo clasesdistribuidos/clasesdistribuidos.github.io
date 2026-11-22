@@ -264,3 +264,33 @@
       url: "https://www.infoq.com/presentations/dynamodb-transactions/"
       clases: [10]
       tipo: video
+    - titulo: "Exploiting Punctuation Semantics in Continuous Data Streams"
+      autor: "Peter A. Tucker, David Maier, Tim Sheard y Leonidas Fegaras"
+      url: "https://doi.org/10.1109/TKDE.2003.1198390"
+      clases: [14]
+      nota: "Las punctuations, una de las ideas de las que sale el low watermark de MillWheel."
+    - titulo: "A Heartbeat Mechanism and its Application in Gigascope"
+      autor: "Theodore Johnson, S. Muthukrishnan, Vladislav Shkapenyuk y Oliver Spatscheck"
+      url: "https://www.vldb.org/conf/2005/papers/p1079-johnson.pdf"
+      clases: [14]
+      nota: "VLDB 2005. Los heartbeats, la otra idea emparentada con el low watermark."
+    - titulo: "Out-of-Order Processing: A New Architecture for High-Performance Stream Systems"
+      autor: "Jin Li, Kristin Tufte, Vladislav Shkapenyuk, Vassilis Papadimos, Theodore Johnson y David Maier"
+      url: "https://doi.org/10.14778/1453856.1453890"
+      clases: [14]
+      nota: "De acá vienen el low watermark y la idea de calcularlo en un agregador global."
+    - titulo: "Centrifuge: Integrated Lease Management and Partitioning for Cloud Services"
+      autor: "Atul Adya, John Dunagan y Alec Wolman"
+      url: "https://www.usenix.org/legacy/event/nsdi10/tech/full_papers/adya.pdf"
+      clases: [14]
+      nota: "NSDI 2010. De acá toma MillWheel los leases con sequencer, el epoch que rechaza al zombie."
+    - titulo: "The Dataflow Model: A Practical Approach to Balancing Correctness, Latency, and Cost in Massive-Scale, Unbounded, Out-of-Order Data Processing"
+      autor: "Tyler Akidau et al."
+      url: "https://doi.org/10.14778/2824032.2824076"
+      clases: [14]
+      nota: "El modelo de programación que vino después de MillWheel y terminó en Apache Beam; de acá salen los watermarks perfectos y heurísticos."
+    - titulo: "Watermarks in Stream Processing Systems: Semantics and Comparative Analysis of Apache Flink and Google Cloud Dataflow"
+      autor: "Tyler Akidau et al."
+      url: "https://doi.org/10.14778/3476311.3476389"
+      clases: [14]
+      nota: "PVLDB 2021. El watermark in-band de Flink contra el agregador central de Dataflow."

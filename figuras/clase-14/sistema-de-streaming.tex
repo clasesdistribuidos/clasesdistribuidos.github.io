@@ -1,0 +1,18 @@
+\input{estilo}
+% El stream de entrada (Kafka), el procesamiento y sus dos salidas, simétricas:
+% eventos a otro stream, o acciones por RPC sobre otro sistema (el texto: un
+% detector de fraude que dispara algo). En la pizarra el destino del RPC era un
+% trazo sin rótulo.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \stream{in}{(2.8,0)}{2.8}{1}
+  \node[etiq, below=3pt] at (in-abajo) {Kafka};
+  \node[caja, minimum width=24mm, minimum height=14mm, align=center] (p) at (5.0,0) {stream\\processing};
+  \draw[msg] (in-boca) -- (p.west);
+  \stream{out}{(8.2,1.3)}{2.6}{-1}
+  \node[etiq, below=3pt] at (out-abajo) {otro stream};
+  \node[caja, minimum width=26mm, minimum height=8mm] (s) at (9.5,-1.3) {otro sistema};
+  \draw[msg] (p.east) to[out=0, in=180] node[etiq, pos=0.62, above left=0pt and 0pt] {eventos} (out-boca);
+  \draw[msg] (p.east) to[out=0, in=180] node[etiq, pos=0.62, below left=0pt and 0pt] {RPC} (s.west);
+\end{tikzpicture}\end{figura}
+\end{document}
