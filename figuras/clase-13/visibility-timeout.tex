@@ -1,0 +1,52 @@
+\input{estilo}
+% Propuesta simplificada: el visibility timeout en tres momentos, con la cola
+% y los dos consumidores en las mismas posiciones. 1: a toma m₁, que sigue en
+% la cola pero invisible, y arranca el timer de 60 s. 2: a falla (en gris);
+% b pregunta y recibe vacío, porque el timer sigue corriendo. 3: vence el
+% timer, m₁ vuelve a ser visible y b lo recibe. Mismo formato que
+% solo-el-primary-responde: el caído en gris punteado y pies cortos.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    cons/.style={caja, minimum width=10mm, minimum height=9mm},
+    caido/.style={cons, draw=suave, fill=white, text=suave, dashed},
+  ]
+  % m₁ en la cola: visible (verde) o invisible (gris punteado)
+  \newcommand\visible{\node[draw=segundo, fill=segundo!14, text=segundo, minimum size=5mm,
+    inner sep=0pt, font=\scriptsize] at (2,0) {\var{m}\textsubscript{1}};}
+  \newcommand\invisible{\node[draw=suave, dashed, fill=white, text=suave, minimum size=5mm,
+    inner sep=0pt, font=\scriptsize] at (2,0) {\var{m}\textsubscript{1}};}
+  \newcommand\reloj{\begin{scope}[shift={(4.0,-0.75)}]
+    \draw[draw=acento] (0,0) circle (1.8mm); \draw[draw=acento] (0,0) -- (0,0.12) (0,0) -- (0.08,-0.03);
+    \node[etiq, text=acento, anchor=west] at (0.25,0) {60 \unid{s}};
+  \end{scope}}
+  % la cola y los dos consumidores; \escena[estilo de a]
+  \newcommand\escena[1][cons]{%
+    \node[cola, minimum height=36mm, minimum width=9mm] (q) at (2,0) {};
+    \node[#1] (a) at (1.0,2.3) {\var{a}};
+    \node[cons] (b) at (3.0,2.3) {\var{b}};}
+  % pedido sólido y respuesta punteada entre un consumidor y la cola: \llamada{x}{respuesta}
+  \newcommand\llamada[2]{%
+    \draw[msg] (#1-0.12,1.85) -- node[cod, left] {receive} (#1-0.12,0.5);
+    \draw[respuesta] (#1+0.12,0.5) -- node[etiq, right, pos=0.6] {#2} (#1+0.12,1.85);}
+  \newcommand\pie[1]{\node at (2,-1.6) {#1};}
+
+  % 1: a lo toma
+  \escena \invisible \reloj
+  \llamada{1.0}{\var{m}\textsubscript{1}}
+  \pie{\var{a} toma \var{m}\textsubscript{1}}
+
+  % 2: a falla, b no lo ve
+  \begin{scope}[xshift=6.2cm]
+    \escena[caido] \invisible \reloj
+    \llamada{3.0}{vacío}
+    \pie{\var{a} falla; \var{b} no lo ve}
+  \end{scope}
+
+  % 3: vence el timer
+  \begin{scope}[xshift=12.4cm]
+    \escena[caido] \visible
+    \llamada{3.0}{\var{m}\textsubscript{1}}
+    \pie{vence el timer; \var{b} lo recibe}
+  \end{scope}
+\end{tikzpicture}\end{figura}
+\end{document}

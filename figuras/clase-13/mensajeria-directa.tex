@@ -1,0 +1,42 @@
+\input{estilo}
+% Propuesta: dos paneles con el productor y los consumidores en el mismo lugar.
+% A la izquierda, lo que ve el código: una cola en el medio. A la derecha, lo
+% que pasa en la red: no hay cola, la biblioteca de cada uno se conecta directo
+% con la de los otros. Es la frase del texto: "el dibujo del cilindro sigue
+% siendo fiel a lo que ve el programador, aunque no a lo que ocurre en la red".
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    maq/.style={capas=2, minimum width=14mm, rectangle split part fill={relleno, white}},
+    simple/.style={caja, minimum width=14mm, minimum height=7mm},
+  ]
+  \newcommand\pie[2]{\node[etiq, text=suave] at (#1,-2.75) {#2};}
+  \newcommand\titulo[2]{\node at (#1,-3.3) {#2};}
+
+  % --- lo que ve el código
+  \node[simple] (p) at (0,0) {\var{P}};
+  \node[cola, minimum height=20mm] (q) at (2.6,0) {};
+  \draw[msg] (p) -- (q);
+  \foreach \i/\y in {1/1.7, 2/0, 3/-1.7} {
+    \node[simple] (c\i) at (5.2,\y) {\var{C}};
+    \draw[msg] (q.east) -- (c\i.west);
+  }
+  \pie{2.6}{una cola en el medio}
+  \titulo{2.6}{lo que ve el código}
+
+  % --- lo que pasa en la red
+  \begin{scope}[xshift=8.4cm]
+    \node[maq] (p) at (0,0) {\var{P} \nodepart{two} \footnotesize biblioteca};
+    \foreach \i/\y in {1/1.7, 2/0, 3/-1.7} {
+      \node[maq] (c\i) at (5.2,\y) {\var{C} \nodepart{two} \footnotesize biblioteca};
+      \draw[msg] (p.two east) -- (c\i.two west);
+    }
+    \begin{scope}[on background layer]
+      \node[cola, minimum height=20mm, draw=suave, dashed, cylinder body fill=white,
+        cylinder end fill=white] (g) at (2.6,0) {};
+    \end{scope}
+    \node[etiq, text=suave, font=\scriptsize] at (2.6,0.17) {no existe};
+    \pie{2.6}{conexiones directas, sin nada en el medio}
+    \titulo{2.6}{lo que pasa en la red}
+  \end{scope}
+\end{tikzpicture}\end{figura}
+\end{document}

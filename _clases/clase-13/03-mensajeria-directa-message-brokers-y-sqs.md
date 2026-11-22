@@ -22,10 +22,10 @@ El cilindro del medio es abstracto, y a la hora de construirlo hay dos caminos b
 El primero es que la cola no exista en ninguna parte. El productor y todos los consumidores la arman entre ellos, de manera abstracta. En la realidad el productor se comunica directamente con cada consumidor, sin ningún servicio en el medio; lo que hay es una biblioteca, una capa de abstracción que le hace creer a nuestro código que en el medio hay un canal, una cola de mensajes. El dibujo del cilindro sigue siendo fiel a lo que ve el programador, aunque no a lo que ocurre en la red. A este esquema lo llamamos mensajería directa.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-13/mensajeria-directa.jpg' | relative_url }}" alt="Un productor con su biblioteca conectado a tres consumidores">
+  <img src="{{ '/assets/clase-13/mensajeria-directa.svg' | relative_url }}" alt="Lo que ve el código y lo que pasa en la red">
   <figcaption>
     <span class="figura-label">Figura</span>
-    mensajería directa — un cuadrado P a la izquierda con una llave que le apunta rotulada &quot;BIBLIOTECA&quot;, y de un punto sobre su borde derecho tres flechas hacia tres cuadrados C dispuestos en abanico
+    la mensajería directa en dos paneles: lo que ve el código, una cola entre el productor y los consumidores, y lo que pasa en la red, donde las bibliotecas se conectan directo y esa cola no existe
     <span class="figura-ref">notas pág. 3 / pizarra pág. 4</span>
   </figcaption>
 </figure>
@@ -78,10 +78,10 @@ La otra forma de implementar la cola, la más interesante hoy, es un sistema ded
 A esos intermediarios se los llama brokers, o *message brokers*: es el nombre técnico de la caja del medio. Uno o varios productores le mandan las cosas al broker, y el broker se las manda a los que las quieren recibir, a todos o a uno solo según el modelo de integración.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-13/message-broker.png' | relative_url }}" alt="Dos productores y tres consumidores alrededor de un broker">
+  <img src="{{ '/assets/clase-13/message-broker.svg' | relative_url }}" alt="Sin broker y con broker">
   <figcaption>
     <span class="figura-label">Figura</span>
-    message broker — dos cuadrados P a la izquierda con flechas convergentes hacia un cuadrado central B, y de B salen tres flechas hacia tres cuadrados C apilados verticalmente
+    el message broker: sin él, dos productores y tres consumidores necesitan seis conexiones cruzadas; con él, cada uno se conecta solo con el broker, que es a su vez un sistema distribuido
     <span class="figura-ref">notas pág. 3 / pizarra pág. 6</span>
   </figcaption>
 </figure>
@@ -127,10 +127,10 @@ Del lado derecho de la cola hay muchos consumidores haciendo `receive` constante
 Ahora la pregunta que aparece de inmediato, el gran tema de todo el curso: ¿qué pasa si un consumidor toma un mensaje, lo empieza a procesar y falla? No queremos que el mensaje, por haber sido consumido, haya desaparecido de la cola sin que nadie lo procese. Los sistemas lo resuelven con variaciones de la misma idea, y la de SQS se llama *visibility timeout*.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-13/visibility-timeout.png' | relative_url }}" alt="La cola con un mensaje tomado y su visibility timer">
+  <img src="{{ '/assets/clase-13/visibility-timeout.svg' | relative_url }}" alt="El visibility timeout en tres momentos">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el visibility timeout — dos cuadrados P a la izquierda con flechas hacia un cilindro horizontal (la cola) que contiene un mensaje &quot;m₁&quot;; del cilindro sale una flecha hacia arriba a otro &quot;m₁&quot; y de ahí a un cuadrado tachado con una X roja (el consumidor que falló); dos cuadrados C a la derecha apuntan con flechas hacia el cilindro (el pull); del cilindro baja una flecha a un círculo rotulado &quot;VISIBILITY TIMER 60 SEGUNDOS&quot;; al costado, la anotación &quot;EFECTO BALANCEO DE CARGA&quot;
+    el visibility timeout en tres momentos: <em>a</em> toma m₁, que queda invisible en la cola mientras corren los 60 segundos; <em>a</em> falla antes de borrarlo y <em>b</em> no lo ve; vence el timer, m₁ vuelve a ser visible y <em>b</em> lo recibe
     <span class="figura-ref">notas pág. 3 / pizarra pág. 7</span>
   </figcaption>
 </figure>

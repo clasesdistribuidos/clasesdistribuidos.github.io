@@ -18,10 +18,10 @@ nav_order: 2
 Con el ejemplo del NASDAQ ya tenemos la intuición de para qué poner algo en el medio. Antes de clasificar los sistemas de mensajería conviene aislar la idea que todos comparten: la comunicación indirecta, contrapuesta a la comunicación directa por RPC que venimos usando en toda la materia. El mecanismo por el cual se consigue tiene nombre: desacople, del inglés *decoupling*. Cuando uno llama a otro sistema por RPC, los dos quedan muy acoplados: aunque corran en máquinas distintas, hay una invocación directa de uno sobre el otro. Con un sistema de mensajería buscamos aumentar esa separación, y hay tres tipos concretos de desacople que vamos a lograr.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-13/tres-desacoples.png' | relative_url }}" alt="Desacople en espacio, en tiempo y en sincronización">
+  <img src="{{ '/assets/clase-13/tres-desacoples.svg' | relative_url }}" alt="Los tres desacoples en líneas de tiempo">
   <figcaption>
     <span class="figura-label">Figura</span>
-    los tres desacoples — figura 2 de Eugster et al., tres paneles rotulados &quot;Space decoupling&quot;, &quot;Time decoupling&quot; y &quot;Synchronization decoupling&quot;, cada uno con Publisher → Event Service (Notify()) → Subscriber (Notify()); en el panel del espacio, un arco curvo del Publisher directo al Subscriber, que es el camino que el desacople evita, y &quot;SNS&quot; anotado debajo del Event Service
+    los tres desacoples en líneas de tiempo con publisher, servicio de eventos y subscriber: en espacio, el publisher solo conoce al servicio; en tiempo, publisher y subscriber no necesitan estar a la vez; en sincronización, el publisher sigue sin esperar respuesta
     <span class="figura-ref">pizarra pág. 3</span>
   </figcaption>
 </figure>
@@ -50,10 +50,10 @@ Vamos a ver un ejemplo de cada una: SQS para producer-consumer, SNS para publish
 Adelantemos la forma de cada uno. En producer-consumer, un productor manda mensajes a una *cola de mensajes* y del otro lado muchos consumidores compiten por obtenerlos. En el segundo, el productor le manda el mensaje a un sistema que se lo distribuye a mucha gente, así que el mensaje se multiplica, a diferencia del primer caso. Y en el tercero, el productor escribe en un log, en el sentido que ya conocemos, y distintos consumidores se conectan y lo van leyendo en orden. Son tres variaciones de mensajería asincrónica.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-13/modelos-de-integracion.png' | relative_url }}" alt="Los tres modelos de integración, numerados">
+  <img src="{{ '/assets/clase-13/modelos-de-integracion.svg' | relative_url }}" alt="Cola, tópico y log con la misma entrada">
   <figcaption>
     <span class="figura-label">Figura</span>
-    los tres modelos de integración numerados — ① una P con flechas a un cilindro y del cilindro varios círculos alrededor (la cola con consumidores compitiendo); ② una P → un cuadrado → tres círculos en abanico (el fan-out); ③ una P → una tira de celdas, con dos círculos abajo que apuntan con flechas a celdas distintas (los consumidores con su offset)
+    los tres modelos de integración con la misma entrada, tres mensajes de colores: en la cola, cada mensaje va a un solo consumidor; en el tópico, cada consumidor recibe los tres y no queda nada; en el log queda una sola copia, que cada consumidor lee a su ritmo desde su offset
     <span class="figura-ref">pizarra pág. 3</span>
   </figcaption>
 </figure>
@@ -63,10 +63,10 @@ Adelantemos la forma de cada uno. En producer-consumer, un productor manda mensa
 Empecemos por el que quizás sea el más práctico. En la bibliografía también se lo llama *point-to-point*; los dos nombres son indistintos. Hay un productor, una cola —el término típico es *cola de mensajes*— y un consumidor del otro lado.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-13/producer-consumer.png' | relative_url }}" alt="Productor, cola de mensajes y consumidor">
+  <img src="{{ '/assets/clase-13/producer-consumer.svg' | relative_url }}" alt="Productor, cola y consumidor, y las formas de recibir">
   <figcaption>
     <span class="figura-label">Figura</span>
-    producer-consumer — PRODUCTOR --&quot;PUSH&quot;--&gt; cilindro horizontal (la cola) --&quot;RECEIVE&quot;--&gt; CONSUMIDOR, con &quot;RPC&quot; rotulado sobre las dos flechas; debajo del cilindro, una llave rotulada &quot;COLA DE MENSAJES&quot;, y del extremo del cilindro una flecha hacia la llave con las tres variantes de RECEIVE
+    el esquema producer-consumer, con un RPC de cada lado de la cola, y debajo las formas de recibir: blocking y polling, que son pull, y push y notify
     <span class="figura-ref">notas pág. 2 / pizarra pág. 4</span>
   </figcaption>
 </figure>
