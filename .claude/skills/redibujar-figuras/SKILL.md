@@ -13,13 +13,21 @@ description: >-
 # Redibujar figuras en TikZ
 
 La figura recortada de la pizarra es la referencia de *qué* hay que dibujar;
-el redibujo cambia *cómo* se ve. No se inventa contenido: si algo no está en
-la pizarra ni en el pie de la figura, no va, y si se agrega un rótulo para que
-se entienda, se le avisa al usuario.
+el redibujo cambia *cómo* se ve. Cada figura se redibuja dos veces, en la
+misma pasada, y el usuario elige entre tres opciones: el recorte, la versión
+fiel y la versión mejorada.
 
-La excepción es cuando el usuario dice que una figura no explica bien el texto
-y pide ideas. Ahí se puede agregar contenido, siempre a partir de lo que dice el
-texto alrededor:
+La **versión fiel** no inventa contenido: si algo no está en la pizarra ni en
+el pie de la figura, no va, y si se agrega un rótulo para que se entienda, se
+le avisa al usuario. Va en `figuras/clase-NN/v1/`. La **versión mejorada**
+parte del lugar donde va la figura, y no solo de la pizarra: se dibuja para
+que muestre lo que dice el texto, con lo que hace falta agregar o sacar para
+eso. Va en `figuras/clase-NN/`, que es la carpeta que compila
+`render_figuras.py`. Cómo se arma está en "La versión mejorada", más abajo.
+
+Cuando el usuario dice que una figura no explica bien el texto y pide ideas,
+se va más allá de la mejorada: se proponen varias, cada una con su foco,
+siempre a partir de lo que dice el texto alrededor:
 
 1. Listar qué ideas del texto se apoyan en la figura y cuáles muestra el
    dibujo.
@@ -50,12 +58,16 @@ no se adopta.
    duda, preguntar con el nombre (`sistema-interfaz-entorno.png`).
 2. Mirar el recorte (`assets/clase-NN/<nombre>.png`) y leer su pie en
    `_clases/clase-NN/*.md`: el pie dice qué tiene que mostrar.
-3. Si son muchas, estimar el costo antes de arrancar: en la prueba fueron
-   entre 3k y 10k tokens por figura, según cuántas vueltas hicieron falta.
+3. Si son muchas, estimar el costo antes de arrancar: entre 10k y 20k tokens
+   por figura, porque se dibujan las dos versiones y la mejorada lee además
+   la página y el transcript. Una sola versión costaba entre 3k y 10k, según
+   cuántas vueltas hicieran falta.
 
 ## Dibujar
 
-Un archivo por figura, `figuras/clase-NN/<mismo nombre que el recorte>.tex`:
+Dos archivos por figura, con el mismo nombre que el recorte: la versión fiel
+en `figuras/clase-NN/v1/<nombre>.tex` y la mejorada en
+`figuras/clase-NN/<nombre>.tex`. Las dos tienen la misma forma:
 
 ```latex
 \input{estilo}
@@ -183,28 +195,63 @@ llaves: escribir la plantilla tal cual, con placeholders como `@Y@`, y
 reemplazarlos con `.replace`. El script es un andamio: se commitean los
 `.tex` que genera.
 
+## La versión mejorada
+
+La mejorada se dibuja a partir de tres cosas, y no solo del recorte: el
+párrafo de la página donde va la figura y los que lo rodean, el pie de la
+figura, y el tramo del transcript donde el profesor la explica. El
+transcript está en `clases-apuntes`, `raw/claseM/clase.es.txt` (M sale de
+`FUENTE_POR_CLASE`), y se lee por tramos con `grep -n`, no entero. Con eso
+se decide qué tiene que mostrar el dibujo: qué idea del texto se apoya en
+él, qué hay en la pizarra que no aporta a esa idea, qué falta para que se
+vea. A eso se suma lo de siempre al mejorar, simetría y alineamiento, y lo
+que está en "Lo que el usuario fue pidiendo".
+
+Lo que la mejorada cambia respecto de la fiel, y sobre todo lo que agrega
+que no está en la pizarra, se anota en `figuras/clase-NN/cambios.json`
+(`{"nombre": "texto LaTeX"}`), y se le avisa al usuario antes de pasarle el
+PDF. Si para una figura la fiel ya muestra bien lo que dice el texto, la
+mejorada puede ser la misma con retoques, y la nota lo dice.
+
+Para una clase que ya tiene solo la versión fiel, como las que se
+redibujaron antes de este flujo, es la misma segunda mitad: se mueven los
+`.tex` a `v1/` y se dibujan las mejoradas en su lugar.
+
 ## Compilar y mirar
 
 ```sh
 python3 scripts/render_figuras.py --clase N --png
 ```
 
+Compila las mejoradas, los `.tex` de `figuras/clase-NN/`; `v1/` lo ignora.
 Deja un `.svg` y un `.png` por figura en `figuras/salida/clase-NN/`, que git
-ignora. Si la fuente no tiene un carácter, el script avisa (`AVISO … la fuente
+ignora. Las fieles no tienen ese paso propio: se miran en el PDF con las
+tres opciones, que las compila. Si la fuente no tiene un carácter, el script avisa (`AVISO … la fuente
 no tiene →`): lualatex no falla, deja el hueco. Mirar el PNG **después de cada compilación, también después de cada
 arreglo chico**: un subíndice corrido o un rótulo pisado no se ven sin
 mirarlos. Cosas que hubo que corregir en la prueba: la curva de un gráfico con
 una S rara al arrancar, una flecha despegada del punto al que señalaba, una
 cruz que pisaba el rótulo de la flecha, un rótulo flotando sin nada al lado.
 
-Para que el usuario las revise, conviene armarle una página que muestre el
-recorte y el redibujo lado a lado, con una línea por figura que diga qué se
-aparta de la pizarra.
+## Elegir: el PDF con las tres opciones
+
+```sh
+python3 scripts/comparar_figuras.py --clase N
+```
+
+arma `figuras/salida/clase-NN/revision-clase-NN-mejoradas.pdf`: un A4 por
+figura, en el orden del apunte, con la pizarra y la versión fiel arriba, la
+mejorada abajo con la grilla en cm, y al pie la nota de `cambios.json`. Las
+tres van numeradas (1. pizarra, 2. versión fiel, 3. versión mejorada), así
+el usuario elige por chat con un número por figura. Una
+figura a la que le falta la fiel o el recorte queda fuera, con un aviso. El
+usuario elige una de las tres por figura, y puede marcar correcciones encima
+de la mejorada como en el PDF de revisión.
 
 ## Feedback del usuario: el PDF de revisión
 
-Las correcciones de dibujo se marcan a mano encima, no se describen con
-palabras. Para eso:
+Una vez elegidas, las correcciones de dibujo se marcan a mano encima, no se
+describen con palabras. Para eso:
 
 ```sh
 python3 scripts/render_figuras.py --clase N --revision
@@ -244,30 +291,14 @@ El circuito:
 Con una clase entera, el usuario prefiere que se dibujen todas de una, no de
 a una por vez, pero con la estimación de costo antes de arrancar (ver "Antes
 de dibujar") para poder elegir. Después vienen rondas de aprobación por chat,
-figura por figura: el usuario dice cuáles quedan, cuáles hay que corregir y
-cuáles no lo convencen. Para estas últimas se le dibujan alternativas aparte,
+figura por figura: el usuario dice con cuál de las tres se queda (recorte,
+fiel o mejorada), cuáles hay que corregir y cuáles no lo convencen. Para estas últimas se le dibujan alternativas aparte,
 como en el caso de las figuras que no explican bien el texto, y él elige. Las
 correcciones finas de dibujo siguen yendo por el PDF anotado; el chat es para
 lo que se dice con palabras: aprobar, descartar, traducir un rótulo, sacar
 algo que sobra.
 
-## Mejorar una tanda ya redibujada
-
-Cuando el usuario pide mejorar figuras que ya están en TikZ (simetría,
-alineamiento, que muestren mejor el concepto, con el transcript de la clase
-como contexto), la versión anterior se guarda en `figuras/clase-NN/v1/` y la
-nueva pisa la de `figuras/clase-NN/`. Qué cambió en cada una va en
-`figuras/clase-NN/cambios.json` (`{"nombre": "texto LaTeX"}`), y
-
-```sh
-python3 scripts/comparar_figuras.py --clase N
-```
-
-arma `figuras/salida/clase-NN/revision-clase-NN-mejoradas.pdf`: por figura,
-la pizarra y la v1 arriba, la nueva con grilla abajo y la nota al pie. El
-usuario elige figura por figura; después `v1/` y `cambios.json` se borran.
-El transcript está en `clases-apuntes`, `raw/claseM/clase.es.txt` (M sale de
-`FUENTE_POR_CLASE`): leerlo por tramos con `grep -n`, no entero.
+## Si queda a medias
 
 Si el trabajo queda a medias, dejar un `figuras/clase-NN/ESTADO.md` con lo
 hecho, lo pendiente y lo que se aparta de la pizarra, para retomarlo desde
@@ -294,16 +325,16 @@ de figuras que la página todavía no usa. Commitear solo los SVG que se usan.
 
 En el `.md`, cambiar `.png` por `.svg` en el `src` del `<img>` y actualizar el
 `alt` y el pie si el redibujo agrega algo. La `figura-ref` se queda: sigue
-diciendo de qué página de la pizarra salió el dibujo.
+diciendo de qué página de la pizarra salió el dibujo. El recorte tampoco se
+borra, porque `--revision` lo usa como referencia y `recortar_figuras.py` lo
+volvería a generar.
 
 El pie se escribe en prosa, primero el concepto y después lo que muestra el
 dibujo: "at-least-once: se pierden las respuestas y el stub reintenta después
 de cada timeout; los tres pedidos llegan, y la aplicación del servidor suma
 tres veces". Sin `<code>`, sin rayas, y sin recorrer el dibujo por posición
 ("a la izquierda…, a la derecha…"): el lector tiene la figura al lado, lo
-que le falta es qué significa. Es el estilo de los pies de las clases 1 y 14. El recorte tampoco se
-borra, porque `--revision` lo usa como referencia y `recortar_figuras.py` lo
-volvería a generar.
+que le falta es qué significa. Es el estilo de los pies de las clases 1 y 14.
 
 Una figura nueva, que no está en la pizarra, va como cualquier otra
 `figura-con-imagen`, con `<span class="figura-ref">agregada al apunte; no está
@@ -342,5 +373,9 @@ la clase nueva y sus excepciones; y al final los ajustes de texto que
 salieron de la revisión, como los pies reescritos o el párrafo que explica un
 diagrama de tiempo. Así quedó la PR #36.
 
-Antes de abrir la PR se borran `figuras/clase-NN/v1/`, `cambios.json` y
-`ESTADO.md`, si quedaron: son de trabajo y no se versionan.
+Antes de esos commits se resuelve lo que no se eligió: si para una figura
+ganó la versión fiel, su `.tex` sale de `v1/` y pisa la mejorada en
+`figuras/clase-NN/`; si ganó la mejorada, la fiel se descarta; y si ganó el
+recorte, la página no cambia y el `.tex` que no se adopta se borra. Después
+se borran `figuras/clase-NN/v1/`, `cambios.json` y `ESTADO.md`, si quedaron:
+son de trabajo y no se versionan, y no llegan a la PR.
