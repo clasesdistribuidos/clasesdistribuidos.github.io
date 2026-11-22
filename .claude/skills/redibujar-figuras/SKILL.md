@@ -32,7 +32,15 @@ texto alrededor:
 
 Así salieron las tres de la sección 1 de la clase 1: `sistema-interfaz-entorno`
 reemplaza al recorte, y `subsistema-ampliado` y `componentes-y-maquinas` son
-nuevas.
+nuevas. Las alternativas se dibujan aparte, cada una en su propio `.tex` con
+un nombre que diga qué prueba, y no pisan la figura hasta que el usuario elige.
+
+Una figura también puede no redibujarse: si lo que hay en la pizarra es una
+enumeración en dos columnas, o una lista de cosas con sus propiedades, queda
+mejor como una tabla markdown en la página, con los textos en castellano.
+Así terminó `memoria-dispositivos` en la clase 1. La tabla reemplaza al
+`<figure>` entero, el recorte se queda en `assets/` y el `.tex`, si existía,
+no se adopta.
 
 ## Antes de dibujar
 
@@ -108,7 +116,8 @@ una caja, y se achica con `font=\scriptsize` (el libro también tiene
 rótulos más chicos).
 
 Dos reglas de forma: un rechazo es la pieza `rechazo`, nunca el carácter ×,
-que queda chico. Y las fórmulas se escriben como texto, con `\var{W}` para
+que queda chico, y lo mismo vale para un mensaje perdido o un timeout que
+corta una espera. Y las fórmulas se escriben como texto, con `\var{W}` para
 las variables y `≥` en unicode: con TeX Live basic no hay `unicode-math`.
 CMU Bright no tiene `≥`, `≤` ni `≠`; `estilo.tex` los saca del modo
 matemático.
@@ -137,6 +146,42 @@ Trampas que ya aparecieron:
 Un punto que tiene que caer sobre una curva, como la interfaz sobre el borde
 de un óvalo, se ubica con coordenadas de la curva y no calculado a mano:
 `(0,0) ++(20:3.0 and 2.3)` en vez de `(2.82,0.78)`.
+
+### Lo que el usuario fue pidiendo
+
+Los rótulos van en castellano, aunque en la pizarra o en el libro estén en
+inglés: las figuras del Saltzer de la clase 1 se tradujeron todas. Se quedan
+en inglés los términos que la materia usa así, como master, primary, backups,
+stub o timeout, que son los mismos que aparecen en el texto. El redibujo
+también simplifica: lo que no aporta a lo que explica el párrafo se saca, y
+lo secundario que sí conviene dejar va en gris, con `suave` en el trazo o
+como relleno, para que lo principal se lea primero.
+
+Las flechas dicen qué son por el trazo: un pedido es `msg`, sólido, y una
+respuesta es `respuesta`, punteada. El color no se usa para decorar:
+`acento` es solo para fallas y rechazos, y `segundo` para lo aceptado o para
+una segunda serie que hay que distinguir de la primera. Todo lo demás va en
+`tinta`.
+
+En los diagramas de tiempo, los recuadros agrupan las líneas de vida que
+viven en la misma máquina, en `suave`, con el rótulo afuera, arriba del
+recuadro, y no adentro, donde compite con los rótulos de las líneas. Como no
+todos los lectores saben leer un diagrama de tiempo, la primera vez que
+aparece uno en una página va precedido por un párrafo breve que lo explica,
+en la prosa del apunte: qué es cada recuadro y cada línea, que el tiempo corre
+hacia abajo, qué es una flecha llena y una punteada, qué marca la cruz. Así
+quedó el de la sección 5 de la clase 1, antes de `at-least-once`.
+
+Cuando varias figuras comparan variantes de lo mismo —las semánticas de
+entrega, los modelos de integración—, todas usan la misma entrada (el mismo
+pedido, los mismos mensajes) y la misma geometría, para que la diferencia se
+lea en el resultado y no en el dibujo. Esas familias se generan con un script
+que escribe los `.tex` a partir de una geometría compartida, en lugar de
+copiar a mano y que se desalineen. Si el script arma el TikZ desde Python
+con `%` o `.format`, choca con los `%` de los comentarios LaTeX y con las
+llaves: escribir la plantilla tal cual, con placeholders como `@Y@`, y
+reemplazarlos con `.replace`. El script es un andamio: se commitean los
+`.tex` que genera.
 
 ## Compilar y mirar
 
@@ -194,6 +239,18 @@ El circuito:
    ambigua, preguntar.
 5. Corregir, mirar el PNG de nuevo, y volver a armar el PDF con lo que quede.
 
+## Cómo aprueba el usuario
+
+Con una clase entera, el usuario prefiere que se dibujen todas de una, no de
+a una por vez, pero con la estimación de costo antes de arrancar (ver "Antes
+de dibujar") para poder elegir. Después vienen rondas de aprobación por chat,
+figura por figura: el usuario dice cuáles quedan, cuáles hay que corregir y
+cuáles no lo convencen. Para estas últimas se le dibujan alternativas aparte,
+como en el caso de las figuras que no explican bien el texto, y él elige. Las
+correcciones finas de dibujo siguen yendo por el PDF anotado; el chat es para
+lo que se dice con palabras: aprobar, descartar, traducir un rótulo, sacar
+algo que sobra.
+
 ## Mejorar una tanda ya redibujada
 
 Cuando el usuario pide mejorar figuras que ya están en TikZ (simetría,
@@ -237,7 +294,14 @@ de figuras que la página todavía no usa. Commitear solo los SVG que se usan.
 
 En el `.md`, cambiar `.png` por `.svg` en el `src` del `<img>` y actualizar el
 `alt` y el pie si el redibujo agrega algo. La `figura-ref` se queda: sigue
-diciendo de qué página de la pizarra salió el dibujo. El recorte tampoco se
+diciendo de qué página de la pizarra salió el dibujo.
+
+El pie se escribe en prosa, primero el concepto y después lo que muestra el
+dibujo: "at-least-once: se pierden las respuestas y el stub reintenta después
+de cada timeout; los tres pedidos llegan, y la aplicación del servidor suma
+tres veces". Sin `<code>`, sin rayas, y sin recorrer el dibujo por posición
+("a la izquierda…, a la derecha…"): el lector tiene la figura al lado, lo
+que le falta es qué significa. Es el estilo de los pies de las clases 1 y 14. El recorte tampoco se
 borra, porque `--revision` lo usa como referencia y `recortar_figuras.py` lo
 volvería a generar.
 
@@ -248,3 +312,35 @@ en la pizarra</span>`.
 El SVG sale agrandado 1,5× (`--escala`) porque el CSS solo pone
 `max-width: 100%`, y a tamaño natural queda chico al lado de los PNG de
 1400 px.
+
+### Mirarlas en el sitio desde un worktree
+
+`preview_start` y `.claude/launch.json` levantan Jekyll sobre la carpeta
+principal del repo, no sobre el worktree, así que muestran las páginas de
+`main` y no las de la branch. Desde un worktree se levanta a mano, en una
+pestaña de terminal, con puertos propios para no chocar con otra sesión que
+tenga el suyo andando, y con el destino en el scratchpad para no ensuciar el
+worktree con `_site/`:
+
+```sh
+bundle exec jekyll serve --source . --destination <scratchpad>/_site \
+  --port 40NN --livereload --livereload-port 357NN
+```
+
+con `NN` el número de la clase. Antes de mostrarle nada al usuario,
+confirmar que los SVG que usa la página respondan 200
+(`curl -sI http://127.0.0.1:40NN/assets/clase-NN/<nombre>.svg`): un `src`
+con un nombre mal escrito no rompe el build, deja el hueco.
+
+## Cerrar la clase
+
+La adopción de una clase sale en tres commits, en este orden: primero los
+`.tex` (y lo que se haya sumado a `formas.tex` y `catalogo.tex`); después las
+páginas que pasan a los SVG, con los SVG que usan y la línea de CLAUDE.md que
+dice qué clases usan SVG ("Hoy usan SVG la clase 1 …"), que se actualiza con
+la clase nueva y sus excepciones; y al final los ajustes de texto que
+salieron de la revisión, como los pies reescritos o el párrafo que explica un
+diagrama de tiempo. Así quedó la PR #36.
+
+Antes de abrir la PR se borran `figuras/clase-NN/v1/`, `cambios.json` y
+`ESTADO.md`, si quedaron: son de trabajo y no se versionan.
