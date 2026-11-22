@@ -1,0 +1,35 @@
+\input{estilo}
+% Mejorada: los tres casos con la misma geometría, uno por fila; el rol de
+% cada nodo va adentro (H, T), en verde el que cambia; el nodo caído, grisado
+% y tachado con una cruz que lo excede, y sus enlaces en gris; al costado, los pasos en el orden del texto. Se saca
+% el cliente del primer caso.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[paso/.style={font=\small, align=left, anchor=west},
+    nuevo/.style={text=segundo}, caido/.style={draw=suave}]
+  % el nodo caído, grisado y con una cruz más grande que él
+  \newcommand\caido[1]{\node[nodo, draw=suave, fill=suave!35] at (#1) {};
+    \draw[acento, line width=1.6pt] ($(#1)+(-0.5,0.5)$) -- ($(#1)+(0.5,-0.5)$)
+      ($(#1)+(0.5,0.5)$) -- ($(#1)+(-0.5,-0.5)$);}
+  \newcommand\fila[4]{% y, rol 1, rol 2, rol 3
+    \foreach \n/\x/\r in {a/0/#2, b/2.2/#3, c/4.4/#4} \node[nodo] (\n) at (\x,#1) {\r};}
+  % 1. falla el head
+  \fila{0}{}{\textcolor{segundo}{H}}{T}
+  \caido{a}
+  \draw[msg, caido] (a) -- (b);
+  \draw[msg] (b) -- (c);
+  \node[paso] at (5.6,0) {1. falla el head\\2. se promueve el segundo\\3. se reconfigura a los clientes};
+  % 2. falla el tail
+  \fila{-2.2}{H}{\textcolor{segundo}{T}}{}
+  \caido{c}
+  \draw[msg] (a) -- (b);
+  \draw[msg, caido] (b) -- (c);
+  \node[paso] at (5.6,-2.2) {1. falla el tail\\2. el del medio es el nuevo tail\\3. se reconfigura a los clientes};
+  % 3. falla el del medio
+  \fila{-4.6}{H}{}{T}
+  \caido{b}
+  \draw[msg, caido] (a) -- (b);
+  \draw[msg, caido] (b) -- (c);
+  \draw[msg] (a.north east) to[bend left=30] (c.north west);
+  \node[paso] at (5.6,-4.6) {1. falla el del medio\\2. se lo saltea\\3. el head le pregunta su versión\\\phantom{3. }al tail y reenvía lo que falte};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,24 @@
+\input{estilo}
+% Mejorada: cada consumidor es una base, porque cada uno materializa su vista
+% de lo mismo; Debezium sin el "ej."; las dos llaves a la misma altura.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[celda/.append style={minimum height=7mm, font=\footnotesize},
+    cons/.style={nodo, minimum size=7mm}]
+  \newcommand\opn[1]{\var{o}\textsubscript{#1}}
+  \pic at (0,-0.55) {base};
+  \node[font=\small, below=2pt] at (0,-0.6) {Postgres};
+  \node[caja, minimum width=12mm, minimum height=11mm] (d) at (2.6,0) {};
+  \node[font=\small, below=2pt] at (d.south) {Debezium};
+  \draw[msg] (0.6,0) -- node[etiq, above] {WAL} (d.west);
+  \tiracontorno[0.55]{k}{(4.1,-0.35)}{\opn{1},\opn{2},\opn{3},,,}
+  \node[font=\small, below=2pt] at ($(k-3.south)!0.5!(k-4.south)$) {Kafka};
+  \draw[msg] (d.east) -- (k-1.west);
+  \foreach \y/\t [count=\i] in {1.9/data warehouse, 0/búsqueda de texto, -1.9/microservicio} {
+    \pic[scale=0.7] at (9.4,{\y-0.4}) {base};
+    \node[font=\small, anchor=west] at (9.95,\y) {\t};
+    \draw[msg] ($(k-6.east)+(0.15,{0.12*(2-\i)})$) -- (9.0,\y);
+  }
+  \draw[llave=8pt] (3.6,-2.6) -- (-0.7,-2.6) node[midway, below=10pt, font=\small, text=tinta] {primary-backup};
+  \draw[llave=8pt] (12.9,-2.6) -- (3.9,-2.6) node[midway, below=10pt, font=\small, text=tinta] {active-active};
+\end{tikzpicture}\end{figura}
+\end{document}

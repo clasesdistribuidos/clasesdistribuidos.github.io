@@ -11,10 +11,10 @@ Esos mecanismos no son tantos, y son los que después vamos a ver aparecer, de u
 La primera forma de replicar, la más intuitiva, es la que se suele llamar state transfer, también conocida como snapshot. Supongamos dos máquinas, nodo uno y nodo dos. El state transfer consiste en tomar toda la memoria del nodo uno —no en el sentido de RAM, sino todo el disco— y transferírsela a la otra: un cp remoto, un scp, hacia el nodo dos. Eso evidentemente va a funcionar, y también se puede sospechar que tiene problemas.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-03/state-transfer.png' | relative_url }}" alt="Un nodo copiándole todo su disco a otro">
+  <img src="{{ '/assets/clase-03/state-transfer.svg' | relative_url }}" alt="Un nodo copiándole un snapshot de su disco a otro">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el nodo uno copiando todo su disco al nodo dos, mientras dos clientes le siguen enviando escrituras
+    state transfer: el nodo 1 le copia un snapshot de su disco al nodo 2, mientras dos clientes le siguen escribiendo al nodo 1
     <span class="figura-ref">pizarra pág. 3 / notas pág. 2</span>
   </figcaption>
 </figure>
@@ -30,10 +30,10 @@ Por esos dos problemas, principalmente el segundo, no se suele usar de manera ai
 Esa segunda forma se llama máquina de estados replicada. Apareció la clase pasada, porque es una de las innovaciones que propuso Lamport —no está claro si la inventó o la formalizó—, y se basa en un principio muy simple. Supongamos que esa base de datos es determinista y que le enviamos muchas operaciones seguidas: o₁, o₂, o₃, o₄. Si le enviamos esas mismas operaciones a otra base, el estado va a ser el mismo. De modo que basta con tomar dos bases —en el sentido amplio, dos nodos— y enviarles las operaciones en el mismo orden.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-03/maquina-de-estados-replicada.png' | relative_url }}" alt="Dos nodos recibiendo la misma secuencia de operaciones">
+  <img src="{{ '/assets/clase-03/maquina-de-estados-replicada.svg' | relative_url }}" alt="Dos nodos recibiendo la misma secuencia de operaciones">
   <figcaption>
     <span class="figura-label">Figura</span>
-    dos nodos recibiendo la misma secuencia o₁ o₂ o₃ o₄, con los tres requisitos al costado: mismo orden, determinismo estricto y mismo estado inicial
+    máquina de estados replicada: el nodo 1 y el nodo 2 parten de S₀ y aplican la misma secuencia o₁ o₂ o₃ o₄, con los tres requisitos al costado: mismo orden, determinismo estricto y mismo estado inicial
     <span class="figura-ref">pizarra pág. 3 / notas pág. 2</span>
   </figcaption>
 </figure>
@@ -51,10 +51,10 @@ Que ese orden no es automático se ve con un caso mínimo. Tenemos dos máquinas
 Agreguemos el segundo, que interviene con la operación dos. Cada cliente le envía la suya a las dos máquinas. Como hay una red en el medio y los dos clientes no están sincronizados entre sí, puede ocurrir que la primera máquina reciba primero la operación uno y la segunda reciba primero la dos. Después le llega a cada una la que faltaba, y quedaron en órdenes distintos.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-03/clientes-sin-orden.png' | relative_url }}" alt="Dos clientes escribiéndoles a dos máquinas, con las flechas cruzadas">
+  <img src="{{ '/assets/clase-03/clientes-sin-orden.svg' | relative_url }}" alt="Dos clientes escribiéndoles a dos máquinas, con las flechas cruzadas">
   <figcaption>
     <span class="figura-label">Figura</span>
-    dos clientes enviando su operación a las dos máquinas, con las flechas cruzadas; el orden que le quedó a cada una: o₁ o₂ y o₂ o₁
+    dos clientes sin orden: C₁ envía o₁ y C₂ envía o₂ a S₁ y a S₂, las flechas se cruzan, y a S₁ le queda o₁ o₂ y a S₂, o₂ o₁
     <span class="figura-ref">pizarra pág. 4 / notas pág. 2</span>
   </figcaption>
 </figure>

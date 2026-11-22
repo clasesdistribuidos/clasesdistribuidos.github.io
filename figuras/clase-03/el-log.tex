@@ -1,0 +1,15 @@
+\input{estilo}
+% Mejorada: las celdas tienen operaciones; la llave dice "operaciones" y la
+% flecha de abajo, el orden total; la celda nueva entra punteada, al final,
+% que es lo único que permite append-only.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[celda/.append style={minimum height=7mm}]
+  \tiracontorno[0.9]{l}{(0,0)}{\var{o}\textsubscript{1}, \var{o}\textsubscript{2}, \var{o}\textsubscript{3},
+    \var{o}\textsubscript{4}, \var{o}\textsubscript{5}, \var{o}\textsubscript{6}}
+  \node[celda, minimum width=0.9cm, dashed, text=segundo] (n) at (5.6,0) {\var{o}\textsubscript{7}};
+  \draw[msg, draw=segundo] ($(n.north)+(0,0.85)$) node[etiq, text=segundo, above] {append-only: solo al final} -- (n.north);
+  \draw[llave=6pt] (0,0.85) -- (5.4,0.85) node[midway, above=8pt, font=\small, text=tinta] {operaciones};
+  \draw[msg] (0,-0.4) -- (6.5,-0.4) node[midway, below=2pt, font=\small, align=center]
+    {+ orden, y total\\[-1pt]\footnotesize\textcolor{suave}{de cada par se sabe cuál fue primero}};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -142,6 +142,15 @@
 \newcommand\tira[4][1.4]{\foreach \c [count=\i] in {#4}
   \node[celda, minimum width=#1cm] (#2-\i) at ($#3+({(\i-1)*#1},0)$) {\c};}
 
+% clase 3: la misma tira, pero con el contorno y los separadores trazados una
+% sola vez. En \tira cada celda dibuja su borde, y el que comparten dos celdas
+% sale más oscuro que el resto. Mismos argumentos y mismos nodos nombre-1, …
+\newcommand\tiracontorno[4][1.4]{\begin{scope}[celda/.append style={draw=none}]
+  \tira[#1]{#2}{#3}{#4}\end{scope}
+  \foreach \c [count=\i] in {#4} {\xdef\tiraK{\i}}
+  \draw (#2-1.south west) rectangle (#2-\tiraK.north east);
+  \foreach \i in {2,...,\tiraK} \draw (#2-\i.south west) -- (#2-\i.north west);}
+
 % El filete bajo el encabezado de una \matrix[tabla]: \filete{t}{columnas}
 \newcommand\filete[2]{\draw ($(#1-1-1.south west)+(-2mm,0)$) -- ($(#1-1-#2.south east)+(2mm,0)$);}
 

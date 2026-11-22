@@ -1,0 +1,22 @@
+\input{estilo}
+\usetikzlibrary{shadows}
+% Mejorada: los clientes son un grupo (cajas apiladas, como las instancias de
+% la clase 14); las escrituras van al primary y las lecturas, en verde, a los
+% backups. Solo los nombres primary y backups: los sinónimos van en el pie.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[srv/.style={caja, minimum width=10mm, minimum height=10mm},
+    lee/.style={msg, draw=segundo}]
+  \node[srv] (p) at (3.4,2.6) {P};
+  \node[font=\small, right=4pt] at (p.east) {primary};
+  \foreach \x/\k [count=\i] in {2.0/0, 3.4/1, 4.8/2} \node[srv] (b\i) at (\x,0) {B\textsubscript{\k}};
+  \node[font=\small, right=4pt] at (b3.east) {backups};
+  \foreach \i in {1,2,3} \draw[msg] (p.south) -- (b\i.north);
+  % los clientes: un grupo
+  \node[caja, minimum width=10mm, minimum height=8mm,
+    double copy shadow={shadow xshift=1.2mm, shadow yshift=-1.2mm, fill=relleno, draw=tinta}]
+    (c) at (-1.0,1.3) {};
+  \node[font=\small, left=4pt] at (c.west) {clientes};
+  \draw[msg] (c.north) |- node[etiq, pos=0.75, above] {escrituras} (p.west);
+  \draw[lee] ($(c.south)+(0.12,-0.24)$) |- node[etiq, text=segundo, pos=0.7, below] {lecturas} (b1.west);
+\end{tikzpicture}\end{figura}
+\end{document}

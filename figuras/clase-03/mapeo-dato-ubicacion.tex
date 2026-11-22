@@ -1,0 +1,27 @@
+\input{estilo}
+% Mejorada, esquemática: un dato entra al mapeo y sale la máquina donde vive;
+% el mapeo puede ser una tabla (una grilla que alguien mantiene, como en GFS)
+% o una función (que se calcula, como en hash consistente), simétricas bajo
+% el mapeo.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[maq/.style={caja, minimum width=7mm, minimum height=6mm}]
+  \node[caja, minimum width=14mm] (d) at (0,0) {dato};
+  \node[caja, minimum width=16mm, minimum height=9mm] (m) at (3.0,0) {mapeo};
+  \draw[msg] (d) -- (m);
+  % la ubicación física: una de varias máquinas
+  \foreach \i/\y in {1/0.8, 2/0, 3/-0.8} \node[maq] (q\i) at (6.0,\y) {};
+  \node[maq, fill=segundo!25, draw=segundo] at (6.0,0) {};
+  \node[etiq, align=center, right=4pt] at (q2.east) {ubicación\\física};
+  \draw[msg, draw=segundo] (m) -- (q2);
+  % las dos maneras
+  % la grilla, con cada línea trazada una sola vez para que todas pesen igual
+  \draw[fill=white] (1.5,-2.55) rectangle (2.5,-1.65);
+  \draw (2.0,-2.55) -- (2.0,-1.65) (1.5,-1.95) -- (2.5,-1.95) (1.5,-2.25) -- (2.5,-2.25);
+  \coordinate (tb) at (2.0,-1.6);
+  \node[etiq, anchor=base] (tl) at (2.0,-2.95) {tabla};
+  \node[caja, minimum width=10mm, minimum height=9mm] (f) at (4.0,-2.1) {\var{f}};
+  \node[etiq, anchor=base] (fl) at (4.0,-2.95) {función};
+  \draw[respuesta] (m.south) -- (tb);
+  \draw[respuesta] (m.south) -- (f.north);
+\end{tikzpicture}\end{figura}
+\end{document}

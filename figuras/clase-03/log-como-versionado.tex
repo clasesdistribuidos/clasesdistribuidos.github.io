@@ -1,0 +1,14 @@
+\input{estilo}
+% Mejorada: un solo log, más largo, y tres réplicas que apuntan a la posición
+% hasta la que lo aplicaron: el estado de una réplica es esa posición. Están
+% el ejemplo de la pizarra (3) y el del texto (11 y 10).
+\begin{document}
+\begin{figura}\begin{tikzpicture}[celda/.append style={minimum height=6.5mm, font=\footnotesize}]
+  \tiracontorno[0.55]{l}{(0,0)}{0,1,2,3,4,5,6,7,8,9,10,11}
+  \foreach \c/\i in {4/1, 11/2, 12/3} {
+    \pic[scale=0.4] at ($(l-\c.south)+(0,-1.45)$) {base};
+    \draw[msg] ($(l-\c.south)+(0,-0.95)$) -- (l-\c.south);
+    \node[etiq, below=1pt] at ($(l-\c.south)+(0,-1.5)$) {\var{R}\textsubscript{\i}};
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,13 @@
+\input{estilo}
+% Mejorada: las tres réplicas a la misma distancia; la escritura x = 2 le
+% llega a una sola, que queda con un valor distinto (en verde) de las otras.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\v in {0/1, 2.2/2, 4.4/1} \pic at (\x,0) {base};
+  \node[font=\small] at (0,0.5) {\var{x} = 1};
+  \node[font=\small, text=segundo] at (2.2,0.5) {\var{x} = 2};
+  \node[font=\small] at (4.4,0.5) {\var{x} = 1};
+  \draw[msg, draw=segundo] (2.2,2.25) node[etiq, text=segundo, above] {escritura \var{x} = 2} -- (2.2,1.35);
+  \draw[llave=6pt] (4.9,-0.35) -- (-0.5,-0.35) node[midway, below=8pt, font=\small, text=tinta] {réplicas del mismo dato};
+\end{tikzpicture}\end{figura}
+\end{document}
