@@ -13,10 +13,10 @@ Emplea dos técnicas para evitar ese desenlace. La primera ya la vimos: escribir
 La segunda es que también implementa un esquema de primary-backup, igual que los réplica groups de los chunks, pero con una diferencia importante: es fijo, no dinámico. No hay roles que se reconfiguren sobre la marcha según qué máquinas sigan en funcionamiento. Hay un coordinador y un coordinador backup, y son siempre esos dos. El backup tiene todas las estructuras que acabamos de recorrer y también el log; y lo que hace el principal es enviarle ese log por la red, para que del otro lado se aplique lo mismo.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-04/coordinador-y-backup.png' | relative_url }}" alt="El coordinador y su backup en standby">
+  <img src="{{ '/assets/clase-04/coordinador-y-backup.svg' | relative_url }}" alt="El coordinador y su backup en standby">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el coordinador y su backup en standby — dos máquinas iguales, cada una con sus tablas en memoria arriba y su log abajo, y el log del coordinador principal viajando por la red hacia el backup
+    el coordinador y su backup: dos máquinas iguales, cada una con su log, y el log del coordinador viajando por la red al del standby
     <span class="figura-ref">pizarra pág. 8 / notas pág. 6</span>
   </figcaption>
 </figure>

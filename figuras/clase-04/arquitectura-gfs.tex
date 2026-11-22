@@ -1,0 +1,52 @@
+\input{estilo}
+% La figura 1 del paper de GFS, la arquitectura, con los rótulos en
+% castellano salvo los términos que la clase usa en inglés (master,
+% chunkserver, chunk handle, chunk index, byte range). Misma disposición que
+% el paper; la leyenda va abajo en vez de a la derecha. Lo que está por
+% debajo del chunkserver (el file system de Linux y los discos) va en gris.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[m/.style={cod, font=\ttfamily\scriptsize},
+    disco/.pic={\def\w{0.2}\def\h{0.32}\def\e{0.06}
+      \draw[fill=relleno] (-\w,\h) -- (-\w,0) arc[start angle=180, end angle=360, x radius=\w, y radius=\e] -- (\w,\h);
+      \draw[fill=relleno!50!white] (0,\h) ellipse[x radius=\w, y radius=\e];}]
+  % cliente
+  \node[capas=2, minimum width=26mm, font=\footnotesize] (cl) at (0,4.6) {aplicación \nodepart{two} cliente GFS};
+  % master
+  \node[marco, minimum width=62mm, minimum height=30mm] (ma) at (8.0,4.0) {};
+  \node[etiq, anchor=north west] at ($(ma.north west)+(0.15,-0.12)$) {master GFS};
+  \node[etiq, text=suave, anchor=north west, align=left] at ($(ma.north west)+(0.15,-0.55)$) {namespace\\de archivos};
+  \begin{scope}[shift={($(ma.north west)+(0.8,-2.75)$)}, line width=0.6pt]
+    \draw (0.55,1.5) -- (0,0.8) (0.55,1.5) -- (1.1,0.8) -- (0.6,0.1) (1.1,0.8) -- (1.6,0.1);
+    \coordinate (hoja) at (1.6,0.1);
+  \end{scope}
+  \foreach \k [evaluate=\k as \y using -0.95-0.42*\k] in {0,1,2,3}
+    \node[draw=tinta, fill=white, minimum width=17mm, minimum height=4.2mm, inner sep=0pt, outer sep=0pt, font=\scriptsize]
+      (f\k) at ($(ma.north east)+(-1.25,\y)$) {\ifnum\k=0 chunk \texttt{2ef0}\fi};
+  \node[cod, anchor=south west, inner xsep=0pt] (foo) at (f0.north west) {/foo/bar};
+  \draw[->, dashed, line width=0.5pt] (hoja) .. controls +(1.0,0) and +(-1.0,0) .. ($(foo.west)+(-0.08,0)$);
+  \draw[control] ($(cl.east)+(0,0.25)$) -- node[m, above] {(file name, chunk index)} ($(cl.east -| ma.west)+(0,0.25)$);
+  \draw[control] ($(cl.east -| ma.west)+(0,-0.25)$) -- node[m, below, align=center] {(chunk handle,\\chunk locations)} ($(cl.east)+(0,-0.25)$);
+  % chunkservers
+  \foreach \i/\x in {1/6.2, 2/10.2} {
+    \node[capas=2, minimum width=30mm, font=\footnotesize] (cs\i) at (\x,0) {chunkserver GFS \nodepart{two} \textcolor{suave}{file system de Linux}};
+    \foreach \d in {0,1} {
+      \draw[suave] ($(cs\i.south west)+(0.35+0.8*\d,0)$) |- ++(0.3,-0.45) coordinate (d);
+      \pic[draw=suave] at ($(d)+(0.2,-0.18)$) {disco};
+    }
+    \node[etiq, text=suave] at ($(cs\i.south west)+(2.35,-0.5)$) {…};
+  }
+  \node[etiq] at (12.5,0.3) {…};
+  \draw[control] ($(cs1.north)+(-0.85,0)$) -- ($(cs1.north |- ma.south)+(-0.85,0)$);
+  \draw[control] ($(cs1.north |- ma.south)+(-0.55,0)$) -- ($(cs1.north)+(-0.55,0)$);
+  \draw[control] ($(cs2.north)+(-0.85,0)$) -- ($(cs2.north |- ma.south)+(-0.85,0)$);
+  \node[etiq, font=\scriptsize, anchor=west] at ($(cs1.north)+(-0.45,1.55)$) {instrucciones al chunkserver};
+  \node[etiq, font=\scriptsize, anchor=east] at ($(cs2.north)+(-0.95,0.45)$) {estado del chunkserver};
+  \draw[control] ($(cs2.north |- ma.south)+(-0.55,0)$) -- ($(cs2.north)+(-0.55,0)$);
+  % cliente y chunkserver
+  \draw[control] ($(cl.south)+(0.3,0)$) |- node[m, above, pos=0.75] {(chunk handle, byte range)} ($(cs1.west)+(0,0.25)$);
+  \draw[datos] ($(cs1.west)+(0,-0.2)$) -| node[etiq, below, pos=0.25, font=\scriptsize] {datos del chunk} ($(cl.south)+(-0.4,0)$);
+  % leyenda
+  \draw[datos] (11.2,-1.4) -- ++(0.8,0) node[etiq, right, font=\scriptsize] {mensajes de datos};
+  \draw[control] (11.2,-1.85) -- ++(0.8,0) node[etiq, right, font=\scriptsize] {mensajes de control};
+\end{tikzpicture}\end{figura}
+\end{document}

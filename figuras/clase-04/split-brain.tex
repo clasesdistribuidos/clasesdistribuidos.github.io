@@ -1,0 +1,28 @@
+\input{estilo}
+% El split brain, con la geometría de promocion-de-primary: no falla CS3 sino
+% su conexión con el coordinador, que promueve a CS1. CS3 sigue vivo del otro
+% lado del corte y atiende a sus clientes: dos primaries a la vez.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cs/.style={caja, minimum width=13mm, minimum height=9mm},
+    rol/.style={etiq, font=\scriptsize, inner sep=1pt}, cl/.style={caja, fill=white, minimum width=7mm, minimum height=7mm}]
+  \node[caja, minimum width=24mm, minimum height=9mm] (co) at (0,2.6) {coordinador};
+  \foreach \i/\x in {1/-2.8, 2/0, 3/2.8} {
+    \node[cs] (cs\i) at (\x,0) {CS\textsubscript{\i}};
+    \draw[msg] (cs\i.north) -- ($(co.south)+({(\i-2)*0.7},0)$) coordinate[pos=0.5] (m\i);
+  }
+  \pic[scale=0.55] at (m3) {particion};
+  \node[cl] (c1) at (-4.7,0) {};
+  \node[cl] (c3) at (4.7,0) {};
+  \draw[msg] (c1) -- (cs1);
+  \draw[msg] (c3) -- (cs3);
+  \node[rol, below=3pt of c1] {cliente};
+  \node[rol, below=3pt of c3] {cliente};
+  \node[rol, below=4pt of cs1, text=suave] (s1) {secondary};
+  \draw[suave] (s1.west) -- (s1.east);
+  \node[rol, below=1pt of s1, text=acento] (p1) {primary};
+  \node[rol, below=4pt of cs2] {secondary};
+  \node[rol, text=acento] (p3) at (cs3 |- p1) {primary};
+  \draw[llave=5pt, draw=acento] ($(p3.south east)+(0,-0.15)$) -- ($(p1.south west)+(0,-0.15)$)
+    node[midway, below=6pt, etiq, text=acento] {split brain};
+\end{tikzpicture}\end{figura}
+\end{document}

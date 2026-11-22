@@ -1,0 +1,36 @@
+\input{estilo}
+% La figura 2 del paper de GFS, el flujo de control y de datos de una
+% escritura, con los rótulos en castellano (salvo master). De lo que el
+% profesor le agregó en la pizarra queda la respuesta (P, S, S) del paso 2;
+% el visto y la cruz de las réplicas son del caso de la falla parcial, que el
+% texto cuenta más adelante, y se sacan. La leyenda va abajo.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[r/.style={caja, align=center, font=\footnotesize, minimum width=30mm, minimum height=11mm},
+    n/.style={etiq, font=\footnotesize}]
+  \node[r, fill=white] (c) at (0,0) {cliente};
+  \node[r, minimum width=22mm] (m) at (4.9,0) {master};
+  \node[r] (a) at (0,-2.2) {réplica\\secundaria A};
+  \node[r] (p) at (0,-4.4) {réplica\\primaria};
+  \node[r] (b) at (0,-6.6) {réplica\\secundaria B};
+  % datos
+  \draw[datos] (c) -- node[n, right=2pt] {3} (a);
+  \draw[datos] (a) -- (p);
+  \draw[datos] (p) -- (b);
+  % control con el master
+  \draw[control] ($(c.east)+(0,0.25)$) -- node[n, above] {1} ($(m.west)+(0,0.25)$);
+  \draw[control] ($(m.west)+(0,-0.25)$) -- node[n, below] {2} node[cod, below=12pt] {(P, S, S)} ($(c.east)+(0,-0.25)$);
+  % 4 y 7, por la izquierda
+  \draw[control] ($(c.west)+(0,0.3)$) -| (-2.35,-4.65) node[n, pos=0.1, above] {4} -- ($(p.west)+(0,-0.25)$);
+  \draw[control] ($(p.west)+(0,0.25)$) -| (-1.95,-0.3) node[n, pos=0.1, above] {7} -- ($(c.west)+(0,-0.3)$);
+  % 5, de la primaria a las dos secundarias
+  \draw[control] ($(p.east)+(0,0)$) -| (2.55,-2.0) -- ($(a.east)+(0,0.2)$);
+  \draw[control] (2.55,-4.4) |- ($(b.east)+(0,-0.2)$);
+  \node[n, right=2pt] at (2.55,-4.4) {5};
+  % 6, las secundarias le responden a la primaria
+  \draw[control] ($(a.east)+(0,-0.25)$) -| (2.0,-4.15) node[n, pos=0.75, right] {6} -- ($(p.east)+(0,0.25)$);
+  \draw[control] ($(b.east)+(0,0.25)$) -| (2.0,-4.65) node[n, pos=0.75, right] {6} -- ($(p.east)+(0,-0.25)$);
+  % leyenda
+  \draw[control] (3.9,-6.2) -- ++(0.8,0) node[etiq, right, font=\scriptsize] {control};
+  \draw[datos] (3.9,-6.7) -- ++(0.8,0) node[etiq, right, font=\scriptsize] {datos};
+\end{tikzpicture}\end{figura}
+\end{document}
