@@ -1,0 +1,20 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[pieza/.style={caja, minimum width=24mm, minimum height=9mm}]
+  % dos nodos iguales: worker, chunk server y el disco local
+  \foreach \n/\x in {1/0, 2/5.2} {
+    \draw[marco] (\x,0) rectangle (\x+3.2,-6.2);
+    \node[above=1pt] at (\x+1.6,0) {nodo \n};
+    \node[pieza] (w\n) at (\x+1.6,-0.9) {worker};
+    \node[pieza] (cs\n) at (\x+1.6,-2.7) {chunk server};
+    \pic[scale=1.7] at (\x+1.6,-5.85) {base};
+  }
+  % en el nodo 1, el chunk local entra como input del worker
+  \node[archivo, minimum width=6.5mm, minimum height=8mm] (ch) at (1.15,-4.8) {};
+  \node[anchor=west, font=\small] at (ch.east) {64 MB};
+  \draw[->] (ch.north) -- (cs1.south -| ch.north);
+  \draw[->] (cs1) -- node[etiq, right] {input} (w1);
+  % el shuffle va de worker a worker, sin pasar por GFS
+  \draw[->] (w1) -- node[above, etiq] {shuffle} (w2);
+\end{tikzpicture}\end{figura}
+\end{document}

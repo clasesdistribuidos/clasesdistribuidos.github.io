@@ -1,0 +1,27 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[k/.style={font=\small}]
+  % las claves que van a R1 en verde, en el universo y en su bucket
+  \newcommand\K[3][tinta]{\node[k, text=#1] at #2 {K\textsubscript{#3}};}
+  % el universo de claves intermedias
+  \draw[fill=relleno] (0,0) circle (2.0);
+  \node[above=2pt] at (0,2.0) {claves intermedias};
+  \K[segundo]{(-1.0,1.0)}{1}  \K{(0.7,1.2)}{2}  \K{(-0.1,0.2)}{3}
+  \K{(1.1,-0.6)}{4}  \K[segundo]{(-0.4,-1.2)}{5} \K[segundo]{(-1.2,-0.4)}{6}
+  % la función que lo parte
+  \draw[->] (2.5,0) -- (5.6,0) node[midway, above=3pt, etiq, align=center] {función de shuffle\\determinista}
+    node[midway, below=4pt, cod] {hash(k) mod R};
+  % los dos buckets
+  \begin{scope}[shift={(7.2,1.15)}]
+    \draw[draw=segundo, fill=segundo!10] (0,0) ellipse (1.3 and 0.95);
+    \node[above left=-2pt, text=segundo] at (135:1.3 and 0.95) {R\textsubscript{1}};
+    \K[segundo]{(-0.55,0.25)}{1}  \K[segundo]{(0.55,0.25)}{5}  \K[segundo]{(0,-0.45)}{6}
+  \end{scope}
+  \begin{scope}[shift={(7.2,-1.15)}]
+    \draw[fill=relleno] (0,0) ellipse (1.3 and 0.95);
+    \node[above left=-2pt] at (135:1.3 and 0.95) {R\textsubscript{2}};
+    \K{(-0.55,0.25)}{2}  \K{(0.55,0.25)}{4}  \K{(0,-0.45)}{3}
+  \end{scope}
+  \draw[llave] (8.85,2.1) -- (8.85,-2.1) node[midway, right=8pt, etiq, text=tinta] {buckets};
+\end{tikzpicture}\end{figura}
+\end{document}

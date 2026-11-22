@@ -1,0 +1,31 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[arch/.style={archivo, minimum width=10mm, minimum height=13mm}]
+  % el nodo funcionando como mapper
+  \draw[marco] (0,0) rectangle (6.4,-6.75);
+  \node[anchor=north west] at (0.15,-0.15) {mapper 1};
+  \node[arch] (in) at (1.4,-1.6) {};
+  \node[etiq, below=2pt] at (in.south) {input};
+  \node[caja, minimum width=16mm, minimum height=9mm] (map) at (3.9,-1.6) {map};
+  \draw[->] (in) -- (map);
+  % la tira de pares pasa por el hash y el módulo
+  \node[caja, minimum width=16mm, font=\scriptsize] (hash) at (3.9,-3.1) {hash mod \var{R}};
+  \draw[->] (map) -- (hash);
+  % los dos archivos en el disco local, uno por reducer
+  % los archivos con su nombre, centrados en el recuadro con el mismo margen
+  % en los cuatro lados: ocupan de y = -3.95 a y = -5.65
+  \draw[marco, draw=suave] (1.6,-3.7) rectangle (6.2,-5.8);
+  \node[etiq, below=1pt] at (3.9,-5.8) {disco local};
+  \node[arch] (f1) at (2.6,-4.6) {};
+  \node[arch] (f2) at (5.2,-4.6) {};
+  \node[cod, below=2pt] at (f1.south) {M1\_R1};
+  \node[cod, below=2pt] at (f2.south) {M1\_R2};
+  \draw[->] (hash) -- (f1);
+  \draw[->] (hash) -- (f2);
+  % y cada uno, eventualmente, a su reducer
+  \foreach \i/\x in {1/2.6, 2/5.2} {
+    \node[caja, minimum width=11mm, minimum height=10mm] (r\i) at (\x,-7.9) {R\textsubscript{\i}};
+    \draw[->, dashed] (\x,-5.65) -- (r\i.north);
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

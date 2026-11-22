@@ -169,5 +169,20 @@
   \coordinate (#2-abajo) at ({-(#5)*(#4)/2},{-#1/2});
 \end{scope}}
 
+% clase 2
+% Un archivo: la hoja con la esquina doblada. Es un nodo, así que las flechas
+% llegan a su borde: \node[archivo] (f) {}; el rótulo va adentro o debajo.
+% El color del trazo es opcional: \node[archivo=segundo, fill=segundo!12] {1};
+\tikzset{
+  archivo/.style={rectangle, draw=none, fill=white, minimum width=9mm,
+    minimum height=11mm, inner sep=1pt, align=center,
+    append after command={\pgfextra{\let\a\tikzlastnode}
+      (\a.north west) edge[draw=#1, to path={-- ($(\a.north east)+(-2mm,0)$)
+        -- ($(\a.north east)+(0,-2mm)$) -- (\a.south east) -- (\a.south west) -- cycle}] ()
+      ($(\a.north east)+(-2mm,0)$) edge[draw=#1, line width=0.5pt,
+        to path={-- ++(0,-2mm) -- ++(2mm,0)}] ()}},
+  archivo/.default=tinta,
+}
+
 % Reservadas, se diseñan con la primera clase que las use:
 %   árbol (Zookeeper, Merkle) — clase 3

@@ -1,0 +1,28 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[op/.style={caja, minimum width=14mm},
+    par/.style={font=\small}, columna/.style={draw=segundo, fill=segundo!8, rounded corners=2pt}]
+  % una columna por clave intermedia; cada par cae en la fila de su input
+  % y en la columna de su clave
+  \foreach \x in {6.2, 8.0, 9.8}
+    \draw[columna] (\x-0.75,0.55) rectangle (\x+0.75,-2.55);
+  \draw[llave=5pt, draw=tinta] (5.45,0.8) -- (10.55,0.8)
+    node[midway, above=7pt] {agrupados por clave intermedia};
+  \foreach \i in {1,2,3} {
+    \node[archivo, minimum width=7mm, minimum height=9mm, font=\small] (in\i) at (0.4,{-(\i-1)*1.0}) {\i};
+    \node[op] (map\i) at (2.7,{-(\i-1)*1.0}) {map};
+    \draw[->] (in\i) -- (map\i);
+    \draw[->] (map\i) -- (5.3,{-(\i-1)*1.0});
+  }
+  \node[below=2pt] at (in3.south) {inputs};
+  \newcommand\pk[3]{\node[par] at (#1,#2) {(\var{#3}, 1)};}
+  \pk{6.2}{0}{a}  \pk{8.0}{0}{b}
+                  \pk{8.0}{-1}{b}
+  \pk{6.2}{-2}{a}                 \pk{9.8}{-2}{c}
+  \foreach \x/\k/\n in {6.2/a/2, 8.0/b/2, 9.8/c/1} {
+    \node[op] (r\k) at (\x,-3.55) {reduce};
+    \draw[->] (\x,-2.55) -- (r\k);
+    \node[par] at (\x,-4.45) {(\var{\k}, \n)};
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

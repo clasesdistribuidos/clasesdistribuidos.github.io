@@ -1,0 +1,29 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[job/.style={draw=tinta, rounded corners=1pt, minimum width=6mm,
+      minimum height=6mm, inner sep=0pt, font=\scriptsize},
+    jm/.style={job, draw=segundo, fill=segundo!12, text=segundo}, jr/.style={job, fill=relleno}]
+  % N = 4 nodos físicos, los mismos en las dos fases: cada columna es un nodo
+  \foreach \n in {1,...,4} {
+    \draw[marco] ({(\n-1)*2.0},0) rectangle ({(\n-1)*2.0+1.6},-3.6);
+    \node[above=1pt] at ({(\n-1)*2.0+0.8},0) {nodo \n};
+  }
+  % la línea que separa las dos fases, de punta a punta
+  \draw[vida] (-0.3,-1.8) -- (7.9,-1.8);
+  \node[anchor=east] at (-0.3,-0.9) {map};
+  \node[anchor=east] at (-0.3,-2.7) {reduce};
+  % M = 8 jobs de map: dos por nodo
+  \foreach \i in {1,...,8} {
+    \pgfmathtruncatemacro\n{int((\i-1)/2)}
+    \pgfmathsetmacro\x{\n*2.0 + 0.45 + mod(\i-1,2)*0.7}
+    \node[jm] at (\x,-0.9) {M\textsubscript{\i}};
+  }
+  % R = 3 jobs de reduce: el nodo 4 queda libre
+  \foreach \i in {1,2,3} \node[jr] at ({(\i-1)*2.0+0.8},-2.7) {R\textsubscript{\i}};
+  % las tres cantidades
+  \draw[llave=5pt, draw=tinta] (8.1,-0.15) -- (8.1,-1.65) node[midway, right=7pt] {\var{M} = 8};
+  \draw[llave=5pt, draw=tinta] (8.1,-1.95) -- (8.1,-3.45) node[midway, right=7pt] {\var{R} = 3};
+  \draw[llave=5pt, draw=tinta, decoration={mirror}] (0,-3.85) -- (7.6,-3.85)
+    node[midway, below=7pt] {\var{N} = 4};
+\end{tikzpicture}\end{figura}
+\end{document}
