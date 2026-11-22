@@ -1,0 +1,24 @@
+\input{estilo}
+\usetikzlibrary{shapes.symbols}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[srv/.style={caja, minimum width=8mm, minimum height=7mm}]
+  % todo sobre el eje y=0: los brazos del usuario, internet, el balancer, el servidor del medio y la base
+  \pic (u) at (0,-0.7) {persona};
+  \node[cloud, cloud puffs=11, aspect=1.8, draw=tinta, fill=white, minimum width=18mm, minimum height=11mm] (net) at (2.2,0) {};
+  \node[etiq, text=suave, below=7pt] at (net.south) {internet};
+  \node[caja, minimum width=8mm] (lb) at (4.6,0) {};
+  \node[etiq, align=center, below=2pt] at (lb.south) {load\\balancer};
+  \foreach \i/\y in {1/1.9, 2/0.95, 3/0, 4/-0.95, 5/-1.9}
+    \node[srv] (s\i) at (6.8,\y) {};
+  \node[etiq, align=center, below=2pt] at (s5.south) {servidores\\HTTP};
+  \pic at (10.4,-0.55) {base};
+  \draw[msg] (0.4,0) -- (net.west);
+  \draw[msg] (net.east) -- (lb.west);
+  % el balancer puede mandar a cualquiera; esta vez eligió uno
+  \foreach \i in {1,3,4,5} \draw[msg, dashed, draw=suave] (lb.east) -- (s\i.west);
+  \draw[msg] (lb.east) -- (s2.west);
+  % todos consultan a la misma base, y las flechas llegan repartidas sobre su costado
+  \foreach \i/\y in {2/0.2, 3/0, 4/-0.2, 5/-0.4} \draw[msg] (s\i.east) -- (9.9,\y);
+  \draw[msg] (s1.east) -- node[cod, above, sloped] {SQL} (9.9,0.4);
+\end{tikzpicture}\end{figura}
+\end{document}

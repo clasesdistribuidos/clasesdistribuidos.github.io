@@ -24,10 +24,10 @@ No es un sistema donde hay una memoria —memoria propiamente dicha, memoria RAM
 Un sistema distribuido va a ser otra cosa: una memoria y otra memoria, un CPU y otro CPU, cada CPU con la suya. Lo que cambia es la conexión entre los dos, que ahora pasa a ser un enlace, una red. El dibujo es esquemático y a alguien de organización de computadoras podría no gustarle, porque los CPUs no se conectan literalmente de esa manera; pero ese enlace está ahí para enfatizar una sola cosa, la importante: este CPU no puede acceder directamente a aquella memoria.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/multiprocesador-vs-distribuido.png' | relative_url }}" alt="Un multiprocesador y un sistema distribuido dibujados lado a lado">
+  <img src="{{ '/assets/clase-01/multiprocesador-vs-distribuido.svg' | relative_url }}" alt="Un multiprocesador y un sistema distribuido dibujados lado a lado">
   <figcaption>
     <span class="figura-label">Figura</span>
-    a la izquierda, una memoria con dos CPUs colgando de ella, rotulado multiprocesador; a la derecha, dos pares de memoria y CPU donde lo único que une a los dos CPUs es un enlace de red, rotulado sistema distribuido
+    un multiprocesador y un sistema distribuido: en el primero los dos CPUs comparten la misma memoria; en el segundo cada uno tiene la suya y lo único que los une es un enlace de red, así que ninguno puede escribir en la memoria del otro
     <span class="figura-ref">notas pág. 3 / pizarra pág. 5</span>
   </figcaption>
 </figure>
@@ -78,7 +78,7 @@ Algo parecido ocurre hoy con las GPUs. Todos los entrenamientos de redes neurona
   <img src="{{ '/assets/clase-01/clusters.jpg' | relative_url }}" alt="Un rack temprano de Google y el pasillo de un data center moderno">
   <figcaption>
     <span class="figura-label">Figura</span>
-    dos fotos de clústeres — arriba, un rack temprano de Google con las placas al aire y los cables desordenados; abajo, el pasillo de un data center moderno con racks a ambos lados
+    dos fotos de clústeres: arriba, un rack temprano de Google con las placas al aire y los cables desordenados; abajo, el pasillo de un data center moderno con racks a ambos lados
     <span class="figura-ref">pizarra pág. 6</span>
   </figcaption>
 </figure>
@@ -108,7 +108,7 @@ Ilustrémoslo con un ejemplo. En ingeniería naval se utiliza una tecnica para e
   <img src="{{ '/assets/clase-01/titanic-inundacion.jpg' | relative_url }}" alt="Las condiciones de inundación admisibles del Titanic">
   <figcaption>
     <span class="figura-label">Figura</span>
-    las condiciones de inundación admisibles del Titanic — el casco intacto y las distintas combinaciones de dos, tres y cuatro compartimentos inundados
+    las condiciones de inundación admisibles del Titanic: el casco intacto y las distintas combinaciones de dos, tres y cuatro compartimentos inundados
     <span class="figura-ref">notas pág. 3 / pizarra pág. 7</span>
   </figcaption>
 </figure>
@@ -131,10 +131,10 @@ Queda una última ventaja: separar responsabilidades administrativas. Es un argu
 Hay una propiedad más para sumar a la lista, y tiene un carácter distinto de las anteriores: es deseable, sí, pero deseable más o menos. Se trata de la transparencia en la distribución, un punto polémico de entrada, y lo que sigue es una posición tomada, apoyada en algunos papers. Muchas veces los sistemas distribuidos arrancan con la definición de que un sistema distribuido es uno formado por muchos componentes, pero donde ese hecho está escondido: el sistema se ve como uno solo, y los componentes internos no se ven desde afuera. Es casi la definición de sistema con la que empezamos esta lección, aplicada a los sistemas en general y no a los distribuidos en particular.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/transparencia-usuario.jpg' | relative_url }}" alt="Una persona que mira el sistema distribuido desde afuera y lo ve como un todo">
+  <img src="{{ '/assets/clase-01/transparencia-usuario.svg' | relative_url }}" alt="Lo que ve el usuario, un solo sistema, y lo que hay adentro, muchos nodos en red">
   <figcaption>
     <span class="figura-label">Figura</span>
-    una persona que mira el sistema distribuido desde afuera y lo ve como un todo, con sus nodos internos apenas insinuados adentro
+    la transparencia en la distribución: el usuario ve un solo sistema, al que accede por su interfaz, pero adentro hay muchos componentes unidos por una red
     <span class="figura-ref">notas pág. 3 / pizarra pág. 8</span>
   </figcaption>
 </figure>
@@ -146,10 +146,10 @@ NFS, el Network File System, fue uno de esos intentos de completa transparencia 
 Pero la parte esencial del diseño, al menos en las primeras versiones, era que el Network File System se montaba como si fuera un file system más dentro del file system. Es decir, uno montaba el NFS igual que montaría ext4, o NTFS, o FAT.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/nfs-arquitectura.jpg' | relative_url }}" alt="La arquitectura de NFS, del cliente al servidor">
+  <img src="{{ '/assets/clase-01/nfs-arquitectura.svg' | relative_url }}" alt="La arquitectura de NFS, del cliente al servidor">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la arquitectura de NFS — los procesos del cliente sobre el virtual file system, que deriva hacia el file system local o hacia el cliente NFS, y de ahí por la red hacia el servidor NFS y su propio disco
+    la arquitectura de NFS: los procesos del cliente usan el sistema de archivos virtual, que manda cada pedido al sistema de archivos local o, a través del cliente NFS y la red, al servidor NFS y su propio disco
     <span class="figura-ref">pizarra pág. 10</span>
   </figcaption>
 </figure>

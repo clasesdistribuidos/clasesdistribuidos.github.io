@@ -1,0 +1,23 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % desde afuera: el usuario ve una sola cosa, a través de su interfaz
+  \pic (p) at (0,-0.9) {persona};
+  \node[etiq, below=2pt] at (0,-0.9) {usuario};
+  \node[caja, minimum width=22mm, minimum height=18mm] (sis) at (3.1,0) {sistema};
+  \draw[line width=2.2pt] (sis.north west) -- (sis.south west);
+  \node[etiq, below=2pt] at (sis.south west) {interfaz};
+  \draw[respuesta] ($(p-cabeza)+(0.3,0)$) -- ($(sis.west)+(0,0.45)$);
+  \node[font=\small, above=4pt] at (sis.north |- 0,1.5) {lo que ve el usuario};
+  % por dentro: muchos componentes unidos por una red
+  \draw[marco, dashed, draw=suave] (6.2,-1.5) rectangle (10.0,1.5);
+  \draw[line width=2.2pt] (6.2,-1.5) -- (6.2,1.5);
+  \node[font=\small, above=4pt] at (8.1,1.5) {lo que hay adentro};
+  \foreach \p/\n in {(7.1,0.7)/a, (8.5,0.95)/b, (7.4,-0.75)/c, (8.8,-0.55)/d, (9.4,0.3)/e}
+    \node[nodo, minimum size=6mm] (\n) at \p {};
+  \foreach \u/\v in {a/b, a/c, b/e, c/d, d/e, a/d} \draw (\u) -- (\v);
+  % el zoom: la misma caja, abierta
+  \draw[draw=suave, dashed] (sis.north east) -- (6.2,1.5);
+  \draw[draw=suave, dashed] (sis.south east) -- (6.2,-1.5);
+\end{tikzpicture}\end{figura}
+\end{document}

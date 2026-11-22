@@ -1,0 +1,22 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[font=\small, piso/.style={draw=suave, fill=white}, stubbox/.style={draw=suave, fill=relleno}]
+  % la figura 4.7 del Saltzer, en espejo: lo que en el cliente baja, en el servicio sube.
+  % Las cajas en gris claro, para que se lean las flechas: el pedido llena, la respuesta punteada
+  \foreach \x/\t in {0/cliente, 7.4/servicio} {
+    \draw[marco, draw=suave, rounded corners=8pt] (\x,0) rectangle ++(4.6,-5.6);
+    \node[above] at (\x+2.3,0) {\t};
+    \draw[piso] (\x+0.35,-0.35) rectangle ++(3.9,-2.3);
+    \draw[stubbox] (\x+0.35,-2.95) rectangle ++(3.9,-2.3);
+    \node at (\x+2.3,-4.05) {stub};
+  }
+  % la llamada baja al stub, cruza como request y sube a la aplicación del servicio
+  \node[cod, anchor=south west] at (0.6,-0.95) {get\_time()};
+  \draw[msg] (0.9,-1.0) -- (0.9,-4.6) -- node[cod, above, pos=0.5] {request} (11.1,-4.6) -- (11.1,-1.0);
+  \node[cod, anchor=south east] at (11.4,-0.95) {get\_time()};
+  % el resultado baja al stub del servicio, vuelve como response y sube al cliente
+  \node[cod, anchor=south west] at (8.3,-1.85) {return time};
+  \draw[respuesta] (8.6,-1.9) -- (8.6,-3.5) -- node[cod, above, pos=0.5] {response} (3.4,-3.5) -- (3.4,-1.9);
+  \node[anchor=south east] at (4.05,-1.85) {10:42:18 PM};
+\end{tikzpicture}\end{figura}
+\end{document}

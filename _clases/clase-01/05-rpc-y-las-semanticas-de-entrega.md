@@ -30,10 +30,10 @@ El origen de RPC está en los años ochenta, y responde otra vez a la ambición 
 ¿Qué cambia respecto de lo que teníamos hasta ahora? Seguimos en la capa end to end, pero dentro de ella podemos imaginar a su vez dos capas. Arriba está la aplicación que uno escribe. Abajo está la capa de RPC, que le esconde a uno toda la interacción con los sockets. Más abajo todavía están los sockets, donde queda metida también la capa de transporte, y por debajo la red. Introducimos entonces una capa intermedia, y esa capa resuelve el problema de las comunicaciones.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/rpc-middleware-capas.png' | relative_url }}" alt="La aplicación y la capa de RPC dentro de end to end, sobre los sockets y la red">
+  <img src="{{ '/assets/clase-01/rpc-middleware-capas.svg' | relative_url }}" alt="La aplicación y la capa de RPC dentro de end to end, sobre los sockets y la red">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la aplicación arriba y la capa de RPC abajo, las dos dentro de la capa end to end, con la llave del middleware sobre la de RPC; más abajo los sockets y la red
+    RPC como middleware: una capa entre la aplicación y los sockets, las dos dentro de la capa end to end, con la red por debajo
     <span class="figura-ref">pizarra pág. 15</span>
   </figcaption>
 </figure>
@@ -45,10 +45,10 @@ El truco de RPC fue poder generar esa parte de manera reutilizable, de modo de n
 La forma en que típicamente se hace esto, desde los ochenta hasta la actualidad, es mediante generación automatica de código, en lo que se ha en llamar un **stub**. Un stub es una pieza que representa a la función, pero donde la función en realidad no está. Desde nuestro código de aplicación vamos a ver una función común, con todo el aspecto de una función común: en el ejemplo se llama `GET_TIME`. Pero cuando la llamemos, y siendo que la implementación real vive en el servidor remoto, no vamos a estar llamando a esa implementación sino al stub: una especie de proxy, un sustituto que está ahí en el medio. Lo que ese stub hace es el marshalling de los parámetros: toma los parámetros y el nombre de la función, y se los manda por el socket a otro stub que está del otro lado. Ese segundo stub los desarma, los extrae, y es él quien termina llamando a la implementación real. La función hace lo que tiene que hacer y devuelve algo; el stub del servidor captura ese resultado y se lo devuelve al que había llamado. Es, en definitiva, un truco: pareciera que la función está implementada de este lado, y en realidad está del otro.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/rpc-stubs.png' | relative_url }}" alt="Cliente y servicio, cada uno con su aplicación y su stub">
+  <img src="{{ '/assets/clase-01/rpc-stubs.svg' | relative_url }}" alt="Cliente y servicio, cada uno con su aplicación y su stub">
   <figcaption>
     <span class="figura-label">Figura</span>
-    cliente y servicio, cada uno con su aplicación arriba y su stub abajo, y el request y el response cruzando de un stub al otro
+    una llamada remota a través de los stubs: la llamada baja al stub del cliente, viaja como request y el stub del servicio se la entrega a la aplicación; la hora vuelve por el camino inverso, como response
     <span class="figura-ref">notas pág. 6 / pizarra pág. 16</span>
   </figcaption>
 </figure>
@@ -140,10 +140,10 @@ La segunda es la importante. Aparecen nuevas formas de falla: las cosas pueden f
 Normalmente uno hace el request y el otro le responde. Pero pueden pasar varias cosas. Una es que el request no llegue al servidor de destino. La otra es que llegue, pero que no llegue la respuesta de vuelta. Una se rompe cuando estamos mandando; la otra se rompe cuando el otro está respondiendo.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/fallas-rpc-no-response.png' | relative_url }}" alt="Cliente y servidor con las dos flechas tachadas">
+  <img src="{{ '/assets/clase-01/fallas-rpc-no-response.svg' | relative_url }}" alt="Diagrama de tiempo de las dos fallas: el request que no llega y la respuesta que no vuelve">
   <figcaption>
     <span class="figura-label">Figura</span>
-    cliente y servidor con las dos flechas tachadas — la de ida, el request que no llega al servidor, y la de vuelta, la respuesta que no vuelve
+    las dos formas en que falla una llamada remota: el request no llega al servidor, o llega, se ejecuta y se pierde la respuesta; desde el cliente las dos se ven igual, una espera sin respuesta hasta el timeout
     <span class="figura-ref">notas pág. 6 / pizarra pág. 17</span>
   </figcaption>
 </figure>
@@ -163,11 +163,13 @@ Esa imposibilidad de distinguir un request que se perdió de una respuesta que s
 
 La primera se llama **at-least-once**, al menos una vez. El escenario es el mismo diagrama anterior: del lado del cliente, la aplicación arriba y el stub abajo; del lado del servidor, el stub abajo y la aplicación arriba. Una forma de recuperarse ante ese tipo de problemas —siempre desde la perspectiva del cliente, que mandó algo y no está obteniendo respuesta— es hacer **retry**. Y lo hace el stub automáticamente: la capa de gRPC manda un request, no recibe respuesta, lo vuelve a mandar, y así insiste hasta que el otro responde.
 
+Para seguir lo que pasa conviene cambiar de dibujo y pasar a un diagrama de tiempo. Cada recuadro es una máquina, el cliente a la izquierda y el servidor a la derecha, y adentro de cada una están los mismos dos pisos de antes, la aplicación y el stub, ahora como líneas verticales punteadas. El tiempo corre hacia abajo, así que una flecha inclinada es un mensaje que tarda en llegar: llena si es un pedido, punteada si es una respuesta, y la cruz marca el mensaje que se perdió en el camino. El punto sobre la aplicación del servidor es el momento en que la operación efectivamente se ejecuta. En este diagrama y en los dos que siguen, la aplicación del cliente hace el mismo pedido, `add(200)`, que suma 200 a una cuenta; lo que cambia de una semántica a otra es cuántas veces termina ejecutándose.
+
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/at-least-once.png' | relative_url }}" alt="El cliente mandando varias veces el mismo pedido">
+  <img src="{{ '/assets/clase-01/at-least-once.svg' | relative_url }}" alt="Diagrama de tiempo de at-least-once: tres reintentos y tres ejecuciones en el servidor">
   <figcaption>
     <span class="figura-label">Figura</span>
-    cliente y servidor, cada uno con su aplicación y su stub, unidos por varias flechas paralelas que representan los reintentos, con el timer del lado del cliente
+    at-least-once: se pierden las respuestas y el stub reintenta después de cada timeout; los tres pedidos llegan, y la aplicación del servidor suma tres veces
     <span class="figura-ref">notas pág. 7 / pizarra pág. 17</span>
   </figcaption>
 </figure>
@@ -187,10 +189,10 @@ El anti-ejemplo es una transacción bancaria. Supongamos que alguien nos transfi
 La segunda forma de resolver el problema se llama **at-most-once**, a lo sumo una vez, y es mucho más simple que su nombre. El esquema es el mismo: se manda el pedido, falla por lo que sea, no se obtiene respuesta, y no se reintenta. Es, simplemente, decir "no retry".
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/at-most-once.png' | relative_url }}" alt="Cliente y servidor unidos por una sola flecha, sin reintento">
+  <img src="{{ '/assets/clase-01/at-most-once.svg' | relative_url }}" alt="Diagrama de tiempo de at-most-once: un solo envío y un error para el cliente">
   <figcaption>
     <span class="figura-label">Figura</span>
-    los mismos dos nodos unidos por una sola flecha, sin reintento
+    at-most-once: el pedido sale una sola vez, se ejecuta y se pierde la respuesta; el stub no reintenta y le devuelve un error a la aplicación, que no sabe si la operación se hizo o no
     <span class="figura-ref">notas pág. 7 / pizarra pág. 17</span>
   </figcaption>
 </figure>
@@ -218,10 +220,10 @@ Ahora bien, esos casos son poco frecuentes, así que en general se puede lograr 
 El ejemplo concreto de cómo se hace eso (que es una de las tantas formas que hay) es el siguiente. A nivel de la aplicación, y sobre una capa de abajo que es at-least-once, mandamos el request con la operación (digamos, agregar dinero) y con la suma, y le agregamos un tercer campo: un número generado que se llama **idempotency id**.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/idempotencia.png' | relative_url }}" alt="El cliente repitiendo el pedido y el servidor con su storage de identificadores">
+  <img src="{{ '/assets/clase-01/idempotencia.svg' | relative_url }}" alt="Diagrama de tiempo con idempotency id: tres pedidos con el mismo id y una sola ejecución">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el cliente con su capa at-least-once mandando tres veces el mismo pedido, y el servidor con su aplicación y un storage persistente al costado donde registra los identificadores ya procesados
+    idempotencia sobre at-least-once: los reintentos llevan el mismo idempotency id, y la aplicación del servidor ejecuta el primero, guarda el id y descarta las copias que llegan después
     <span class="figura-ref">pizarra pág. 18</span>
   </figcaption>
 </figure>
