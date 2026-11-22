@@ -1,0 +1,10 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=15mm, minimum height=15mm] (n1) at (0,0) {\var{N}\textsubscript{1}};
+  \node[caja, minimum width=15mm, minimum height=15mm] (n2) at (4,0) {\var{N}\textsubscript{2}};
+  \draw (n1) -- (n2);
+  \draw[llave, decoration={mirror}] (0.9,-0.95) -- (3.1,-0.95)
+    node[midway, below=8pt, etiq, text=suave] {enlace};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,32 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % dos recuadros, el cliente y el servidor, cada uno con sus dos líneas de vida:
+  % la aplicación y el stub. El tiempo corre hacia abajo.
+  \foreach \x/\t in {-1.05/cliente, 4.65/servidor} {
+    \draw[marco, draw=suave] (\x,0.55) rectangle ++(3.8,-3.5);
+    \node[font=\small, above=2pt] at (\x+1.9,0.55) {\t};
+  }
+  \foreach \x/\t in {0/aplicación, 1.7/stub, 5.7/stub, 7.4/aplicación} {
+    \draw[vida] (\x,0) -- (\x,-2.8);
+    \node[etiq, above] at (\x,0) {\t};
+  }
+  \draw[msg] (0,-0.5) -- node[cod, above] {add(200)} (1.7,-0.5);
+  % una sola vez: llega, se ejecuta, y la respuesta se pierde
+  \draw[msg] (1.7,-0.8) -- (5.7,-1.25);
+  \draw[msg] (5.7,-1.25) -- (7.4,-1.25);
+  \node[evento=tinta] at (7.4,-1.25) {};
+  \node[cod, anchor=north east] at (7.33,-1.32) {+200};
+  \draw[respuesta] (5.7,-1.45) -- (3.7,-1.675);
+  \pic[scale=0.6] at (3.7,-1.675) {rechazo};
+  % el stub no reintenta: le devuelve el error a la aplicación
+  \draw (1.6,-2.0) -- (1.8,-2.0);
+  \node[etiq, anchor=east] at (1.55,-2.0) {timeout};
+  \draw[respuesta] (1.7,-2.3) -- node[cod, below] {error} (0,-2.3);
+  % debajo de los stubs, TCP: con UDP la red misma podría duplicar el pedido
+  \draw[llave, decoration={mirror}] (1.7,-3.2) -- (5.7,-3.2);
+  \node[cod, font=\ttfamily\small] (udp) at (3.7,-3.75) {UDP};
+  \draw[acento, line width=1pt] (udp.south west) -- (udp.north east);
+  \node[cod, font=\ttfamily\small] at (3.7,-4.2) {TCP};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,27 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[srv/.style={caja, minimum width=8mm, minimum height=7mm},
+    lee/.style={msg, draw=segundo}]
+  % tres filas: el master (centro en y=2.75), los readers (y=0.35) y el load balancer (y=-1.9),
+  % todas centradas en el reader del medio
+  \pic at (2.5,2.2) {base};
+  \foreach \x in {1, 2.5, 4} {
+    \pic at (\x,-0.2) {base};
+    \draw[msg] (2.5,2.05) -- (\x,1.05);
+  }
+  \node[caja] (lb) at (2.5,-1.9) {};
+  \node[etiq, below=2pt] at (lb.south) {load balancer};
+  \foreach \x in {1, 2.5, 4} \draw[lee] (lb.north) -- (\x,-0.4);
+  % los servidores HTTP: el primero a la altura del master, el último a la del balancer
+  \foreach \i/\y in {1/2.75, 2/1.2, 3/-0.35, 4/-1.9}
+    \node[srv] (s\i) at (-1.6,\y) {};
+  \node[etiq, align=center, below=2pt] at (s4.south) {servidores\\HTTP};
+  \draw[msg] (s1.east) -- node[etiq, above] {escrituras} (2.0,2.75);
+  \draw[lee] (s4.east) -- node[etiq, above, text=segundo] {lecturas} (lb.west);
+  % el master copia cada escritura a sus readers
+  \node[etiq, anchor=west] at (3.35,1.7) {replicación};
+  % los nombres, cada uno a la altura de su fila
+  \node[font=\small, anchor=west] at (5.2,2.75) {master / primary};
+  \node[font=\small, anchor=west] at (5.2,0.35) {readers / backups};
+\end{tikzpicture}\end{figura}
+\end{document}

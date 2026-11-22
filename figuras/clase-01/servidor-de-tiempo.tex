@@ -1,0 +1,17 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\t in {0/measure, 5/time\_service()} {
+    \draw (\x,0) -- (\x,-6.9);
+    \node[cod, font=\ttfamily\small, above] at (\x,0) {\t};
+  }
+  % las dos idas y vueltas iguales: misma pendiente, misma separación
+  \foreach \y/\i in {-0.6/1, -4.4/2} {
+    \draw[msg] (0,\y) -- node[cod, above, sloped] {get\_time} (5,\y-0.9);
+    \draw[msg] (5,\y-1.0) -- node[below, sloped] {\var{t}\textsubscript{\i}} (0,\y-2.0);
+  }
+  % entre las dos, la función que se mide
+  \draw[marca] (0,-2.75) -- (0,-4.25);
+  \node[cod, left=3pt] at (0,-3.5) {func()};
+\end{tikzpicture}\end{figura}
+\end{document}

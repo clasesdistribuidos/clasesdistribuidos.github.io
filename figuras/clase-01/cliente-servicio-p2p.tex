@@ -1,0 +1,19 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % cliente - servicio: roles distintos, el pedido va y la respuesta vuelve
+  \node[caja, minimum width=12mm, minimum height=14mm] (c) at (0,0) {C};
+  \node[caja, minimum width=12mm, minimum height=14mm] (s) at (4,0) {S};
+  \draw[msg] ($(c.east)+(0,0.3)$) -- node[cod, above] {request} ($(s.west)+(0,0.3)$);
+  \draw[msg] ($(s.west)+(0,-0.3)$) -- node[cod, below] {response} ($(c.east)+(0,-0.3)$);
+  \node[etiq, font=\small, anchor=north] at (2,-1.75) {cliente–servicio};
+  % peer to peer: tres pares iguales, un triángulo equilátero centrado en el mismo eje
+  \def\l{1.9}
+  \node[nodo] (p1) at (7.0,\l/2) {};
+  \node[nodo] (p3) at (7.0,-\l/2) {};
+  \node[nodo] (p2) at (7.0+0.866*\l,0) {};
+  \foreach \u/\v in {p1/p2, p2/p3, p3/p1}
+    \draw[<->, shorten <=1pt, shorten >=1pt] (\u) -- (\v);
+  \node[etiq, font=\small, anchor=north, align=center] at (7.0+0.289*\l,-1.75) {peer to peer};
+\end{tikzpicture}\end{figura}
+\end{document}

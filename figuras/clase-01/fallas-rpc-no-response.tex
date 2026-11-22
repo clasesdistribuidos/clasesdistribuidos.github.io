@@ -1,0 +1,26 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % las dos fallas, lado a lado y con el mismo pedido; del lado del cliente se ven iguales
+  \foreach \X/\n/\c/\t in {0/1/acento/no llega el request, 5.0/2/segundo/no llega la respuesta} {
+    \foreach \x/\q in {0/cliente, 3.2/servidor} {
+      \draw[vida] (\X+\x,0) -- (\X+\x,-2.9);
+      \node[etiq, above] at (\X+\x,0) {\q};
+    }
+    \node[paso, draw=\c, text=\c] (n\n) at (\X+0.2,0.95) {\n};
+    \node[etiq, font=\small, text=\c, anchor=west, right=3pt of n\n] {\t};
+    % el cliente espera y no le llega nada, hasta que vence el timeout
+    \draw[marca] (\X,-0.5) -- (\X,-2.5);
+    \draw (\X-0.1,-2.5) -- (\X+0.1,-2.5);
+    \node[etiq, anchor=east] at (\X-0.12,-2.5) {timeout};
+  }
+  % 1: el request se pierde en el camino
+  \draw[msg] (0,-0.5) -- (1.6,-0.8);
+  \pic[scale=0.6] at (1.6,-0.8) {rechazo};
+  % 2: el request llega, se ejecuta, y lo que se pierde es la respuesta
+  \draw[msg] (5.0,-0.5) -- (8.2,-1.1);
+  \node[evento=tinta] at (8.2,-1.1) {};
+  \draw[respuesta] (8.2,-1.3) -- (6.6,-1.6);
+  \pic[scale=0.6] at (6.6,-1.6) {rechazo=segundo};
+\end{tikzpicture}\end{figura}
+\end{document}
