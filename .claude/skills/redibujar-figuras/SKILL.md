@@ -214,8 +214,8 @@ El transcript está en `clases-apuntes`, `raw/claseM/clase.es.txt` (M sale de
 
 Si el trabajo queda a medias, dejar un `figuras/clase-NN/ESTADO.md` con lo
 hecho, lo pendiente y lo que se aparta de la pizarra, para retomarlo desde
-otra máquina (la memoria de Claude no viaja con el repo). La clase 14 tiene
-uno.
+otra máquina (la memoria de Claude no viaja con el repo). Se borra, junto con
+`v1/` y `cambios.json`, antes de abrir la PR: así se hizo con la clase 14.
 
 ## En otra máquina
 
