@@ -252,11 +252,11 @@ python3 scripts/comparar_figuras.py --clase N
 arma `figuras/salida/clase-NN/revision-clase-NN-mejoradas.pdf`: un A4 por
 figura, en el orden del apunte, con la pizarra y la versión fiel arriba, la
 mejorada abajo con la grilla en cm, y al pie la nota de `cambios.json`. Las
-tres van numeradas (1. pizarra, 2. versión fiel, 3. versión mejorada), así
-el usuario elige por chat con un número por figura. Una
+tres van numeradas (1. pizarra, 2. versión fiel, 3. versión mejorada). Una
 figura a la que le falta la fiel o el recorte queda fuera, con un aviso. El
-usuario elige una de las tres por figura, y puede marcar correcciones encima
-de la mejorada como en el PDF de revisión.
+PDF se arma siempre y se le pasa al usuario, pero la elección no se hace
+sobre él: es la referencia que tiene abierta mientras se le pregunta figura
+por figura (ver "Cómo aprueba el usuario").
 
 ## Feedback del usuario: el PDF de revisión
 
@@ -300,16 +300,13 @@ El circuito:
 
 Con una clase entera, el usuario prefiere que se dibujen todas de una, no de
 a una por vez, pero con la estimación de costo antes de arrancar (ver "Antes
-de dibujar") para poder elegir. La aprobación va en dos tiempos, y es el
-circuito que en la clase 13 el usuario dijo que funcionó mejor.
+de dibujar") para poder elegir. Después se arma el PDF con las tres
+opciones de todas las figuras pendientes y se le pasa, como referencia.
 
-Primero el PDF con las tres opciones de todas las figuras pendientes. Con
-eso el usuario contesta en una sola línea las que tiene claras ("ok" a la
-mejorada, o el número de la que elige) y marca qué hay que corregir en las
-otras.
-
-Después, las que quedan se repasan de a una por chat, con una
-`AskUserQuestion` por figura. Las opciones son la mejorada, primera y
+La elección no se hace en el PDF: se pregunta directamente de a una por
+chat, todas las figuras, con una `AskUserQuestion` por figura. Es el
+circuito que en la clase 13 el usuario dijo que funcionó mejor, y pidió
+usarlo desde la primera figura, sin una ronda previa sobre el PDF. Las opciones son la mejorada, primera y
 recomendada, la versión fiel, el recorte y "necesita cambios". La pregunta
 nombra la página del PDF y dice en dos líneas qué muestra la mejorada y qué
 se pierde respecto de la pizarra. Si el usuario pide un cambio, se corrige,
