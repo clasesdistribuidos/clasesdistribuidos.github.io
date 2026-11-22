@@ -1,22 +1,56 @@
 \input{estilo}
-% La opción 3.1 de la pizarra: los nodos sueltos; el receive (rcv) y la
-% escritura llegan al nodo 1, el primary, que copia a 2 y 3 (en verde). El
-% primary está tachado y de él baja "visibility timeout".
+% Propuesta: antes y después de que se caiga el primary, con los seis nodos en
+% el mismo lugar. Antes: solo el primary (1.º) responde; entrega m₁ y anota un
+% timeout de 60 s en su copia, que no viaja a las réplicas. Después: el
+% primary murió (en gris), el secondary (2.º) se entera por gossip y queda
+% habilitado; su copia no tiene timeout y vuelve a entregar m₁. Duplicado por
+% diseño. El consumidor va centrado sobre la fila, y la flecha va al nodo que
+% responde. Agregado del texto: los dos momentos, los roles, el timeout local
+% y el gossip.
 \begin{document}
-\begin{figura}\begin{tikzpicture}[n/.style={circle, draw=tinta, fill=relleno, minimum size=8mm, inner sep=0pt}]
-  \node[n] (p) at (0,0) {1};
-  \node[n] at (0.1,1.6) {};
-  \node[n] (s2) at (2.1,2.2) {2};
-  \node[n] at (3.4,1.0) {};
-  \node[n] (s3) at (3.2,-1.1) {3};
-  \node[n] at (1.2,-1.5) {};
-  \draw[msg] (-3.6,-0.9) -- (-0.5,-0.2);
-  \node at (-2.8,1.5) {rcv};
-  \draw[msg] (-1.4,1.1) to[out=0, in=130] (-0.35,0.35);
-  \draw[msg, draw=segundo] (p) -- (s2);
-  \draw[msg, draw=segundo] (p) to[bend right=12] (s3);
-  \tachar{p}
-  \draw[msg] (0,-0.5) -- (0,-1.1);
-  \node[align=center, anchor=north] at (0,-1.15) {visibility\\timeout};
+\begin{figura}\begin{tikzpicture}[
+    n/.style={circle, draw=tinta, fill=relleno, minimum size=9mm, inner sep=0pt, font=\footnotesize},
+    caido/.style={n, draw=suave, fill=white, text=suave, dashed},
+    cons/.style={caja, minimum width=10mm, minimum height=9mm},
+  ]
+  \newcommand\msj[2][segundo]{\node[draw=#1, fill=#1!14, text=#1, minimum size=4.2mm,
+    inner sep=0pt, font=\scriptsize] at #2 {\var{m}\textsubscript{1}};}
+  \newcommand\reloj[1]{\begin{scope}[shift={#1}]
+    \draw[draw=acento] (0,0) circle (1.8mm); \draw[draw=acento] (0,0) -- (0,0.12) (0,0) -- (0.08,-0.03);
+  \end{scope}}
+  % los seis nodos, con sus roles; \nodos[estilo del primero]
+  \newcommand\nodos[1][n]{%
+    \node[#1] (n1) at (0,0) {1.º};
+    \foreach \i/\x/\y/\r in {2/1.6/0/2.º, 3/3.2/0/3.º, 4/0/-1.6/, 5/1.6/-1.6/, 6/3.2/-1.6/}
+      \node[n] (n\i) at (\x,\y) {\r};
+    \foreach \i in {2,3} {\msj{($(n\i.north west)+(-0.05,0.05)$)}}}
+  \newcommand\pie[2]{\node at (#1,-2.75) {#2};}
+  % el pedido y la respuesta entre el consumidor y el nodo que responde
+  % paralelas a la recta entre los centros, separadas 4pt a cada lado;
+  % \pedido{consumidor}{nodo}{borde del consumidor sobre esa recta}
+  \newcommand\pedido[3]{%
+    \draw[msg, shorten <=#3, shorten >=4.5mm] ($(#1)!4pt!-90:(#2)$) -- node[cod, left=3pt] {receive} ($(#2)!4pt!90:(#1)$);
+    \draw[respuesta, shorten <=4.5mm, shorten >=#3] ($(#2)!4pt!-90:(#1)$) -- node[etiq, right=3pt, pos=0.6] {\var{m}\textsubscript{1}} ($(#1)!4pt!90:(#2)$);}
+
+  % --- antes
+  \nodos
+  \msj{($(n1.north west)+(-0.05,0.05)$)}
+  \node[cons] (a) at (1.6,2.4) {\var{a}};
+  \pedido{a}{n1}{5.4mm}
+  \reloj{(-0.85,0)}
+  \node[etiq, text=acento, anchor=east] at (-1.1,0) {60 \unid{s}, solo acá};
+  \pie{1.6}{primario disponible}
+
+  % --- después
+  \begin{scope}[xshift=8.0cm]
+    \nodos[caido]
+    \msj[suave]{($(n1.north west)+(-0.05,0.05)$)}
+    \draw[dashed, draw=suave] (n5) to[bend right=35] node[etiq, text=suave, right] {gossip} (n2);
+    \node[cons] (b) at (1.6,2.4) {\var{b}};
+    \pedido{b}{n2}{4.5mm}
+    \node[etiq, text=acento, anchor=west] at (3.9,0.5) {sin timeout:};
+    \node[etiq, text=acento, anchor=west] at (3.9,0.1) {lo entrega de nuevo};
+    \pie{1.6}{falla en el primario}
+  \end{scope}
 \end{tikzpicture}\end{figura}
 \end{document}

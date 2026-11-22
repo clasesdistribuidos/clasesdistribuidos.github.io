@@ -1,0 +1,27 @@
+\input{estilo}
+% Propuesta: el fan-out con colas, primera mitad del par con fan-out-con-log
+% (misma entrada, mismas posiciones). SNS reparte a una cola por consumidor, y
+% el nuevo (punteado) obliga a armar y conectar otra; cada uno borra lo que
+% lee. Agregado del texto: el consumidor nuevo y la regla.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    s/.style={caja, minimum width=27mm, minimum height=9mm, font=\small},
+    nuevo/.style={s, draw=suave, dashed, fill=white, text=suave},
+  ]
+  \node[s] (p) at (0,0) {productor};
+  \node[caja, minimum width=13mm, minimum height=12mm] (sns) at (3.4,0) {SNS};
+  \draw[msg] (p) -- (sns);
+  \foreach \i/\y in {1/1.5, 2/0.5, 3/-0.5} {
+    \node[cola, minimum height=15mm] (q\i) at (6.4,\y) {};
+    \draw[msg] (sns.east) -- (q\i.west);
+    \node[s] (c\i) at (10.2,\y) {consumidor};
+    \draw[msg] (q\i.east) -- (c\i.west);
+  }
+  \node[cola, minimum height=15mm, draw=suave, dashed, cylinder body fill=white, cylinder end fill=white] (q4) at (6.4,-1.5) {};
+  \draw[msg, draw=suave, dashed] (sns.east) -- (q4.west);
+  \node[nuevo] (c4) at (10.2,-1.5) {uno nuevo};
+  \draw[msg, draw=suave, dashed] (q4.east) -- (c4.west);
+  \node[etiq, text=suave, anchor=north] at (6.4,-1.95) {otra cola más};
+  \node[anchor=west, align=left, font=\small] at (12.2,0) {una cola por consumidor;\\cada uno borra lo que lee};
+\end{tikzpicture}\end{figura}
+\end{document}

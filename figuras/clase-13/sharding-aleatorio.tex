@@ -1,15 +1,48 @@
 \input{estilo}
-% La opción 2 de la pizarra: el frontend arriba, tres brokers con su base cada
-% uno, y el mensaje (el punto verde) guardado en la primera.
+% Propuesta: el sharding aleatorio en tres paneles iguales —el frontend y los
+% tres shards en el mismo lugar— con las tres operaciones. Send: un shard al
+% azar. Receive: también al azar; si cae en otro shard vuelve vacío (dos de
+% cada tres veces), y cuando encuentra m₁ lo devuelve con un handle opaco que
+% dice dónde estaba, escrito en palabras arriba del panel. Delete: el handle lleva al shard correcto. Agregado del
+% texto: los tres paneles, el handle y los pies.
 \begin{document}
-\begin{figura}\begin{tikzpicture}
-  \node[caja, minimum width=14mm, minimum height=11mm] (f) at (2.4,2.2) {FE};
-  \foreach \i/\x in {1/0, 2/2.4, 3/4.8} {
-    \node[caja, minimum width=12mm, minimum height=11mm] (b\i) at (\x,0) {\var{B}};
-    \draw[msg] (f) -- (b\i);
-    \pic[scale=1.1] at (\x,-2.5) {base};
-    \draw[msg] (b\i.south) -- (\x,-1.15);
-  }
-  \fill[segundo] (0,-2.1) circle (1.4mm);
+\begin{figura}\begin{tikzpicture}[
+    sh/.style={caja, minimum width=10mm, minimum height=9mm},
+    fe/.style={caja, minimum width=14mm, minimum height=9mm},
+  ]
+  \newcommand\msj[1]{\node[draw=segundo, fill=segundo!14, text=segundo, minimum size=4.6mm,
+    inner sep=0pt, font=\scriptsize] at #1 {\var{m}\textsubscript{1}};}
+  % un panel: shards con su base, frontend arriba; \panel{x}{título}{pie}
+  \newcommand\panel[3]{\begin{scope}[xshift=#1cm]
+    \node[fe] (f) at (2.0,2.0) {FE};
+    \foreach \i/\x in {1/0, 2/2.0, 3/4.0} {
+      \node[sh] (b\i) at (\x,0) {\var{B}\textsubscript{\i}};
+      \pic at (\x,-2.05) {base};
+      \draw (b\i.south) -- (\x,-0.95);
+    }
+    \node at (2.0,-2.7) {#2};
+    \node[etiq, text=suave] at (2.0,-3.2) {#3};
+  \end{scope}}
+
+  % send
+  \panel{0}{send}{un shard al azar}
+  \draw[msg] (2.0,1.55) -- (0,0.45);
+  \msj{(0,-1.45)}
+
+  % receive
+  \panel{6.4}{receive}{al azar: dos de cada tres, vacío}
+  \draw[msg, draw=suave] (8.4,1.55) -- (10.4,0.45);
+  \node[etiq, text=acento, anchor=west] at (9.8,1.15) {vacío};
+  \draw[msg] (8.4,1.55) -- (6.4,0.45);
+  \msj{(6.4,-1.45)}
+  \draw[respuesta] (8.4,2.45) -- ++(0,0.5);
+  \node[anchor=south, align=center] at (8.4,2.95) {\var{m}\textsubscript{1} + handle\\[-1pt]{\scriptsize\color{suave}el handle: en qué shard quedó, opaco}};
+
+  % delete
+  \panel{12.8}{delete(handle)}{el handle dice en qué shard está}
+  \draw[msg] (14.8,2.95) -- ++(0,-0.5);
+  \node[anchor=south] at (14.8,2.95) {handle};
+  \draw[msg] (14.8,1.55) -- (12.8,0.45);
+  \node[etiq, text=segundo, font=\scriptsize] at (12.8,-1.45) {borrado};
 \end{tikzpicture}\end{figura}
 \end{document}

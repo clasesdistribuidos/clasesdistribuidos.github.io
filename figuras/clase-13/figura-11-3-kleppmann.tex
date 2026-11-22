@@ -1,52 +1,36 @@
 \input{estilo}
-% La figura 11-3 de Kleppmann tal como está en la pizarra, con los rótulos del
-% libro en inglés: dos topics con sus particiones, dos productores haciendo
-% append al final, y un consumer group con dos consumidores y sus offsets.
-% Debajo, lo que el profesor anotó a mano: send(topic, key, pl) ->
-% hash(key) % N, N las particiones => FIFO por partición.
+% Propuesta: en vez de la figura del libro, lo que el texto saca de ella, del
+% lado del productor. Un topic de tres particiones; el productor manda eventos
+% con su key (el usuario: a, b, c, d, cada uno de un color), hash(key) % 3
+% elige la partición, y los eventos de un mismo usuario quedan juntos y en
+% orden. Entre particiones no hay orden. Los consumidores van en la figura
+% siguiente (consumer group). Agregado del texto: las keys, la función y las
+% dos frases.
 \begin{document}
 \begin{figura}\begin{tikzpicture}[
-    cl/.style={draw=tinta, fill=white, minimum width=36mm, minimum height=7mm, font=\footnotesize},
-    gris/.style={->, draw=suave, line width=0.8pt},
+    ev/.style={draw=#1, fill=#1!14, text=#1, minimum width=7mm, minimum height=7mm, inner sep=0pt,
+      outer sep=0pt, font=\footnotesize, anchor=west},
   ]
-  \def\w{0.5}
-  % una partición: \part{y}{nombre}{celdas}
-  \newcommand\particion[3]{%
-    \node[anchor=east, font=\small] at (1.9,#1) {#2};
-    \foreach \i in {1,...,#3} \node[celda, minimum width=\w cm, minimum height=6mm, anchor=center, font=\scriptsize] at ({2.0+(\i-0.5)*\w},#1) {\i};}
-  \particion{4.0}{Partition 0}{10}
-  \particion{3.0}{Partition 1}{8}
-  \particion{1.8}{Partition 0}{4}
-  \particion{0.8}{Partition 1}{7}
-  \particion{-0.2}{Partition 2}{12}
-  \draw[llave=5pt, draw=tinta] (-0.2,2.7) -- (-0.2,4.3);
-  \node[rotate=90, font=\small] at (-0.65,3.5) {Topic A};
-  \draw[llave=5pt, draw=tinta] (-0.2,-0.5) -- (-0.2,2.1);
-  \node[rotate=90, font=\small] at (-0.65,0.8) {Topic B};
-  % los appends
-  \foreach \x/\y in {7.25/4.0, 7.75/4.0, 5.75/0.8} \node[draw=tinta, dashed, minimum width=\w cm, minimum height=6mm] at (\x,\y) {};
-  \node[cl] (pr1) at (11.4,4.2) {Producer client};
-  \node[cl] (pr2) at (11.4,3.2) {Producer client};
-  \draw[msg] (pr1.west) to[out=170, in=60] (7.25,4.3);
-  \draw[msg] (pr2.west) to[out=180, in=-60] (7.75,3.7);
-  \draw[msg] (pr2.west) to[out=180, in=90] (5.75,1.1);
-  \node[etiq, anchor=south west] at (8.3,4.55) {append};
-  % el consumer group
-  \node[font=\small, anchor=south west] at (9.4,2.05) {Consumer group};
-  \draw[dashed, draw=tinta] (9.4,-1.45) rectangle (13.4,2.0);
-  \node[cl, fill=suave!30] (c1) at (11.4,1.55) {Consumer client};
-  \node[cl, minimum height=9mm, align=center, font=\scriptsize, anchor=north] at (c1.south) {offset for B.0 = 4\\offset for B.1 = 5};
-  \node[cl, fill=suave!30] (c2) at (11.4,-0.35) {Consumer client};
-  \node[cl, font=\scriptsize, anchor=north] at (c2.south) {offset for B.2 = 9};
-  \draw[gris] (3.75,1.5) |- (9.55,1.6);
-  \draw[gris] (4.25,0.5) |- (6.5,0.3) to[out=0, in=180] (9.55,1.4);
-  \draw[gris] (6.25,-0.5) |- (7.0,-0.7) to[out=0, in=180] (9.55,-0.35);
-  \node[etiq, anchor=north] at (6.6,-0.75) {read sequentially};
-  % lo anotado a mano
-  \node[cod, font=\ttfamily\small, anchor=west] (s) at (0,-2.2) {send(topic, key, pl)};
-  \draw[msg] (1.9,-2.5) -- (1.9,-3.1);
-  \node[cod, font=\ttfamily\small, anchor=west] at (1.2,-3.4) {hash(key) \% N};
-  \draw[msg] (3.25,-3.7) -- (3.25,-4.15) node[below, etiq] {particiones};
-  \node[anchor=west] at (5.4,-3.4) {$\Rightarrow$ FIFO por partición};
+  \colorlet{ka}{segundo} \colorlet{kb}{acento} \colorlet{kc}{tinta} \colorlet{kd}{suave!80!black}
+  % un evento: \ev{key}{n}{(x,y)}
+  \newcommand\ev[3]{\node[ev=k#1] at #3 {\var{#1}\textsubscript{#2}};}
+  \node[caja, minimum width=20mm, minimum height=10mm] (p) at (0,0) {productor};
+  \node[cod, anchor=south] at (0,0.55) {send(topic, key, payload)};
+  \node[caja, minimum width=26mm, minimum height=10mm, font=\ttfamily\small] (h) at (3.9,0) {hash(key) \% 3};
+  \draw[msg] (p) -- (h);
+  \foreach \n/\y in {0/1.4, 1/0, 2/-1.4} {
+    \node[etiq, anchor=south west] at (7.3,\y+0.35) {partición \n};
+    \draw[msg] (h.east) -- (7.25,\y);
+    \draw (7.3,\y-0.35) rectangle (12.4,\y+0.35);
+  }
+  % lo que quedó en cada partición
+  \foreach \k/\n/\i in {a/1/0, d/1/1, a/2/2, a/3/3, d/2/4} {\ev{\k}{\n}{({7.3+0.7*\i},1.4)}}
+  \foreach \k/\n/\i in {b/1/0, b/2/1, b/3/2, b/4/3} {\ev{\k}{\n}{({7.3+0.7*\i},0)}}
+  \foreach \k/\n/\i in {c/1/0, c/2/1, c/3/2, c/4/3, c/5/4, c/6/5} {\ev{\k}{\n}{({7.3+0.7*\i},-1.4)}}
+  \draw[->, draw=suave, line width=0.5pt] (7.3,-2.15) -- (12.4,-2.15) node[etiq, text=suave, below left] {orden de llegada};
+  % las dos reglas, alineadas
+  \node[anchor=west, align=left, font=\small] at (12.8,0.7) {la misma key, la misma\\partición: en orden};
+  \node[anchor=west, align=left, font=\small, text=acento] at (12.8,-0.8) {entre particiones,\\no hay orden};
+  \node[anchor=west, font=\small] at (0,-2.9) {FIFO por partición: los eventos de un usuario, en el orden en que ocurrieron};
 \end{tikzpicture}\end{figura}
 \end{document}
