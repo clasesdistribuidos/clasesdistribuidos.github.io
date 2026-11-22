@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""PDF para elegir entre dos versiones de las figuras TikZ de una clase.
+"""PDF para elegir entre las tres opciones de cada figura de una clase.
 
-Cuando se rehace una tanda de figuras ya redibujadas (más simetría, mejor
-alineamiento, más concepto), la versión anterior se guarda en
-figuras/clase-NN/v1/ y la nueva queda en figuras/clase-NN/. Este script arma
-un A4 vertical por figura, en el orden del apunte: arriba el recorte de la
-pizarra y la versión 1, abajo la nueva con la grilla en cm (la que se corrige
-a mano) y al pie qué cambió, sacado de figuras/clase-NN/cambios.json
-({"nombre-de-figura": "texto LaTeX"}).
+Cada figura se redibuja dos veces: la versión fiel a la pizarra, en
+figuras/clase-NN/v1/, y la mejorada a partir del texto de la página y del
+transcript, en figuras/clase-NN/. Este script arma un A4 vertical por figura,
+en el orden del apunte: arriba el recorte de la pizarra y la versión fiel,
+abajo la mejorada con la grilla en cm (la que se corrige a mano) y al pie qué
+cambió, sacado de figuras/clase-NN/cambios.json
+({"nombre-de-figura": "texto LaTeX"}). El usuario elige una de las tres.
 
     python3 scripts/comparar_figuras.py --clase 14
     # -> figuras/salida/clase-14/revision-clase-14-mejoradas.pdf
@@ -41,8 +41,8 @@ PREAMBULO = r"""\documentclass{article}
   \includegraphics[width=\linewidth,height=#3,keepaspectratio]{\archivo}\end{minipage}}
 \newcommand\pagina[5]{%
   {\large\bfseries #1}\par\vspace{0.4cm}
-  \def\archivo{#2}\col{0.48}{pizarra}{5.2cm}\hfill\def\archivo{#3}\col{0.48}{versión 1}{5.2cm}\par\vspace{0.7cm}
-  \def\archivo{#4}\col{1}{mejorada, grilla en cm}{10.5cm}\par\vspace{0.6cm}
+  \def\archivo{#2}\col{0.48}{1. pizarra}{5.2cm}\hfill\def\archivo{#3}\col{0.48}{2. versión fiel}{5.2cm}\par\vspace{0.7cm}
+  \def\archivo{#4}\col{1}{3. versión mejorada, grilla en cm}{10.5cm}\par\vspace{0.6cm}
   {\small #5}\clearpage}
 \begin{document}
 """
@@ -80,7 +80,7 @@ def main():
             recortes = [assets / f"{tex.stem}{ext}" for ext in (".png", ".jpg")]
             recorte = next((r for r in recortes if r.exists()), None)
             if not (anterior and recorte):
-                print(f"  AVISO {tex.stem}: falta la versión 1 o el recorte; queda fuera",
+                print(f"  AVISO {tex.stem}: falta la versión fiel o el recorte; queda fuera",
                       file=sys.stderr)
                 continue
             nota = cambios.get(tex.stem, "")
