@@ -1,0 +1,32 @@
+\input{estilo}
+% Las tres réplicas con los registros apilados de abajo hacia arriba, y a la
+% izquierda el append que escribió cada fila. De los reenvíos del primary
+% queda solo el que falla, el de B a la tercera réplica, que deja ahí el
+% hueco de padding. La fila de B, distinta en las tres, es la región
+% inconsistente; el recuadro que la marca es nuevo.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \def\w{1.5}\def\h{0.62}\def\d{2.6}
+  \newcommand\columna[3]{% x, rol, registros de abajo hacia arriba
+    \fill[relleno] (#1,0) rectangle (#1+\w,5*\h);
+    \draw (#1,0) rectangle (#1+\w,5*\h);
+    \foreach \r [count=\i] in {#3} {
+      \draw (#1,\i*\h) -- (#1+\w,\i*\h);
+      \node[etiq, font=\small] at (#1+\w/2,{(\i-0.5)*\h}) {\r};
+    }
+    \node[etiq, font=\scriptsize, below=3pt] at (#1+\w/2,0) {#2};}
+  \columna{0}{secondary}{A, B, C, B}
+  \columna{\d}{primary}{A, B, C, B}
+  \columna{2*\d}{secondary}{A, , C, B}
+  \begin{scope}
+    \clip (2*\d,\h) rectangle (2*\d+\w,2*\h);
+    \foreach \x in {0,0.16,...,2.2} \draw[suave, line width=0.5pt] (2*\d+\x-0.6,\h) -- (2*\d+\x,2*\h);
+  \end{scope}
+  \draw[msg] (\d+\w+0.1,1.5*\h) -- (2*\d-0.1,1.5*\h) coordinate[pos=0.5] (falla);
+  \pic[scale=0.7] at (falla) {rechazo};
+  \draw[acento, dashed, rounded corners=2pt] (-0.12,\h-0.07) rectangle (2*\d+\w+0.12,2*\h+0.07);
+  \node[etiq, anchor=west, text=acento, align=left] at (2*\d+\w+0.25,1.5*\h) {región\\inconsistente};
+  \foreach \c/\r [count=\i] in {1/A, 1/B, 2/C, 1/B}
+    \node[etiq, anchor=east] at (-0.25,{(\i-0.5)*\h}) {C\textsubscript{\c}\ \texttt{append(\r)}};
+\end{tikzpicture}\end{figura}
+\end{document}

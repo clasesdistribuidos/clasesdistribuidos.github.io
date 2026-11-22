@@ -1,0 +1,22 @@
+\input{estilo}
+% El caso normal: el coordinador y tres chunkservers que le mandan heartbeats.
+% El primary (CS3) falla y el coordinador promueve a CS1. Misma geometría que
+% split-brain, que es la misma escena vista desde el coordinador.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cs/.style={caja, minimum width=13mm, minimum height=9mm},
+    rol/.style={etiq, font=\scriptsize, inner sep=1pt}]
+  \node[caja, minimum width=24mm, minimum height=9mm] (co) at (0,2.6) {coordinador};
+  \foreach \i/\x in {1/-2.8, 2/0, 3/2.8} {
+    \node[cs] (cs\i) at (\x,0) {CS\textsubscript{\i}};
+    \draw[msg] (cs\i.north) -- ($(co.south)+({(\i-2)*0.7},0)$);
+  }
+  \node[etiq, font=\scriptsize, anchor=east] at ($(cs1.north)!0.5!($(co.south)+(-0.7,0)$)+(-0.15,0)$) {heartbeats};
+  \tachar{cs3}
+  \node[rol, below=4pt of cs1, text=suave] (s1) {secondary};
+  \draw[suave] (s1.west) -- (s1.east);
+  \node[rol, below=1pt of s1, text=segundo] {primary};
+  \node[rol, below=4pt of cs2] {secondary};
+  \node[rol, below=4pt of cs3, text=acento] (p3) {primary};
+  \draw[acento] (p3.west) -- (p3.east);
+\end{tikzpicture}\end{figura}
+\end{document}

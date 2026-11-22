@@ -1,0 +1,27 @@
+\input{estilo}
+% Los dos pasos de una lectura: (1) el cliente le pregunta al coordinador y se
+% guarda la respuesta en su caché; (2) va directo al chunkserver más cercano
+% de las tres réplicas (el del medio), y los datos vuelven sin pasar por el coordinador. Las
+% notas solo traen los cuatro mensajes; las tres réplicas, la caché y la
+% flecha gruesa de los datos (la de la figura 1 del paper) se agregan.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[m/.style={cod, font=\ttfamily\scriptsize},
+    cs/.style={caja, minimum width=15mm, minimum height=8mm, font=\footnotesize}]
+  \node[caja, minimum width=26mm, minimum height=9mm] (co) at (0,3.3) {coordinador};
+  \node[caja, fill=white, minimum width=22mm, minimum height=11mm, font=\footnotesize] (c) at (0,0) {cliente};
+  \node[caja, minimum width=22mm, minimum height=5.5mm, font=\scriptsize, anchor=south, outer sep=0pt] (k) at (c.north) {caché};
+  \node[cs, draw=suave, text=suave] (r1) at (6.0,1.0) {CS\textsubscript{1}};
+  \node[cs] (r2) at (6.0,0) {CS\textsubscript{2}};
+  \node[cs, draw=suave, text=suave] (r3) at (6.0,-1.0) {CS\textsubscript{3}};
+  \draw[llave=5pt, draw=suave] ($(r1.north east)+(0.2,0)$) -- ($(r3.south east)+(0.2,0)$)
+    node[midway, right=7pt, etiq] {réplicas};
+  % 1: al coordinador
+  \draw[msg] ($(k.north)+(-0.35,0)$) -- node[m, left] {(file name, chunk index)} ($(co.south)+(-0.35,0)$);
+  \draw[respuesta] ($(co.south)+(0.35,0)$) -- node[m, right, align=left] {(chunk handle,\\{[locations]})} ($(k.north)+(0.35,0)$);
+  \node[paso] at ($(co.south)!0.5!(k.north)$) {1};
+  % 2: al más cercano
+  \draw[msg] ($(c.east)+(0,0.25)$) -- node[m, above] {(chunk handle, byte range)} ($(r2.west)+(0,0.25)$);
+  \draw[datos] ($(r2.west)+(0,-0.25)$) -- node[m, below] {bytes} ($(c.east)+(0,-0.25)$);
+  \node[paso] at ($(c.east)!0.5!(r2.west)$) {2};
+\end{tikzpicture}\end{figura}
+\end{document}

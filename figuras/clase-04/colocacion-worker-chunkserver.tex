@@ -1,0 +1,24 @@
+\input{estilo}
+% El worker de MapReduce y el chunkserver en el mismo host físico, con los
+% cuatro pasos numerados: (1) el master le pregunta al coordinador dónde están
+% los chunks, (2) le asigna el trabajo al worker, (3) el worker le pregunta al
+% coordinador por los chunks, (4) el worker lee del chunkserver local. Los
+% chunks se ven en el disco, y el rótulo del host va afuera.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[b/.style={caja, align=center, font=\footnotesize, minimum width=26mm, minimum height=10mm},
+    n/.style={paso, fill=white}]
+  \node[b] (mr) at (0,4.7) {master de\\MapReduce};
+  \node[b] (co) at (5.2,4.7) {coordinador\\de GFS};
+  \draw[marco] (-1.4,3.2) rectangle (6.6,-1.9);
+  \node[etiq, anchor=north west] at (-1.4,-1.95) {host físico};
+  \node[b, minimum height=14mm, fill=white] (w) at (0,1.6) {worker de\\MapReduce};
+  \node[b, minimum height=14mm, fill=white] (cs) at (5.2,1.6) {chunkserver};
+  \pic at (5.2,-1.55) {base};
+  \foreach \y in {-1.35,-1.1,-0.85} \draw[fill=white] (4.97,\y) rectangle (5.43,\y+0.18);
+  \draw (cs.south) -- (5.2,-0.3);
+  \draw[msg] (mr) -- node[n, midway] {1} (co);
+  \draw[msg] (mr) -- node[n, midway] {2} (w);
+  \draw[msg] (w.north east) -- node[n, pos=0.5] {3} (co.south west);
+  \draw[msg] (w) -- node[n, midway] {4} (cs);
+\end{tikzpicture}\end{figura}
+\end{document}

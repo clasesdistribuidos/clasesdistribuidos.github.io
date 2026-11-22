@@ -1,0 +1,23 @@
+\input{estilo}
+% Cada cliente le manda su write a las dos réplicas por su cuenta. El número
+% en la punta de cada flecha es el orden de llegada a ese chunkserver; arriba,
+% con qué valor queda x en cada uno. Los writes van con la notación del texto,
+% write(x, 1), debajo de cada cliente, y el color dice de qué cliente es cada
+% flecha.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cs/.style={caja, minimum width=13mm, minimum height=9mm},
+    n/.style={paso, fill=white}]
+  \node[cs] (cs1) at (0,3) {CS\textsubscript{1}};
+  \node[cs] (cs2) at (4.4,3) {CS\textsubscript{2}};
+  \node[caja, fill=white] (c1) at (0,0) {C\textsubscript{1}};
+  \node[caja, fill=white] (c2) at (4.4,0) {C\textsubscript{2}};
+  \node[cod, below=3pt of c1] {write(x, 1)};
+  \node[cod, below=3pt of c2, text=segundo] {write(x, 2)};
+  \draw[msg] (c1) -- node[n, pos=0.78] {1} (cs1);
+  \draw[msg] (c1.north east) -- node[n, pos=0.82] {2} (cs2.south west);
+  \draw[msg, draw=segundo] (c2) -- node[n, pos=0.78, draw=segundo, text=segundo] {1} (cs2);
+  \draw[msg, draw=segundo] (c2.north west) -- node[n, pos=0.82, draw=segundo, text=segundo] {2} (cs1.south east);
+  \node[etiq, above=4pt of cs1, text=acento] {\var{x} = 2};
+  \node[etiq, above=4pt of cs2, text=acento] {\var{x} = 1};
+\end{tikzpicture}\end{figura}
+\end{document}

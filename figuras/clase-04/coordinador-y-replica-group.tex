@@ -1,0 +1,34 @@
+\input{estilo}
+% El coordinador con su estructura de nombres adentro (archivo, chunks y, para
+% el chunk 3, los chunkservers que lo tienen, con el primary marcado) y, abajo,
+% el replica group de ese chunk mandándole heartbeats. El primary lleva borde
+% doble, como el líder en el resto del apunte.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cs/.style={caja, minimum width=13mm, minimum height=9mm},
+    rol/.style={etiq, font=\scriptsize}, h/.style={etiq, font=\footnotesize, anchor=west, inner sep=1.5pt}]
+  % la estructura de nombres
+  \node[h] (f) at (-2.75,4.35) {archivo};
+  \foreach \k/\y in {1/4.35, 2/3.85, 3/3.35} {
+    \node[h] (k\k) at (-0.95,\y) {chunk \k};
+    \draw (f.east) ++(0.05,0) -- ++(0.15,0) |- (k\k.west);
+  }
+  \foreach \k/\y in {1/3.85, 2/3.35, 3/2.85} {
+    \node[h] (c\k) at (1.05,\y) {CS\textsubscript{\k}};
+    \draw (k3.east) ++(0.05,0) -- ++(0.15,0) |- (c\k.west);
+  }
+  \node[h, font=\scriptsize] (pr) at (c2.east) {primary};
+  \node[marco, fit=(f)(k1)(c3)(pr), inner xsep=4mm, inner ysep=3mm] (co) {};
+  \node[etiq, anchor=south west] at (co.north west) {coordinador};
+  % el replica group
+  \node[cs] (cs1) at (-2.4,0) {CS\textsubscript{1}};
+  \node[cs, double=relleno, double distance=1.2pt] (cs2) at (0,0) {CS\textsubscript{2}};
+  \node[cs] (cs3) at (2.4,0) {CS\textsubscript{3}};
+  \foreach \i in {1,2,3} \draw[msg] (cs\i.north) -- ($(co.south)+({(\i-2)*0.7},0)$);
+  \node[etiq, font=\scriptsize, anchor=east] at ($(cs1.north)!0.5!($(co.south)+(-0.7,0)$)+(-0.15,0)$) {heartbeats};
+  \foreach \i/\r in {1/secondary, 2/primary, 3/secondary} \node[rol, below=3pt of cs\i] (r\i) {\r};
+  \begin{scope}[on background layer]
+    \node[draw=suave, dashed, rounded corners=3mm, fit=(cs1)(cs3)(r1)(r3), inner sep=2.5mm] (g) {};
+  \end{scope}
+  \node[etiq, anchor=north east] at (g.south east) {replica group del chunk 3};
+\end{tikzpicture}\end{figura}
+\end{document}

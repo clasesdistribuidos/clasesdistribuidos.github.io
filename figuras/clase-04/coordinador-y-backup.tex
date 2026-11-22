@@ -1,0 +1,15 @@
+\input{estilo}
+% El coordinador y su backup en standby, dos máquinas iguales: cada una con su
+% log, y el log del coordinador viajando por la red al del standby. Sin las
+% tablas en memoria de la pizarra, para que se lea solo el envío del log.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[e/.style={draw=tinta, fill=white, minimum width=4.5mm, minimum height=4mm, inner sep=0pt, outer sep=0pt}]
+  \foreach \m/\x/\r in {c/0/coordinador, b/5.6/standby} {
+    \node[marco, minimum width=30mm, minimum height=19mm] (\m) at (\x,0) {};
+    \foreach \i in {1,...,5} \node[e] (\m\i) at ({\x+(\i-3)*0.45},-0.1) {};
+    \node[etiq, font=\scriptsize, above=2pt of \m3] {log};
+    \node[etiq, below=3pt of \m] {\r};
+  }
+  \draw[msg] (c5.east) -- (b1.west);
+\end{tikzpicture}\end{figura}
+\end{document}
