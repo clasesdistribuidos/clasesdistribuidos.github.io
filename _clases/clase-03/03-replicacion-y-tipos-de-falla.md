@@ -14,7 +14,7 @@ Qué significa que un sistema esté replicado se explica mejor por contraste. En
   <img src="{{ '/assets/clase-03/replicas-desincronizadas.svg' | relative_url }}" alt="Tres réplicas con el mismo dato y una que se desincroniza">
   <figcaption>
     <span class="figura-label">Figura</span>
-    tres máquinas con el mismo dato x = 1 y una flecha que le entrega x = 2 a una sola, marcando la desincronización
+    réplicas desincronizadas: tres réplicas del mismo dato, x = 1, y una escritura x = 2 que le llega a una sola
     <span class="figura-ref">pizarra pág. 3 / notas pág. 2</span>
   </figcaption>
 </figure>
@@ -31,7 +31,7 @@ Y hay un giro importante: el problema, de aquí en adelante, no va a ser que el 
   <img src="{{ '/assets/clase-03/tipos-de-falla.svg' | relative_url }}" alt="El árbol de tipos de falla">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el árbol de tipos de falla — fail-stop, que sí vamos a tratar, y bugs o fallas bizantinas, que no
+    los tipos de falla: fail-stop, que puede ser una máquina caída o una partición de red y es la que vamos a tratar, y las bizantinas, que no
     <span class="figura-ref">pizarra pág. 3 / notas pág. 2</span>
   </figcaption>
 </figure>

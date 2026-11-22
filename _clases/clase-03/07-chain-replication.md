@@ -30,10 +30,10 @@ Hay algo aquí que resulta llamativo: el request se le envía a un nodo y el res
 ¿Cómo se resuelve? Los detalles finos los dejamos fuera del alcance, porque cada implementación determinará cómo hacerlo. Pero típicamente el cliente mantiene dos conexiones abiertas, una con el head y otra con el tail, y asumamos que ninguno falla. Con esa doble conexión la biblioteca que usamos envía las escrituras al head y recibe los **acknowledge** del tail. Solo cuando recibe ese ack la escritura está confirmada.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-03/chain-replication.svg' | relative_url }}" alt="La cadena head, medio y tail, con un cliente en cada extremo">
+  <img src="{{ '/assets/clase-03/chain-replication.svg' | relative_url }}" alt="La cadena head, medio y tail, con dos clientes">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la cadena head → medio → tail, con un cliente que escribe al head y recibe el acknowledge del tail, y un segundo cliente que lee del tail
+    chain replication: la cadena head, medio y tail; C₀ escribe en el head y recibe el ack del tail, y C₁ lee del tail
     <span class="figura-ref">pizarra pág. 8 / notas pág. 5</span>
   </figcaption>
 </figure>
@@ -78,7 +78,7 @@ El flujo de información, en realidad, es más rico de lo que veníamos suponien
   <img src="{{ '/assets/clase-03/fallas-de-la-cadena.svg' | relative_url }}" alt="Los tres casos de falla de la cadena">
   <figcaption>
     <span class="figura-label">Figura</span>
-    los tres casos de falla, uno debajo del otro — falla el head y el segundo se promueve; falla el tail y el del medio lo reemplaza; falla el del medio y se lo omite, con el head consultándole al tail su versión
+    las fallas de la cadena: si falla el head, se promueve el segundo; si falla el tail, el del medio pasa a ser el tail; si falla el del medio, se lo saltea y el head le pregunta su versión al tail para reenviarle lo que falte
     <span class="figura-ref">pizarra pág. 8 / notas pág. 5</span>
   </figcaption>
 </figure>
@@ -93,7 +93,7 @@ El asunto es que un nodo recién incorporado no tiene nada y se tiene que poner 
   <img src="{{ '/assets/clase-03/agregar-un-nodo.svg' | relative_url }}" alt="Un nodo nuevo al final de la cadena">
   <figcaption>
     <span class="figura-label">Figura</span>
-    un nodo nuevo al final de la cadena, recibiendo primero un snapshot y después el log hasta alcanzar la versión del tail actual
+    agregar un nodo: el nuevo tail recibe primero un snapshot y después el log, hasta alcanzar la versión del tail actual, v = 10; recién entonces le da el ack al cliente
     <span class="figura-ref">pizarra pág. 9 / notas pág. 6</span>
   </figcaption>
 </figure>

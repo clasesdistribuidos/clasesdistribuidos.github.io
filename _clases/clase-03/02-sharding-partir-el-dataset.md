@@ -11,10 +11,10 @@ El sharding es parecido al particionado de un cómputo en muchas partes, pero co
 Eso es concretamente el sharding. Esa tabla se particiona de alguna forma en fragmentos, y cada fragmento termina en una máquina independiente. Y eso nos da directamente el escalado horizontal: cuando el sistema crece, agregamos más máquinas y repartimos los datos entre ellas.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-03/dataset-shardeado.svg' | relative_url }}" alt="Un dataset partido en tres, con una máquina tachada">
+  <img src="{{ '/assets/clase-03/dataset-shardeado.svg' | relative_url }}" alt="Un dataset partido en tres, con una máquina caída">
   <figcaption>
     <span class="figura-label">Figura</span>
-    un dataset como columna alta dividido en tres partes, cada una con una flecha hacia su máquina; una máquina tachada marca la falla parcial
+    sharding: el dataset, una tabla lógica, partido en tres fragmentos, cada uno en su máquina; cuando una se cae se pierde solo su fragmento, una falla parcial
     <span class="figura-ref">notas pág. 1 / pizarra pág. 2</span>
   </figcaption>
 </figure>
@@ -29,7 +29,7 @@ Pero cualquiera sea el criterio, tiene que haber un mecanismo de nombres, y cada
   <img src="{{ '/assets/clase-03/mapeo-dato-ubicacion.svg' | relative_url }}" alt="El mapeo de un dato a su ubicación física">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el mapeo de un dato a su ubicación física, con una flecha punteada hacia &quot;tabla&quot; y &quot;función&quot;
+    el mapeo de un dato a su ubicación física: lo resuelve una tabla o una función, y lleva a una de las máquinas
     <span class="figura-ref">notas pág. 1 / pizarra pág. 2</span>
   </figcaption>
 </figure>

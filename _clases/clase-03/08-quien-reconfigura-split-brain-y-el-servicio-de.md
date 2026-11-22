@@ -33,7 +33,7 @@ Lo que termina ocurriendo es que esto, que conceptualmente era un único sistema
   <img src="{{ '/assets/clase-03/split-brain.svg' | relative_url }}" alt="La cadena partida al medio por una partición de red">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la cadena partida al medio por una partición de red, un data center de cada lado y un cliente operando contra cada mitad: dos sistemas independientes evolucionando por separado
+    split-brain: una partición de red corta la cadena entre DC1 y DC2, y cada mitad se asigna sola el rol que le falta y atiende a su cliente; quedan dos sistemas independientes
     <span class="figura-ref">pizarra pág. 9 / notas pág. 6</span>
   </figcaption>
 </figure>
@@ -50,7 +50,7 @@ Por rudimentaria que fuera nuestra versión original, la del primary con sus bac
   <img src="{{ '/assets/clase-03/servicio-de-configuracion.svg' | relative_url }}" alt="La cadena con el servicio de configuración al costado">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la cadena con el servicio de configuración al costado, que no recibe los datos pero guarda la metadata de cómo se conecta cada nodo y les comunica la nueva configuración
+    el servicio de configuración: no está en el camino de los datos, guarda la metadata en su propio storage y le comunica la configuración nueva a la mitad que quedó de su lado; la otra mitad no da ack y queda no disponible
     <span class="figura-ref">pizarra pág. 9 / notas pág. 7</span>
   </figcaption>
 </figure>
@@ -79,7 +79,7 @@ Y de paso queda claro por qué esos números son impares. Con cinco la mayoría 
   <img src="{{ '/assets/clase-03/raft-como-servicio-de-configuracion.svg' | relative_url }}" alt="El servicio de configuración con cinco nodos de Raft">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el servicio de configuración con cinco nodos de Raft, atravesado por una partición que deja tres de un lado y dos del otro; la mayoría continúa operando
+    Raft como servicio de configuración: cinco nodos que una partición deja tres de un lado y dos del otro; la mayoría sigue operando
     <span class="figura-ref">pizarra pág. 9 / notas pág. 7</span>
   </figcaption>
 </figure>
