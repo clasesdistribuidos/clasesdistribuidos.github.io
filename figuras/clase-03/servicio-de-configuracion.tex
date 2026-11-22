@@ -1,0 +1,28 @@
+\input{estilo}
+% Mejorada: el servicio de configuración no está en el camino de los datos:
+% le llegan solo flechas de control (gris, punteadas), y guarda la metadata
+% en su propio storage. Quedó del lado de los dos últimos, les comunica la
+% configuración nueva (H y T en verde) y la otra mitad, sin ack, queda no
+% disponible.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[ctl/.style={->, dashed, draw=suave, line width=0.5pt}]
+  \node[nodo, draw=suave] (n1) at (0,0) {};
+  \node[nodo, draw=suave] (n2) at (2.2,0) {};
+  \node[nodo] (n3) at (4.4,0) {\textcolor{segundo}{H}};
+  \node[nodo] (n4) at (6.6,0) {\textcolor{segundo}{T}};
+  \draw[msg, draw=suave] (n1) -- (n2);
+  \draw[msg, draw=suave] (n2) -- (n3);
+  \draw[msg] (n3) -- (n4);
+  \node[caja, minimum width=9mm, minimum height=8mm] (c) at (-0.8,-1.9) {\var{C}};
+  \draw[msg] (c.north) -- node[etiq, left] {escritura} (n1.south west);
+  \node[etiq, text=suave, below=3pt] at (c.south) {sin ack: no disponible};
+  % la partición
+  \pic at (3.3,0) {particion};
+  % el servicio, con su storage de metadata
+  \node[caja, minimum width=16mm, minimum height=13mm] (cfg) at (5.5,-2.3) {};
+  \pic[scale=0.55] at ($(cfg.center)+(0,-0.3)$) {base};
+  \node[etiq, align=center, below=3pt] at (cfg.south) {servicio de configuración};
+  \draw[ctl] (cfg.north west) ++(0.3,0) -- (n3.south);
+  \draw[ctl] (cfg.north east) ++(-0.3,0) -- (n4.south) node[etiq, text=suave, pos=0.5, right=5pt] {configuración};
+\end{tikzpicture}\end{figura}
+\end{document}

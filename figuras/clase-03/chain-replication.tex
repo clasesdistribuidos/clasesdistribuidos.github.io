@@ -1,0 +1,20 @@
+\input{estilo}
+% Mejorada: los tres eslabones con nombre (head, medio, tail) y los dos
+% clientes con su rol: el que escribe tiene dos conexiones, al head y al tail.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cli/.style={caja, minimum width=9mm, minimum height=8mm}]
+  \node[nodo] (h) at (0,0) {};
+  \node[nodo] (m) at (2.8,0) {};
+  \node[nodo] (t) at (5.6,0) {};
+  \foreach \n/\t in {h/head, m/medio, t/tail} \node[etiq, above=3pt] at (\n.north) {\t};
+  \draw[msg] (h) -- (m);
+  \draw[msg] (m) -- (t);
+  \node[cli] (c) at (2.8,-2.7) {\var{C}\textsubscript{0}};
+  \node[etiq, below=3pt] at (c.south) {escritor};
+  \draw[msg] (c.north west) -- node[etiq, below left] {escritura} (h.south east);
+  \draw[respuesta] (t.south west) -- node[etiq, below right] {ack} (c.north east);
+  \node[cli] (r) at (7.2,-2.7) {\var{C}\textsubscript{1}};
+  \node[etiq, below=3pt] at (r.south) {lector};
+  \draw[msg] (r.north) -- node[etiq, above right] {lectura} (t.south east);
+\end{tikzpicture}\end{figura}
+\end{document}

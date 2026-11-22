@@ -1,0 +1,24 @@
+\input{estilo}
+% Mejorada: el orden que le quedó a cada máquina va en una tira de dos
+% celdas, como el log; o1 en tinta y o2 en verde, en las flechas y en las
+% celdas, sin repetir el rótulo en cada flecha.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cli/.style={caja, minimum width=9mm, minimum height=8mm},
+    celda/.append style={minimum height=6.5mm}]
+  \newcommand\opn[1]{\var{o}\textsubscript{#1}}
+  \foreach \x/\i in {0/1, 3.6/2} {
+    \pic at (\x,2.6) {base};
+    \node[font=\small] at (\x,3.1) {\var{S}\textsubscript{\i}};
+  }
+  \tiracontorno[0.6]{a}{(-0.6,3.95)}{\opn{1}, \textcolor{segundo}{\opn{2}}}
+  \tiracontorno[0.6]{b}{(3.0,3.95)}{\textcolor{segundo}{\opn{2}}, \opn{1}}
+  \node[cli] (c1) at (0,0) {\var{C}\textsubscript{1}};
+  \node[cli] (c2) at (3.6,0) {\var{C}\textsubscript{2}};
+  \node[font=\small, below=3pt] at (c1.south) {envía \opn{1}};
+  \node[font=\small, below=3pt, text=segundo] at (c2.south) {envía \opn{2}};
+  \draw[msg] (c1.north) -- (0,2.45);
+  \draw[msg, draw=segundo] (c2.north) -- (3.6,2.45);
+  \draw[msg, draw=segundo] (c2.north west) -- (0.35,2.45);
+  \draw[msg] (c1.north east) -- (3.25,2.45);
+\end{tikzpicture}\end{figura}
+\end{document}

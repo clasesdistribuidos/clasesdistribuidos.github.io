@@ -1,0 +1,19 @@
+\input{estilo}
+% Mejorada: la columna es la tabla lógica, partida en tres fragmentos; el
+% fragmento de la máquina caída queda en rojo claro, y el rótulo dice que la
+% falla es parcial: las otras dos siguen.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \fill[acento!10] (0,0) rectangle (1.6,1.8);
+  \fill[relleno] (0,1.8) rectangle (1.6,5.4);
+  \draw (0,0) rectangle (1.6,5.4);
+  \foreach \y in {1.8, 3.6} \draw[dashed] (-0.4,\y) -- (2.0,\y);
+  \node[etiq, align=center, below=3pt] at (0.8,0) {dataset\\(tabla lógica)};
+  \foreach \y in {4.5, 2.7, 0.9} {
+    \pic at (4.6,{\y-0.55}) {base};
+    \draw[msg] (1.7,\y) -- (3.95,\y);
+  }
+  \draw[acento, line width=1.4pt] (3.9,0.15) -- (5.3,1.75) (3.9,1.75) -- (5.3,0.15);
+  \node[etiq, text=acento, anchor=west] at (5.5,0.9) {falla parcial};
+\end{tikzpicture}\end{figura}
+\end{document}

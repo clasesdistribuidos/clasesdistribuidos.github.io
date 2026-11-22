@@ -1,0 +1,20 @@
+\input{estilo}
+% Mejorada: el log con operaciones adentro; las réplicas, iguales, consumen
+% del mismo log y la llave les pone el nombre del texto, active-active.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[celda/.append style={minimum height=6.5mm, font=\footnotesize}]
+  \draw[marco] (0,0) rectangle (5.4,2.2);
+  \tiracontorno[0.6]{l}{(0.6,0.8)}{\var{o}\textsubscript{1}, \var{o}\textsubscript{2}, \var{o}\textsubscript{3},
+    \var{o}\textsubscript{4}, \var{o}\textsubscript{5}, , }
+  \node[font=\small, below=3pt] at (2.7,0) {Kafka};
+  \foreach \y [count=\i] in {2.6, 1.1, -0.4} {
+    \pic at (7.6,\y-0.45) {base};
+    \draw[msg] (5.5,{1.1-0.12*(\i-2)}) -- (7.0,\y);
+  }
+  \node[font=\small] at (7.6,-1.25) {$\vdots$};
+  \draw[llave=6pt] (8.4,2.8) -- (8.4,-1.0) node[midway, right=8pt, font=\small, text=tinta, align=left]
+    {réplicas iguales\\(active-active)};
+  \node[caja, minimum width=9mm, minimum height=8mm] (c) at (-2.4,1.1) {\var{C}};
+  \draw[msg] (c.east) -- node[etiq, above] {escrituras} (0,1.1);
+\end{tikzpicture}\end{figura}
+\end{document}

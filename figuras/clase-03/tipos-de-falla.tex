@@ -1,0 +1,16 @@
+\input{estilo}
+% Mejorada: una taxonomía con llaves, como se escriben las clasificaciones.
+% Fail-stop se abre en sus dos casos, que el texto agrupa porque desde afuera
+% no se distinguen.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[tax/.style={llave=#1, draw=tinta}]
+  \node[font=\small, anchor=east] at (0,0) {tipo de falla};
+  \draw[tax=7pt] (0.25,-1.0) -- (0.25,1.0);
+  \node[font=\small, anchor=west] (fs) at (0.55,0.75) {fail-stop};
+  \node[font=\small, anchor=west] at (0.55,-0.75) {bizantinas};
+  \coordinate (ll) at ($(fs.east)+(0.25,0)$);
+  \draw[tax=5pt] ($(ll)+(0,-0.5)$) -- ($(ll)+(0,0.5)$);
+  \node[etiq, anchor=west] at ($(ll)+(0.25,0.3)$) {máquina caída};
+  \node[etiq, anchor=west] at ($(ll)+(0.25,-0.3)$) {partición de red};
+\end{tikzpicture}\end{figura}
+\end{document}

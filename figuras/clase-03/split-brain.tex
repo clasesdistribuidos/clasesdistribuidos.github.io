@@ -1,0 +1,26 @@
+\input{estilo}
+% Mejorada: cada data center es un recuadro, con el rótulo afuera; cada mitad
+% tiene su head y su tail, y en rojo el rol que se asignó sola por error: dos
+% sistemas independientes.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cli/.style={caja, minimum width=8mm, minimum height=7mm}]
+  \node[nodo] (n1) at (0,0) {H};
+  \node[nodo] (n2) at (2.4,0) {\textcolor{acento}{T}};
+  \node[nodo] (n3) at (5.6,0) {\textcolor{acento}{H}};
+  \node[nodo] (n4) at (8.0,0) {T};
+  \draw[msg] (n1) -- (n2);
+  \draw[msg, draw=suave] (n2) -- (n3);
+  \draw[msg] (n3) -- (n4);
+  \draw[marco, draw=suave] (-0.9,-3.4) rectangle (3.3,0.8);
+  \draw[marco, draw=suave] (4.7,-3.4) rectangle (8.9,0.8);
+  \node[font=\small, above=2pt] at (1.2,0.8) {DC1};
+  \node[font=\small, above=2pt] at (6.8,0.8) {DC2};
+  \pic at (4.0,0.0) {particion};
+  \node[etiq, text=acento] at (4.0,-1.0) {partición};
+  \foreach \c/\a/\b/\x/\i in {c1/n1/n2/1.2/1, c2/n3/n4/6.8/2} {
+    \node[cli] (\c) at (\x,-2.6) {\var{C}\textsubscript{\i}};
+    \draw[msg] (\c.north west) -- (\a.south);
+    \draw[respuesta] (\b.south) -- node[etiq, below right] {ack} (\c.north east);
+  }
+\end{tikzpicture}\end{figura}
+\end{document}
