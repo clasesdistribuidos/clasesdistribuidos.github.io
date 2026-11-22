@@ -91,14 +91,13 @@ write(address, buffer)
 read(address, buffer)
 ```
 
-<figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/memoria-dispositivos.png' | relative_url }}" alt="Ejemplos de dispositivos de memoria, con la interfaz write/read anotada al lado">
-  <figcaption>
-    <span class="figura-label">Figura</span>
-    ejemplos de dispositivos de memoria, de la RAM y la flash a los sistemas de más alto nivel — RAID, file system, base de datos — con la interfaz write/read al costado
-    <span class="figura-ref">notas pág. 2 / pizarra pág. 2</span>
-  </figcaption>
-</figure>
+| Dispositivos de memoria de hardware | Sistemas de memoria de más alto nivel |
+|:--|:--|
+| chip de RAM | RAID |
+| memoria flash | file system |
+| cinta magnética | sistema de gestión de bases de datos |
+| disco magnético | |
+| CD-R y DVD-R | |
 
 En nuestro estudio, lo más parecido a esta abstracción van a ser los sistemas de storage: sistemas en los cuales queremos escribir bytes y queremos que el sistema nos los devuelva en el mismo orden en que los guardamos.
 
@@ -107,10 +106,10 @@ La segunda abstracción es el intérprete. Lo primero que uno piensa al escuchar
 ¿Y qué hace un intérprete? Tiene un entorno en el cual se ejecuta, tiene un lugar donde están las instrucciones, toma una instrucción, la interpreta y guarda el resultado en la memoria. En nuestro caso va a ser el elemento que hace cosas.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/interprete-estructura.png' | relative_url }}" alt="Diagrama de la estructura de un intérprete abstracto">
+  <img src="{{ '/assets/clase-01/interprete-estructura.svg' | relative_url }}" alt="El ciclo del intérprete, con la memoria al costado">
   <figcaption>
     <span class="figura-label">Figura</span>
-    estructura del intérprete abstracto: la referencia a la instrucción, el repertorio y la referencia al entorno, con el ciclo de traer una instrucción, interpretarla y volver a empezar
+    el intérprete y su ciclo —traer la próxima instrucción, interpretarla y volver a empezar—, con la memoria al costado, de donde salen las instrucciones y donde se leen y escriben los datos
     <span class="figura-ref">notas pág. 2 / pizarra pág. 3</span>
   </figcaption>
 </figure>
@@ -135,7 +134,7 @@ Los enlaces de comunicación sirven, entre otras cosas, para conectar dos comput
 De las tres abstracciones, la última merece más detenimiento, porque los enlaces son un elemento central de esta materia. En abstracto, un enlace de comunicación es esto: un nodo, otro nodo, y la línea que los une. El enlace es esa línea, y nada más.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/enlace-dos-nodos.png' | relative_url }}" alt="Dos nodos unidos por un enlace de comunicación">
+  <img src="{{ '/assets/clase-01/enlace-dos-nodos.svg' | relative_url }}" alt="Dos nodos unidos por un enlace de comunicación">
   <figcaption>
     <span class="figura-label">Figura</span>
     dos nodos unidos por un enlace de comunicación
@@ -165,10 +164,10 @@ Encima viene la capa de red, la que hace que las cosas lleguen de un lugar a otr
 Y arriba de todo, lo que a nosotros como programadores nos interesa son las tres capas superiores tomadas juntas, que podríamos llamar end to end, porque ese es típicamente el problema que vamos a resolver. A este nivel no nos interesa tanto cómo son los frames de Ethernet ni cómo funciona el ruteo. A nosotros nos interesa que una máquina, que puede estar en cualquier lugar del mundo, pueda mandarle un mensaje a otra máquina que está en otro lugar del mundo. Nuestros canales de comunicación viven ahí: eso es la materia.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/capas-osi-tcpip-materia.png' | relative_url }}" alt="Las pilas de capas de OSI, TCP/IP y el modelo de tres capas de la materia">
+  <img src="{{ '/assets/clase-01/capas-osi-tcpip-materia.svg' | relative_url }}" alt="Las pilas de capas de OSI, TCP/IP y el modelo de tres capas de TA050">
   <figcaption>
     <span class="figura-label">Figura</span>
-    las tres pilas de capas comparadas — OSI numerada del 1 al 7, TCP/IP con su capa de acceso a la red, y el modelo de tres capas de la materia: end to end, red y enlace
+    las tres pilas de capas comparadas — OSI numerada del 1 al 7, TCP/IP con su capa de acceso a la red, y el modelo de tres capas de TA050: end to end, red y enlace
     <span class="figura-ref">notas pág. 2 / pizarra pág. 4</span>
   </figcaption>
 </figure>

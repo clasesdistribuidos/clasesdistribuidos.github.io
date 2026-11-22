@@ -189,8 +189,9 @@ Bright, con los rótulos en mayúsculas y las variables en oblicua minúscula.
 Las fuentes están en `figuras/fuentes/`, así que compila sin instalar nada.
 
 Se adopta figura por figura, cuando el usuario elige el redibujo. Hoy usan SVG
-la sección 1 de la clase 1, la clase 11 y la clase 14 (salvo
-`low-watermark-lag`, un gráfico de datos medidos del paper). El resto sigue
+la clase 1 (salvo `clusters`, `titanic-inundacion` y `aws-s3-comunicado`, que
+son fotos y capturas), la clase 11 y la clase 14 (salvo `low-watermark-lag`,
+un gráfico de datos medidos del paper). El resto sigue
 con el recorte, aunque su `.tex` exista.
 
 El recorte no se borra al redibujar: queda en `assets/` como referencia, y

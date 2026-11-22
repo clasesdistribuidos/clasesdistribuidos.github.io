@@ -22,10 +22,10 @@ El servidor de tiempo muestra la mecánica completa, pero es un ejemplo abstract
 Aquí el cliente es el browser que cada uno tiene delante: Chrome, Safari, Firefox. Y el servidor puede ser Apache, o Nginx, o alguno de los otros servidores disponibles. Lo interesante es que los dos mensajes se llaman exactamente como los veníamos llamando: el request se llama request y el response se llama response. Aquí no hubo que inventarles nombres distintos, porque el protocolo ya los usa.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/http-cliente-servidor.png' | relative_url }}" alt="Cliente y servidor HTTP unidos por un request y un response">
+  <img src="{{ '/assets/clase-01/http-cliente-servidor.svg' | relative_url }}" alt="Cliente y servidor HTTP unidos por un request y un response">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el cliente —Chrome, Safari— y el servidor —Apache, Nginx— unidos por un request de ida y un response de vuelta
+    el cliente y el servidor unidos por un request de ida y un response de vuelta
     <span class="figura-ref">notas pág. 5 / pizarra pág. 14</span>
   </figcaption>
 </figure>
@@ -49,10 +49,10 @@ Lo que típicamente tiene una arquitectura de estas es, en vez de un único serv
 La respuesta habitual es que hay un dispositivo especial, que corre un sistema diferente del de las otras, y que es la que recibe la conexión. Vale la pena ser preciso: el socket, en realidad, es entre esa máquina especial y el cliente. Esa máquina, una vez que recibe la conexión, elige una de las máquinas de atrás —por ejemplo, al azar— y le manda el pedido. Ese es el ejemplo típico de lo que se llama un **load balancer**, un balanceador de carga.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/load-balancer.png' | relative_url }}" alt="Cliente, load balancer, servidores HTTP y base de datos">
+  <img src="{{ '/assets/clase-01/load-balancer.svg' | relative_url }}" alt="Cliente, load balancer, servidores HTTP y base de datos">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el cliente que entra por internet, el load balancer que recibe la conexión, los servidores HTTP detrás de él, y la base de datos a la que todos consultan
+    el usuario que entra por internet, el load balancer que recibe la conexión y elige uno de los servidores HTTP de atrás, y la base de datos a la que todos consultan por SQL
     <span class="figura-ref">notas pág. 5 / pizarra pág. 14</span>
   </figcaption>
 </figure>
@@ -68,10 +68,10 @@ Si queremos hilar más fino, se ve enseguida que algo quedó a medio hacer. Esca
 Una de las posibles maneras de escalar la base de datos es con una estructura master-slave. A la base de datos original se le ponen réplicas: a la original se la suele llamar master, y a las otras, slaves o readers. La regla es fácil de enunciar: siempre que uno quiere escribir tiene que escribir en el master, y siempre que uno quiere leer puede leer del master o de cualquiera de las otras. Y para leer de las otras se puede poner un segundo load balancer, que recibe las consultas del clúster de servidores web y las reparte entre las réplicas disponibles.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-01/replicacion-lecturas.png' | relative_url }}" alt="El master replicando hacia tres readers detrás de un load balancer">
+  <img src="{{ '/assets/clase-01/replicacion-lecturas.svg' | relative_url }}" alt="Escrituras al master, replicación hacia tres readers y lecturas por un load balancer">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el master con las flechas de replicación hacia sus tres readers, y un segundo load balancer que reparte las lecturas entre ellos
+    los servidores HTTP escriben en el master, que replica hacia sus tres readers, y leen a través de un segundo load balancer que reparte las lecturas entre ellos; master y readers también se llaman primary y backups
     <span class="figura-ref">notas pág. 5 / pizarra pág. 14</span>
   </figcaption>
 </figure>
