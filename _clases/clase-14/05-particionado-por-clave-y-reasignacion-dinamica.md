@@ -43,10 +43,10 @@ Aquí, sin embargo, el asunto es bastante diferente, porque MapReduce empezaba c
 De ahí sale que el truco de MapReduce no sirva. Allí tomábamos el hash de la clave y le hacíamos módulo N —módulo tres, si los reducers eran tres—. Eso funciona si el tres es fijo. En MillWheel no lo es, y el precio se puede poner en números: pasar de tres particiones a cuatro con `hash(clave) mod N` cambia de lugar el 75% de las claves, porque entre los dos módulos hay doce clases de resto posibles y solo en tres la clave se queda donde estaba. Entonces el particionado es diferente: a cada partición se le asigna un intervalo lexicográfico de claves. De la A a la H para una, de la H a la P para otra, de la P a la Z para la tercera, en el reparto más simple; en la realidad es más complicado. Es como las mesas de votación: cada mesa atiende un tramo del abecedario. El paper no aclara si le hace hash a la clave antes de ubicarla o si usa la clave tal cual, y para nuestros fines es indistinto; lo seguro es que asigna el intervalo. Con eso, dividir un nodo por la mitad es fácil: partimos el rango en dos, les informamos a los demás y empiezan a mandar por ahí. Partir así uno de los tres intervalos toca la mitad de un tercio del espacio de claves —un sexto, alrededor del 17%— y nada más: contra el 75% del módulo, esa es la razón concreta de que eligieran rangos y no hash. Esa es la primera complicación resuelta.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/shuffle-por-rangos.png' | relative_url }}" alt="Shuffle entre las particiones de A y las de B por rangos de claves">
+  <img src="{{ '/assets/clase-14/shuffle-por-rangos.svg' | relative_url }}" alt="Shuffle entre las particiones de A y las de B por rangos de claves">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el shuffle entre dos cómputos: las particiones de A mandando eventos a todas las particiones de B, y los rangos lexicográficos de claves de la A a la H, de la H a la P y de la P a la Z
+    el shuffle entre dos cómputos: la flecha gorda en abstracto y, por dentro, las particiones de A mandando eventos a todas las particiones de B, y los rangos lexicográficos de claves de la A a la H, de la H a la P y de la P a la Z
     <span class="figura-ref">notas pág. 6 / pizarra pág. 10</span>
   </figcaption>
 </figure>
@@ -65,10 +65,10 @@ El master le asigna a cada máquina qué cómputo hacer y para qué rango. Si lo
 Es una especie de master dinámico. Si un nodo muere o se satura, el master puede asignarle ese rango de claves a otro nodo, o partirlo por la mitad y asignárselo a dos nodos diferentes. Es mucho más dinámico que MapReduce, y el motivo es siempre el mismo: esto no termina nunca.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/master-y-nodos.png' | relative_url }}" alt="El master y los nodos de cómputo">
+  <img src="{{ '/assets/clase-14/master-y-nodos.svg' | relative_url }}" alt="El master con Multi-Paxos y los nodos de cómputo">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el master con el grafo adentro y los nodos de cómputo debajo
+    el master, que adentro son cinco réplicas con Multi-Paxos, y los nodos de cómputo debajo, cada uno con el cómputo y el rango que le asignó
     <span class="figura-ref">notas pág. 6 / pizarra pág. 10</span>
   </figcaption>
 </figure>
@@ -95,10 +95,10 @@ El nodo viejo no tiene por qué morirse, y eso hay que precisarlo. Puede seguir 
 La clave está en que el set state manda el estado y también el epoch. Cada vez que el master le asigna un rango a un nuevo nodo, incrementa el epoch. Se lo informa al nodo; el nodo, al hacer el reload, se lo informa al store; y el store sabe desde ese momento que para este compute ID y este intervalo el epoch es, por ejemplo, cuatro. Si un nodo zombie, que quedó atrás en la asignación anterior, quiere poner cualquier estado, el store lo rechaza por venir con un epoch viejo.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/reasignacion-con-epoch.png' | relative_url }}" alt="Assign, renew, reload state y el set state del zombie rechazado">
+  <img src="{{ '/assets/clase-14/reasignacion-con-epoch.svg' | relative_url }}" alt="Assign, renew, reload state y el set state del zombie rechazado">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la reasignación dinámica de un rango: el assign del master con compute ID, intervalo y epoch, el renew que sube como heartbeat, el reload state contra el backing store, y el set state del nodo zombie rechazado por traer un epoch viejo
+    la reasignación dinámica de un rango: primero el assign del master con compute ID, rango y epoch, después el reload state contra el backing store, el heartbeat/renew que sube al master, y el set state del nodo zombie rechazado por traer un epoch viejo
     <span class="figura-ref">notas pág. 7 / pizarra pág. 10</span>
   </figcaption>
 </figure>

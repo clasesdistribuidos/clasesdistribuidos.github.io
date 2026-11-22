@@ -2,8 +2,7 @@
 
 Notas de trabajo para retomar el redibujo de la clase 14 (procesamiento de
 streams, MillWheel) desde otra máquina o en otra sesión. No es contenido del
-sitio: `figuras/` está excluida del build. Borrar este archivo cuando la clase
-esté adoptada.
+sitio: `figuras/` está excluida del build. Se borra antes de la PR.
 
 ## Hecho (2026-11-19)
 
@@ -27,22 +26,22 @@ esté adoptada.
   arriba, mejorada con grilla abajo, y la nota al pie). El PDF de revisión
   común (`render_figuras.py --revision`) compara la pizarra con la mejorada.
 
-Las páginas `_clases/clase-14/*.md` todavía usan los PNG y no hay SVG en
-`assets/clase-14/`: no se adoptó nada.
+**Adoptadas el 2026-11-21**, tal como quedaron en el deck de la clase 14
+(`clases-apuntes/slides/clase14/public/`, los SVG son idénticos byte a
+byte): las 20 páginas usan el SVG de `assets/clase-14/`, con `alt` y pie
+ajustados a lo que muestra cada redibujo. `low-watermark-lag` sigue en PNG.
+El join stream-stream de la sección 2 pasó, como en el deck, al ejemplo de
+Kleppmann (búsquedas contra clics, DDIA cap. 11) con `join-busquedas-clics`;
+el de push notifications que se dio en clase queda como segundo ejemplo en
+el texto, sin figura. `join-stream-stream` (push) y `watermark-de-un-nodo`
+tienen `.tex` pero el sitio no los usa.
 
 ## Pendiente
 
-1. **El usuario revisa el PDF de comparación**: marca en Xournal++ (azul o
-   magenta, nunca rojo) y dice qué páginas tocó. Abrir solo esas
-   (`pdftoppm -png -r 100 -f N -l N`), listar qué se entendió de cada marca
-   antes de tocar los `.tex` y preguntar lo ambiguo.
-2. **Elegir, figura por figura, v1 o mejorada.** Si gana v1, copiarla sobre la
-   de `figuras/clase-14/`. Después se borra `v1/` y `cambios.json`.
-3. **Adoptar** como dice la skill `redibujar-figuras`: `render_figuras.py
-   --clase 14 --salida assets/clase-14`, commitear solo los SVG que se usan,
-   cambiar `.png` → `.svg` en el `src` y ajustar `alt` y pie si el redibujo
-   agrega algo. La `figura-ref` se queda.
-4. PR de `figuras-clase-14` contra `main`.
+1. Revisar el sitio con `bundle exec jekyll serve`.
+2. Antes de la PR, borrar `v1/`, `cambios.json` y este archivo (ya no hay
+   que elegir entre versiones), salvo que el usuario quiera conservarlos.
+3. PR de `figuras-clase-14` contra `main`.
 
 ## Lo que se aparta de la pizarra (para mirar con atención)
 

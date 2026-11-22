@@ -30,7 +30,7 @@ Lo único que vuelve fáciles a estas dos cosas es que no hay que agrupar distin
 Hay un caso de transformación que se suele llamar enriquecer el stream: combinarlo con información que está en una base de datos. Al sistema le llega un registro que puede ser simplemente un user ID, y lo que queremos emitir por el stream de salida es ese mismo user ID acompañado del nombre, la dirección o cualquier otro dato. Esos datos están en una base de datos, cualquiera sea el motor: Postgres, MySQL, la que haya. El sistema de streaming, por cada registro que llega, accede a la base, lee y emite.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/enriquecer-un-stream.png' | relative_url }}" alt="Stream de user IDs enriquecido con datos de una base">
+  <img src="{{ '/assets/clase-14/enriquecer-un-stream.svg' | relative_url }}" alt="Stream de user IDs enriquecido con datos de una base">
   <figcaption>
     <span class="figura-label">Figura</span>
     enriquecer un stream: el stream de user IDs entrando a la etapa que consulta la base de datos, y el stream de salida con el nombre y la dirección agregados
@@ -55,10 +55,10 @@ La clave es una distinción que ya asomó: hay dos tiempos distintos. Pongamos u
 El processing time es el tiempo de reloj en el que recibimos el evento y lo procesamos: el tiempo inevitable, el que avanza solo. El event time es el momento en que el evento se originó; es más bien una metadata que viene con el mensaje. Generalmente lo define el que genera el evento: le pone el sello de cuándo ocurrió y lo manda por el stream.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/event-time-y-processing-time.png' | relative_url }}" alt="Eventos sobre el eje de processing time, uno con su event time">
+  <img src="{{ '/assets/clase-14/event-time-y-processing-time.svg' | relative_url }}" alt="Eventos sobre el eje de processing time, uno con su event time">
   <figcaption>
     <span class="figura-label">Figura</span>
-    los eventos dispersos sobre el eje de processing time, con uno de ellos etiquetado con su event time
+    los eventos dispersos sobre el eje de processing time, con uno de ellos etiquetado con su event time, las 8:00:00, y marcado en el eje su processing time, las 8:00:07
     <span class="figura-ref">notas pág. 3 / pizarra pág. 3</span>
   </figcaption>
 </figure>
@@ -80,19 +80,21 @@ En stream processing, en cambio, el problema es justamente tomar la decisión. S
 
 Queda un tipo de join más, el difícil: stream-stream. Antes era un stream con una tabla; ahora es un stream con otro stream. Conceptualmente no es muy diferente. Tenemos un stream con muchos data points y otro, de otro color, con otros data points; cada uno es un Kafka, un canal de datos. Nuestro stream processing consume de los dos, arma ventanas de tiempo y después realiza el join. Solo cuando puede cerrar una ventana —cuando tiene la certeza de que no le va a venir ningún evento más viejo—, cierra la de uno, cierra la del otro, hace un join en memoria y emite un data point.
 
-El ejemplo: uno de los streams es de push notifications, esos breves mensajes que aparecen en el teléfono, del tipo «alguien te está siguiendo en LinkedIn», después de los cuales el usuario se mete a la página. Queremos correlacionar las push notifications que mandamos con los accesos a la página, para ver si el mensaje convence al usuario de hacer clic. El otro stream es el de accesos a la app.
-
-No hay forma fácil de correlacionarlos por afuera: el acceso a la página no trae data de la push notification que lo originó, así que hay que correlacionar por tiempo. En el primer stream tenemos el user ID del destinatario y un push ID, el identificador de la notificación; en el otro, el user ID y el path del sitio al que accede. El join emite el user ID, el push ID y el path.
+El ejemplo clásico es el de Kleppmann: calcular el click-through rate de un buscador, la proporción de búsquedas que terminan en un clic sobre algún resultado. Uno de los streams registra cada búsqueda, con el session ID, la query y los resultados que se mostraron; el otro registra cada clic, con el session ID y la URL clickeada. Los juntamos por sesión, si ocurrieron a menos de una hora uno del otro, y emitimos el session ID, la query y la URL clickeada.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-14/join-stream-stream.png' | relative_url }}" alt="Join entre el stream de push notifications y el de accesos">
+  <img src="{{ '/assets/clase-14/join-busquedas-clics.svg' | relative_url }}" alt="Join entre el stream de búsquedas y el de clics, por sesión">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el join stream-stream: el stream de push notifications y el de accesos a la app entrando a la misma etapa, y el registro correlacionado que sale
-    <span class="figura-ref">notas pág. 3 / pizarra pág. 4</span>
+    el join stream-stream: el stream de búsquedas y el de clics entrando a la misma etapa, que los junta por sesión dentro de una ventana de una hora y emite el registro correlacionado a otro stream, o «no clickeado» si la hora pasa sin clic
+    <span class="figura-ref">agregada al apunte; el ejemplo es de Kleppmann, DDIA cap. 11</span>
   </figcaption>
 </figure>
 
-La correlación es por tiempo: hay que armar ventanas y ver, por ejemplo, si dentro de los cinco minutos de recibir la notificación el usuario accedió a la página. Y eso no es nada fácil. Por lotes es manejable; en tiempo real, hace falta un mecanismo nuevo para hacer el join entre streams.
+¿Por qué no alcanza con meter los datos de la búsqueda adentro del clic? Porque el clic puede no llegar nunca —el usuario abandona—, puede tardar días o puede llegar antes que la búsqueda por demoras de la red. Y si solo miráramos los clics perderíamos las búsquedas que no terminaron en ninguno, que también entran en la cuenta: sin ellas no hay click-through rate. Por eso, cuando una búsqueda cumple su hora sin que aparezca el clic, el join emite igual un evento que dice que no fue clickeada.
+
+Fijémonos también qué papel juega cada cosa. La clave es la sesión, y el tiempo no la reemplaza: la acota. El operador guarda los eventos de la última hora de cada stream, indexados por sesión, y cuando llega uno busca su par en el índice del otro; gracias a la ventana, ese estado no crece sin límite. Otro ejemplo con la misma forma es correlacionar las push notifications que mandamos —esos mensajes del tipo «alguien te está siguiendo en LinkedIn»— con los accesos a la app, juntados por user ID: el acceso no trae el identificador de la notificación que lo originó, así que también hay que correlacionar por tiempo.
+
+Y eso no es nada fácil. Por lotes es manejable; en tiempo real, cada ventana se puede cerrar solo cuando no van a llegar eventos más viejos, y para eso hace falta un mecanismo nuevo.
 
 ---

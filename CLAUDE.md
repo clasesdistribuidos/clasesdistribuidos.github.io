@@ -188,9 +188,10 @@ La letra imita la de las figuras de las *Feynman Lectures*: Computer Modern
 Bright, con los rótulos en mayúsculas y las variables en oblicua minúscula.
 Las fuentes están en `figuras/fuentes/`, así que compila sin instalar nada.
 
-Se adopta figura por figura, cuando el usuario elige el redibujo. Hoy solo la
-sección 1 de la clase 1 usa SVG. El resto sigue con el recorte, aunque su
-`.tex` exista.
+Se adopta figura por figura, cuando el usuario elige el redibujo. Hoy usan SVG
+la sección 1 de la clase 1, la clase 11 y la clase 14 (salvo
+`low-watermark-lag`, un gráfico de datos medidos del paper). El resto sigue
+con el recorte, aunque su `.tex` exista.
 
 El recorte no se borra al redibujar: queda en `assets/` como referencia, y
 `--revision` arma un PDF con los dos lado a lado para corregir el redibujo a
