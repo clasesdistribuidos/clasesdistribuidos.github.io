@@ -1,0 +1,33 @@
+\input{estilo}
+% Variante de join-stream-stream para la diapositiva 17 de clases-apuntes, con
+% el ejemplo canónico de Kleppmann (DDIA cap. 11, «Stream-stream join», pág.
+% 473): búsquedas contra clics, juntados por sesión dentro de una hora, para
+% calcular el click-through rate. No está en la pizarra ni la usa el sitio,
+% que sigue con push notifications contra accesos a la app.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    reg/.style={etiq, align=left, anchor=north}]
+  \newcommand\registro[3]{\node[reg] (#1) at #2 {#3};
+    \draw[decorate, decoration={brace, amplitude=4pt, mirror}] ($(#1.north west)+(-0.05,0)$) -- ($(#1.south west)+(-0.05,0)$);
+    \draw[decorate, decoration={brace, amplitude=4pt}] ($(#1.north east)+(0.05,0)$) -- ($(#1.south east)+(0.05,0)$);}
+  \stream{bu}{(3.2,1.4)}{3.2}{1}
+  \foreach \x/\y in {0.4/0.1, 1.1/-0.15, 1.7/0.15, 2.5/-0.05}
+    \node[evento, minimum size=3.5pt] at (\x,1.4+\y) {};
+  \node[etiq, align=right, anchor=east] at (-0.15,1.4) {búsquedas};
+  \begin{scope}[draw=segundo]
+    \stream{cl}{(3.2,-1.4)}{3.2}{1}
+  \end{scope}
+  \foreach \x/\y in {0.6/-0.1, 1.3/0.15, 2.7/0.1}
+    \node[evento=segundo, minimum size=3.5pt] at (\x,-1.4+\y) {};
+  \node[etiq, align=right, anchor=east, text=segundo] at (-0.15,-1.4) {clics};
+  \node[caja, minimum width=18mm, minimum height=14mm, align=center] (p) at (5.4,0) {join por\\sesión\\ventana de 1 h};
+  \draw[msg] (bu-boca) to[out=0, in=150] (p.west);
+  \draw[msg, draw=segundo] (cl-boca) to[out=0, in=210] (p.west);
+  \node[etiq, align=left, anchor=south west] at ($(bu-boca)+(0.1,0.3)$) {session ID\\query\\resultados};
+  \node[etiq, align=left, anchor=north west, text=segundo] at ($(cl-boca)+(0.1,-0.3)$) {session ID\\URL clickeada};
+  \stream{out}{(7.3,0)}{2.8}{-1}
+  \draw[msg] (p.east) -- (out-boca);
+  \registro{r}{($(out-abajo)+(0,-0.3)$)}{session ID\\query\\URL clickeada}
+  \node[etiq, font=\scriptsize, text=suave, align=center, anchor=north] at ($(r.south)+(0,-0.15)$) {si pasa 1 h sin clic:\\no clickeado};
+\end{tikzpicture}\end{figura}
+\end{document}

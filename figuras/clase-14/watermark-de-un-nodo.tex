@@ -1,0 +1,27 @@
+\input{estilo}
+% La regla del watermark de un nodo, desde B solo: A garantizó 8:20, B tiene
+% tres eventos en proceso. Lo próximo que salga de B puede ser cualquiera de
+% los pendientes o algo nuevo de A, que nunca es anterior a W(A): por eso
+% W(B) es el mínimo de los dos. No está en la pizarra: la pidió el usuario
+% para una diapositiva de clases-apuntes, antes de pipeline-de-watermarks.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja] (a) at (0,0) {A};
+  \node[etiq, text=acento, above=2pt of a] {\var{W}(A) = 8:20};
+  \node[caja, minimum width=36mm, minimum height=17mm] (b) at (5.2,0) {};
+  \node[font=\small, anchor=north west] at ($(b.north west)+(0.05,-0.05)$) {B};
+  \foreach \x/\t in {4.3/8:24, 5.2/8:27, 6.1/8:33} {
+    \node[evento] (e) at (\x,0) {};
+    \node[etiq, below=3pt of e] {\t};
+  }
+  \draw[msg] (a) -- (b);
+  \node[evento=suave] (n) at (1.95,0) {};
+  \node[etiq, font=\scriptsize, text=suave, align=center, anchor=north] at (1.95,-0.25)
+    {nuevo: ≥ 8:20};
+  \draw[msg] (b) -- (8.2,0);
+  \node[etiq, font=\scriptsize, text=suave, align=left, anchor=west] at (8.3,0)
+    {próxima salida};
+  \node[etiq, text=acento, anchor=north] at ($(b.south)+(0,-0.25)$)
+    {\var{W}(B) = min (8:20, 8:24) = 8:20};
+\end{tikzpicture}\end{figura}
+\end{document}
