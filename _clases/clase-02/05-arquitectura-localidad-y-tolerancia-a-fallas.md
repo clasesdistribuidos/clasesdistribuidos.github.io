@@ -56,10 +56,10 @@ Ahí hay dos partes distintas. Una es el shuffle, donde no hay alternativa: es i
 Lo que hicieron obliga a adelantar algo del Google File System, que vamos a estudiar más adelante. MapReduce corría en nodos que tenían un worker pero además un **chunk server**, que es un concepto de GFS: en los mismos nodos convivían los servidores de los dos sistemas. Un chunk server usa los discos locales de la máquina para guardar pedazos de archivos gigantes, de 64 MB cada uno; GFS se encarga de que todos esos pedazos repartidos entre muchas máquinas parezcan un único archivo gigantesco. Ese número explica hacia atrás el ejemplo de los mil mappers: mil chunks de 64 MB son un archivo de 64 GB, así que la cantidad de mappers no es un número elegido a mano sino una consecuencia de en cuántos pedazos quedó partido el input.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-02/colocacion-worker-chunkserver.svg' | relative_url }}" alt="Un nodo con un worker y un chunk server, y el coordinador">
+  <img src="{{ '/assets/clase-02/colocacion-worker-chunkserver.svg' | relative_url }}" alt="Dos nodos con worker y chunk server, y el coordinador asignándoles maps">
   <figcaption>
     <span class="figura-label">Figura</span>
-    un nodo que contiene a la vez un worker de MapReduce y un chunk server de GFS, con el coordinador decidiendo qué map asignarle según qué chunks tiene en su disco local
+    localidad: cada nodo tiene un worker de MapReduce y un chunk server de GFS, y el coordinador le asigna a cada uno el map cuyo chunk ya está en su disco
     <span class="figura-ref">notas pág. 5, fig. 2 / pizarra pág. 9</span>
   </figcaption>
 </figure>
@@ -79,7 +79,7 @@ El shuffle, en cambio, quedó afuera de esta optimización y se hace con comunic
   <img src="{{ '/assets/clase-02/chunk-local-y-shuffle.svg' | relative_url }}" alt="El nodo con su chunk de 64 MB y la flecha del shuffle">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el nodo con su worker y su chunk server, el chunk de 64 MB en el disco local entrando como input, y la flecha del shuffle saliendo directamente hacia otro worker
+    el shuffle fuera de GFS: el chunk de 64 MB llega del disco local al worker como input, y el shuffle va directo de un worker al otro
     <span class="figura-ref">pizarra pág. 9</span>
   </figcaption>
 </figure>

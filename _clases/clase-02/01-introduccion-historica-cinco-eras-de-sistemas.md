@@ -63,10 +63,10 @@ Pongámoslo con dos máquinas, A y B, y una secuencia de operaciones a, b, c y d
 Y con eso, aparentemente, resolvimos la replicación. Pero en realidad le pasamos el problema al orden: ahora la pregunta es cómo hacemos para que llegue el mismo orden a las dos máquinas.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-02/maquina-de-estados-orden.svg' | relative_url }}" alt="Dos máquinas recibiendo la misma tira de operaciones">
+  <img src="{{ '/assets/clase-02/maquina-de-estados-orden.svg' | relative_url }}" alt="Dos máquinas que reciben la misma tira de operaciones">
   <figcaption>
     <span class="figura-label">Figura</span>
-    dos máquinas A y B recibiendo la misma tira de operaciones a, b, c, d en el mismo orden, y la pregunta por el orden que lleva a consenso → Paxos → Raft
+    replicación como máquina de estados: dos máquinas que aplican las mismas operaciones, a, b, c y d, en el mismo orden, llegan al mismo estado
     <span class="figura-ref">pizarra pág. 1, fig. 1</span>
   </figcaption>
 </figure>
@@ -124,7 +124,7 @@ La decisión es esta: se descarta la idea de un sistema donde la red y la comuni
   <img src="{{ '/assets/clase-02/capas-y-middleware.svg' | relative_url }}" alt="Aplicación, middleware y red, con las responsabilidades del middleware">
   <figcaption>
     <span class="figura-label">Figura</span>
-    las tres capas —aplicación, middleware y red— y las cuatro responsabilidades que el middleware absorbe: comunicación, discovery, transmisión de datos y manejo de errores
+    middleware: la capa entre la aplicación y la red, que se hace cargo de la comunicación, el descubrimiento, la transmisión de datos y el manejo de errores
     <span class="figura-ref">notas pág. 2, fig. 1 / pizarra pág. 2</span>
   </figcaption>
 </figure>

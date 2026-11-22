@@ -29,7 +29,7 @@ Llamémosle mapper 1 a este nodo: al primero de esos archivos lo llamamos `M1_R1
   <img src="{{ '/assets/clase-02/mapper-por-dentro.svg' | relative_url }}" alt="El mapper 1 por dentro, del input a los archivos M1_R1 y M1_R2">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el mapper 1 por dentro con R=2 — el input entra a la función map, la tira de pares pasa por el hash y el módulo, y se escriben en disco local los dos archivos M1_R1 y M1_R2, con flechas punteadas hacia el reducer 1 y el reducer 2
+    el mapper por dentro: el input pasa por la función map, los pares por el hash y el módulo, y quedan en el disco local dos archivos, M1_R1 y M1_R2, uno para cada reducer
     <span class="figura-ref">notas pág. 4, fig. 3 / pizarra pág. 8</span>
   </figcaption>
 </figure>
@@ -47,7 +47,7 @@ Si queremos que queden juntas todas las instancias de una misma clave, hay que h
   <img src="{{ '/assets/clase-02/reducer-por-dentro.svg' | relative_url }}" alt="El reducer 1 por dentro, del sort al output">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el reducer 1 por dentro — los tres archivos M1_R1, M2_R1 y M3_R1 entrando a un sort, de ahí al reducer y de ahí al output
+    el reducer por dentro: los archivos que le prepararon los tres mappers se ordenan juntos, o se mezclan si ya vienen ordenados, y pasan por la función reduce hasta el output
     <span class="figura-ref">notas pág. 5, fig. 1 / pizarra pág. 8</span>
   </figcaption>
 </figure>
