@@ -1,0 +1,16 @@
+\input{estilo}
+% El NASDAQ publica los cambios en el MOM, que los reparte a los bancos. El
+% banco 1 se suscribe y recibe los mensajes; a los otros dos solo les llegan.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=22mm, minimum height=13mm] (n) at (0,0) {NASDAQ};
+  \node[caja, minimum width=22mm, minimum height=15mm] (m) at (4.8,0) {MOM};
+  \foreach \i/\y in {1/1.7, 2/-0.7, 3/-2.3}
+    \node[caja, minimum width=18mm, minimum height=10mm] (b\i) at (9.6,\y) {banco\i};
+  \draw[implica] (n) -- node[etiq, below=3pt] {cambios} (m);
+  \draw[msg] (b1.west) to[bend right=22] node[etiq, above, sloped] {subscribe} ($(m.east)+(0,0.5)$);
+  \draw[msg] ($(m.east)+(0,0.2)$) to[bend right=12] node[etiq, below, sloped] {msgs} ($(b1.west)+(0,-0.25)$);
+  \draw[msg] ($(m.east)+(0,-0.3)$) -- node[etiq, above, sloped] {msg} (b2.west);
+  \draw[msg] ($(m.east)+(0,-0.6)$) -- node[etiq, above, sloped] {msg} (b3.west);
+\end{tikzpicture}\end{figura}
+\end{document}

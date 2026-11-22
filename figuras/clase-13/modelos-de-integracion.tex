@@ -1,0 +1,39 @@
+\input{estilo}
+% Los tres modelos de integración, lado a lado en vez de uno debajo del otro
+% como en la pizarra. (1) la cola, con los consumidores tirando de ella;
+% (2) el fan-out; (3) el log, con cada consumidor apuntando a su celda.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cons/.style={nodo, minimum size=6mm}]
+  % (1) producer-consumer
+  \node[paso] at (-0.2,2.2) {1};
+  \node[nodo] (p1) at (0,0) {\var{P}};
+  \node[cola, minimum height=18mm] (q) at (2.4,0) {};
+  \draw[msg] (p1) -- (q.west);
+  \node[cons] (c11) at (4.2,1.7) {};
+  \node[cons] (c12) at (4.8,-0.4) {};
+  \node[cons] (c13) at (3.3,-1.8) {};
+  \foreach \c in {c11, c12, c13} \draw[msg] (\c) -- (q.east);
+  % (2) publisher-subscriber
+  \begin{scope}[xshift=6.6cm]
+    \node[paso] at (-0.2,2.2) {2};
+    \node[nodo] (p2) at (0,0) {\var{P}};
+    \node[caja, minimum width=9mm, minimum height=9mm] (t) at (1.9,0) {};
+    \draw[msg] (p2) -- (t);
+    \foreach \a/\y in {a/1.5, b/0, c/-1.5} {
+      \node[cons] (c2\a) at (3.9,\y) {};
+      \draw[msg] (t) -- (c2\a);
+    }
+  \end{scope}
+  % (3) event streaming
+  \begin{scope}[xshift=11.8cm]
+    \node[paso] at (-0.2,2.2) {3};
+    \node[nodo] (p3) at (0,0) {\var{P}};
+    \tira[0.55]{l}{(1.0,-0.3)}{,,,,,,,}
+    \draw[msg] (p3) -- (l-1.west);
+    \node[cons] (c31) at (2.4,-1.9) {};
+    \node[cons] (c32) at (4.0,-1.9) {};
+    \draw[msg] (c31) -- (l-3.south);
+    \draw[msg] (c32) -- (l-7.south);
+  \end{scope}
+\end{tikzpicture}\end{figura}
+\end{document}

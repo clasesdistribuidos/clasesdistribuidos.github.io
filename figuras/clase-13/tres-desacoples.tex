@@ -1,0 +1,80 @@
+\input{estilo}
+\usetikzlibrary{shapes.arrows}
+% La figura 2 de Eugster et al., con los rótulos del paper en inglés, y encima,
+% en rojo, lo que el profesor anotó en la pizarra: en el espacio, el arco del
+% publisher al event service y "SNS"; en el tiempo, el mensaje que queda
+% guardado en el event service, el subscriber caído rodeado y la entrega
+% cuando vuelve. La flechita que señalaba al publisher no va.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    ent/.style={draw=tinta, fill=white, rounded corners=3mm, font=\small\bfseries},
+    flechona/.style={single arrow, draw=tinta, fill=white, minimum width=7mm,
+      single arrow head extend=1.6mm, inner sep=1pt, font=\scriptsize},
+    hilo/.style={->, decorate, decoration={snake, amplitude=1.3mm, segment length=8mm,
+      pre length=1mm, post length=3mm}},
+    titulo/.style={font=\bfseries},
+    prof/.style={draw=acento, line width=1pt},
+  ]
+  % una flecha gruesa del paper, de un punto a otro, con su rótulo adentro
+  \newcommand\bloque[3]{\path let \p1=#1, \p2=#2, \n1={atan2(\y2-\y1,\x2-\x1)},
+    \n2={veclen(\x2-\x1,\y2-\y1)} in
+    node[flechona, rotate=\n1, minimum height=\n2] at ($#1!0.5!#2$) {#3};}
+  % el puerto Notify() en el borde izquierdo de una entidad
+  \newcommand\puerto[1]{\draw[fill=white] #1 circle (1.3mm);
+    \node[cod, anchor=west] at ($#1+(0.14,0)$) {Notify()};}
+  \newcommand\rayo[1]{\draw[line width=1pt] #1 ++(0.12,0.4) -- ++(-0.17,-0.35) -- ++(0.12,-0.03) -- ++(-0.17,-0.42);}
+  % una entidad con título arriba y puerto abajo: \entidad{x0}{y0}{x1}{y1}{título}
+  \newcommand\entidad[5]{\draw[ent] (#1,#2) rectangle (#3,#4);
+    \node[font=\small\bfseries, anchor=north] at ({(#1+#3)/2},#4-0.05) {#5};
+    \puerto{(#1,{#2+0.27})}}
+
+  % --- space decoupling ---------------------------------------------------
+  \node[ent, minimum width=20mm, minimum height=8mm] (pub) at (0,0) {Publisher};
+  \entidad{2.9}{-0.55}{5.7}{0.75}{Event Service}
+  \bloque{(pub.east)}{(2.76,-0.28)}{Publish}
+  \foreach \s [count=\i] in {1.3, 0.05, -1.2} {
+    \entidad{7.6}{\s-0.42}{9.6}{\s+0.42}{Subscriber}
+    \bloque{(5.7,{0.25-0.25*\i})}{(7.46,\s-0.15)}{Notify}
+  }
+  \draw[prof, ->] (-0.1,0.45) to[out=60, in=120] (4.1,0.8);
+  \node[text=acento, font=\large] at (4.3,-1.0) {SNS};
+  \node[titulo] at (4.3,-2.2) {Space decoupling};
+
+  % --- time decoupling ----------------------------------------------------
+  \begin{scope}[xshift=12cm]
+    % antes: el subscriber no está
+    \node[ent, minimum width=18mm, minimum height=8mm] (p1) at (0,0.6) {Publisher};
+    \entidad{2.6}{0.15}{5.2}{1.05}{Event Service}
+    \bloque{(p1.east)}{(2.46,0.42)}{Notify}
+    \rayo{(6.1,0.6)}
+    \entidad{7.2}{0.15}{9.1}{1.05}{Subscriber}
+    \fill[acento] (4.6,0.42) circle (1mm);
+    \draw[prof, ->] (-0.2,1.0) to[out=50, in=120] (4.5,0.55);
+    \draw[prof] (8.15,0.6) ellipse (1.15 and 0.62);
+    % después: el publisher no está
+    \node[ent, minimum width=18mm, minimum height=8mm] at (0,-0.9) {Publisher};
+    \rayo{(1.5,-0.9)}
+    \entidad{2.6}{-1.35}{5.2}{-0.45}{Event Service}
+    \entidad{7.2}{-1.35}{9.1}{-0.45}{Subscriber}
+    \bloque{(5.2,-1.08)}{(7.06,-1.08)}{Notify}
+    \fill[acento] (4.6,-1.08) circle (1mm);
+    \draw[prof, ->] (4.6,-0.98) to[bend left=25] (7.04,-0.98);
+    \draw[->, line width=1pt] (9.8,1.1) -- node[etiq, sloped, above] {Time} (9.8,-1.4);
+    \node[titulo] at (4.6,-2.2) {Time decoupling};
+  \end{scope}
+
+  % --- synchronization decoupling -----------------------------------------
+  \begin{scope}[xshift=5.2cm, yshift=-3.4cm]
+    \node[ent, minimum width=20mm, minimum height=8mm] (p) at (0,0) {Publisher};
+    \draw[hilo] (p.south) -- (0,-3.0);
+    \entidad{3.6}{-1.6}{6.2}{-0.6}{Event Service}
+    \bloque{(0.1,-1.45)}{(3.46,-1.33)}{Publish}
+    \node[ent, minimum width=20mm, minimum height=8mm] (s) at (9.6,0) {Subscriber};
+    \puerto{(8.5,-0.7)}
+    \bloque{(6.2,-1.1)}{(8.36,-0.75)}{Notify}
+    \draw[hilo] (8.5,-0.83) -- (8.4,-3.2);
+    \draw[hilo] (s.south) ++(0.4,0) -- ++(0,-2.4);
+    \node[titulo] at (4.9,-3.6) {Synchronization decoupling};
+  \end{scope}
+\end{tikzpicture}\end{figura}
+\end{document}

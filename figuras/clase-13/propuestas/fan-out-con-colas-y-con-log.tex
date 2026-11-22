@@ -1,0 +1,52 @@
+\input{estilo}
+% Propuesta: los dos caminos como dos filas con la misma entrada y las mismas
+% columnas —un productor, tres consumidores y uno nuevo (punteado)—. Con
+% colas, SNS reparte a una cola por consumidor, y el nuevo obliga a armar y
+% conectar otra; cada uno borra lo que lee. Con log, hay un solo topic, cada
+% consumidor lee en su posición, y el nuevo se cuelga y puede empezar desde el
+% principio. Agregado del texto: el consumidor nuevo, las reglas y la alineación.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    s/.style={caja, minimum width=16mm, minimum height=9mm, font=\small},
+    nuevo/.style={s, draw=suave, dashed, fill=white, text=suave},
+  ]
+  \newcommand\regla[2]{\node[anchor=west, align=left, font=\small] at (12.3,#1) {#2};}
+
+  % --- con colas
+  \node[s] (p) at (0,0) {productor};
+  \node[caja, minimum width=13mm, minimum height=12mm] (sns) at (2.9,0) {SNS};
+  \draw[msg] (p) -- (sns);
+  \foreach \i/\y in {1/1.5, 2/0.5, 3/-0.5} {
+    \node[cola, minimum height=15mm] (q\i) at (6.0,\y) {};
+    \draw[msg] (sns.east) -- (q\i.west);
+    \node[s] (c\i) at (9.6,\y) {consumidor};
+    \draw[msg] (q\i.east) -- (c\i.west);
+  }
+  \node[cola, minimum height=15mm, draw=suave, dashed, cylinder body fill=white, cylinder end fill=white] (q4) at (6.0,-1.5) {};
+  \draw[msg, draw=suave, dashed] (sns.east) -- (q4.west);
+  \node[nuevo] (c4) at (9.6,-1.5) {uno nuevo};
+  \draw[msg, draw=suave, dashed] (q4.east) -- (c4.west);
+  \node[etiq, text=suave, anchor=north] at (6.0,-1.95) {otra cola más};
+  \regla{0}{una cola por consumidor;\\cada uno borra lo que lee}
+  \node[anchor=east] at (-1.2,0) {con colas};
+
+  \draw[draw=suave!50, line width=0.4pt] (-3.2,-2.6) -- (15.6,-2.6);
+
+  % --- con log
+  \begin{scope}[yshift=-5.8cm]
+    \node[s] (p) at (0,0) {productor};
+    \tira[0.6]{t}{(3.0,-0.45)}{,,,,,,,}
+    \draw[msg] (p) -- (3.0,0);
+    \node[etiq, anchor=east] at (2.95,0.25) {topic};
+    \foreach \i/\y/\k/\a in {1/2.1/6/north, 2/1.0/8/north, 3/-1.0/4/south} {
+      \node[s] (c\i) at (9.6,\y) {consumidor};
+      \draw[msg] (c\i.west) -| (t-\k.\a);
+    }
+    \node[nuevo] (c4) at (9.6,-2.1) {uno nuevo};
+    \draw[msg, draw=suave, dashed] (c4.west) -| (t-1.south);
+    \node[etiq, text=suave, anchor=north west] at (3.0,-2.75) {se cuelga y puede empezar desde el principio};
+    \regla{0}{un solo log;\\nadie borra nada}
+    \node[anchor=east] at (-1.2,0) {con log};
+  \end{scope}
+\end{tikzpicture}\end{figura}
+\end{document}

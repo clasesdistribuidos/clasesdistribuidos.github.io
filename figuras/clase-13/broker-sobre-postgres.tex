@@ -1,0 +1,12 @@
+\input{estilo}
+% La opción 1 de la pizarra: una flecha entra al broker y el broker escribe en
+% un Postgres.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=20mm, minimum height=12mm] (b) at (0,0) {broker};
+  \draw[msg] (0,1.6) -- (b.north);
+  \pic[scale=1.6] at (0,-3.2) {base};
+  \draw[msg] (b.south) -- (0,-1.35);
+  \node[anchor=north] at (0,-3.45) {Postgres};
+\end{tikzpicture}\end{figura}
+\end{document}

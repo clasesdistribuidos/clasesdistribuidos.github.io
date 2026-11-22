@@ -1,0 +1,12 @@
+\input{estilo}
+% Opción 2 de las notas: la cola principal, con los rápidos (verdes), y al
+% lado la cola de retry, con los lentos (rojos).
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x/\c/\n in {0/segundo/cola principal, 5.0/acento/cola retry} {
+    \node[cola, minimum height=34mm, minimum width=10mm] at (\x,0) {};
+    \foreach \i in {1,2,3} \fill[\c] ({\x-0.65+0.65*(\i-1)},0) circle (1.3mm);
+    \node at (\x,-1.0) {\n};
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

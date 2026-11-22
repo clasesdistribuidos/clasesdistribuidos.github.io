@@ -1,0 +1,21 @@
+\input{estilo}
+% Propuesta: la opción 1 con lo que el texto dice que importa de ella. Los
+% productores y consumidores le hablan al broker por RPC; el broker no guarda
+% nada (stateless) y todo el estado está en el Postgres. El punto débil no es
+% el broker sino la base. Agregado del texto: los clientes, las operaciones y
+% las dos anotaciones.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=14mm, minimum height=11mm] (p) at (-2.6,2.2) {\var{P}};
+  \node[caja, minimum width=14mm, minimum height=11mm] (c) at (2.6,2.2) {\var{C}};
+  \node[caja, minimum width=24mm, minimum height=12mm] (b) at (0,0) {broker};
+  \draw[msg] (p) -- node[cod, above left] {send} (b);
+  \draw[msg] (c) -- node[cod, above right, align=left] {receive\\delete} (b);
+  \pic[scale=1.6] at (0,-3.6) {base};
+  \node[anchor=north] at (0,-3.85) {Postgres};
+  \draw[msg] (b.south) -- (0,-1.75);
+  % las dos anotaciones, alineadas a la derecha
+  \node[anchor=west, align=left, font=\small] at (1.7,0) {stateless: si muere,\\se levanta otro};
+  \node[anchor=west, align=left, font=\small, text=acento] at (1.7,-2.6) {si muere, se pierden\\todos los mensajes};
+\end{tikzpicture}\end{figura}
+\end{document}

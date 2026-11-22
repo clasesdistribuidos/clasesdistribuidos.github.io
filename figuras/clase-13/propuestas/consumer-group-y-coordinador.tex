@@ -1,0 +1,38 @@
+\input{estilo}
+% Propuesta: antes y después de que se caiga un consumidor, con las mismas
+% posiciones. Tres particiones y un consumer group de dos: el coordinador
+% tiene el reparto anotado (en un storage replicado: ZooKeeper antes, KRaft
+% hoy). Antes, C₁ lee la 1 y la 2 y C₂ la 3. C₂ muere: el coordinador
+% reasigna la 3 a C₁, que sigue desde el último checkpoint. Cada partición,
+% un solo consumidor. Agregado del texto: el reparto, el checkpoint y los pies.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    q/.style={caja, minimum width=11mm, minimum height=10mm},
+  ]
+  \colorlet{k1}{segundo} \colorlet{k2}{acento}
+  % un panel: \panel{x}{asignación de la 3}{título}
+  \newcommand\panel[3]{\begin{scope}[xshift=#1cm]
+    \foreach \r/\y in {1/1.2, 2/0, 3/-1.2} {
+      \node[font=\small] at (-0.4,\y) {\r};
+      \tira[0.42]{p\r}{(0,\y-0.3)}{,,,,,,}
+    }
+    \draw[marco, dashed] (4.4,-1.85) rectangle (5.9,1.85);
+    \node[etiq, text=suave, anchor=north] at (5.15,-1.9) {consumer group};
+    \node[q] (c1) at (5.15,0.6) {\var{C}\textsubscript{1}};
+    \node[q] (c2) at (5.15,-1.0) {\var{C}\textsubscript{2}};
+    \draw[msg, draw=k1] (p1-7.east) -- (c1.west);
+    \draw[msg, draw=k1] (p2-7.east) -- (c1.west);
+    #2
+    \node[draw=tinta, fill=white, align=center, font=\footnotesize, anchor=south] (k) at (2.95,2.2)
+      {coordinador\\1 \flecha\ \var{C}\textsubscript{1}\quad 2 \flecha\ \var{C}\textsubscript{1}\quad 3 \flecha\ \var{C}\textsubscript{#3}};
+  \end{scope}}
+
+  \panel{0}{\draw[msg, draw=k2] (p3-7.east) -- (c2.west);}{2}
+  \node at (2.9,-2.75) {antes};
+
+  \panel{9.0}{\tachar{c2}\draw[msg, draw=k1] (p3-7.east) to[out=0, in=-150] (c1.south west);
+    \node[etiq, text=k1, anchor=north west] at (p3-1.south west) {sigue desde el checkpoint};}{1}
+  \node at (11.9,-2.75) {muere \var{C}\textsubscript{2}: se reasigna la 3};
+  \node[etiq, text=suave, anchor=west] at (0,-3.35) {cada partición la lee un solo consumidor del grupo; el reparto vive en un storage replicado (ZooKeeper antes, KRaft hoy)};
+\end{tikzpicture}\end{figura}
+\end{document}

@@ -1,0 +1,16 @@
+\input{estilo}
+% El banco le pregunta al NASDAQ por RPC, cada tanto: el arco sale del banco y
+% entra al NASDAQ, con el reloj del polling debajo, como en la pizarra.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=24mm, minimum height=19mm] (n) at (0,0) {NASDAQ};
+  \node[caja, minimum width=24mm, minimum height=19mm] (b) at (6.4,0) {banco};
+  \draw[msg] ($(b.west)+(0,0.45)$) to[bend right=18] node[above, yshift=1pt] {RPC} ($(n.east)+(0,0.45)$);
+  % el reloj del polling
+  \begin{scope}[shift={(3.2,0.05)}]
+    \draw (0,0) circle (3.2mm);
+    \draw[line width=0.9pt] (0,0) -- (0,0.22) (0,0) -- (0.15,-0.06);
+  \end{scope}
+  \node[etiq] at (3.2,-0.6) {periódico / polling};
+\end{tikzpicture}\end{figura}
+\end{document}

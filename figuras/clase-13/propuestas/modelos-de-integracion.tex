@@ -1,0 +1,69 @@
+\input{estilo}
+% Propuesta: los tres modelos como una tabla de tres filas con la misma
+% entrada —el productor manda m₁, m₂, m₃, cada uno de un color— para que la
+% diferencia se lea en lo que recibe cada consumidor y en lo que queda en el
+% intermediario: en la cola cada mensaje va a uno solo y se borra; en el tópico
+% se multiplica y no queda; en el log queda y cada consumidor lo lee en orden,
+% a su ritmo, con su offset (las marcas debajo del log). Todo sale del texto;
+% los mensajes, los offsets y las reglas son agregados.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    cons/.style={nodo, minimum size=5.5mm, inner sep=0pt},
+    sep/.style={draw=suave!50, line width=0.4pt},
+    cab/.style={etiq, text=suave},
+  ]
+  \colorlet{c1}{acento} \colorlet{c2}{segundo} \colorlet{c3}{tinta}
+  % un mensaje: \m{i}{(x,y)}
+  \newcommand\m[2]{\node[draw=c#1, fill=c#1!14, text=c#1, minimum size=5.2mm, inner sep=0pt,
+    font=\scriptsize] at #2 {\var{m}\textsubscript{#1}};}
+  % una fila: y, número, nombre, producto, regla
+  \newcommand\fila[5]{%
+    \node[anchor=east] at (-0.7,#1+0.2) {\tikz[baseline=(x.base)]\node[paso] (x) {#2};\ #3};
+    \node[cab, anchor=east] at (-0.7,#1-0.3) {#4};
+    \node[nodo] (p) at (0,#1) {\var{P}};
+    \draw[msg] (p) -- (3.05,#1);
+    \foreach \i/\x in {3/1.15, 2/1.7, 1/2.25} {\m{\i}{(\x,#1)}}
+    \foreach \k/\dy/\l in {1/0.65/a, 2/0/b, 3/-0.65/c} {
+      \node[cons, font=\footnotesize] (c\k) at (6.9,#1+\dy) {\var{\l}};
+      \draw[msg] (5.25,#1) -- (c\k);
+    }
+    \node[anchor=west, align=left, font=\small] at (10.0,#1) {#5};}
+
+  \node[cab, anchor=south] at (0,1.25) {productor};
+  \node[cab, anchor=south] at (4.15,1.25) {intermediario};
+  \node[cab, anchor=south west, align=left] at (6.65,1.25) {lo que recibió\\cada consumidor};
+  \node[cab, anchor=south west] at (10.0,1.25) {cada mensaje};
+
+  % 1: la cola
+  \fila{0}{1}{producer-consumer}{SQS}{le llega a uno solo\\y se borra}
+  \node[cola, minimum height=21mm] at (4.15,0) {};
+  \node[cab] at (4.15,-0.75) {queda vacía};
+  \foreach \k in {1,2,3} {\m{\k}{(7.5,{0.65*(2-\k)})}}
+
+  \draw[sep] (-4.9,-1.35) -- (14.1,-1.35);
+
+  % 2: el tópico
+  \fila{-2.7}{2}{publisher-subscriber}{SNS}{se copia a todos,\\en el momento,\\y no queda}
+  \node[caja, minimum width=21mm, minimum height=8mm] at (4.15,-2.7) {tópico};
+  \node[cab] at (4.15,-3.45) {no guarda nada};
+  \foreach \k in {1,2,3} {\foreach \i in {1,2,3} {\m{\i}{({7.5+0.58*(\i-1)},{-2.7+0.65*(2-\k)})}}}
+
+  \draw[sep] (-4.9,-4.05) -- (14.1,-4.05);
+
+  % 3: el log
+  \fila{-5.4}{3}{event streaming}{Kafka}{no se copia: queda en el log,\\y cada uno lo lee a su ritmo,\\aunque llegue después}
+  \foreach \i in {1,2,3} {
+    \node[draw=c\i, fill=c\i!14, text=c\i, minimum width=7mm, minimum height=8mm, inner sep=0pt,
+      outer sep=0pt, font=\scriptsize] at ({3.45+0.7*(\i-1)},-5.4) {\var{m}\textsubscript{\i}};
+  }
+  % el offset de cada consumidor: hasta dónde leyó
+  \foreach \x/\l in {5.2/a, 4.5/b, 3.8/c} {
+    \fill (\x,-5.84) -- ++(-0.09,-0.16) -- ++(0.18,0) -- cycle;
+    \node[etiq, below] at (\x,-5.98) {\var{\l}};
+  }
+  \node[cab] at (4.15,-6.75) {una sola copia; cada uno, su offset};
+  \foreach \k/\n in {1/3, 2/2, 3/1} {
+    \foreach \i in {1,...,\n} {\m{\i}{({7.5+0.58*(\i-1)},{-5.4+0.65*(2-\k)})}}
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

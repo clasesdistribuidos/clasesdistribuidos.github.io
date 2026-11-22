@@ -1,0 +1,39 @@
+\input{estilo}
+% Propuesta: una sola partición y sus tres réplicas, con los logs alineados
+% por posición. El leader (broker 1) recibe las escrituras y las copia a los
+% dos followers; el commit exige que confirmen todos, así que el
+% high-watermark queda donde llegó el más atrasado. Lo de abajo es visible
+% para los consumidores; lo de arriba, todavía no. Y como todos tienen lo
+% comiteado, cualquiera puede ser el próximo leader. Agregado del texto.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \def\w{0.75}
+  \newcommand\msj[1]{\var{m}\textsubscript{#1}}
+  % una réplica: \replica{y}{rótulo}{cuántas tiene}
+  \newcommand\replica[3]{%
+    \node[anchor=east, align=right, font=\small] at (-0.3,#1) {#2};
+    \foreach \i in {1,...,6} {
+      \ifnum\i>#3
+        \node[celda, minimum width=\w cm, minimum height=7mm, anchor=center, draw=suave, dashed] at ({(\i-0.5)*\w},#1) {};
+      \else
+        \node[celda, minimum width=\w cm, minimum height=7mm, anchor=center, font=\footnotesize] at ({(\i-0.5)*\w},#1) {\msj{\i}};
+      \fi
+    }}
+  \begin{scope}[on background layer]
+    \fill[segundo!12] (0,-2.8) rectangle (4*\w,0.55);
+  \end{scope}
+  \replica{0}{broker 1\\\textbf{leader}}{6}
+  \replica{-1.15}{broker 2\\follower}{6}
+  \replica{-2.3}{broker 3\\follower}{4}
+  % la copia del leader a los followers
+  \draw[msg, draw=suave] (6*\w+0.15,0) to[out=0, in=0] (6*\w+0.15,-1.15);
+  \draw[msg, draw=suave] (6*\w+0.15,0) to[out=0, in=0, looseness=1.4] (6*\w+0.15,-2.3);
+  \draw[msg] (6*\w+1.6,0.9) node[above, font=\small] {producer} -- (6*\w+0.1,0.25);
+  % el high-watermark
+  \draw[draw=segundo, line width=1.2pt] (4*\w,0.75) -- (4*\w,-2.85);
+  \node[text=segundo, anchor=south, font=\small] at (4*\w,0.75) {high-watermark};
+  \node[etiq, text=segundo, anchor=north east] at (4*\w-0.1,-2.85) {comiteado: lo ven los consumidores};
+  \node[etiq, text=suave, anchor=north west] at (4*\w+0.1,-2.85) {todavía no};
+  \node[anchor=west, align=left, font=\small] at (6*\w+1.4,-1.15) {el commit espera a todos los followers:\\todos tienen lo comiteado, así que\\cualquiera puede ser el próximo leader};
+\end{tikzpicture}\end{figura}
+\end{document}

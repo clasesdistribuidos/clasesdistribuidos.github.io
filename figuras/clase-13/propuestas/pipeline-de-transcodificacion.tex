@@ -1,0 +1,52 @@
+\input{estilo}
+% Propuesta: el pipeline en una grilla —el usuario, el frontend, SQS y los
+% workers en una fila; S3 debajo de SQS— con todos los pasos que cuenta el
+% texto, numerados: los dos de la pizarra (guardar y encolar) y los que hace
+% el worker: receive, los heartbeats que extienden el visibility timeout,
+% guardar la versión transcodificada y delete. Los pasos 3, 4 y 6 son
+% agregados del texto.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \newcommand\video[2][tinta]{\begin{scope}[shift={#2}]
+    \draw[draw=#1, fill=white] (-0.2,-0.25) rectangle (0.2,0.25);
+    \fill[#1] (-0.07,-0.1) -- (0.1,0) -- (-0.07,0.1) -- cycle;
+  \end{scope}}
+  \newcommand\p[1]{\tikz[baseline=(x.base)]\node[paso] (x) {#1};}
+
+  % la fila de arriba
+  \pic at (0,-0.6) {persona};
+  \node[caja, minimum width=22mm, minimum height=14mm] (f) at (3.4,0) {frontend};
+  \draw[implica] (0.6,0) -- node[etiq, above=2pt] {upload} (2.3,0);
+  \node[cola, minimum height=24mm, minimum width=10mm] (q) at (7.6,0) {SQS};
+  \foreach \d in {0.3, 0.15} \node[caja, fill=white, minimum width=20mm, minimum height=14mm] at (12.2+\d,-\d) {};
+  \node[caja, minimum width=20mm, minimum height=14mm] (w) at (12.2,0) {FFmpeg};
+  \node[etiq, text=suave, anchor=north] at (12.35,-1.2) {workers};
+
+  % el mensaje, arriba de la cola
+  \node[draw=tinta, fill=white, cod, inner sep=3pt] (m) at (7.6,1.45) {transcodificar(path\_s3)};
+  \draw[dotted, line width=0.8pt] (m.south) -- (7.6,0.5);
+
+  % S3, debajo de SQS
+  \pic[scale=2.0] at (7.6,-4.4) {base};
+  \video{(7.25,-3.3)} \video[segundo]{(7.95,-3.3)}
+  \node[anchor=north] at (7.6,-4.8) {S3};
+
+  % los pasos
+  \draw[msg] (f.south) |- node[paso, pos=0.75, above] {1} (6.55,-3.3);
+  \draw[msg] (f.east) -- node[paso, above] {2} (q.west);
+  \draw[msg] ($(q.east)+(0,0.35)$) -- node[paso, above] {3} ($(w.west)+(0,0.35)$);
+  \draw[respuesta] ($(w.west)+(0,0)$) -- node[paso, solid, fill=white] {4} ($(q.east)+(0,0)$);
+  \draw[msg] ($(w.west)+(0,-0.35)$) -- node[paso, below] {6} ($(q.east)+(0,-0.35)$);
+  \draw[msg, draw=segundo] (w.south) |- node[paso, pos=0.75, above, draw=segundo, text=segundo] {5} (8.65,-3.3);
+
+  % la leyenda, en dos columnas alineadas
+  \node[anchor=north west, align=left, font=\small] at (0.6,-5.3) {%
+    \p{1} guarda el video original\\[2pt]
+    \p{2} encola el trabajo: solo el path\\[2pt]
+    \p{3} un worker lo toma (receive)};
+  \node[anchor=north west, align=left, font=\small] at (7.6,-5.3) {%
+    \p{4} heartbeats: extiende el timeout, unas 40 veces\\[2pt]
+    \p{5} guarda la versión transcodificada\\[2pt]
+    \p{6} al terminar, delete};
+\end{tikzpicture}\end{figura}
+\end{document}

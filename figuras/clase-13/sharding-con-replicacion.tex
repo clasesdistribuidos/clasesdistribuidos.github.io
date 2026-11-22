@@ -1,0 +1,15 @@
+\input{estilo}
+% La opción 3 de la pizarra: cinco shards en fila; el mensaje entra al del
+% medio, que lo copia a sus dos vecinos (en verde), y lo que guarda cada copia
+% es el mensaje y la lista de hosts.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \foreach \x in {0, 1.8, 3.6, 5.4, 7.2} \pic at (\x,-0.55) {base};
+  \draw[msg] (3.6,1.9) -- (3.6,0.8);
+  \foreach \x in {1.8, 3.6, 5.4} \fill[segundo] (\x,-0.1) circle (1.4mm);
+  \draw[msg, draw=segundo] (3.45,-0.1) to[bend right=12] (1.95,-0.1);
+  \draw[msg, draw=segundo] (3.75,-0.1) to[bend left=12] (5.25,-0.1);
+  \draw[msg, draw=segundo] (3.6,-0.85) -- (3.6,-1.8);
+  \node[text=segundo, anchor=north] at (3.6,-1.85) {msg, [\var{H}\textsubscript{1}, \var{H}\textsubscript{2}, \var{H}\textsubscript{3}]};
+\end{tikzpicture}\end{figura}
+\end{document}

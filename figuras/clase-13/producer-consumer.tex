@@ -1,0 +1,25 @@
+\input{estilo}
+% Productor, cola y consumidor, con el RPC que hay debajo de cada flecha. El
+% consumidor le pide a la cola (rcve) y la cola le entrega; las tres formas de
+% recibir cuelgan de esa flecha, como en la pizarra.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=24mm, minimum height=14mm] (p) at (0,0) {productor};
+  \node[cola, minimum width=10mm, minimum height=30mm] (q) at (4.4,0) {};
+  \node[caja, minimum width=24mm, minimum height=14mm] (c) at (8.8,0) {consumidor};
+  \draw[msg] (p.east) -- node[etiq, above] {push} (q.west);
+  \draw[msg] ($(c.west)+(0,0.35)$) to[bend right=30] node[etiq, above] {rcve} ($(q.east)+(0,0.35)$);
+  \draw[msg] ($(q.east)+(0,-0.15)$) -- ($(c.west)+(0,-0.15)$);
+  % el RPC de cada lado
+  \draw[llave] (1.25,0.85) -- (3.0,0.85) node[midway, above=6pt, etiq, text=suave] {RPC};
+  \draw[llave] (5.85,1.15) -- (7.5,1.15) node[midway, above=6pt, etiq, text=suave] {RPC};
+  % la cola de mensajes
+  \draw[llave] (5.9,-0.75) -- (2.9,-0.75) node[midway, below=6pt, etiq, text=suave] {cola de mensajes};
+  % las tres formas de recibir
+  \draw[msg, draw=suave] (6.3,-0.3) to[out=-90, in=180] (7.6,-2.6);
+  \node[anchor=west] (r) at (7.65,-2.6) {receive};
+  \draw[llave=5pt] (9.25,-3.55) -- (9.25,-1.65);
+  \node[anchor=west, align=left, font=\small] at (9.45,-2.6)
+    {– blocking\\– non-blocking (polling)\\– push-notify};
+\end{tikzpicture}\end{figura}
+\end{document}

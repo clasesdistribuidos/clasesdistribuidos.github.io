@@ -1,0 +1,20 @@
+\input{estilo}
+% Mensajería directa: el productor y los consumidores tienen cada uno su
+% biblioteca abajo (la franja), y las flechas van directo de la del productor
+% a la de cada consumidor, sin nada en el medio. Las flechas eran azules en las
+% notas; acá van en tinta.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    maq/.style={capas=2, minimum width=13mm, rectangle split part fill={relleno, white}},
+  ]
+  \node[maq] (p) at (0,0) {\var{P}\rule[-2mm]{0pt}{7mm} \nodepart{two} \strut};
+  \node[maq] (c1) at (4.6,1.9) {\var{C}\rule[-2mm]{0pt}{7mm} \nodepart{two} \strut};
+  \node[maq] (c2) at (5.8,-0.2) {\var{C}\rule[-2mm]{0pt}{7mm} \nodepart{two} \strut};
+  \node[maq] (c3) at (3.2,-2.0) {\var{C}\rule[-2mm]{0pt}{7mm} \nodepart{two} \strut};
+  \coordinate (b) at (p.two east);
+  \fill (b) circle (1.6pt);
+  \foreach \c in {c1, c2, c3} \draw[msg] (b) -- (\c.two west);
+  \draw[llave=4pt, draw=tinta] (p.south west) ++(-0.15,0) -- ++(0,0.42);
+  \node[anchor=east] at ($(p.south west)+(-0.35,0.21)$) {biblioteca};
+\end{tikzpicture}\end{figura}
+\end{document}

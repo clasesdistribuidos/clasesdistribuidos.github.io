@@ -1,0 +1,52 @@
+\input{estilo}
+% La figura 11-3 de Kleppmann tal como está en la pizarra, con los rótulos del
+% libro en inglés: dos topics con sus particiones, dos productores haciendo
+% append al final, y un consumer group con dos consumidores y sus offsets.
+% Debajo, lo que el profesor anotó a mano: send(topic, key, pl) ->
+% hash(key) % N, N las particiones => FIFO por partición.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    cl/.style={draw=tinta, fill=white, minimum width=36mm, minimum height=7mm, font=\footnotesize},
+    gris/.style={->, draw=suave, line width=0.8pt},
+  ]
+  \def\w{0.5}
+  % una partición: \part{y}{nombre}{celdas}
+  \newcommand\particion[3]{%
+    \node[anchor=east, font=\small] at (1.9,#1) {#2};
+    \foreach \i in {1,...,#3} \node[celda, minimum width=\w cm, minimum height=6mm, anchor=center, font=\scriptsize] at ({2.0+(\i-0.5)*\w},#1) {\i};}
+  \particion{4.0}{Partition 0}{10}
+  \particion{3.0}{Partition 1}{8}
+  \particion{1.8}{Partition 0}{4}
+  \particion{0.8}{Partition 1}{7}
+  \particion{-0.2}{Partition 2}{12}
+  \draw[llave=5pt, draw=tinta] (-0.2,2.7) -- (-0.2,4.3);
+  \node[rotate=90, font=\small] at (-0.65,3.5) {Topic A};
+  \draw[llave=5pt, draw=tinta] (-0.2,-0.5) -- (-0.2,2.1);
+  \node[rotate=90, font=\small] at (-0.65,0.8) {Topic B};
+  % los appends
+  \foreach \x/\y in {7.25/4.0, 7.75/4.0, 5.75/0.8} \node[draw=tinta, dashed, minimum width=\w cm, minimum height=6mm] at (\x,\y) {};
+  \node[cl] (pr1) at (11.4,4.2) {Producer client};
+  \node[cl] (pr2) at (11.4,3.2) {Producer client};
+  \draw[msg] (pr1.west) to[out=170, in=60] (7.25,4.3);
+  \draw[msg] (pr2.west) to[out=180, in=-60] (7.75,3.7);
+  \draw[msg] (pr2.west) to[out=180, in=90] (5.75,1.1);
+  \node[etiq, anchor=south west] at (8.3,4.55) {append};
+  % el consumer group
+  \node[font=\small, anchor=south west] at (9.4,2.05) {Consumer group};
+  \draw[dashed, draw=tinta] (9.4,-1.45) rectangle (13.4,2.0);
+  \node[cl, fill=suave!30] (c1) at (11.4,1.55) {Consumer client};
+  \node[cl, minimum height=9mm, align=center, font=\scriptsize, anchor=north] at (c1.south) {offset for B.0 = 4\\offset for B.1 = 5};
+  \node[cl, fill=suave!30] (c2) at (11.4,-0.35) {Consumer client};
+  \node[cl, font=\scriptsize, anchor=north] at (c2.south) {offset for B.2 = 9};
+  \draw[gris] (3.75,1.5) |- (9.55,1.6);
+  \draw[gris] (4.25,0.5) |- (6.5,0.3) to[out=0, in=180] (9.55,1.4);
+  \draw[gris] (6.25,-0.5) |- (7.0,-0.7) to[out=0, in=180] (9.55,-0.35);
+  \node[etiq, anchor=north] at (6.6,-0.75) {read sequentially};
+  % lo anotado a mano
+  \node[cod, font=\ttfamily\small, anchor=west] (s) at (0,-2.2) {send(topic, key, pl)};
+  \draw[msg] (1.9,-2.5) -- (1.9,-3.1);
+  \node[cod, font=\ttfamily\small, anchor=west] at (1.2,-3.4) {hash(key) \% N};
+  \draw[msg] (3.25,-3.7) -- (3.25,-4.15) node[below, etiq] {particiones};
+  \node[anchor=west] at (5.4,-3.4) {$\Rightarrow$ FIFO por partición};
+\end{tikzpicture}\end{figura}
+\end{document}

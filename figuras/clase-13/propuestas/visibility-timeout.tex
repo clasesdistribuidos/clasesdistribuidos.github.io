@@ -1,0 +1,52 @@
+\input{estilo}
+% Propuesta: el visibility timeout en el tiempo, con el caso de falla del
+% texto. Arriba, el estado de m₁ en la cola; abajo, dos consumidores. a toma
+% m₁ y falla sin borrarlo; mientras corre el timer, b pregunta y no lo ve;
+% cuando el timer vence, m₁ vuelve a ser visible, b lo toma, lo procesa y lo
+% borra. Todo sale del texto; el dibujo es nuevo.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    tramo/.style={draw=tinta, minimum height=6mm, inner sep=0pt, outer sep=0pt,
+      anchor=west, font=\footnotesize},
+    proc/.style={line width=3pt, draw=suave!70},
+  ]
+  \def\yq{2.2} \def\ya{0.8} \def\yb{-0.6}
+  % un tramo del estado de m₁: \tramo{x0}{x1}{relleno}{texto}
+  \newcommand\tramo[4]{\node[tramo, fill=#3, minimum width={(#2-#1)*1cm}] at (#1,\yq) {#4};}
+  % una llamada del consumidor a la cola y lo que vuelve: \llamada{x}{y}{pedido}{respuesta}
+  \newcommand\llamada[4]{%
+    \draw[msg] (#1-0.12,#2+0.12) -- node[etiq, left, pos=0.12] {#3} (#1-0.12,\yq-0.3);
+    \draw[respuesta] (#1+0.12,\yq-0.3) -- node[etiq, right, pos=0.88] {#4} (#1+0.12,#2+0.12);}
+
+  % los rótulos de las filas
+  \node[anchor=east] at (-0.3,\yq) {\var{m}\textsubscript{1} en la cola};
+  \node[anchor=east] at (-0.3,\ya) {consumidor \var{a}};
+  \node[anchor=east] at (-0.3,\yb) {consumidor \var{b}};
+  \foreach \y in {\ya, \yb} \draw[draw=suave, line width=0.4pt] (0,\y) -- (11.2,\y);
+
+  % el estado de m₁
+  \tramo{0}{1}{white}{visible}
+  \tramo{1}{7}{suave!25}{invisible: corre el visibility timer, 60 \unid{s}}
+  \tramo{7}{8.2}{white}{visible}
+  \tramo{8.2}{10}{suave!25}{invisible}
+  \node[anchor=west, font=\small] at (10.1,\yq) {borrado};
+  \node[etiq, anchor=south] at (7,\yq+0.3) {vence el timer};
+  \draw[marca] (7,\yq+0.3) -- (7,\yq-0.3);
+
+  % a: lo toma, lo procesa y falla
+  \llamada{1}{\ya}{receive}{\var{m}\textsubscript{1}}
+  \draw[proc] (1.15,\ya) -- (3.6,\ya);
+  \node[etiq, above] at (2.4,\ya) {procesa};
+  \pic at (3.75,\ya) {rechazo};
+  \node[etiq, text=acento, below=3pt] at (3.75,\ya) {falla, no borra};
+
+  % b: no lo ve; después lo toma, lo procesa y lo borra
+  \llamada{5.3}{\yb}{receive}{vacío}
+  \llamada{8.2}{\yb}{receive}{\var{m}\textsubscript{1}}
+  \draw[proc] (8.35,\yb) -- (9.85,\yb);
+  \node[etiq, below] at (9.1,\yb) {procesa};
+  \draw[msg] (10,\yb+0.12) -- node[etiq, right, pos=0.12] {delete} (10,\yq-0.3);
+
+  \draw[->, draw=suave, line width=0.5pt] (0,-1.5) -- (11.2,-1.5) node[etiq, text=suave, below left] {tiempo};
+\end{tikzpicture}\end{figura}
+\end{document}

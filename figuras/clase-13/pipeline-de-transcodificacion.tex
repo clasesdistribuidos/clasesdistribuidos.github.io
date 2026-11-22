@@ -1,0 +1,37 @@
+\input{estilo}
+% El pipeline de la pizarra: el usuario sube el video al frontend, que
+% (1) lo guarda en S3 y (2) encola en SQS el mensaje transcodificar(path_s3);
+% los workers con FFmpeg lo toman y guardan la versión transcodificada (en
+% verde) en S3.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  % un archivo de video: \video[color]{(x,y)}
+  \newcommand\video[2][tinta]{\begin{scope}[shift={#2}]
+    \draw[draw=#1, fill=white] (-0.2,-0.25) rectangle (0.2,0.25);
+    \fill[#1] (-0.07,-0.1) -- (0.1,0) -- (-0.07,0.1) -- cycle;
+  \end{scope}}
+  \pic at (0,-0.6) {persona};
+  \node[caja, minimum width=24mm, minimum height=16mm] (f) at (4.3,0) {frontend};
+  \draw[implica] (0.8,0) -- node[above=2pt, align=center] {upload\\video} (2.9,0);
+  \node[cola, minimum height=28mm, minimum width=10mm] (q) at (8.6,0.25) {SQS};
+  \draw[msg] ($(f.east)+(0,0.25)$) -- (q.west) node[pos=0.35, paso, below=4pt] {2};
+  % el mensaje
+  \draw[fill=white] (6.9,2.0) -- (8.3,2.0) -- (8.3,2.75) -- (8.05,3.0) -- (6.9,3.0) -- cycle;
+  \draw (8.05,3.0) -- (8.05,2.75) -- (8.3,2.75);
+  \node[cod, anchor=west] at (7.0,2.5) {transcodificar(path\_s3)};
+  \draw[->, dotted, line width=0.8pt] (6.5,0.4) -- (6.5,1.95);
+  % los workers
+  \foreach \d in {0.4, 0.2, 0} \node[caja, fill=white, minimum width=20mm, minimum height=20mm] at (13.0+\d,0.1-\d) {};
+  \node[caja, minimum width=20mm, minimum height=20mm] (w) at (13.0,0.1) {FFmpeg};
+  \draw[msg] (q.east) -- (w.west);
+  \node[align=center, anchor=north] at (13.2,-1.5) {workers\\transcodificadores};
+  % el storage
+  \pic[scale=2.4] at (8.6,-4.75) {base};
+  \coordinate (s-west) at (7.4,-3.4); \coordinate (s-east) at (9.8,-3.2);
+  \video{(8.15,-3.4)} \video[segundo]{(8.85,-3.4)}
+  \node[align=center, anchor=north] at (8.6,-5.1) {storage de blobs (S3)};
+  \draw[msg] ($(f.south)+(0.6,0)$) to[bend right=12] node[paso, pos=0.45, left=6pt] {1} (s-west);
+  \node[align=center] at (4.6,-3.2) {guardar\\video};
+  \draw[->, dashed, draw=segundo] (w.south west) -- (s-east);
+\end{tikzpicture}\end{figura}
+\end{document}

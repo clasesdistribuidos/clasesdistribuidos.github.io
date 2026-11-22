@@ -1,0 +1,25 @@
+\input{estilo}
+% El fan-out de la pizarra: dos productores mandan a SNS (un cuadrado, no un
+% cilindro), y SNS le manda el mismo m₁ a cada consumidor, en verde. A la
+% derecha, "heterogéneo"; abajo, en verde, "fan-out".
+\begin{document}
+\begin{figura}\begin{tikzpicture}[q/.style={caja, minimum width=11mm, minimum height=11mm}]
+  \newcommand\msj[1]{\node[draw=segundo, fill=segundo!14, text=segundo, minimum size=5mm,
+    inner sep=0pt, font=\scriptsize] at #1 {\var{m}\textsubscript{1}};}
+  \node[caja, minimum width=14mm, minimum height=14mm] (s) at (3.4,0) {SNS};
+  \foreach \i/\y in {1/1.0, 2/-1.0} {
+    \node[q] (p\i) at (0,\y) {\var{P}};
+    \draw[msg] (p\i) -- (s);
+  }
+  \msj{(1.5,1.35)}
+  \foreach \i/\y in {1/2.0, 2/0, 3/-2.0} {
+    \node[q] (c\i) at (7.4,\y) {\var{C}};
+    \draw[msg, draw=segundo] (s.east) to[out=0, in=180] (c\i.west);
+  }
+  \msj{(5.3,1.75)} \msj{(5.5,0.38)} \msj{(5.3,-1.35)}
+  \draw[llave=8pt, draw=tinta] (8.5,2.6) -- (8.5,-2.6);
+  \node[anchor=west] at (8.95,0) {heterogéneo};
+  \draw[llave=7pt, draw=segundo] (6.6,-3.0) -- (4.3,-3.0);
+  \node[text=segundo] at (5.45,-3.6) {fan-out};
+\end{tikzpicture}\end{figura}
+\end{document}

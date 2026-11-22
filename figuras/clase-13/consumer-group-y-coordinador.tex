@@ -1,0 +1,24 @@
+\input{estilo}
+% La pizarra: tres particiones (1, 2, 3) como tiras largas; C₁ lee la 1 y la
+% 2, C₂ (tachado) la 3; C₁ habla con el coordinador (el ida y vuelta marcado
+% "1") y escribe en ZooKeeper.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[q/.style={caja, minimum width=11mm, minimum height=11mm}]
+  \foreach \i/\y in {1/2.0, 2/0.9, 3/-0.9} {
+    \node at (-0.6,\y) {\i};
+    \draw (0,\y-0.3) rectangle (5.4,\y+0.3);
+  }
+  \node[q] (c1) at (10.2,1.5) {\var{C}\textsubscript{1}};
+  \node[q] (c2) at (10.2,-0.9) {\var{C}\textsubscript{2}}; \tachar{c2}
+  \draw[msg] (c1.west) to[out=190, in=-10] (5.55,2.1);
+  \draw[msg] (5.55,0.85) to[out=0, in=200] (c1.south west);
+  \draw[msg] (5.55,-1.0) to[out=0, in=180] (c2.west);
+  \node[caja, minimum width=30mm, minimum height=10mm] (k) at (7.6,3.6) {coordinador};
+  \draw[msg] (c1.north west) to[bend left=30] (k.south east);
+  \draw[msg] (k.south east) ++(-0.3,0) to[bend right=40] (c1.north west);
+  \node at (9.75,2.9) {1};
+  \pic at (12.6,3.4) {base};
+  \node[anchor=north] at (12.6,3.3) {ZooKeeper};
+  \draw[msg] (c1.north east) -- (12.0,3.9);
+\end{tikzpicture}\end{figura}
+\end{document}

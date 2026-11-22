@@ -1,0 +1,47 @@
+\input{estilo}
+% Propuesta: antes y después de que se caiga el primary, con los seis nodos en
+% el mismo lugar. Antes: solo el primary (1.º) responde; entrega m₁ y anota un
+% timeout de 60 s en su copia, que no viaja a las réplicas. Después: el
+% primary murió, el secondary (2.º) se entera por gossip y queda habilitado; su
+% copia no tiene timeout y vuelve a entregar m₁. Duplicado por diseño.
+% Agregado del texto: los dos momentos, los roles, el timeout local y el gossip.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    n/.style={circle, draw=tinta, fill=relleno, minimum size=9mm, inner sep=0pt, font=\footnotesize},
+    cons/.style={caja, minimum width=10mm, minimum height=9mm},
+  ]
+  \newcommand\msj[1]{\node[draw=segundo, fill=segundo!14, text=segundo, minimum size=4.2mm,
+    inner sep=0pt, font=\scriptsize] at #1 {\var{m}\textsubscript{1}};}
+  \newcommand\reloj[1]{\begin{scope}[shift={#1}]
+    \draw[draw=acento] (0,0) circle (1.8mm); \draw[draw=acento] (0,0) -- (0,0.12) (0,0) -- (0.08,-0.03);
+  \end{scope}}
+  % los seis nodos, con sus roles: \nodos
+  \newcommand\nodos{%
+    \foreach \i/\x/\y/\r in {1/0/0/1.º, 2/1.6/0/2.º, 3/3.2/0/3.º, 4/0/-1.6/, 5/1.6/-1.6/, 6/3.2/-1.6/}
+      \node[n] (n\i) at (\x,\y) {\r};
+    \foreach \i in {1,2,3} {\msj{($(n\i.north east)+(0.05,0.05)$)}}}
+  \newcommand\pie[2]{\node at (#1,-2.75) {#2};}
+
+  % --- antes
+  \nodos
+  \node[cons] (a) at (0,2.1) {\var{a}};
+  \draw[msg] (-0.15,1.65) -- node[cod, left] {receive} (-0.15,0.45);
+  \draw[respuesta] (0.15,0.45) -- node[etiq, right, pos=0.6] {\var{m}\textsubscript{1}} (0.15,1.65);
+  \reloj{(-0.85,0)}
+  \node[etiq, text=acento, anchor=east] at (-1.1,0) {60 \unid{s}, solo acá};
+  \pie{1.6}{antes: solo responde el primary}
+
+  % --- después
+  \begin{scope}[xshift=8.0cm]
+    \nodos
+    \tachar{n1}
+    \draw[dashed, draw=suave] (n5) to[bend right=35] node[etiq, text=suave, right] {gossip} (n2);
+    \node[cons] (b) at (1.6,2.1) {\var{b}};
+    \draw[msg] (1.45,1.65) -- node[cod, left] {receive} (1.45,0.45);
+    \draw[respuesta] (1.75,0.45) -- node[etiq, right, pos=0.6] {\var{m}\textsubscript{1}} (1.75,1.65);
+    \node[etiq, text=acento, anchor=west] at (3.9,0.5) {sin timeout:};
+    \node[etiq, text=acento, anchor=west] at (3.9,0.1) {lo entrega de nuevo};
+    \pie{1.6}{después: muere el primary}
+  \end{scope}
+\end{tikzpicture}\end{figura}
+\end{document}

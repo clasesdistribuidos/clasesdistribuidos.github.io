@@ -1,0 +1,15 @@
+\input{estilo}
+% La opción 2 de la pizarra: el frontend arriba, tres brokers con su base cada
+% uno, y el mensaje (el punto verde) guardado en la primera.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=14mm, minimum height=11mm] (f) at (2.4,2.2) {FE};
+  \foreach \i/\x in {1/0, 2/2.4, 3/4.8} {
+    \node[caja, minimum width=12mm, minimum height=11mm] (b\i) at (\x,0) {\var{B}};
+    \draw[msg] (f) -- (b\i);
+    \pic[scale=1.1] at (\x,-2.5) {base};
+    \draw[msg] (b\i.south) -- (\x,-1.15);
+  }
+  \fill[segundo] (0,-2.1) circle (1.4mm);
+\end{tikzpicture}\end{figura}
+\end{document}

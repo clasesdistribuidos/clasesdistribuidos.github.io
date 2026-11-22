@@ -1,0 +1,16 @@
+\input{estilo}
+% El broker en el medio: dos productores le mandan, y él les manda a tres
+% consumidores. Igual que la pizarra.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[q/.style={caja, minimum width=12mm, minimum height=12mm}]
+  \node[q] (b) at (3.6,0) {\var{B}};
+  \foreach \i/\y in {1/0.95, 2/-0.95} {
+    \node[q] (p\i) at (0,\y) {\var{P}};
+    \draw[msg] (p\i) -- (b);
+  }
+  \foreach \i/\y in {1/1.8, 2/0, 3/-1.8} {
+    \node[q] (c\i) at (7.2,\y) {\var{C}};
+    \draw[msg] (b) -- (c\i);
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

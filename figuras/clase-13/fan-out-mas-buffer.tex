@@ -1,0 +1,20 @@
+\input{estilo}
+% Fan-out + buffer, como en la pizarra: P publica en SNS, SNS reparte a tres
+% colas de SQS, y cada suscriptor consume de la suya. S₃, arriba, es una pila:
+% varias instancias.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[q/.style={caja, minimum width=11mm, minimum height=11mm}]
+  \node[q] (p) at (0,0) {\var{P}};
+  \node[caja, minimum width=17mm, minimum height=15mm] (s) at (3.3,0) {SNS};
+  \draw[msg] (p) -- node[above] {publish} (s);
+  \foreach \i/\y in {3/2.1, 2/0, 1/-2.1} {
+    \node[cola, minimum height=22mm, minimum width=10mm] (c\i) at (7.6,\y) {SQS};
+    \draw[msg] (s) -- (c\i.west);
+  }
+  \foreach \d in {0.3, 0.15} \node[q, fill=white] at (10.8+\d,2.1+\d) {};
+  \foreach \i/\y in {3/2.1, 2/0, 1/-2.1} {
+    \node[q] (s\i) at (10.8,\y) {\var{S}\textsubscript{\i}};
+    \draw[msg] (c\i.east) -- (s\i.west);
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

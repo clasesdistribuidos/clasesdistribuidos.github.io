@@ -1,0 +1,16 @@
+\input{estilo}
+% Las notas: un log de ocho celdas y tres consumidores apuntándolo desde abajo
+% en lugares distintos, cada uno de un color (C₁ verde, C₂ azul —acá en
+% tinta—, C₃ rojo); a los costados, las dos anotaciones, con los subrayados.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \tira[0.55]{l}{(0,0)}{,,,,,,,}
+  \foreach \k/\c/\i in {3/segundo/1, 6/tinta/2, 8/acento/3} {
+    \draw[msg, draw=\c] (l-\k.south) ++(0,-0.75) -- (l-\k.south);
+    \node[text=\c, below] at ($(l-\k.south)+(0,-0.75)$) {\var{C}\textsubscript{\i}};
+  }
+  \node[anchor=east, align=left] at (-0.5,0.45) {los mensajes\\están ordenados};
+  \node[anchor=west, align=left] (t) at (5.0,0.0) {los consumidores pueden\\empezar a leer desde\\cualquier lado o rebobinar\\y replay};
+  \draw[draw=segundo] (5.05,-0.5) -- (6.95,-0.5) (7.25,-0.5) -- (8.55,-0.5) (5.05,-0.98) -- (5.85,-0.98);
+\end{tikzpicture}\end{figura}
+\end{document}

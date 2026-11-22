@@ -1,0 +1,31 @@
+\input{estilo}
+% Propuesta: los cinco shards numerados y a la misma distancia. El frontend
+% manda m₁ al 3 (al azar), que lo copia al 2 y al 4; debajo de cada copia, lo
+% que guarda: el mensaje y la lista de dónde están las tres. Abajo, el precio:
+% dos consumidores leen al mismo tiempo del 3 y del 4, y los dos procesan m₁.
+% Agregado del texto: los números, lo que guarda cada copia y el duplicado.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    cons/.style={caja, minimum width=10mm, minimum height=9mm},
+  ]
+  \newcommand\msj[1]{\node[draw=segundo, fill=segundo!14, text=segundo, minimum size=4.6mm,
+    inner sep=0pt, font=\scriptsize] at #1 {\var{m}\textsubscript{1}};}
+  \foreach \i in {1,...,5} {
+    \pic at ({1.9*(\i-1)},-0.55) {base};
+    \node[etiq, text=suave] at ({1.9*(\i-1)},-0.95) {\i};
+  }
+  \draw[msg] (3.8,2.0) -- node[cod, right] {send(\var{m}\textsubscript{1})} (3.8,0.75);
+  \foreach \x in {1.9, 3.8, 5.7} {\msj{(\x,-0.05)}}
+  \draw[msg, draw=segundo] (3.5,0.05) to[bend right=25] (2.2,0.05);
+  \draw[msg, draw=segundo] (4.1,0.05) to[bend left=25] (5.4,0.05);
+  % lo que guarda cada copia
+  \foreach \x in {1.9, 3.8, 5.7}
+    \node[cod, text=segundo, align=center] at (\x,-1.55) {\var{m}\textsubscript{1},\\{}[2, 3, 4]};
+  % el duplicado
+  \node[cons] (a) at (3.8,-3.5) {\var{a}};
+  \node[cons] (b) at (5.7,-3.5) {\var{b}};
+  \draw[respuesta] (3.8,-2.05) -- node[etiq, left] {\var{m}\textsubscript{1}} (a.north);
+  \draw[respuesta] (5.7,-2.05) -- node[etiq, right] {\var{m}\textsubscript{1}} (b.north);
+  \node[etiq, text=acento, anchor=west] at (6.5,-3.5) {los dos procesan \var{m}\textsubscript{1}: duplicado};
+\end{tikzpicture}\end{figura}
+\end{document}

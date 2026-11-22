@@ -1,0 +1,44 @@
+\input{estilo}
+% La pizarra: cuatro brokers con sus logs; topic1-part1 es leader en el
+% broker 1 y follower en el 2 y el 3; topic1-part2, leader en el 4 y follower
+% en el 2 y el 3. Los productores escriben en los leaders y las flechas grises
+% van de cada leader a sus followers. A mano, en azul: "primary" sobre el
+% leader del broker 1 y "backups" sobre el arco a sus followers (acá en tinta).
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    p/.style={draw=tinta, fill=white, minimum width=24mm, minimum height=6mm, font=\footnotesize},
+    gris/.style={->, draw=suave, line width=0.6pt},
+  ]
+  \foreach \b/\x in {1/0, 2/4.0, 3/8.0, 4/12.0} {
+    \draw (\x,0) rectangle (\x+3.0,3.0);
+    \node[font=\small] at (\x+1.5,2.75) {logs};
+    \node[font=\small, anchor=north] at (\x+1.5,-0.15) {broker \b};
+  }
+  % part1
+  \node[font=\footnotesize, anchor=west] at (0.2,2.3) {leader};
+  \node[p] (a1) at (1.5,1.8) {topic1-part1};
+  \foreach \x in {4.0, 8.0} {
+    \node[font=\footnotesize, anchor=west] at (\x+0.2,2.3) {follower};
+    \node[p] at (\x+1.5,1.8) {topic1-part1};
+  }
+  % part2
+  \node[font=\footnotesize, anchor=west] at (12.2,1.0) {leader};
+  \node[p] at (13.5,0.5) {topic1-part2};
+  \foreach \x in {4.0, 8.0} {
+    \node[font=\footnotesize, anchor=west] at (\x+0.2,1.0) {follower};
+    \node[p] at (\x+1.5,0.5) {topic1-part2};
+  }
+  \draw[gris] (1.0,2.3) to[bend left=8] (4.6,2.4);
+  \draw[gris] (1.0,2.3) to[bend left=12] (8.6,2.4);
+  \draw[gris] (12.2,1.0) to[bend right=8] (8.9,1.0);
+  \draw[gris] (12.2,1.0) to[bend right=10] (4.9,1.0);
+  \node[font=\small] (pr1) at (0.4,3.8) {producer};
+  \draw[msg] (pr1.south) -- (0.6,2.5);
+  \node[font=\small] (pr2) at (13.6,3.8) {producer};
+  \draw[msg] (pr2.south) -- (13.0,1.25);
+  \node[font=\large] at (2.0,4.2) {primary};
+  \node[font=\large] at (6.0,4.7) {backups};
+  \draw[msg] (0.9,2.35) to[out=60, in=120] (4.9,2.6);
+  \draw[msg] (0.9,2.35) to[out=70, in=110] (8.8,2.6);
+\end{tikzpicture}\end{figura}
+\end{document}
