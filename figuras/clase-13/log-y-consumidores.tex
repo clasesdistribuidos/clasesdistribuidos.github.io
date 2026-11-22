@@ -1,16 +1,26 @@
 \input{estilo}
-% Las notas: un log de ocho celdas y tres consumidores apuntándolo desde abajo
-% en lugares distintos, cada uno de un color (C₁ verde, C₂ azul —acá en
-% tinta—, C₃ rojo); a los costados, las dos anotaciones, con los subrayados.
+% Propuesta: el log con sus posiciones numeradas, el productor haciendo append
+% al final y tres consumidores, cada uno en su offset: a está al día, b va más
+% atrás, y c rebobinó al principio para hacer replay. Los mensajes no se
+% borran al leerlos. Agregado del texto: los números, el append, los offsets
+% y el rebobinado.
 \begin{document}
-\begin{figura}\begin{tikzpicture}
-  \tira[0.55]{l}{(0,0)}{,,,,,,,}
-  \foreach \k/\c/\i in {3/segundo/1, 6/tinta/2, 8/acento/3} {
-    \draw[msg, draw=\c] (l-\k.south) ++(0,-0.75) -- (l-\k.south);
-    \node[text=\c, below] at ($(l-\k.south)+(0,-0.75)$) {\var{C}\textsubscript{\i}};
+\begin{figura}\begin{tikzpicture}[
+    cons/.style={caja, minimum width=9mm, minimum height=8mm},
+  ]
+  \def\w{0.75}
+  \tira[\w]{l}{(0,0)}{\var{m}\textsubscript{1},\var{m}\textsubscript{2},\var{m}\textsubscript{3},\var{m}\textsubscript{4},\var{m}\textsubscript{5},\var{m}\textsubscript{6},\var{m}\textsubscript{7},\var{m}\textsubscript{8},\var{m}\textsubscript{9},\var{m}\textsubscript{10}}
+  \node[celda, minimum width=\w cm, draw=suave, dashed] at (10*\w,0) {};
+  \node[caja, anchor=west, minimum width=17mm, minimum height=8mm] (p) at (11*\w+1.3,0.45) {productor};
+  \draw[msg] (p.west) -- node[cod, above] {append} (11*\w+0.05,0.45);
+  \foreach \i in {1,...,10} \node[etiq, text=suave] at ({(\i-0.5)*\w},1.15) {\i};
+  % los consumidores, cada uno en su offset
+  \foreach \c/\k/\t in {a/10/al día, b/6/más atrás, c/1/replay desde el principio} {
+    \node[cons] (\c) at ({(\k-0.5)*\w},-1.6) {\var{\c}};
+    \draw[msg] (\c.north) -- ({(\k-0.5)*\w},-0.05);
+    \node[etiq, anchor=north] at (\c.south) {\t};
   }
-  \node[anchor=east, align=left] at (-0.5,0.45) {los mensajes\\están ordenados};
-  \node[anchor=west, align=left] (t) at (5.0,0.0) {los consumidores pueden\\empezar a leer desde\\cualquier lado o rebobinar\\y replay};
-  \draw[draw=segundo] (5.05,-0.5) -- (6.95,-0.5) (7.25,-0.5) -- (8.55,-0.5) (5.05,-0.98) -- (5.85,-0.98);
+  \draw[msg, dashed, draw=suave] ({7.5*\w},1.45) to[bend right=18] node[etiq, text=suave, above] {\var{c} rebobina} ({0.5*\w},1.45);
+  \node[etiq, text=suave, anchor=west] at (0,-2.75) {los mensajes están ordenados y no se borran al leerlos: cada uno lee desde donde quiere};
 \end{tikzpicture}\end{figura}
 \end{document}

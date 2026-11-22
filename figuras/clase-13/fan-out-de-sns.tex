@@ -1,25 +1,28 @@
 \input{estilo}
-% El fan-out de la pizarra: dos productores mandan a SNS (un cuadrado, no un
-% cilindro), y SNS le manda el mismo m₁ a cada consumidor, en verde. A la
-% derecha, "heterogéneo"; abajo, en verde, "fan-out".
+% Propuesta: el fan-out con el ejemplo del texto. El sistema de usuarios
+% publica la baja de un usuario (m₁) y SNS le empuja una copia a cada
+% suscriptor: dos sistemas y una persona, cada uno con su protocolo. Los
+% consumidores, a la misma distancia; las copias, a la misma altura de las
+% flechas. Agregado del texto: el ejemplo, los protocolos y los pies.
 \begin{document}
-\begin{figura}\begin{tikzpicture}[q/.style={caja, minimum width=11mm, minimum height=11mm}]
+\begin{figura}\begin{tikzpicture}[
+    dest/.style={caja, minimum width=26mm, minimum height=11mm, align=center, font=\small},
+  ]
   \newcommand\msj[1]{\node[draw=segundo, fill=segundo!14, text=segundo, minimum size=5mm,
     inner sep=0pt, font=\scriptsize] at #1 {\var{m}\textsubscript{1}};}
-  \node[caja, minimum width=14mm, minimum height=14mm] (s) at (3.4,0) {SNS};
-  \foreach \i/\y in {1/1.0, 2/-1.0} {
-    \node[q] (p\i) at (0,\y) {\var{P}};
-    \draw[msg] (p\i) -- (s);
+  \node[caja, minimum width=24mm, minimum height=11mm, align=center, font=\small] (p) at (0,0) {sistema\\de usuarios};
+  \node[caja, minimum width=14mm, minimum height=14mm] (s) at (4.2,0) {SNS};
+  \draw[msg] (p) -- node[cod, above=3pt] {publish} (s);
+  \msj{(2.3,-0.4)}
+  \foreach \y/\n/\proto in {1.9/{liquidación\\de haberes}/http, 0/{otro\\microservicio}/sqs, -1.9/{una persona}/email} {
+    \node[dest] at (9.8,\y) {\n};
+    \draw[msg, draw=segundo] (4.9,0) -- (8.5,\y);
+    \msj{({4.9+0.52*3.6},{0.52*\y})}
+    \path (4.9,0) -- (8.5,\y) node[cod, text=suave, pos=0.83, above=1pt, sloped] {\proto};
   }
-  \msj{(1.5,1.35)}
-  \foreach \i/\y in {1/2.0, 2/0, 3/-2.0} {
-    \node[q] (c\i) at (7.4,\y) {\var{C}};
-    \draw[msg, draw=segundo] (s.east) to[out=0, in=180] (c\i.west);
-  }
-  \msj{(5.3,1.75)} \msj{(5.5,0.38)} \msj{(5.3,-1.35)}
-  \draw[llave=8pt, draw=tinta] (8.5,2.6) -- (8.5,-2.6);
-  \node[anchor=west] at (8.95,0) {heterogéneo};
-  \draw[llave=7pt, draw=segundo] (6.6,-3.0) -- (4.3,-3.0);
-  \node[text=segundo] at (5.45,-3.6) {fan-out};
+  \draw[llave=8pt, draw=tinta] (11.3,2.6) -- (11.3,-2.6);
+  \node[anchor=west, align=left] at (11.75,0) {heterogéneos:\\sistemas\\y personas};
+  \draw[llave=7pt, draw=segundo] (8.4,-2.9) -- (5.0,-2.9);
+  \node[text=segundo] at (6.7,-3.5) {fan-out: el mismo \var{m}\textsubscript{1} a todos, por push};
 \end{tikzpicture}\end{figura}
 \end{document}

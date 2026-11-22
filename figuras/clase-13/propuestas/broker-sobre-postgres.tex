@@ -9,8 +9,8 @@
   \node[caja, minimum width=14mm, minimum height=11mm] (p) at (-2.6,2.2) {\var{P}};
   \node[caja, minimum width=14mm, minimum height=11mm] (c) at (2.6,2.2) {\var{C}};
   \node[caja, minimum width=24mm, minimum height=12mm] (b) at (0,0) {broker};
-  \draw[msg] (p) -- node[cod, above left] {send} (b);
-  \draw[msg] (c) -- node[cod, above right, align=left] {receive\\delete} (b);
+  \draw[msg] (p) -- node[cod, pos=0.4, below left=1pt] {send} (b);
+  \draw[msg] (c) -- node[cod, pos=0.4, below right=1pt, align=left] {receive\\delete} (b);
   \pic[scale=1.6] at (0,-3.6) {base};
   \node[anchor=north] at (0,-3.85) {Postgres};
   \draw[msg] (b.south) -- (0,-1.75);

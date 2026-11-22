@@ -1,20 +1,36 @@
 \input{estilo}
-% Fan-out + buffer, como en la pizarra: P publica en SNS, SNS reparte a tres
-% colas de SQS, y cada suscriptor consume de la suya. S₃, arriba, es una pila:
-% varias instancias.
+% Propuesta: las dos mitades del patrón, que el texto resume como "fan-out
+% hacia afuera, balanceo de carga hacia dentro de cada suscriptor". SNS manda
+% una copia de m₁ a la cola de cada suscriptor, y en cada uno la toma un solo
+% consumidor, uno cualquiera. La frontera de SNS deja las colas afuera: el
+% buffer queda del lado del usuario. Agregado del texto: los consumidores de
+% cada suscriptor, las copias, la frontera y las llaves.
 \begin{document}
-\begin{figura}\begin{tikzpicture}[q/.style={caja, minimum width=11mm, minimum height=11mm}]
-  \node[q] (p) at (0,0) {\var{P}};
-  \node[caja, minimum width=17mm, minimum height=15mm] (s) at (3.3,0) {SNS};
-  \draw[msg] (p) -- node[above] {publish} (s);
-  \foreach \i/\y in {3/2.1, 2/0, 1/-2.1} {
-    \node[cola, minimum height=22mm, minimum width=10mm] (c\i) at (7.6,\y) {SQS};
-    \draw[msg] (s) -- (c\i.west);
+\begin{figura}\begin{tikzpicture}[
+    cons/.style={circle, draw=tinta, fill=white, minimum size=6mm, inner sep=0pt, font=\scriptsize},
+  ]
+  \newcommand\msj[1]{\node[draw=segundo, fill=segundo!14, text=segundo, minimum size=5mm,
+    inner sep=0pt, font=\scriptsize] at #1 {\var{m}\textsubscript{1}};}
+  \node[caja, minimum width=11mm, minimum height=11mm] (p) at (0,0) {\var{P}};
+  \node[caja, minimum width=15mm, minimum height=15mm] (s) at (3.0,0) {SNS};
+  \draw[msg] (p) -- node[cod, above] {publish} (s);
+  \draw[draw=segundo, dashed, line width=0.8pt] (2.0,-1.1) rectangle (4.0,1.1);
+  \node[etiq, text=segundo, anchor=south] at (3.0,1.1) {frontera de SNS};
+  \foreach \i/\y/\k in {1/2.3/1, 2/0/3, 3/-2.3/2} {
+    \node[cola, minimum height=20mm] (c\i) at (7.4,\y) {};
+    \draw[msg] (s.east) -- (c\i.west);
+    \msj{({4.0+0.55*(6.4-4.0)},{0.55*\y})}
+    \node[etiq, anchor=south] at (7.4,\y+0.45) {SQS};
+    % el suscriptor: tres consumidores que compiten
+    \draw[marco] (9.75,\y-0.95) rectangle (10.85,\y+0.95);
+    \node[anchor=west] at (10.95,\y) {\var{S}\textsubscript{\i}};
+    \foreach \j/\dy in {1/0.6, 2/0, 3/-0.6} {
+      \node[cons] (k\i\j) at (10.3,\y+\dy) {\ifnum\j=\k \textcolor{segundo}{\var{m}\textsubscript{1}}\fi};
+      \draw[msg] (c\i.east) -- (k\i\j.west);
+    }
   }
-  \foreach \d in {0.3, 0.15} \node[q, fill=white] at (10.8+\d,2.1+\d) {};
-  \foreach \i/\y in {3/2.1, 2/0, 1/-2.1} {
-    \node[q] (s\i) at (10.8,\y) {\var{S}\textsubscript{\i}};
-    \draw[msg] (c\i.east) -- (s\i.west);
-  }
+  % las dos mitades
+  \draw[llave=6pt] (6.4,-3.55) -- (4.1,-3.55) node[midway, below=7pt, etiq, align=center] {fan-out:\\una copia por suscriptor};
+  \draw[llave=6pt] (10.85,-3.55) -- (8.5,-3.55) node[midway, below=7pt, etiq, align=center] {balanceo de carga:\\cada copia, a un consumidor};
 \end{tikzpicture}\end{figura}
 \end{document}

@@ -1,25 +1,59 @@
 \input{estilo}
-% Productor, cola y consumidor, con el RPC que hay debajo de cada flecha. El
-% consumidor le pide a la cola (rcve) y la cola le entrega; las tres formas de
-% recibir cuelgan de esa flecha, como en la pizarra.
+% Propuesta: arriba, productor, cola y consumidor simétricos, con un RPC de
+% cada lado; el receive es una llamada del consumidor a la cola (la flecha va
+% al revés de como la dibujó la pizarra, cosa que la clase aclara). Abajo, las
+% formas de recibir como cuatro paneles iguales: blocking, polling, push y
+% notify. La pizarra las listaba; los diagramas salen de lo que dice la clase.
 \begin{document}
 \begin{figura}\begin{tikzpicture}
-  \node[caja, minimum width=24mm, minimum height=14mm] (p) at (0,0) {productor};
-  \node[cola, minimum width=10mm, minimum height=30mm] (q) at (4.4,0) {};
-  \node[caja, minimum width=24mm, minimum height=14mm] (c) at (8.8,0) {consumidor};
-  \draw[msg] (p.east) -- node[etiq, above] {push} (q.west);
-  \draw[msg] ($(c.west)+(0,0.35)$) to[bend right=30] node[etiq, above] {rcve} ($(q.east)+(0,0.35)$);
-  \draw[msg] ($(q.east)+(0,-0.15)$) -- ($(c.west)+(0,-0.15)$);
-  % el RPC de cada lado
-  \draw[llave] (1.25,0.85) -- (3.0,0.85) node[midway, above=6pt, etiq, text=suave] {RPC};
-  \draw[llave] (5.85,1.15) -- (7.5,1.15) node[midway, above=6pt, etiq, text=suave] {RPC};
-  % la cola de mensajes
-  \draw[llave] (5.9,-0.75) -- (2.9,-0.75) node[midway, below=6pt, etiq, text=suave] {cola de mensajes};
-  % las tres formas de recibir
-  \draw[msg, draw=suave] (6.3,-0.3) to[out=-90, in=180] (7.6,-2.6);
-  \node[anchor=west] (r) at (7.65,-2.6) {receive};
-  \draw[llave=5pt] (9.25,-3.55) -- (9.25,-1.65);
-  \node[anchor=west, align=left, font=\small] at (9.45,-2.6)
-    {– blocking\\– non-blocking (polling)\\– push-notify};
+  % --- el esquema
+  \node[caja, minimum width=24mm, minimum height=13mm] (p) at (0,0) {productor};
+  \node[cola, minimum height=30mm] (q) at (5.0,0) {};
+  \node[caja, minimum width=24mm, minimum height=13mm] (c) at (10.0,0) {consumidor};
+  \draw[msg] (p.east) -- node[cod, above] {push(\var{m})} (q.west);
+  \draw[msg] ($(c.west)+(0,0.2)$) -- node[cod, above] {receive()} ($(q.east)+(0,0.2)$);
+  \draw[respuesta] ($(q.east)+(0,-0.2)$) -- node[etiq, below] {\var{m}} ($(c.west)+(0,-0.2)$);
+  \foreach \a/\b in {1.2/3.5, 6.5/8.8}
+    \draw[llave] (\a,0.75) -- (\b,0.75) node[midway, above=6pt, etiq, text=suave] {RPC};
+  \draw[llave] (6.5,-0.75) -- (3.5,-0.75) node[midway, below=6pt, etiq, text=suave] {cola de mensajes};
+
+  % --- las formas de recibir: cuatro paneles iguales
+  \def\yt{-2.3} \def\yb{-6.0}
+  \newcommand\panel[2]{% centro, título
+    \node[etiq] at (#1-0.8,\yt) {cola}; \draw[vida] (#1-0.8,\yt-0.25) -- (#1-0.8,\yb);
+    \node[etiq] at (#1+0.8,\yt) {consumidor}; \draw[vida] (#1+0.8,\yt-0.25) -- (#1+0.8,\yb);
+    \node at (#1,\yb-0.45) {#2};}
+  \newcommand\pide[2]{\draw[msg] (#1+0.8,#2) -- (#1-0.8,#2-0.2);}
+  \newcommand\da[3]{\draw[respuesta] (#1-0.8,#2) -- node[etiq, above, sloped] {#3} (#1+0.8,#2-0.2);}
+  \newcommand\llega[2]{\node[evento=acento] at (#1-0.8,#2) {};
+    \node[etiq, text=acento, anchor=east] at (#1-0.9,#2) {llega \var{m}};}
+
+  % blocking: el consumidor se queda esperando
+  \panel{0.05}{blocking}
+  \pide{0.05}{-2.9}
+  \fill[suave!40] (0.77,-3.1) rectangle (0.93,-4.55);
+  \node[etiq, text=suave, anchor=west] at (0.97,-3.8) {espera};
+  \llega{0.05}{-4.35}
+  \da{0.05}{-4.45}{\var{m}}
+
+  % polling: pregunta, no hay nada, vuelve a preguntar
+  \panel{3.35}{polling}
+  \foreach \y/\r in {-2.8/vacío, -3.85/vacío, -4.9/\var{m}} {
+    \pide{3.35}{\y}
+    \da{3.35}{\y-0.3}{\r}
+  }
+  \llega{3.35}{-4.75}
+
+  % push: la cola se lo manda
+  \panel{6.65}{push}
+  \llega{6.65}{-3.3}
+  \da{6.65}{-3.4}{\var{m}}
+
+  % notify: la cola avisa y el consumidor lo va a buscar
+  \panel{9.95}{notify}
+  \llega{9.95}{-2.7}
+  \draw[msg] (9.15,-3.0) -- node[etiq, above, sloped] {hay uno} (10.75,-3.2);
+  \pide{9.95}{-3.75}
+  \da{9.95}{-4.05}{\var{m}}
 \end{tikzpicture}\end{figura}
 \end{document}

@@ -7,10 +7,6 @@
 % agregados del texto.
 \begin{document}
 \begin{figura}\begin{tikzpicture}
-  \newcommand\video[2][tinta]{\begin{scope}[shift={#2}]
-    \draw[draw=#1, fill=white] (-0.2,-0.25) rectangle (0.2,0.25);
-    \fill[#1] (-0.07,-0.1) -- (0.1,0) -- (-0.07,0.1) -- cycle;
-  \end{scope}}
   \newcommand\p[1]{\tikz[baseline=(x.base)]\node[paso] (x) {#1};}
 
   % la fila de arriba
@@ -22,13 +18,8 @@
   \node[caja, minimum width=20mm, minimum height=14mm] (w) at (12.2,0) {FFmpeg};
   \node[etiq, text=suave, anchor=north] at (12.35,-1.2) {workers};
 
-  % el mensaje, arriba de la cola
-  \node[draw=tinta, fill=white, cod, inner sep=3pt] (m) at (7.6,1.45) {transcodificar(path\_s3)};
-  \draw[dotted, line width=0.8pt] (m.south) -- (7.6,0.5);
-
   % S3, debajo de SQS
   \pic[scale=2.0] at (7.6,-4.4) {base};
-  \video{(7.25,-3.3)} \video[segundo]{(7.95,-3.3)}
   \node[anchor=north] at (7.6,-4.8) {S3};
 
   % los pasos

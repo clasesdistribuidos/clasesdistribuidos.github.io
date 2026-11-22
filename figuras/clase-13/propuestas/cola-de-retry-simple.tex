@@ -1,0 +1,30 @@
+\input{estilo}
+% Propuesta simplificada, opción 2: la misma entrada que volver-a-encolar-simple,
+% pero lo que no se pudo entregar va a una cola aparte, que consume un
+% subconjunto de los notifiers. Mismas posiciones y misma leyenda que la
+% opción 1, con menos texto que cola-de-retry.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \newcommand\msj[2]{\node[draw=#1, fill=#1!14, minimum size=4.6mm, inner sep=0pt] at #2 {};}
+  \newcommand\flota[4]{% y, ancho, rótulo, nombre
+    \foreach \d in {0.3, 0.15} \node[caja, fill=white, minimum width=#2, minimum height=14mm] at (7.2+\d,#1-\d) {};
+    \node[caja, minimum width=#2, minimum height=14mm] (#4) at (7.2,#1) {#3};}
+  % la principal
+  \node[cola, minimum height=40mm, minimum width=11mm] (q) at (2.6,0) {};
+  \foreach \i in {1,2,3} {\msj{segundo}{({1.3+0.55*(\i-1)},0)}}
+  \draw[msg] (-0.4,0) -- (q.west);
+  \flota{0}{22mm}{notifiers}{wp}
+  \draw[msg] (q.east) -- (wp.west);
+  \node[anchor=west, font=\small] at (0.75,0.9) {principal};
+  % la de retry
+  \node[cola, minimum height=40mm, minimum width=11mm] (r) at (2.6,-2.4) {};
+  \foreach \i in {1,2,3} {\msj{acento}{({1.3+0.55*(\i-1)},-2.4)}}
+  \flota{-2.4}{16mm}{notifiers}{wr}
+  \draw[msg] (r.east) -- (wr.west);
+  \node[anchor=west, font=\small] at (0.75,-1.5) {retry};
+  \draw[msg, draw=acento] (wp.south west) ++(0.3,0) -- (r.north east);
+  \node[anchor=west, font=\footnotesize] at (-0.4,-3.7) {%
+    \tikz[baseline=-0.6ex]\node[draw=segundo, fill=segundo!14, minimum size=3.5mm] {};\ responde \quad
+    \tikz[baseline=-0.6ex]\node[draw=acento, fill=acento!14, minimum size=3.5mm] {};\ pendiente};
+\end{tikzpicture}\end{figura}
+\end{document}

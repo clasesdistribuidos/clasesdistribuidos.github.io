@@ -2,25 +2,25 @@
 % Propuesta: la arquitectura interna en grilla. Arriba, el camino del publish;
 % abajo, el del subscribe, con los dos frontends en la misma columna. La cola
 % de retry debajo de la cola interna, la base debajo de los notifiers. Los
-% pasos van numerados con una leyenda, y dos llaves marcan lo que el texto
-% subraya: la misma pieza (cola + flota) que en SQS balancea, acá se usa para
-% hacer fan-out. La frontera dice que es una hipótesis, como el texto.
+% pasos van numerados con una leyenda, y una llave marca el fan-out. La
+% frontera es el sistema de notificaciones; entre notifiers y retry, una sola
+% flecha de dos puntas.
 \begin{document}
 \begin{figura}\begin{tikzpicture}
   \newcommand\p[1]{\tikz[baseline=(x.base)]\node[paso] (x) {#1};}
   % la frontera
   \draw[draw=segundo, dashed, line width=0.9pt] (1.0,-5.75) rectangle (10.6,2.5);
-  \node[text=segundo, anchor=north west] at (1.15,2.4) {SNS por dentro (hipótesis)};
+  \node[text=segundo, anchor=north west] at (1.15,2.4) {sistema de notificaciones};
 
   % --- el publish
-  \draw[msg] (-0.4,0) -- node[cod, above] {publish} (1.3,0);
+  \draw[msg] (-0.9,0) -- node[cod, above, pos=0.4] {publish} (1.3,0);
   \node[caja, minimum width=18mm, minimum height=12mm] (f) at (2.2,0) {frontend};
   \node[cola, minimum height=18mm] (q) at (5.4,0) {};
   \foreach \d in {0.3, 0.15} \node[caja, fill=white, minimum width=22mm, minimum height=14mm] at (8.8+\d,-\d) {};
   \node[caja, minimum width=22mm, minimum height=14mm] (w) at (8.8,0) {notifiers};
   \draw[msg] (f.east) -- node[paso, above=2pt] {2} (q.west);
   \draw[msg] (q.east) -- node[paso, above=2pt] {3} (w.west);
-  \node[paso, fill=white] at (0.45,-0.35) {1};
+  \node[paso, fill=white] at (0.05,-0.35) {1};
   \foreach \i/\y in {1/1.3, 2/0, 3/-1.3} {
     \node[caja, minimum width=10mm, minimum height=10mm] (s\i) at (12.6,\y) {\var{S}\textsubscript{\i}};
     \draw[msg] (9.95,0) -- (s\i.west);
@@ -28,19 +28,17 @@
   \node[paso, fill=white] at (11.05,-0.85) {5};
   \node[etiq, above] at (11.45,0) {sync};
   % las dos lecturas de la misma pieza
-  \draw[llave] (4.4,1.05) -- (9.9,1.05) node[midway, above=6pt, etiq, text=suave] {cola + flota: balanceo de carga, como en SQS};
   \draw[llave] (10.8,1.95) -- (12.1,1.95) node[midway, above=6pt, etiq, text=suave] {fan-out};
 
   % --- los lentos
   \node[cola, minimum height=18mm] (r) at (5.4,-2.0) {retry};
-  \draw[msg, draw=acento] (8.05,-0.75) -- node[paso, draw=acento, text=acento, fill=white, pos=0.45] {6} (6.35,-1.8);
-  \draw[msg, draw=acento] (6.35,-2.2) -- (8.45,-0.75);
+  \draw[msg, <->, draw=acento] (8.25,-0.75) -- node[paso, draw=acento, text=acento, fill=white] {6} (6.35,-2.0);
 
   % --- las suscripciones y el subscribe
   \pic[scale=1.6] at (8.8,-4.8) {base};
   \node[anchor=north] at (8.8,-5.1) {suscripciones};
   \draw[msg] (8.8,-0.75) -- node[paso, fill=white] {4} (8.8,-2.95);
-  \draw[msg] (-0.4,-3.8) -- node[cod, above] {subscribe} (1.3,-3.8);
+  \draw[msg] (-0.9,-3.8) -- node[cod, above, pos=0.4] {subscribe} (1.3,-3.8);
   \node[caja, minimum width=18mm, minimum height=12mm] (f2) at (2.2,-3.8) {frontend};
   \draw[msg] (f2.east) -- node[paso, above=2pt, pos=0.5] {\var{s}} (8.0,-3.8);
 
