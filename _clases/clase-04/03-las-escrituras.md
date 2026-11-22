@@ -33,7 +33,7 @@ Lo que importa es el orden en el que llegan las operaciones. Estamos modificando
   <img src="{{ '/assets/clase-04/anti-patron-de-escritura.svg' | relative_url }}" alt="Dos clientes escribiendo en distinto orden sobre dos chunkservers">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el anti-patrón de escritura — dos chunkservers arriba y dos clientes abajo, con las flechas de write cruzadas; sobre un chunkserver el orden de llegada es Wx1 y después Wx2, sobre el otro es Wx2 y después Wx1
+    el anti-patrón de escritura: cada cliente le manda su write a las dos réplicas por su cuenta, los writes llegan en distinto orden a cada una, y x termina valiendo 2 en un chunkserver y 1 en el otro
     <span class="figura-ref">pizarra pág. 3 / notas pág. 2</span>
   </figcaption>
 </figure>
@@ -47,10 +47,10 @@ Volvamos a las réplicas, e imaginemos para simplificar que dentro de cada una h
 El coordinador está resolviendo dos problemas distintos con eso. Por un lado, elegir un líder: es una variación del problema de elección de líder. Por otro, la detección de fallas, porque monitorea a cada miembro de ese conjunto, al que vamos a llamar réplica group o grupo de réplicas: varias réplicas, una de ellas privilegiada, el primary. También hay que garantizar que haya una y no más de una, porque si hubiera dos volveríamos al split brain que vimos la clase pasada. Eso también lo va a resolver el coordinador.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-04/coordinador-y-replica-group.svg' | relative_url }}" alt="El coordinador, tres chunkservers y el árbol de metadata">
+  <img src="{{ '/assets/clase-04/coordinador-y-replica-group.svg' | relative_url }}" alt="El coordinador con su estructura de nombres y el replica group de un chunk">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el coordinador arriba y tres chunkservers abajo marcados secondary, primary y secondary, con los heartbeats subiendo al coordinador; al costado, el árbol de metadata: el file name con sus chunks, y el chunk 3 apuntando a los tres chunkservers con uno marcado como primary
+    el coordinador y el replica group: la estructura de nombres del coordinador, del archivo a sus chunks y del chunk 3 a los tres chunkservers que lo tienen, y esos tres chunkservers, uno primary y dos secondaries, mandándole heartbeats
     <span class="figura-ref">pizarra pág. 3 / notas pág. 2</span>
   </figcaption>
 </figure>
@@ -73,7 +73,7 @@ Vamos a lo que une todo: la figura 2 del paper, la que dice cómo se realiza una
   <img src="{{ '/assets/clase-04/flujo-de-escritura.svg' | relative_url }}" alt="El flujo de una escritura, figura 2 del paper">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la figura 2 del paper, el flujo de control y de datos de una escritura — cliente, master, réplica secundaria A, réplica primaria y réplica secundaria B, con los siete pasos numerados; flechas finas de control y gruesas de datos
+    el flujo de una escritura, figura 2 del paper: el cliente le pide al master quién es el primary y quiénes los secondaries, empuja los datos por la cadena de réplicas, y el primary ordena la escritura, junta las respuestas de los secondaries y le contesta al cliente; las flechas finas son de control y las gruesas, de datos
     <span class="figura-ref">pizarra pág. 4 / notas pág. 3</span>
   </figcaption>
 </figure>

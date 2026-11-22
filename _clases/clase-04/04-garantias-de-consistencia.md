@@ -47,7 +47,7 @@ El resultado es incómodo. Las dos primeras réplicas quedaron iguales entre sí
   <img src="{{ '/assets/clase-04/region-inconsistente.svg' | relative_url }}" alt="Tres réplicas con una región inconsistente">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el ejemplo de la región inconsistente — tres columnas, secondary, primary y secondary, con los registros apilados de abajo hacia arriba; en las dos primeras quedan A, B, C y B, y en la tercera A, un hueco de padding, C y B; a la izquierda la secuencia de appends que lo produjo
+    la región inconsistente: la secuencia de appends y las tres réplicas que resultan; el append de B no llega a una de ellas, que queda con un hueco de padding donde las otras dos tienen B, y esa fila, distinta en las tres, es la región inconsistente
     <span class="figura-ref">pizarra pág. 4 / notas pág. 4</span>
   </figcaption>
 </figure>

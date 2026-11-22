@@ -43,7 +43,7 @@ Empecemos por el caso normal: el coordinador y tres chunkservers, uno primary y 
   <img src="{{ '/assets/clase-04/promocion-de-primary.svg' | relative_url }}" alt="El coordinador promoviendo a primary a un secondary">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el caso normal — el coordinador arriba y tres chunkservers abajo enviando heartbeats; el que era primary falla, y el coordinador promueve a primary a uno de los secondaries
+    la promoción de un primary: los tres chunkservers le mandan heartbeats al coordinador; el primary falla, y el coordinador promueve a primary a uno de los secondaries
     <span class="figura-ref">pizarra pág. 7 / notas pág. 5</span>
   </figcaption>
 </figure>
@@ -58,7 +58,7 @@ Lo que puede ocurrir es que se interrumpa esa única conexión y que del otro la
   <img src="{{ '/assets/clase-04/split-brain.svg' | relative_url }}" alt="Dos primaries a la vez a los dos lados de un corte de red">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el split brain — el coordinador y tres chunkservers; la conexión con el primary se corta, y el coordinador promueve a primary a uno de los dos que sigue viendo. El primary viejo queda del otro lado del corte, todavía creyéndose primary y atendiendo a sus propios clientes: dos primaries a la vez
+    el split brain: se corta la conexión entre el coordinador y el primary, y el coordinador promueve a otro chunkserver; el primary viejo, del otro lado del corte, se sigue creyendo primary y atiende a sus clientes, y quedan dos primaries a la vez
     <span class="figura-ref">pizarra pág. 7 / notas pág. 5</span>
   </figcaption>
 </figure>

@@ -16,7 +16,7 @@ La segunda es que también implementa un esquema de primary-backup, igual que lo
   <img src="{{ '/assets/clase-04/coordinador-y-backup.svg' | relative_url }}" alt="El coordinador y su backup en standby">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el coordinador y su backup en standby — dos máquinas iguales, cada una con sus tablas en memoria arriba y su log abajo, y el log del coordinador principal viajando por la red hacia el backup
+    el coordinador y su backup: dos máquinas iguales, cada una con su log, y el log del coordinador viajando por la red al del standby
     <span class="figura-ref">pizarra pág. 8 / notas pág. 6</span>
   </figcaption>
 </figure>
