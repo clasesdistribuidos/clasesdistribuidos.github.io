@@ -1,0 +1,22 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[arch/.style={archivo, minimum width=10mm, minimum height=13mm}]
+  % el nodo funcionando como reducer, enmarcado como el mapper
+  \draw[marco] (-0.6,2.0) rectangle (10.9,-5.65);
+  \node[anchor=north west] at (-0.45,1.85) {reducer 1};
+  % lo que cada mapper preparó para el R1
+  \foreach \i/\y in {1/0, 2/-2.2, 3/-4.4} {
+    \node[arch] (f\i) at (0.4,\y) {};
+    \node[cod, below=2pt] at (f\i.south) {M\i\_R1};
+  }
+  % se ordenan juntos, como si fueran uno solo
+  % si cada mapper ya ordenó su archivo, el sort es un merge
+  \node[caja, minimum width=18mm, minimum height=9mm] (sort) at (3.9,-2.2) {sort / merge};
+  % las tres flechas llegan a la arista izquierda, repartidas en su altura
+  \foreach \i in {1,2,3} \draw[->] (f\i.east) -- ($(sort.west)+(0,{(2-\i)*0.25})$);
+  \node[caja, minimum width=18mm, minimum height=9mm] (red) at (6.9,-2.2) {reduce};
+  \node[arch, minimum width=19mm, minimum height=10mm, font=\small] (out) at (9.6,-2.2) {output};
+  \draw[->] (sort) -- (red);
+  \draw[->] (red) -- (out);
+\end{tikzpicture}\end{figura}
+\end{document}

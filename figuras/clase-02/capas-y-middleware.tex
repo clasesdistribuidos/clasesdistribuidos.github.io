@@ -1,0 +1,17 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[capas=3, minimum width=30mm, text height=1.6ex, text depth=0.4ex,
+        rectangle split part align=center, inner ysep=2.2mm] (c) at (0,0)
+    {app \nodepart{two} middleware \nodepart{three} red};
+  % lo que el middleware le saca de encima a la aplicación
+  % las cuatro, a la misma distancia arriba y abajo del centro del middleware,
+  % que es el centro de la pila; las flechas salen todas del mismo punto
+  \coordinate (o) at ($(c.east)+(0.2,0)$);
+  \foreach \t [count=\i] in {comunicación, descubrimiento, transmisión de datos, manejo de errores} {
+    \coordinate (p\i) at ($(o)+(2.2,{1.5-1.0*(\i-1)})$);
+    \node[anchor=west] at (p\i) {\t};
+    \draw[->] (o) -- ($(p\i)+(-0.1,0)$);
+  }
+\end{tikzpicture}\end{figura}
+\end{document}

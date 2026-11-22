@@ -1,0 +1,17 @@
+\input{estilo}
+\definecolor{tercero}{HTML}{C47A1C} % el naranja de la pizarra, para el tercer mapper
+\begin{document}
+\begin{figura}\begin{tikzpicture}[mr/.style={caja, minimum width=12mm, minimum height=10mm}]
+  % cada mapper con el color de sus flechas
+  \foreach \i/\y/\c in {1/0/tinta, 2/-1.6/segundo, 3/-3.2/tercero}
+    \node[mr, draw=\c, fill=\c!10, text=\c] (m\i) at (0,\y) {M\textsubscript{\i}};
+  \node[mr] (r1) at (5.6,-0.8) {R\textsubscript{1}};
+  \node[mr] (r2) at (5.6,-2.4) {R\textsubscript{2}};
+  % cada mapper le manda a los dos reducers; un color por mapper
+  \foreach \i/\c in {1/tinta, 2/segundo, 3/tercero}
+    \foreach \j/\d in {1/0.18, 2/-0.18}
+      \draw[->, draw=\c] (m\i.east) -- ($(r\j.west)+(0,{(2-\i)*0.25})$);
+  \draw[llave, decoration={mirror}] (0.8,-4.0) -- (4.8,-4.0)
+    node[midway, below=8pt, text=tinta] {shuffle};
+\end{tikzpicture}\end{figura}
+\end{document}

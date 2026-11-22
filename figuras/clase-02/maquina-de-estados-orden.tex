@@ -1,0 +1,16 @@
+\input{estilo}
+\begin{document}
+\begin{figura}\begin{tikzpicture}[maq/.style={caja, minimum width=10mm, minimum height=10mm}]
+  % la misma tira de operaciones, en el mismo orden, a las dos máquinas;
+  % la línea media de la figura es y = 0.8, entre las dos tiras
+  \tira[1.1]{s}{(0,1.4)}{\var{a}, \var{b}, \var{c}, \var{d}}
+  \tira[1.1]{t}{(0,-0.6)}{\var{a}, \var{b}, \var{c}, \var{d}}
+  \foreach \i in {1,...,4} \draw[<->] (s-\i.south) -- (t-\i.north);
+  \node[maq] (A) at (6.0,1.85) {A};
+  \node[maq] (B) at (6.0,-0.15) {B};
+  \draw[msg] (s-4.east) -- (A.west);
+  \draw[msg] (t-4.east) -- (B.west);
+  % el mismo estado final
+  \node[rotate=90, font=\Large] at (6.0,0.85) {=};
+\end{tikzpicture}\end{figura}
+\end{document}

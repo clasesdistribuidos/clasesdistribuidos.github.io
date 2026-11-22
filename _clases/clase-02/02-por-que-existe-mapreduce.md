@@ -90,10 +90,10 @@ Hagámoslo con letras, que es más corto. El primer input emite (a,1) y (b,1); e
 Lo que tiene que hacer el reducer —y esta es la parte más interesante— es reunir todas las a de todos los mappers y enviárselas a una función reduce; agrupar todas las b y enviarlas a otra; y las c a una tercera, aunque la c aparezca una sola vez. Resultados: a vale 2, b vale 2 y c vale 1.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-02/flujo-map-reduce.jpg' | relative_url }}" alt="Tres inputs, tres maps, el agrupamiento por clave y los reduces">
+  <img src="{{ '/assets/clase-02/flujo-map-reduce.svg' | relative_url }}" alt="Tres inputs, tres maps, el agrupamiento por clave y los reduces">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el flujo del modelo — tres inputs, cada uno a un mapper, las tiras de pares intermedios (a,1)(b,1) / (b,1) / (a,1)(c,1), y el agrupamiento por clave intermedia hacia los reduces, con los resultados (a,2) (b,2) (c,1)
+    el modelo MapReduce: cada input pasa por un map que emite pares intermedios, los pares se agrupan por su clave y cada grupo va a un reduce, que da (a,2), (b,2) y (c,1)
     <span class="figura-ref">notas pág. 3, fig. 1 / pizarra pág. 6</span>
   </figcaption>
 </figure>
