@@ -194,7 +194,7 @@ son fotos y capturas, y `memoria-dispositivos`, que pasó a ser una tabla en la
 página: una figura también puede terminar así en vez de redibujarse), la clase
 2 (salvo `leslie-lamport` y `dean-y-ghemawat`, que son fotos, y
 `tweet-jeff-dean` y `figure-1-anotada`, que son capturas), la clase 3, la
-clase 11, la clase 13 y la clase 14 (salvo `low-watermark-lag`, un gráfico de
+clase 4 (`coordinador-por-dentro` salió del apunte), la clase 11, la clase 13 y la clase 14 (salvo `low-watermark-lag`, un gráfico de
 datos medidos del paper). El resto sigue con el recorte, aunque su `.tex`
 exista.
 
