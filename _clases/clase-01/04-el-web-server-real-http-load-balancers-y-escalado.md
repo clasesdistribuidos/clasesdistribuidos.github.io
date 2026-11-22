@@ -25,7 +25,7 @@ Aquí el cliente es el browser que cada uno tiene delante: Chrome, Safari, Firef
   <img src="{{ '/assets/clase-01/http-cliente-servidor.svg' | relative_url }}" alt="Cliente y servidor HTTP unidos por un request y un response">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el cliente y el servidor unidos por un request de ida y un response de vuelta
+    el cliente y el servidor HTTP: el request de ida y el response de vuelta
     <span class="figura-ref">notas pág. 5 / pizarra pág. 14</span>
   </figcaption>
 </figure>
@@ -52,7 +52,7 @@ La respuesta habitual es que hay un dispositivo especial, que corre un sistema d
   <img src="{{ '/assets/clase-01/load-balancer.svg' | relative_url }}" alt="Cliente, load balancer, servidores HTTP y base de datos">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el usuario que entra por internet, el load balancer que recibe la conexión y elige uno de los servidores HTTP de atrás, y la base de datos a la que todos consultan por SQL
+    el escalamiento horizontal del web server: el usuario entra por internet al load balancer, que reparte cada conexión entre servidores HTTP idénticos, y todos consultan la misma base de datos
     <span class="figura-ref">notas pág. 5 / pizarra pág. 14</span>
   </figcaption>
 </figure>
@@ -71,7 +71,7 @@ Una de las posibles maneras de escalar la base de datos es con una estructura ma
   <img src="{{ '/assets/clase-01/replicacion-lecturas.svg' | relative_url }}" alt="Escrituras al master, replicación hacia tres readers y lecturas por un load balancer">
   <figcaption>
     <span class="figura-label">Figura</span>
-    los servidores HTTP escriben en el master, que replica hacia sus tres readers, y leen a través de un segundo load balancer que reparte las lecturas entre ellos; master y readers también se llaman primary y backups
+    la base de datos replicada: los servidores escriben en el master, que copia cada escritura a sus readers, y leen de los readers a través de un segundo load balancer; master y readers también se llaman primary y backups
     <span class="figura-ref">notas pág. 5 / pizarra pág. 14</span>
   </figcaption>
 </figure>

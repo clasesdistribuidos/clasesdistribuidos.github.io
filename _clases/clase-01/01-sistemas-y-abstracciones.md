@@ -27,7 +27,7 @@ La versión que vamos a usar es esta: un sistema es un conjunto de componentes i
   <img src="{{ '/assets/clase-01/sistema-interfaz-entorno.svg' | relative_url }}" alt="Un óvalo con componentes interconectados, puertos sobre la frontera y el entorno alrededor">
   <figcaption>
     <span class="figura-label">Figura</span>
-    óvalo con componentes interconectados, que es lo que estudiamos; sobre la frontera, los puertos de la interfaz (API, endpoints); afuera, el entorno, desde donde un cliente le hace un pedido y recibe la respuesta, y donde hay otro sistema con el que se comunica
+    el sistema y su entorno: adentro, los componentes interconectados que estudiamos; en la frontera, la interfaz por la que se accede; y afuera, un cliente que le hace un pedido y otro sistema con el que se comunica
     <span class="figura-ref">notas pág. 1 / pizarra pág. 1</span>
   </figcaption>
 </figure>
@@ -109,7 +109,7 @@ La segunda abstracción es el intérprete. Lo primero que uno piensa al escuchar
   <img src="{{ '/assets/clase-01/interprete-estructura.svg' | relative_url }}" alt="El ciclo del intérprete, con la memoria al costado">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el intérprete y su ciclo —traer la próxima instrucción, interpretarla y volver a empezar—, con la memoria al costado, de donde salen las instrucciones y donde se leen y escriben los datos
+    el ciclo del intérprete, que trae la próxima instrucción, la interpreta y vuelve a empezar, con la memoria al costado, de donde salen las instrucciones y donde se leen y escriben los datos
     <span class="figura-ref">notas pág. 2 / pizarra pág. 3</span>
   </figcaption>
 </figure>
@@ -167,7 +167,7 @@ Y arriba de todo, lo que a nosotros como programadores nos interesa son las tres
   <img src="{{ '/assets/clase-01/capas-osi-tcpip-materia.svg' | relative_url }}" alt="Las pilas de capas de OSI, TCP/IP y el modelo de tres capas de TA050">
   <figcaption>
     <span class="figura-label">Figura</span>
-    las tres pilas de capas comparadas — OSI numerada del 1 al 7, TCP/IP con su capa de acceso a la red, y el modelo de tres capas de TA050: end to end, red y enlace
+    tres maneras de partir la red en capas: OSI, con sus siete; TCP/IP, que junta las de arriba en la aplicación y las de abajo en el acceso a la red; y la de TA050, que se queda con tres, end to end, red y enlace
     <span class="figura-ref">notas pág. 2 / pizarra pág. 4</span>
   </figcaption>
 </figure>
@@ -182,12 +182,57 @@ Hay diseños de sistemas distribuidos que hacen mucho énfasis en los mensajes y
 
 Todo esto se materializa de una manera muy concreta apenas uno se sienta a escribir código, y vale la pena verlo por lo menos una vez: un servidor y un cliente que se comunican por sockets. Quien haya programado sockets alguna vez probablemente lo haya hecho en Python; la versión que vamos a mirar es la de C, la de bajo nivel. Estas son las system calls con las que se programan los sockets.
 
-<figure class="figura figura-codigo">
-  <figcaption>
-    <span class="figura-label">Código pendiente</span>
-    servidor y cliente con sockets en C — la secuencia socket/bind/listen/accept/read/close del servidor, y socket/connect/read/close del cliente
-  </figcaption>
-</figure>
+```c
+// servidor.c
+#include <stdio.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
+int main(void) {
+    int s = socket(AF_INET, SOCK_STREAM, 0);    // TCP; para UDP, SOCK_DGRAM
+    struct sockaddr_in dir = {
+        .sin_family = AF_INET,
+        .sin_port = htons(8080),
+        .sin_addr.s_addr = htonl(INADDR_ANY),
+    };
+    bind(s, (struct sockaddr *) &dir, sizeof dir);   // el socket, a una dirección
+    listen(s, 5);
+
+    for (;;) {
+        int c = accept(s, NULL, NULL);          // un socket nuevo por cada cliente
+        char buf[256];
+        ssize_t n = read(c, buf, sizeof buf);
+        if (n > 0) printf("recibí: %.*s\n", (int) n, buf);
+        write(c, "ok", 2);
+        close(c);
+    }
+}
+```
+
+```c
+// cliente.c
+#include <stdio.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <sys/socket.h>
+
+int main(void) {
+    int s = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in dir = { .sin_family = AF_INET, .sin_port = htons(8080) };
+    inet_pton(AF_INET, "127.0.0.1", &dir.sin_addr);
+    if (connect(s, (struct sockaddr *) &dir, sizeof dir) < 0) {
+        perror("connect");
+        return 1;
+    }
+
+    write(s, "hola", 4);
+    char buf[256];
+    ssize_t n = read(s, buf, sizeof buf);
+    if (n > 0) printf("respuesta: %.*s\n", (int) n, buf);
+    close(s);
+}
+```
 
 La pregunta natural es cómo se hace un servidor. Del lado del servidor la respuesta es una secuencia de llamadas al sistema engorrosa para los estándares actuales, aunque conviene recordar que esta es una tecnología muy antigua y que buena parte de su forma se explica por su edad. Lo primero es llamar a `socket()`. Después hay que hacer `bind()`, que asocia ese socket a una dirección. Después `listen()`. Después `accept()`, para aceptar una conexión. Después `read()`. Y eventualmente se lo cierra con `close()`.
 

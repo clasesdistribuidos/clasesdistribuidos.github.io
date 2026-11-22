@@ -20,7 +20,7 @@ La asimetría se ve mejor por contraste con los sistemas peer to peer, donde tod
   <img src="{{ '/assets/clase-01/cliente-servicio-p2p.svg' | relative_url }}" alt="Cliente y servicio unidos por request y response; al lado, tres nodos peer to peer">
   <figcaption>
     <span class="figura-label">Figura</span>
-    a la izquierda, cliente y servicio unidos por un request de ida y un response de vuelta; a la derecha, tres nodos en triángulo con flechas en todos los sentidos, rotulados peer to peer
+    cliente-servicio frente a peer to peer: de un lado, un cliente que pide y un servicio que responde; del otro, tres pares iguales que se hablan en todos los sentidos
     <span class="figura-ref">notas pág. 4 / pizarra pág. 11</span>
   </figcaption>
 </figure>
@@ -35,7 +35,7 @@ El cliente quiere calcular cuánto tarda la ejecución de una función. La secue
   <img src="{{ '/assets/clase-01/servidor-de-tiempo.svg' | relative_url }}" alt="Diagrama de tiempo del servidor de tiempo, con sus dos get time">
   <figcaption>
     <span class="figura-label">Figura</span>
-    diagrama de tiempo del servidor de tiempo — el tiempo corre hacia abajo, una línea para el cliente y otra para el servicio, el primer get time con su respuesta, la ejecución de la función en el medio, y el segundo get time con la suya
+    medir cuánto tarda una función con un servidor de tiempo: el cliente pide la hora antes y después de ejecutarla, y la duración es la resta de las dos respuestas
     <span class="figura-ref">notas pág. 4 / pizarra pág. 13</span>
   </figcaption>
 </figure>

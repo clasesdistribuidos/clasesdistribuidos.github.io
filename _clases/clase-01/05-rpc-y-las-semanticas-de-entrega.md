@@ -33,7 +33,7 @@ El origen de RPC está en los años ochenta, y responde otra vez a la ambición 
   <img src="{{ '/assets/clase-01/rpc-middleware-capas.svg' | relative_url }}" alt="La aplicación y la capa de RPC dentro de end to end, sobre los sockets y la red">
   <figcaption>
     <span class="figura-label">Figura</span>
-    la aplicación arriba y la capa de RPC abajo, las dos dentro de la capa end to end, con la llave del middleware sobre la de RPC; más abajo los sockets y la red
+    RPC como middleware: una capa entre la aplicación y los sockets, las dos dentro de la capa end to end, con la red por debajo
     <span class="figura-ref">pizarra pág. 15</span>
   </figcaption>
 </figure>
@@ -48,7 +48,7 @@ La forma en que típicamente se hace esto, desde los ochenta hasta la actualidad
   <img src="{{ '/assets/clase-01/rpc-stubs.svg' | relative_url }}" alt="Cliente y servicio, cada uno con su aplicación y su stub">
   <figcaption>
     <span class="figura-label">Figura</span>
-    cliente y servicio, cada uno con su aplicación arriba y su stub abajo: la llamada a <code>get_time()</code> baja al stub, cruza como request y sube a la aplicación del servicio, y el resultado vuelve por el camino inverso como response
+    una llamada remota a través de los stubs: la llamada baja al stub del cliente, viaja como request y el stub del servicio se la entrega a la aplicación; la hora vuelve por el camino inverso, como response
     <span class="figura-ref">notas pág. 6 / pizarra pág. 16</span>
   </figcaption>
 </figure>
@@ -143,7 +143,7 @@ Normalmente uno hace el request y el otro le responde. Pero pueden pasar varias 
   <img src="{{ '/assets/clase-01/fallas-rpc-no-response.svg' | relative_url }}" alt="Diagrama de tiempo de las dos fallas: el request que no llega y la respuesta que no vuelve">
   <figcaption>
     <span class="figura-label">Figura</span>
-    las dos fallas lado a lado, en un diagrama de tiempo — a la izquierda el request no llega al servidor; a la derecha llega, se ejecuta y la respuesta no vuelve; del lado del cliente las dos se ven igual: espera sin que le llegue nada hasta el timeout
+    las dos formas en que falla una llamada remota: el request no llega al servidor, o llega, se ejecuta y se pierde la respuesta; desde el cliente las dos se ven igual, una espera sin respuesta hasta el timeout
     <span class="figura-ref">notas pág. 6 / pizarra pág. 17</span>
   </figcaption>
 </figure>
@@ -169,7 +169,7 @@ Para seguir lo que pasa conviene cambiar de dibujo y pasar a un diagrama de tiem
   <img src="{{ '/assets/clase-01/at-least-once.svg' | relative_url }}" alt="Diagrama de tiempo de at-least-once: tres reintentos y tres ejecuciones en el servidor">
   <figcaption>
     <span class="figura-label">Figura</span>
-    diagrama de tiempo de at-least-once — la aplicación del cliente pide <code>add(200)</code>, las dos primeras respuestas se pierden y el stub reintenta después de cada timeout; los tres pedidos llegan, y la aplicación del servidor suma tres veces
+    at-least-once: se pierden las respuestas y el stub reintenta después de cada timeout; los tres pedidos llegan, y la aplicación del servidor suma tres veces
     <span class="figura-ref">notas pág. 7 / pizarra pág. 17</span>
   </figcaption>
 </figure>
@@ -192,7 +192,7 @@ La segunda forma de resolver el problema se llama **at-most-once**, a lo sumo un
   <img src="{{ '/assets/clase-01/at-most-once.svg' | relative_url }}" alt="Diagrama de tiempo de at-most-once: un solo envío y un error para el cliente">
   <figcaption>
     <span class="figura-label">Figura</span>
-    diagrama de tiempo de at-most-once — el mismo pedido sale una sola vez, se ejecuta y la respuesta se pierde; después del timeout el stub no reintenta y le devuelve un error a la aplicación; debajo de los stubs, TCP y no UDP
+    at-most-once: el pedido sale una sola vez, se ejecuta y se pierde la respuesta; el stub no reintenta y le devuelve un error a la aplicación, que no sabe si la operación se hizo o no
     <span class="figura-ref">notas pág. 7 / pizarra pág. 17</span>
   </figcaption>
 </figure>
@@ -223,7 +223,7 @@ El ejemplo concreto de cómo se hace eso (que es una de las tantas formas que ha
   <img src="{{ '/assets/clase-01/idempotencia.svg' | relative_url }}" alt="Diagrama de tiempo con idempotency id: tres pedidos con el mismo id y una sola ejecución">
   <figcaption>
     <span class="figura-label">Figura</span>
-    el escenario de at-least-once con un idempotency id — los tres reintentos llevan el mismo id; la primera vez la aplicación del servidor ejecuta y guarda el id en su storage persistente, y las otras dos copias, con un id que ya está, se ignoran
+    idempotencia sobre at-least-once: los reintentos llevan el mismo idempotency id, y la aplicación del servidor ejecuta el primero, guarda el id y descarta las copias que llegan después
     <span class="figura-ref">pizarra pág. 18</span>
   </figcaption>
 </figure>
