@@ -18,10 +18,10 @@ Empecemos con un ejemplo: un sistema de información financiera. Una institució
 Con lo que sabemos hasta aquí, la solución es clara. El NASDAQ expone un endpoint, un RPC, y el banco lo llama: ¿cuánto vale la acción de Google en este momento? Recibe el valor y sigue con lo suyo. Pero ese valor cambia todo el tiempo, y el banco no quiere una foto sino la serie, para ir armando el gráfico del precio. Por eso esa llamada se acompaña en el dibujo de un reloj: el banco hace polling, vuelve a preguntar periódicamente por todas las acciones. Eso funciona, y muchos sistemas funcionan exactamente así.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-13/comunicacion-directa.png' | relative_url }}" alt="El banco consulta al NASDAQ por RPC, con polling">
+  <img src="{{ '/assets/clase-13/comunicacion-directa.svg' | relative_url }}" alt="El banco le pregunta al NASDAQ por polling">
   <figcaption>
     <span class="figura-label">Figura</span>
-    comunicación directa — rectángulos NASDAQ y BANCO unidos por un arco rotulado &quot;RPC&quot; arriba y &quot;PERIÓDICO / POLLING&quot; abajo, con la flecha entrando al NASDAQ
+    la comunicación directa por polling: el banco le pregunta al NASDAQ cada Δt, la mitad de las respuestas dicen que nada cambió, y un precio que dura menos que Δt no lo ve nadie
     <span class="figura-ref">notas pág. 1 / pizarra pág. 1</span>
   </figcaption>
 </figure>
@@ -46,10 +46,10 @@ En el medio ponemos una caja, un sistema intermedio. El NASDAQ ya no le manda na
 La suscripción lleva un nombre que sigue alguna convención. Si al banco le interesan todas las acciones del NASDAQ, la llamada puede ser `subscribe("stocks.NASDAQ.*")`, del banco hacia la caja. Del otro lado, la flecha del NASDAQ a la caja es la operación complementaria, *push*, por donde entran los mensajes. Cada mensaje lleva también un nombre, específico: cuando la acción de Google pasa a valer cien, el NASDAQ hace `push("stocks.NASDAQ.GOOGL", 100)`.
 
 <figure class="figura figura-con-imagen">
-  <img src="{{ '/assets/clase-13/comunicacion-indirecta.jpg' | relative_url }}" alt="El NASDAQ publica en el MOM, que reparte a tres bancos">
+  <img src="{{ '/assets/clase-13/comunicacion-indirecta.svg' | relative_url }}" alt="El NASDAQ publica en el MOM y los bancos reciben">
   <figcaption>
     <span class="figura-label">Figura</span>
-    comunicación indirecta — NASDAQ → doble flecha &quot;CAMBIOS&quot; → MOM (rectángulo central) → BANCO1 / BANCO2 / BANCO3; del BANCO1 sale un arco &quot;SUBSCRIBE&quot; hacia el MOM y vuelve otro rotulado &quot;MSGS&quot;; a BANCO2 y BANCO3 llegan flechas &quot;MSG&quot;
+    la comunicación indirecta: el NASDAQ publica los cambios en el MOM, y los tres bancos, que se suscribieron, los reciben, con las operaciones numeradas en el orden en que ocurren
     <span class="figura-ref">notas pág. 1 / pizarra pág. 1</span>
   </figcaption>
 </figure>
