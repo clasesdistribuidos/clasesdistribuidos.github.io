@@ -1,0 +1,16 @@
+\input{estilo}
+% Mejorada: los dos nodos a la misma altura y con nombre; la flecha dice qué
+% viaja. Sin la hoja chica de la pizarra.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[cli/.style={caja, minimum width=8mm, minimum height=8mm}]
+  \foreach \x/\i in {0/1, 4.4/2} {
+    \pic[scale=1.5] at (\x,0) {base};
+    \node[font=\small] at (\x,0.75) {nodo \i};
+  }
+  \draw[datos] (0.9,0.9) -- node[etiq, above=2pt] {snapshot} (3.5,0.9);
+  \node[cli] (c1) at (-0.55,-1.75) {\var{C}};
+  \node[cli] (c2) at (0.55,-1.75) {\var{C}};
+  \draw[msg] (c1.north) -- (-0.3,-0.35);
+  \draw[msg] (c2.north) -- (0.3,-0.35);
+\end{tikzpicture}\end{figura}
+\end{document}

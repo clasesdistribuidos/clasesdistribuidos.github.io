@@ -1,0 +1,20 @@
+\input{estilo}
+% Mejorada: el load balancer en gris, porque es contexto; las dos mitades con
+% su nombre, cómputo y storage, con las llaves a la misma altura.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[srv/.style={caja, minimum width=9mm, minimum height=7mm}]
+  \foreach \i/\y in {1/3.3, 2/2.2, 3/1.1, 4/0}
+    \node[srv] (s\i) at (0,\y) {};
+  \node[caja, draw=suave, fill=white, minimum width=7mm, minimum height=10mm] (lb) at (-2.2,1.65) {};
+  \node[etiq, text=suave, align=center, below=3pt] at (lb.south) {load\\balancer};
+  \foreach \i in {1,...,4} \draw[msg, draw=suave] (lb.east) -- (s\i.west);
+  % la base de datos
+  \pic[scale=1.3] at (3.4,0.95) {base};
+  \node[font=\small] at (3.4,1.55) {DB};
+  \foreach \i/\y in {1/2.05, 2/1.85, 3/1.65, 4/1.45}
+    \draw[msg] (s\i.east) -- (2.7,\y);
+  % las dos mitades, a la misma altura
+  \draw[llave=6pt] (0.6,-0.6) -- (-0.6,-0.6) node[midway, below=8pt, font=\small, text=tinta, align=center, anchor=north] {web servers\\(cómputo)};
+  \draw[llave=6pt] (4.1,-0.6) -- (2.7,-0.6) node[midway, below=8pt, font=\small, text=tinta, anchor=north] {storage};
+\end{tikzpicture}\end{figura}
+\end{document}

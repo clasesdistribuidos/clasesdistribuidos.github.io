@@ -2,7 +2,7 @@
 % mismo. Lo carga estilo.tex. Regla: lo que aparece en dos figuras o más vive
 % acá, y lo que aparece en una sola se define en esa figura. Cada forma está
 % dibujada con su nombre en catalogo.tex (render_figuras.py --catalogo).
-\usetikzlibrary{decorations.pathmorphing, shapes.multipart, fit, backgrounds, matrix}
+\usetikzlibrary{decorations.pathmorphing, shapes.multipart, shapes.geometric, fit, backgrounds, matrix}
 
 \tikzset{
   % --- nodos -------------------------------------------------------------
@@ -71,6 +71,12 @@
   base/.pic={\def\w{0.5}\def\h{1.1}\def\e{0.15}
     \draw[fill=relleno] (-\w,\h) -- (-\w,0) arc[start angle=180, end angle=360, x radius=\w, y radius=\e] -- (\w,\h);
     \draw[fill=relleno!50!white] (0,\h) ellipse[x radius=\w, y radius=\e];},
+  % una cola de mensajes: el cilindro acostado, con la boca a la izquierda (sin
+  % inner sep=0pt, que le aplana las tapas),
+  % por donde entra lo que se encola; \node[cola] (q) {};
+  cola/.style={cylinder, shape border rotate=180, aspect=0.6, draw=tinta,
+    cylinder uses custom fill, cylinder body fill=relleno, cylinder end fill=relleno!50!white,
+    minimum width=8mm, minimum height=24mm, font=\small},
   % una persona, el usuario: con los pies en el punto dado; \pic (p) deja (p-cabeza)
   persona/.pic={\draw (0,1.05) circle (0.2);
     \draw (0,0.85) -- (0,0.4) (-0.35,0.7) -- (0.35,0.7) (-0.28,0) -- (0,0.4) -- (0.28,0);
@@ -135,6 +141,15 @@
 % El origen es la esquina de abajo a la izquierda; deja los nodos nombre-1, …
 \newcommand\tira[4][1.4]{\foreach \c [count=\i] in {#4}
   \node[celda, minimum width=#1cm] (#2-\i) at ($#3+({(\i-1)*#1},0)$) {\c};}
+
+% clase 3: la misma tira, pero con el contorno y los separadores trazados una
+% sola vez. En \tira cada celda dibuja su borde, y el que comparten dos celdas
+% sale más oscuro que el resto. Mismos argumentos y mismos nodos nombre-1, …
+\newcommand\tiracontorno[4][1.4]{\begin{scope}[celda/.append style={draw=none}]
+  \tira[#1]{#2}{#3}{#4}\end{scope}
+  \foreach \c [count=\i] in {#4} {\xdef\tiraK{\i}}
+  \draw (#2-1.south west) rectangle (#2-\tiraK.north east);
+  \foreach \i in {2,...,\tiraK} \draw (#2-\i.south west) -- (#2-\i.north west);}
 
 % El filete bajo el encabezado de una \matrix[tabla]: \filete{t}{columnas}
 \newcommand\filete[2]{\draw ($(#1-1-1.south west)+(-2mm,0)$) -- ($(#1-1-#2.south east)+(2mm,0)$);}

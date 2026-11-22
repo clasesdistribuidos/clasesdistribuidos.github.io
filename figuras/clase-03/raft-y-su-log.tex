@@ -1,0 +1,25 @@
+\input{estilo}
+% Mejorada: los pasos numerados, en el orden del texto: el cliente le escribe a
+% la app (1), Raft agrega la operación al log (2), la replica en la otra
+% máquina (3) y le avisa a cada app, que la aplica (4). Los nombres de las
+% capas, adentro de cada caja.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[piso/.style={caja, minimum width=34mm, minimum height=15mm},
+    celda/.append style={minimum height=5mm}]
+  \foreach \x/\m in {0/1, 5.4/2} {
+    \draw[marco] (\x-2.3,-1.3) rectangle (\x+2.3,2.9);
+    \node[piso] (app\m) at (\x,1.8) {};
+    \node[etiq, anchor=north west] at (app\m.north west) {app};
+    \pic at ($(app\m.north east)+(-0.6,-1.15)$) [scale=0.6] {base};
+    \node[piso] (raft\m) at (\x,-0.2) {};
+    \node[etiq, anchor=north west] at (raft\m.north west) {Raft};
+    \tiracontorno[0.3]{l\m}{(\x-1.05,-0.6)}{,,,,,,}
+    \node[celda, minimum width=0.3cm, fill=segundo!25] at (\x+1.13,-0.6) {};
+    \draw[msg, draw=segundo] (\x+0.6,0.55) -- (\x+0.6,1.05) node[paso, midway, right=2pt] {4};
+  }
+  \draw[msg] (-0.6,1.05) -- (-0.6,0.55) node[paso, midway, left=2pt] {2};
+  \draw[msg, draw=segundo] (raft1.east) -- (raft2.west) node[paso, midway, above=2pt] {3};
+  \node[caja, minimum width=9mm, minimum height=8mm] (c) at (-3.6,1.8) {\var{C}};
+  \draw[msg] (c.east) -- (app1.west) node[paso, midway, above=2pt] {1};
+\end{tikzpicture}\end{figura}
+\end{document}

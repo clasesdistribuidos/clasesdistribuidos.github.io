@@ -1,0 +1,24 @@
+\input{estilo}
+% Mejorada: los cinco nodos de Raft en pentágono, como el master de la clase
+% 14; la partición deja tres de un lado y dos del otro, y los tres de la
+% mayoría, en verde, son los que siguen operando.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[r/.style={componente, fill=relleno, minimum size=5mm},
+    may/.style={r, draw=segundo, fill=segundo!25}]
+  \foreach \i/\x in {1/0, 2/2.0, 3/4.0, 4/6.0} \node[nodo] (n\i) at (\x,3.9) {};
+  \draw[msg] (n1) -- (n2);
+  \draw[msg] (n2) -- (n3);
+  \draw[msg] (n3) -- (n4);
+  \draw[marco] (1.2,-0.3) rectangle (5.4,2.75);
+  \node[etiq, anchor=north west] at (3.75,-0.35) {servicio de configuración (Raft)};
+  \begin{scope}[shift={(3.45,1.2)}]
+    \foreach \k in {0,...,4} \coordinate (p\k) at (90+72*\k:1.05);
+    \draw[draw=suave, line width=0.5pt] (p0) -- (p1) -- (p2) -- (p3) -- (p4) -- cycle;
+    \foreach \k in {1,2} \node[r] at (p\k) {};
+    \foreach \k in {0,3,4} \node[may] at (p\k) {};
+  \end{scope}
+  \node[etiq, text=segundo, anchor=west] at (5.55,1.6) {mayoría};
+  \node[etiq, text=suave, anchor=east] at (1.05,1.0) {minoría};
+  \draw[acento, line width=1pt] (2.85,4.6) -- (3.0,3.25) -- (2.82,3.2) -- (3.5,-0.6);
+\end{tikzpicture}\end{figura}
+\end{document}

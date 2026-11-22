@@ -1,0 +1,24 @@
+\input{estilo}
+% Propuesta: los tres bancos iguales y simétricos respecto del NASDAQ y el MOM,
+% cada uno con su subscribe y su mensaje, y las operaciones con los nombres del
+% texto, numeradas en el orden en que ocurren. En la pizarra solo el banco 1
+% tenía subscribe; el texto dice que se suscriben todos.
+\begin{document}
+\begin{figura}\begin{tikzpicture}
+  \node[caja, minimum width=22mm, minimum height=13mm] (n) at (0,0) {NASDAQ};
+  \node[caja, minimum width=22mm, minimum height=19mm] (m) at (5,0) {MOM};
+  \draw[msg] (n) -- node[paso, fill=white] {2} (m);
+  \foreach \i/\y in {1/1.9, 2/0, 3/-1.9} {
+    \node[caja, minimum width=20mm, minimum height=10mm] (b\i) at (10,\y) {banco\i};
+    \draw[respuesta, draw=suave] ($(b\i.west)+(0,0.22)$) -- ($(m.east)+(0,{0.3*\y+0.22})$)
+      node[pos=0.3, above=1pt, paso, solid, draw=suave, text=suave] {1};
+    \draw[msg] ($(m.east)+(0,{0.3*\y-0.22})$) -- ($(b\i.west)+(0,-0.22)$)
+      node[pos=0.7, below=1pt, paso] {3};
+  }
+  % la leyenda, alineada a la izquierda
+  \node[anchor=north west, align=left, font=\small] at (-1.1,-2.85) {%
+    \tikz[baseline=(x.base)]\node[paso, draw=suave, text=suave] (x) {1};\ cada banco: \texttt{\small subscribe("stocks.NASDAQ.*")}\\[3pt]
+    \tikz[baseline=(x.base)]\node[paso] (x) {2};\ el NASDAQ, cuando cambia un precio: \texttt{\small push("stocks.NASDAQ.GOOGL", 100)}\\[3pt]
+    \tikz[baseline=(x.base)]\node[paso] (x) {3};\ el MOM se lo entrega a cada banco suscripto};
+\end{tikzpicture}\end{figura}
+\end{document}

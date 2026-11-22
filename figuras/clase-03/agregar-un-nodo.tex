@@ -1,0 +1,25 @@
+\input{estilo}
+% Mejorada: los pasos numerados (snapshot, log hasta v = 10, recién entonces
+% es el tail y le responde al cliente), y los roles arriba de cada nodo.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[ver/.style={nodo, minimum size=11mm, font=\footnotesize}]
+  \node[nodo] (a) at (0,0) {};
+  \node[nodo] (b) at (2.2,0) {};
+  \node[ver] (t) at (4.4,0) {\var{v} = 10};
+  \node[ver] (n) at (7.6,0) {\var{v} = 10};
+  \node[etiq, above=3pt] at (a.north) {head};
+  \node[etiq, above=3pt, text=suave] at (t.north) {tail};
+  \node[etiq, above=3pt, text=segundo] at (n.north) {nuevo tail};
+  \draw[msg] (a) -- (b);
+  \draw[msg] (b) -- (t);
+  % 1. el snapshot
+  \draw[msg] (t.south east) to[out=-50, in=-130] coordinate[pos=0.5] (s) (n.south west);
+  \draw[fill=white] ($(s)+(-0.15,-0.25)$) -- ++(0,0.45) -- ++(0.2,0) -- ++(0.1,-0.1) -- ++(0,-0.35) -- cycle;
+  \node[etiq, below=6pt] at (s) {1. snapshot};
+  % 2. el log
+  \draw[msg, dashed] (t) -- node[etiq, above] {2. log} (n);
+  % 3. recién ahora responde
+  \node[caja, minimum width=9mm, minimum height=8mm] (c) at (7.6,-2.6) {\var{C}};
+  \draw[respuesta] (n.south) -- node[etiq, right] {3. ack} (c.north);
+\end{tikzpicture}\end{figura}
+\end{document}

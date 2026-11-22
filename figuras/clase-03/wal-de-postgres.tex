@@ -1,0 +1,31 @@
+\input{estilo}
+% Mejorada: las entradas del WAL dicen qué son, en el orden de la clase
+% (inicio, operaciones, commit); una entrada apunta a la hoja que modifica, con
+% el estado inicial y el final que guarda; las escrituras entran por el WAL.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[pag/.style={draw=tinta, fill=relleno, minimum width=12mm,
+    minimum height=4.5mm, inner sep=0pt, rounded corners=1pt},
+    celda/.append style={minimum height=7mm, font=\scriptsize}]
+  % las páginas: un árbol B+ con las hojas enlazadas
+  \node[pag] (r) at (4.0,4.6) {};
+  \node[pag] (a) at (2.5,3.65) {};
+  \node[pag] (b) at (5.5,3.65) {};
+  \foreach \i/\x in {1/1.5, 2/3.0, 3/4.5, 4/6.0} \node[pag, minimum width=10mm] (h\i) at (\x,2.7) {};
+  \draw (r.south) -- (a.north) (r.south) -- (b.north)
+        (a.south) -- (h1.north) (a.south) -- (h2.north)
+        (b.south) -- (h3.north) (b.south) -- (h4.north);
+  \foreach \i/\j in {1/2, 2/3, 3/4} \draw[->] (h\i.east) -- (h\j.west);
+  % el WAL: una transacción entera
+  \tiracontorno[1.15]{w}{(0,0)}{, inicio, \var{o}\textsubscript{1}, \var{o}\textsubscript{2},
+    \var{o}\textsubscript{3}, commit, }
+  \draw[msg] (-1.3,0.35) -- (w-1.west);
+  \draw[respuesta, draw=suave] (w-4.north) to[out=90, in=-90] (h3.south);
+  \node[etiq, text=suave, align=left, anchor=west] at (4.75,1.5) {estado inicial\\estado final};
+  \draw[llave=5pt] (6.9,-0.15) -- (1.15,-0.15) node[midway, below=7pt, etiq, text=tinta] {una transacción};
+  % Postgres
+  \draw[marco] (-0.5,-1.3) rectangle (8.55,5.15);
+  \node[font=\small, below=3pt] at (4.0,-1.3) {Postgres};
+  \draw[llave=8pt] (8.85,5.0) -- (8.85,2.35) node[midway, right=10pt, font=\small, text=tinta] {páginas};
+  \draw[llave=6pt] (8.85,0.9) -- (8.85,-0.2) node[midway, right=8pt, font=\small, text=tinta] {WAL / redo};
+\end{tikzpicture}\end{figura}
+\end{document}

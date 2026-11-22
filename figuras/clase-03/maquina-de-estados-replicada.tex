@@ -1,0 +1,21 @@
+\input{estilo}
+% Mejorada: los dos nodos uno debajo del otro, para que se vea que reciben lo
+% mismo; los dos parten de S0 (adentro del cilindro), y los tres requisitos
+% con una llave que los abarca.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[celda/.append style={minimum height=7mm}]
+  \foreach \y/\n/\k in {1.5/a/1, 0/b/2} {
+    \tiracontorno[0.7]{\n}{(0,\y)}{\var{o}\textsubscript{1}, \var{o}\textsubscript{2},
+      \var{o}\textsubscript{3}, \var{o}\textsubscript{4}}
+    \draw[msg] (\n-4.east) -- ++(0.5,0);
+    \pic[scale=0.85] at (3.75,{\y-0.12}) {base};
+    \node[font=\small] at (3.75,{\y+0.3}) {\var{S}\textsubscript{0}};
+    \node[font=\small, anchor=east] at (-0.2,{\y+0.35}) {nodo \k};
+  }
+  \draw[llave=6pt] (4.6,2.0) -- (4.6,0.2);
+  \foreach \t [count=\i] in {operaciones en el mismo orden, determinismo estricto,
+      {mismo estado inicial \var{S}\textsubscript{0}}}
+  {\fill (5.0,{1.1+0.55*(2-\i)}) circle (1.6pt);
+    \node[font=\small, anchor=west] at (5.15,{1.1+0.55*(2-\i)}) {\t};}
+\end{tikzpicture}\end{figura}
+\end{document}

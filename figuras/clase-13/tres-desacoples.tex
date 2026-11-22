@@ -1,0 +1,58 @@
+\input{estilo}
+% Propuesta: los tres desacoples como tres paneles iguales, con líneas de
+% tiempo verticales en vez de la figura del paper. Cada panel muestra lo que
+% dice el texto: en espacio, P no conoce a los S; en tiempo, S no estaba cuando
+% P publicó y P ya no está cuando S recibe; en sincronización, P sigue sin
+% esperar respuesta. Todo eso sale del texto; el dibujo es nuevo.
+\begin{document}
+\begin{figura}\begin{tikzpicture}[
+    cab/.style={caja, minimum width=8mm, minimum height=6mm, inner sep=1pt},
+  ]
+  \def\abajo{-4.0}
+  % una línea de vida con su cabecera: \linea{x}{rótulo}{hasta}
+  \newcommand\linea[3]{\node[cab] at (#1,0) {#2}; \draw[vida] (#1,-0.3) -- (#1,#3);}
+  \newcommand\pie[2]{\node[etiq, text=suave] at (#1,\abajo-0.45) {#2};}
+  \newcommand\titulo[2]{\node at (#1,\abajo-1.1) {#2};}
+
+  % --- en espacio
+  \linea{0}{\var{P}}{\abajo}
+  \linea{2.4}{\var{E}}{\abajo}
+  \foreach \i/\x in {1/3.9, 2/4.8, 3/5.7} {\linea{\x}{\var{S}\textsubscript{\i}}{\abajo}}
+  \draw[msg] (0,-1.0) -- node[etiq, above, sloped] {publish} (2.4,-1.3);
+  \foreach \i/\x in {1/3.9, 2/4.8, 3/5.7} \draw[msg] (2.4,-1.8) -- (\x,{-1.6-0.6*\i});
+  \pie{2.85}{\var{P} solo conoce a \var{E}}
+  \titulo{2.85}{en espacio}
+
+  % --- en tiempo
+  \begin{scope}[xshift=7.6cm]
+    \node[cab] at (0,0) {\var{P}}; \draw[vida] (0,-0.3) -- (0,-1.7);
+    \draw[marca] (-0.15,-1.7) -- (0.15,-1.7);
+    \linea{2.85}{\var{E}}{\abajo}
+    \node[cab] at (5.7,0) {\var{S}};
+    \draw[vida] (5.7,-0.3) -- (5.7,-0.6); \draw[marca] (5.55,-0.6) -- (5.85,-0.6);
+    \node[etiq, text=acento] at (5.7,-1.5) {caído};
+    \draw[marca] (5.55,-2.5) -- (5.85,-2.5); \draw[vida] (5.7,-2.5) -- (5.7,\abajo);
+    \draw[msg] (0,-1.0) -- node[etiq, above, sloped] {publish} (2.85,-1.3);
+    \node[evento=acento] at (2.85,-1.3) {};
+    \node[etiq, text=acento, anchor=west] at (2.95,-1.3) {guardado};
+    \draw[msg] (2.85,-2.9) -- node[etiq, above, sloped] {notify} (5.7,-3.2);
+    \pie{2.85}{nadie tiene que estar a la vez}
+    \titulo{2.85}{en tiempo}
+  \end{scope}
+
+  % --- en sincronización
+  \begin{scope}[xshift=15.2cm]
+    \linea{0}{\var{P}}{\abajo}
+    \linea{2.85}{\var{E}}{\abajo}
+    \linea{5.7}{\var{S}}{\abajo}
+    \draw[msg] (0,-1.0) -- node[etiq, above, sloped] {publish} (2.85,-1.3);
+    \foreach \y in {-1.6, -2.2, -2.8, -3.4} \node[evento] at (0,\y) {};
+    \node[etiq, anchor=east] at (-0.15,-2.5) {sigue};
+    \draw[msg] (2.85,-2.4) -- node[etiq, above, sloped] {notify} (5.7,-2.7);
+    \pie{2.85}{\var{P} no espera respuesta}
+    \titulo{2.85}{en sincronización}
+  \end{scope}
+
+  \node[etiq, text=suave] at (10.45,\abajo-1.85) {\var{P} publisher \quad \var{E} servicio de eventos \quad \var{S} subscriber};
+\end{tikzpicture}\end{figura}
+\end{document}
